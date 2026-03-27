@@ -193,7 +193,37 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+/* Esto obliga a los inputs a ser blancos con texto negro */
+.registro-card .form-control {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #ced4da;
+    height: 45px; /* Ajusta la altura para que se vea mejor */
+}
 
+/* Estilo para los iconos */
+.input-group-text {
+    background-color: #ffffff;
+    border-right: none;
+    color: #333;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+/* Ajuste del botón para que resalte como en tu diseño */
+.btn-registrar {
+    background-color: #00bcd4; /* El azul cian de tu captura */
+    color: black;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-registrar:hover {
+    background-color: #008c9e;
+    color: white;
+}
 /* ---------- background photo ---------- */
 .bg-photo {
   position: fixed; inset: 0; z-index: 0;
