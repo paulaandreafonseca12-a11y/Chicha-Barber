@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin # type: ignore
 from django.urls import include, path # type: ignore
-
+from django.contrib.auth import views as auth_views
 from core.views import inicio
+# Importa tu formulario personalizado si lo creaste
+# core/urls.py
+from usuarios.forms import RegistroForm, ClienteLoginForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,4 +33,33 @@ urlpatterns = [
     
     
     path('', include('productos.urls')),
+
+    path('admin/', admin.site.urls),
+    path('', inicio, name='inicio'),
+    path('usuarios/', include('usuarios.urls')),
+
+    # --- RUTAS DE AUTENTICACIÓN ---
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+    # 1. Formulario para pedir el cambio (El que ya tienes con fondo de barbería)
+    path('recuperar-password/', 
+         auth_views.PasswordResetView.as_view(template_name='registration/recuperar.html'), 
+         name='password_reset'),
+
+    # 2. Pantalla que dice "Revisa tu correo"
+    path('recuperar-password/enviado/', 
+         auth_views.PasswordResetDoneView.as_view(template_name='registration/recuperar_enviado.html'), 
+         name='password_reset_done'),
+
+    # 3. El link que llega al correo (ESTA ES LA QUE TE DABA EL ERROR)
+    path('recuperar/<uidb64>/<token>/', 
+         auth_views.PasswordResetConfirmView.as_view(template_name='registration/recuperar_confirmar.html'), 
+         name='password_reset_confirm'),
+
+    # 4. Pantalla de "¡Listo! Contraseña cambiada"
+    path('recuperar/completo/', 
+         auth_views.PasswordResetCompleteView.as_view(template_name='registration/recuperar_completo.html'), 
+         name='password_reset_complete'),
+    
 ]
