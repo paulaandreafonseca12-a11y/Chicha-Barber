@@ -1,48 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
 
-</head>
-<body>
+{% block content %}
+<main class="p-4 w-75 m-auto">
+    <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
+        <h2 style="text-align: center; color: #d4af37; margin-bottom: 40px;">Ofertas de la Semana</h2>
 
-    <h2 style="text-align: center; color: #d4af37; margin-bottom: 40px;">Ofertas de la Semana</h2>
+        <section class="layout" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
 
-    <div class="promo-container">
-        <div class="promo-card">
-            <div class="promo-badge">20% OFF</div>
-            <div class="promo-content">
-                <h3 class="promo-title">Combo VIP</h3>
-                <p>Corte de cabello + Barba completa </p>
-                <div class="promo-price">
-                    <span class="old-price">$25.00</span>
-                    <span class="new-price">$20.00</span>
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo Especial</h5>
+                    <p class="card-text">Por un Corte + Barba, el cliente se lleva un aceite de barba pequeño o un bálsamo con un 15% de descuento.</p>
+                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
                 </div>
-                <a href="#" class="promo-btn">Reservar Cupo</a>
             </div>
-        </div>
 
-        <div class="promo-card">
-            <div class="promo-badge">2x1</div>
-            <div class="promo-content">
-                <h3 class="promo-title">Jueves de Amigos</h3>
-                <p>Ven con un amigo y pagas la mitad.</p>
-                <div class="promo-price">
-                    <span class="new-price">Solo Jueves</span>
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo Fin de Semana</h5>
+                    <p class="card-text">Disfruta de un corte de cabello y un afeitado con un 20% de descuento en todos nuestros servicios.</p>
+                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
                 </div>
-                <a href="#" class="promo-btn">Ver Horarios</a>
             </div>
-        </div>
 
-        <div class="promo-card">
-            <div class="promo-badge">NUEVO</div>
-            <div class="promo-content">
-                <h3 class="promo-title">Ritual de Barba</h3>
-                <p>Perfilado con navaja,y masaje facial.</p>
-                <div class="promo-price">
-                    <span class="old-price">$15.00</span>
-                    <span class="new-price">$12.00</span>
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo mensual</h5>
+                    <p class="card-text">Terapia Capilar Anticaída: Un masaje capilar profundo utilizando un tónico especializado y alta frecuencia.</p>
+                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
                 </div>
-                <a href="#" class="promo-btn">Probar Ahora</a>
             </div>
-        </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Look Impecable 24/7"</h5>
+                    <p class="card-text">Por tu corte, llévate la cera con un 20% de descuento para que te peines igual en casa.</p>
+                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Barba de Acero"</h5>
+                    <p class="card-text">Realízate el servicio de barba y lleva el aceite protector por solo un precio especial de combo.</p>
+                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Caballero Moderno"</h5>
+                    <p class="card-text">El kit completo tiene un 10% de ahorro comparado con los precios individuales. Incluye bolsa de regalo.</p>
+                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
+                </div>
+            </div>
+
+        </section>
     </div>
-
-</body>
-</html>
+</main>
+{% endblock content %}

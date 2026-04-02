@@ -1,0 +1,31 @@
+<div class="container-fluid py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 mb-4">
+                
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0 fw-bold"> Agregar Nueva Reserva</h5>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        {# Renderiza el campo de nombre de categoría #}
+                        {{ form|crispy }}
+                        
+                        <hr class="my-4 text-secondary opacity-25">
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'crear_reserva' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-info">
+                                Guardar Reserva
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
