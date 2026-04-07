@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin # type: ignore
 from django.urls import include, path # type: ignore
 
-from core.views import inicio
+from core.views import inicio, inicio_admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,8 +26,8 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')),
     path('servicios/', include('servicios.urls')),
     path('usuarios/', include('usuarios.urls')),  
-      
+    path('panel/', inicio_admin, name='inicio_admin'),
     
     
-    path('', include('productos.urls')),
+    path('productos/', include('productos.urls')),
 ]
