@@ -18,10 +18,9 @@ class Servicios(models.Model):
         return self.nombre
     
 class Promocion(models.Model):
-    codigo_promocion = models.CharField(max_length=8, unique=True, verbose_name='Código de promoción')
     nombre = models.CharField(max_length=150, verbose_name='nombre')
-    descuento = models.CharField(max_length=10, verbose_name='Descuento')
-    duracion = models.CharField(max_length=20, verbose_name='Duración')
+    descuento = models.CharField(max_length=100, verbose_name='Descuento')
+    duracion = models.CharField(max_length=30, verbose_name='Duración')
     descripcion = models.TextField(verbose_name='Descripcion')
 
     class Meta:

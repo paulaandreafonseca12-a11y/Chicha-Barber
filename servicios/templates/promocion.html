@@ -2,30 +2,42 @@
 {% load static %}
 
 {% block content %}
-<main class="p-4 w-75 m-auto">
-    <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
-        <h2 style="text-align: center; color: #d4af37; margin-bottom: 40px;">Ofertas de la Semana</h2>
 
-        <section class="layout" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
-
-    
+        <main class="p-4 w-75 m-auto">
+       
+           
+            <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
+        
+            <div class="container-fluid py-1">
+                <h1 class="display-5 fw-bold">Nuestras Promociones</h1> 
+            
+                   
+            </div>
+       
         </div>
         {% comment %} Tarjetas {% endcomment %}
         <section class="layout d-flex flex-wrap justify-content-around">
 
-             {% for servicio in servicios %}
+             {% for promocion in promociones %}
             <div class="card mb-4" style="width: 18rem; ">
-                <img src="" class="img-thumbnail" alt="...">
+                <img src="{% static 'img/promocion/promocion_1.jpg' %}" class="img-thumbnail" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{ promocion.nombre }}</h5>
-                    <p class="card-text">{{ promocion.descripcion }}</p>
-                    <p> Duracion: {{ promocion.duracion }} </p>
+                    <p class="card-text">{{ promocion.descripcion }}</p>    
                     <p class="card-text">Precio: ${{ promocion.precio }}</p>
                     <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
                 </div>
             </div>
+            
+           
+               
             {% endfor %}
+            
 
             </div>
-            </main>
+             
+            
+
+        </section>
+</main>
 {% endblock %}
