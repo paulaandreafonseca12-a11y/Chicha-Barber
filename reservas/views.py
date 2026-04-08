@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django .shortcuts import render, redirect, get_object_or_404   
 from django.contrib import messages
-from .models import Reserva, Calificacion
+from .models import Reserva, Calificacion, Reserva
 from .forms import ReservaForm, ReservaEditarForm, CalificacionForm, CalificacionEditarForm
 from servicios.models import Servicios
+
+from datetime import datetime
 # Create your views here.
 
 def reservas_view(request):
@@ -38,10 +40,6 @@ def crear_reserva(request):
     return render(request, 'reservas/agregar_reserva.html', context)
 
 
-from django.contrib import messages
-from .models import Servicios, Reserva
-from .forms import ReservaForm
-from datetime import datetime
 
 def crear_reserva_user(request, servicio_id):
     # Obtenemos el servicio específico o lanzamos un error 404 si no existe
@@ -62,7 +60,7 @@ def crear_reserva_user(request, servicio_id):
                 reserva.fecha_reserva = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M")
                 reserva.save()
                 messages.success(request, f'¡Cita para {servicio.nombre} agendada con éxito!')
-                return redirect('perfil_usuario') # Redirige a donde prefieras
+                return redirect('inicio') # Redirige a donde prefieras
             except (ValueError, TypeError):
                 messages.error(request, 'Error en el formato de fecha y hora.')
         else:

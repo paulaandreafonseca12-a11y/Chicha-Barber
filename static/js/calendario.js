@@ -162,27 +162,30 @@ document.getElementById('btn-step2').addEventListener('click', () => {
 
 // ─── CONFIRMAR RESERVA ────────────────────────────────────────────────────────
 function reservar() {
-  document.querySelectorAll('.step-panel').forEach(p => p.classList.add('d-none'));
-  const successPanel = document.getElementById('panel-success');
-  successPanel.classList.remove('d-none');
-  document.getElementById('stepper').classList.add('d-none');
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const apellido = document.getElementById('inp-apellido').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  const tel = document.getElementById('inp-tel').value.trim();
 
-  // Mensaje de cancelación dinámico
   const d = days[state.dayIndex];
-  const msgEl = document.getElementById('cancel-msg');
-  if (msgEl) {
-    msgEl.innerHTML = `
-      Te esperamos en Chicha Barber.<br>
-      Recibirás un recordatorio al correo registrado.<br><br>
-      <span style="color:#aaa; font-size:.82rem;">
-        Recuerda que si quieres cancelar la cita, puedes comunicarte directamente al
-        <a href="https://wa.me/573206542668" target="_blank"
-            style="color:var(--cyan); text-decoration:none; font-weight:600;">
-          WhatsApp 320 6542668
-        </a>,
-        con un plazo mínimo de 3 horas antes de la cita.
-      </span>`;
-  }
+  
+  // Formatear la fecha a YYYY-MM-DD
+  const year = d.date.getFullYear();
+  const month = (d.date.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.date.getDate().toString().padStart(2, '0');
+  const fechaStr = `${year}-${month}-${day}`;
+  const horaStr = state.time; // "HH:MM"
+
+  // Llenar los campos del formulario oculto
+  document.getElementById('hidden-nombre_cliente').value = `${nombre} ${apellido}`;
+  document.getElementById('hidden-correo').value = email;
+  document.getElementById('hidden-telefono').value = tel;
+  document.getElementById('hidden-fecha').value = fechaStr;
+  document.getElementById('hidden-hora').value = horaStr;
+  document.getElementById('hidden-fecha_reserva').value = `${fechaStr} ${horaStr}`;
+
+  // Enviar el formulario
+  document.getElementById('reserva-form').submit();
 }
 
 // ─── REINICIAR ────────────────────────────────────────────────────────────────

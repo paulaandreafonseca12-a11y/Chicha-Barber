@@ -23,7 +23,7 @@
                     <p class="card-text">{{ servicio.descripcion }}</p>
                     <p> Duracion: {{ servicio.duracion }} </p>
                     <p class="card-text">Precio: ${{ servicio.precio }}</p>
-                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
+                    <a class="btn btn-primary" href="{% url 'crear_reserva' servicio.id %}" role="button">Seleccionar</a>
                 </div>
             </div>
             {% endfor %}

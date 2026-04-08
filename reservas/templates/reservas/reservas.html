@@ -168,6 +168,17 @@
       </div>
     </div>
 
+    <!-- ══════════════════════════ FORMULARIO OCULTO ══════════════════════ -->
+    <form id="reserva-form" method="POST" action="{% url 'crear_reserva' servicio.id %}" style="display: none;">
+      {% csrf_token %}
+      <input type="hidden" name="nombre_cliente" id="hidden-nombre_cliente">
+      <input type="hidden" name="correo" id="hidden-correo">
+      <input type="hidden" name="telefono" id="hidden-telefono">
+      <input type="hidden" name="fecha" id="hidden-fecha">
+      <input type="hidden" name="hora" id="hidden-hora">
+      <input type="hidden" name="fecha_reserva" id="hidden-fecha_reserva">
+    </form>
+
     <!-- ══════════════════════════ PANTALLA ÉXITO ══════════════════════════ -->
     <div id="panel-success" class="step-panel d-none text-center py-4">
       <div style="font-size:4rem;">🎉</div>
