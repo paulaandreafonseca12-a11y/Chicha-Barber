@@ -469,3 +469,20 @@ input::-ms-clear {
 .custom-btn:hover {
     background-color: #ffffff; /* Brilla un poco más al pasar el mouse */
 } 
+
+.btn-seleccionar {
+    display: inline-block;
+    background-color: #00d1ff; /* El azul de tu barbería */
+    color: black;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-seleccionar:hover {
+    background-color: #008fb3;
+    transform: scale(1.05);
+}

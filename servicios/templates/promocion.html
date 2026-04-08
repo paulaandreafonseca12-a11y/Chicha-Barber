@@ -13,7 +13,11 @@
                 <div class="card-body">
                     <h5 class="card-title">Promo Especial</h5>
                     <p class="card-text">Por un Corte + Barba, el cliente se lleva un aceite de barba pequeño o un bálsamo con un 15% de descuento.</p>
-                    <a class="btn btn-primary" href="{% url 'servicios:seleccionar_promocion' 'Promo Especial' %}" role="button">Seleccionar</a>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Especial' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return validarYRedirigir(event)">
+                        Seleccionar Promoción
+                    </a>
                 </div>
             </div>
 
@@ -22,7 +26,11 @@
                 <div class="card-body">
                     <h5 class="card-title">Promo Fin de Semana</h5>
                     <p class="card-text">Disfruta de un corte de cabello y un afeitado con un 20% de descuento en todos nuestros servicios.</p>
-                   <a class="btn btn-primary" href="{% url 'servicios:seleccionar_promocion' 'Promo fin de semana' %}" role="button">Seleccionar</a>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Fin de Semana' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return validarYRedirigir(event)">
+                        Seleccionar Promoción
+                    </a>
                 </div>
             </div>
 
@@ -31,7 +39,11 @@
                 <div class="card-body">
                     <h5 class="card-title">Promo mensual</h5>
                     <p class="card-text">Terapia Capilar Anticaída: Un masaje capilar profundo utilizando un tónico especializado y alta frecuencia.</p>
-                    <a class="btn btn-primary" href="{% url 'servicios:seleccionar_promocion' 'Promo mensual' %}" role="button">Seleccionar</a>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Mensual' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return validarYRedirigir(event)">
+                        Seleccionar Promoción
+                    </a>
                 </div>
             </div>
 
@@ -40,7 +52,11 @@
                 <div class="card-body">
                     <h5 class="card-title">"Look Impecable 24/7"</h5>
                     <p class="card-text">Por tu corte, llévate la cera con un 20% de descuento para que te peines igual en casa.</p>
-                    <a class="btn btn-primary" href="{% url 'servicios:seleccionar_promocion' 'Look Impecable' %}" role="button">Seleccionar</a>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Look Impecable' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return validarYRedirigir(event)">
+                        Seleccionar Promoción
+                    </a>
                 </div>
             </div>
 
@@ -49,7 +65,11 @@
                 <div class="card-body">
                     <h5 class="card-title">"Barba de Acero"</h5>
                     <p class="card-text">Realízate el servicio de barba y lleva el aceite protector por solo un precio especial de combo.</p>
-                    <a class="btn btn-primary" href="{% url 'servicios:seleccionar_promocion' 'Barba de Acero' %}" role="button">Seleccionar</a>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Barba de Acero' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return validarYRedirigir(event)">
+                        Seleccionar Promoción
+                    </a>
                 </div>
             </div>
 
@@ -58,11 +78,36 @@
                 <div class="card-body">
                     <h5 class="card-title">"Caballero Moderno"</h5>
                     <p class="card-text">El kit completo tiene un 10% de ahorro comparado con los precios individuales. Incluye bolsa de regalo.</p>
-                    <a class="btn btn-primary" href="{% url 'servicios:seleccionar_promocion' 'Caballero Moderno' %}" role="button">Seleccionar</a>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Caballero Moderno' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return validarYRedirigir(event)">
+                        Seleccionar Promoción
+                    </a>
                 </div>
             </div>
 
         </section>
     </div>
 </main>
+
+<script>
+function validarYRedirigir(event) {
+    // Detectamos si el usuario está logueado usando Django
+    var registrado = {{ user.is_authenticated|yesno:"true,false" }};
+    
+    if (!registrado) {
+        // Detenemos la navegación normal
+        event.preventDefault();
+        
+        // Mostramos el mensaje
+        alert("🎁 ¡Atención! Las promociones de Chicha Barber son exclusivas para clientes registrados. Registrate ahora");
+        
+        // Al darle "Aceptar", redirigimos a la página de registro
+        // Nota: Asegúrate de que 'registro' sea el name de tu URL de registro en urls.py
+        window.location.href = "{% url 'registro' %}"; 
+        return false;
+    }
+    return true;
+}
+</script>
 {% endblock content %}

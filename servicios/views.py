@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.contrib import messages # type: ignore
 from .models import *
 from .forms import serviciosForm, serviciosEditarForm
+from django.contrib.auth.decorators import login_required
 
 def servicios_view(request):
     
@@ -83,3 +84,4 @@ def seleccionar_promocion(request, nombre_promo):
     # Guardamos en la sesión el nombre que viene del botón
     request.session['promocion_seleccionada'] = nombre_promo
     return redirect('reservas:reservas')
+

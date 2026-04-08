@@ -10,4 +10,3 @@ def inicio(request):
         'nombre': nombre
     }
     return render(request, 'index.html', context)
-
