@@ -1,6 +1,7 @@
 # usuarios/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import User
 
 # 1. Definimos los roles primero para que la clase Usuario los reconozca
 ROLES = (

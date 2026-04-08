@@ -6,7 +6,6 @@ from .forms import RegistroForm
 def inicio(request):
     
     return render(request, 'index.html')
-
 def registro_view(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)

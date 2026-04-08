@@ -1,9 +1,6 @@
 from multiprocessing import context
 from django.contrib import messages  # type: ignore
-
-
-from django.shortcuts import render,redirect, get_object_or_404 # type: ignore
-
+from django.shortcuts import render, redirect, get_object_or_404
 import servicios
 from servicios.forms import serviciosEditarForm, serviciosForm
 
@@ -14,8 +11,3 @@ def inicio(request):
     }
     return render(request, 'index.html', context)
 
-
-
-
-
-# Create your views here.
