@@ -21,13 +21,15 @@ from django.contrib.auth import views as auth_views
 from usuarios.views import inicio 
 from usuarios.forms import RegistroForm 
 
+from core.views import inicio, inicio_admin
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),
     path ('servicios/', include('servicios.urls')),
     path('reservas/', include('reservas.urls')),
     path('usuarios/', include('usuarios.urls')),  
-      
+    path('panel/', inicio_admin, name='inicio_admin'),
     
     
     path('', include('productos.urls')),
@@ -61,5 +63,6 @@ urlpatterns = [
     path('recuperar/completo/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='registration/recuperar_completo.html'), 
          name='password_reset_complete'),
-    
+    path('productos/', include('productos.urls')),
 ]
+    

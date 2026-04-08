@@ -1,0 +1,105 @@
+<aside class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white shadow-lg" style="width: 280px; min-height: 100vh; position: sticky; top: 0;">
+    
+    <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <i class="bi bi-scissors me-2 fs-3 text-warning"></i>
+        <span class="fs-4 fw-bold">Chicha Barber</span>
+    </div>
+    
+    <hr class="border-secondary">
+
+    <div class="accordion accordion-flush bg-dark" id="sidebarAccordion">
+        
+        <div class="accordion-item bg-dark border-0">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios">
+                    <i class="bi bi-gear-wide-connected me-2"></i> Gestión de Servicios
+                </button>
+            </h2>
+            <div id="collapseServicios" class="accordion-collapse collapse {% if 'servicios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+                <div class="accordion-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'servicios' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-list-ul me-2"></i> Ver Todos
+                        </a>
+                        <a href="{% url 'crear_servicios' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-plus-circle me-2"></i> Crear Nuevo
+                        </a>
+                        <a href="{% url 'calificacion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-star me-2"></i> Calificaciones
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-item mt-2">
+            <a href="{% url 'promocion' %}" class="nav-link text-white p-3 rounded {% if 'promocion' in request.path %}bg-primary active{% endif %}">
+                <i class="bi bi-megaphone me-2"></i> Ofertas y Promos
+            </a>
+        </div>
+
+        <div class="accordion-item bg-dark border-0 mt-2">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReservas">
+                    <i class="bi bi-calendar-event me-2"></i> Reservas
+                </button>
+            </h2>
+            <div id="collapseReservas" class="accordion-collapse collapse {% if 'reservas' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+                <div class="accordion-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Ver Agenda</a>
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Nueva Cita</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item bg-dark border-0 mt-2">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProductos">
+                    <i class="bi bi-bag-check me-2"></i> Productos
+                </button>
+            </h2>
+            <div id="collapseProductos" class="accordion-collapse collapse {% if 'productos' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+                <div class="accordion-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Inventario</a>
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Agregar Producto</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item bg-dark border-0 mt-2">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios">
+                    <i class="bi bi-people me-2"></i> Usuarios
+                </button>
+            </h2>
+            <div id="collapseUsuarios" class="accordion-collapse collapse {% if 'usuarios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+                <div class="accordion-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Clientes</a>
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Barberos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <hr class="mt-auto border-secondary">
+    
+    <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2" id="userMenu" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle fs-5 me-2"></i>
+            <strong>Administrador</strong>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+            <li><a class="dropdown-item" href="{% url 'inicio_admin' %}">Inicio Panel</a></li>
+            <li><a class="dropdown-item" href="{% url 'inicio' %}">Ver Sitio Web</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#">Cerrar Sesión</a></li>
+        </ul>
+    </div>
+</aside>
