@@ -1,10 +1,12 @@
-{% extends "base.html" %}
+{% extends "base-clientes.html" %}
 {% load static %}
 
 {% block content %}
 
         <main class="p-4 w-75 m-auto">
-        <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
+       
+           
+            <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
         
             <div class="container-fluid py-1">
                 <h1 class="display-5 fw-bold">SERVICIOS</h1> 
@@ -13,64 +15,23 @@
             </div>
        
         </div>
+        {% comment %} Tarjetas {% endcomment %}
         <section class="layout d-flex flex-wrap justify-content-around">
 
+             {% for servicio in servicios %}
             <div class="card mb-4" style="width: 18rem; ">
                 <img src="{% static 'img/corte/corte_1.jpg' %}" class="img-thumbnail" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">Corte para niños </h5>
-                    <p class="card-text">Corte personalizado para niños pequeños Diseños Líneas</p>
-                    <p> Duracion 40 minutos </p>
-                    <p class="card-text">Precio: $12,000</p>
+                    <h5 class="card-title">{{ servicio.nombre }}</h5>
+                    <p class="card-text">{{ servicio.descripcion }}</p>
+                    <p> Duracion: {{ servicio.duracion }} </p>
+                    <p class="card-text">Precio: ${{ servicio.precio }}</p>
                     <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
                 </div>
             </div>
+            {% endfor %}
+            
 
-             <div class="card mb-4" style="width: 18rem; ">
-                <img src="{% static 'img/corte/corte_2.jpg' %}" class="img-thumbnail" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Corte Personalizado</h5>
-                    <p class="card-text">Corte personalizado para hombres <br>
-                        Incluye cejas a petición del cliente Secado <br> peinado
-                        de cabello</p>
-                        <p> Duracion 1 hora </p>
-                        <p class="card-text">Precio: $12,000</p>
-                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
-                </div>
-            </div>
-             <div class="card mb-4" style="width: 18rem; ">
-                <img src="{% static 'img/corte/corte_3.jpg' %}" class="img-thumbnail" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Corte  Mullet</h5>
-                    <p class="card-text">mullet o patillas 
-                        incluye cejas a petición del cliente.</p>
-                         <p> Duracion 1 hora </p>
-                         <p class="card-text">Precio: $12,000</p>
-                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
-                </div>
-            </div>
-             <div class="card mb-4" style="width: 18rem; ">
-                <img src="{% static 'img/corte/corte_4.jpg' %}" class="img-thumbnail" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Barba personalizada
-                        Perfilado
-                         Desvanecido</h5>
-                          <p> Duracion 1 hora </p>
-                          <p class="card-text">Precio: $12,000</p>
-                  <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
-                </div>
-            </div>
-             <div class="card mb-4" style="width: 18rem; ">
-                <img src="{% static 'img/corte/corte_5.jpg' %}" class="img-thumbnail" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Corte 1</h5>
-                    <p class="card-text">Corte personalizado para hombres <br>
-                        Incluye cejas a petición del cliente Secado <br> peinado
-                        de cabello</p>
-                         <p> Duracion 1 hora </p>
-                         <p class="card-text">Precio: $12,000</p>
-                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
-                </div>
             </div>
              
             

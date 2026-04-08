@@ -12,7 +12,14 @@ def inicio(request):
     context = {
         'nombre': nombre
     }
-    return render(request, 'index.html', context)
+    return render(request, 'index-clientes.html', context)
+
+def inicio_admin(request):
+    nombre = "Santiago"
+    context = {
+        'nombre': nombre
+    }
+    return render(request, 'index-admin.html', context)
 
 
 

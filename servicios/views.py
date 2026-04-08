@@ -5,9 +5,18 @@ from .models import *
 from .forms import serviciosForm, serviciosEditarForm
 
 def servicios_view(request):
+    servicios = Servicios.objects.all()
     
     context = {
         'titulo': 'Nuestros Servicios',
+        'servicios': servicios
+    }
+    return render(request, 'servicios.html', context)
+def servicios_admin_view(request):
+    servicios = Servicios.objects.all()
+    context = {
+        'titulo': 'Nuestros Servicios',
+        'servicios': servicios
     }
     return render(request, 'servicios.html', context)
 
@@ -66,11 +75,6 @@ def editar_servicios(request, pk):
 
 # Create your views here.
 
-def servicios_view(request):
-    context = {
-    'titulo' : 'Nuestros Servicios'
-    }
-    return render(request, 'servicios.html', context)
 
 def promocion_views(request):
     context = {
