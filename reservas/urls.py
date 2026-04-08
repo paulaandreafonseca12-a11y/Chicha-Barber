@@ -22,5 +22,7 @@ from . import views
 
 urlpatterns = [
     path('', views.reservas_view, name='reservas'),
-    path('calificacion/', views.calificacion_view, name='calificacion')
+    path('calificacion/', views.calificacion_view, name='calificacion'),
+    path('reservas/crear/', views.crear_reserva, name='crear_reserva'),
+    path('calificacion/crear/', views.crear_calificacion, name='crear_calificacion'),
 ]

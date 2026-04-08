@@ -4,21 +4,18 @@
 {% block content %}
 
         <main class="p-4 w-75 m-auto">
-       
-           
             <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
         
             <div class="container-fluid py-1">
                 <h1 class="display-5 fw-bold">SERVICIOS</h1> 
-             <p class="col-md-8 fs-4">Elije tu corte personalizado a tu gusto y de acuerdo a tu estilo</p> 
+            <p class="col-md-8 fs-4">Elije tu corte personalizado a tu gusto y de acuerdo a tu estilo</p> 
                     <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
             </div>
-       
         </div>
         {% comment %} Tarjetas {% endcomment %}
         <section class="layout d-flex flex-wrap justify-content-around">
 
-             {% for servicio in servicios %}
+            {% for servicio in servicios %}
             <div class="card mb-4" style="width: 18rem; ">
                 <img src="{% static 'img/corte/corte_1.jpg' %}" class="img-thumbnail" alt="...">
                 <div class="card-body">
@@ -33,8 +30,6 @@
             
 
             </div>
-             
-            
 
         </section>
 </main>
