@@ -74,6 +74,12 @@ def servicios_view(request):
 
 def promocion_views(request):
     context = {
-    'titulo' : 'Promociones'
+        'titulo' : 'Promociones'
     }
+    # Asegúrate de que apunte a la subcarpeta servicios
     return render(request, 'promocion.html', context)
+
+def seleccionar_promocion(request, nombre_promo):
+    # Guardamos en la sesión el nombre que viene del botón
+    request.session['promocion_seleccionada'] = nombre_promo
+    return redirect('reservas:reservas')
