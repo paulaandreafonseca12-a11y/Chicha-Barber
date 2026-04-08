@@ -14,29 +14,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from usuarios import views 
 from django.contrib import admin # type: ignore
 from django.urls import include, path # type: ignore
 from django.contrib.auth import views as auth_views
-from core.views import inicio
-# Importa tu formulario personalizado si lo creaste
-# core/urls.py
-from usuarios.forms import RegistroForm, ClienteLoginForm
+from usuarios.views import inicio 
+from usuarios.forms import RegistroForm 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),
     path ('servicios/', include('servicios.urls')),
     path('reservas/', include('reservas.urls')),
-    path('servicios/', include('servicios.urls')),
     path('usuarios/', include('usuarios.urls')),  
       
     
     
     path('', include('productos.urls')),
+    # urls.py (Carpeta principal del proyecto)
+    path('', views.inicio, name='index'), 
 
-    path('admin/', admin.site.urls),
-    path('', inicio, name='inicio'),
     path('usuarios/', include('usuarios.urls')),
+    
+
 
     # --- RUTAS DE AUTENTICACIÓN ---
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

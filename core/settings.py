@@ -120,3 +120,5 @@ LOGIN_REDIRECT_URL = '/'  # Te manda a la página principal de la barbería
 # A dónde enviar a los intrusos que no han iniciado sesión
 LOGIN_URL = '/login/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Al final de settings.py
+AUTH_USER_MODEL = 'usuarios.Usuario'
