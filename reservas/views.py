@@ -1,62 +1,53 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Reserva, Calificacion
-from .forms import ReservaForm, ReservaEditarForm, CalificacionForm, CalificacionEditarForm
-from usuarios.models import Barbero 
+from .forms import ReservaForm, ReservaEditarForm, CalificacionForm, CalificacionEditarForm, EditarReservaForm
+from usuarios.models import Barbero
 
-# --- VISTAS DE RESERVAS ---
+# --- VISTAS DE RESERVAS (CLIENTE) ---
 
 def reservas_view(request):
-    promo_elegida = request.session.pop('promocion_seleccionada', None)
-    context = {
-        'promo': promo_elegida,
-        'titulo': 'Reserva el corte que desees'
-    }
-    return render(request, 'reservas/reservas.html', context)
+    if request.method == 'POST':
+        form = ReservaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "¡Cita agendada con éxito!")
+            return redirect('reservas:ver_agenda')
+        return render(request, 'reservas.html', {'form': form})
+    else:
+        form = ReservaForm()
+        return render(request, 'reservas.html', {'form': form})
 
 def crear_reserva(request):
     if request.method == 'POST':
         form = ReservaForm(request.POST)
-        promo_nombre = request.POST.get('promo_oculta') 
-        if form.is_valid():
-            reserva = form.save()
-            mensaje = '¡CITA CONFIRMADA!'
-            if promo_nombre:
-                mensaje += f' Reservaste con la promoción: {promo_nombre}'
-            messages.success(request, mensaje)
-            return render(request, 'reservas/confirmacion_exitosa.html', {'promo': promo_nombre})
-        else:
-            messages.error(request, 'Error al crear la reserva.')
-    
-    form = ReservaForm()
-    return render(request, 'reservas/agregar_reserva.html', {'form': form})
-
-def editar_reserva(request, pk):
-    reserva = get_object_or_404(Reserva, pk=pk)
-    if request.method == 'POST':
-        form = ReservaEditarForm(request.POST, instance=reserva)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Reserva actualizada exitosamente.')
-            return redirect('reservas_view')
+            messages.success(request, "¡Cita agendada con éxito!")
+            return redirect('reservas:ver_agenda')
+        return render(request, 'reservas.html', {'form': form})
     else:
-        form = ReservaEditarForm(instance=reserva)
-    return render(request, 'reservas/editar_reserva.html', {'form': form, 'titulo': 'Editar Reserva'})
+        form = ReservaForm()
+        return render(request, 'reservas.html', {'form': form})
 
-# --- VISTAS DE CALIFICACIÓN (LA PARTE QUE FALLABA) ---
+def cancelar_cita(request, pk):
+    cita = get_object_or_404(Reserva, pk=pk)
+    cita.estado = 'cancelada'
+    cita.save()
+    messages.warning(request, f"La cita de {cita.nombre_cliente} ha sido cancelada.")
+    return redirect('reservas:ver_agenda')
+
+# --- VISTAS DE CALIFICACIÓN ---
 
 def calificacion_view(request):
-    """Esta vista maneja la visualización y el envío de reseñas"""
     if request.method == 'POST':
         form = CalificacionForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, '¡Gracias por calificar nuestro servicio!')
-            return redirect('calificacion_view') 
+            return redirect('reservas:calificacion')
     else:
-        # Aquí se genera el formulario que contiene la lista de barberos
         form = CalificacionForm()
-    
     return render(request, 'calificacion.html', {'form': form})
 
 def editar_calificacion(request, pk):
@@ -66,27 +57,34 @@ def editar_calificacion(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Calificación actualizada.')
-            return redirect('calificacion_view')
+            return redirect('reservas:calificacion')
     else:
         form = CalificacionEditarForm(instance=calificacion)
     return render(request, 'calificacion/editar_calificacion.html', {'form': form})
 
-# Redirigir a la lista de reservas
-    return redirect('reservas_view')
-def lista_reservas(request):
-    # Traemos todas las reservas de la base de datos
-    reservas = Reserva.objects.all().order_by('-fecha_reserva')
-    return render(request, 'reservas/lista_reservas.html', {'reservas': reservas})
+# --- VISTAS DEL ADMINISTRADOR (sin cambios) ---
 
-def cancelar_reserva(request, pk):
-    # CB-42: Verificar que la cita exista
+def ver_agenda(request):
+    reservas = Reserva.objects.all().order_by('-fecha_creacion')
+    return render(request, 'reservas/ver_agenda.html', {'reservas': reservas})
+
+def cambiar_estado_reserva(request, pk, nuevo_estado):
     reserva = get_object_or_404(Reserva, pk=pk)
-    
-    # CB-43: Cambiar el estado de "reservada" a "cancelada"
-    reserva.estado = 'cancelada'
-    reserva.save()
-    
-    # CB-44: Mostrar mensaje de confirmación
-    messages.success(request, f'La cita de {reserva.nombre_cliente} ha sido cancelada correctamente.')
-    
-    
+    estados_validos = ['reservada', 'confirmada', 'cancelada']
+    if nuevo_estado in estados_validos:
+        reserva.estado = nuevo_estado
+        reserva.save()
+        messages.info(request, f"Estado de la cita actualizado a {nuevo_estado}.")
+    return redirect('reservas:ver_agenda')
+
+def reprogramar_cita(request, pk):
+    cita = get_object_or_404(Reserva, pk=pk)
+    if request.method == 'POST':
+        form = EditarReservaForm(request.POST, instance=cita)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cita reprogramada correctamente.")
+            return redirect('reservas:ver_agenda')
+    else:
+        form = EditarReservaForm(instance=cita)
+    return render(request, 'reservas/reprogramar.html', {'form': form, 'cita': cita})

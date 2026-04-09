@@ -2,15 +2,17 @@ from django import forms
 from .models import Reserva, Calificacion
 from usuarios.models import Barbero
 
+# reservas/forms.py
 class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        fields = '__all__'
-
-class ReservaEditarForm(forms.ModelForm):
+        fields = ['nombre_cliente', 'correo_cliente', 'telefono_cliente', 'fecha_reserva', 'servicio']
+        
+class EditarReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        fields = '__all__'
+        # Usamos telefono_cliente y correo_cliente para que Django no lance FieldError
+        fields = ['nombre_cliente', 'correo_cliente', 'telefono_cliente', 'fecha_reserva', 'estado']
 
 class CalificacionForm(forms.ModelForm):
     barbero_a_calificar = forms.ModelChoiceField(
@@ -26,11 +28,14 @@ class CalificacionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Esto imprimirá el conteo en tu terminal de VS Code
-        print(f"DEBUG: Barberos encontrados en el formulario: {Barbero.objects.count()}")
+        # Esto te ayudará a ver en la terminal si los barberos cargan bien
+        print(f"DEBUG: Barberos encontrados: {Barbero.objects.count()}")
 
-# ESTA ES LA CLASE QUE FALTA Y ESTÁ ROMPIENDO TU PROYECTO
 class CalificacionEditarForm(forms.ModelForm):
     class Meta:
         model = Calificacion
         fields = '__all__'
+
+# Agregamos esta por si tus views la llaman con este nombre
+class ReservaEditarForm(EditarReservaForm):
+    pass
