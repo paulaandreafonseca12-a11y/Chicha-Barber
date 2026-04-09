@@ -85,7 +85,12 @@ def promocion_views(request):
     return render(request, 'promocion.html', context)
 
 def seleccionar_promocion(request, nombre_promo):
-    # Guardamos en la sesión el nombre que viene del botón
+    
+    # Guardamos la promoción en la sesión
     request.session['promocion_seleccionada'] = nombre_promo
-    return redirect('reservas:reservas')
-
+    
+    # Mandamos un mensaje de éxito opcional para la página de reservas
+    messages.success(request, f"✅ Has seleccionado la promoción: {nombre_promo}")
+    
+    # Redirigimos a la página de reservas
+    return redirect('reservas:reservas') # Asegúrate que este name sea el correcto
