@@ -75,14 +75,12 @@ def editar_servicios(request, pk):
     return render(request, 'servicios/agregar_servicio.html', context)
 
                                                                      
-# Create your views here.
 def promocion(request):
-    Promociones = Promocion.objects.all()
-    
+    promociones = Promocion.objects.all()
     context = {
-        'titulo' : 'Promociones'
+        'titulo': 'Promociones',
+        'promociones': promociones  # ← agregado
     }
-    # Asegúrate de que apunte a la subcarpeta servicios
     return render(request, 'promocion.html', context)
 
 def seleccionar_promocion(request, nombre_promo):
@@ -95,6 +93,7 @@ def seleccionar_promocion(request, nombre_promo):
     
     # Redirigimos a la página de reservas
     return redirect('reservas:reservas') # Asegúrate que este name sea el correcto
+
 def crear_promocion(request):
     if request.method == 'POST':
         form = PromocionForm(request.POST)
