@@ -14,18 +14,23 @@ class ProductoForm(forms.ModelForm):
         fields = ['nombre', 'descripcion', 'precio_venta', 'precio_compra', 'stock']
 
 
+
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = ['nombre_cliente', 'correo', 'telefono', 'direccion', 'metodo_pago', 'total']
-
+        fields = ['fecha_compra'] # Añade aquí los otros campos que necesites
+        widgets = {
+            'fecha_compra': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        }
 
 class DetalleCompraForm(forms.ModelForm):
     class Meta:
         model = DetalleCompra
-        fields = ['producto', 'compra', 'cantidad', 'subtotal']
-
-
+        fields = ['producto', 'cantidad']
+        widgets = {
+            'producto': forms.Select(attrs={'class': 'form-select'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+        }
 # 🔥 FORMULARIO DE PAGO
 class PagoForm(forms.Form):
     nombre = forms.CharField()

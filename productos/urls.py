@@ -18,18 +18,21 @@ Including another URLconf
 1. Import the include() function: from django.urls import include, path
 2. Add a URL to urlpatterns: path('blog/', include('blog.urls'))
 """
-
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from . import views
 
+app_name = 'productos'
 
 urlpatterns = [
-    path ('productos/', views.productos, name='productos'),
-    path ('productos/carrito/', views.carrito, name='carrito'),
-    path ('productos/pago/', views.pago, name='pago'),
+    # Rutas para el Cliente
+    path('', views.productos_galeria, name='productos_galeria'),
+    path('carrito/', views.carrito, name='carrito'),
+    path('pago/', views.pago, name='pago'),
+    path('procesar_compra/', views.procesar_pago_cliente, name='procesar_pago_cliente'),
 
-    path('procesar_compra/', views.productos, name='procesar_compra'),
-
-   # path('crear-producto/', views.crear_producto, name='crear_producto'),
+    # Rutas del Administrador (sin cambios)
+    path('gestion/', views.lista_productos_admin, name='lista_productos_admin'),
+    path('registrar-compra/', views.registrar_compra, name='registrar_compra'),
+    path('crear-nuevo/', views.crear_nuevo_producto, name='crear_nuevo_producto'),
+    path('historial/', views.historial_compras, name='historial_compras'),
 ]
