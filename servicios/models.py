@@ -2,7 +2,6 @@ from django.db import models # type: ignore
 
 from django.contrib.auth.models import AbstractUser # type: ignore
 
-
 class Servicios(models.Model):
     
     codigo_servicios = models.CharField(max_length=8, unique=True, verbose_name='Código de servicios')
@@ -10,7 +9,6 @@ class Servicios(models.Model):
     precio = models.CharField(max_length=10, verbose_name='Precio')
     duracion = models.CharField(max_length=20, verbose_name='Duración')
     descripcion = models.TextField(verbose_name='Descripción')
-    cita_servicios = models.ForeignKey('servicios', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='cita_servicios')
 
     class Meta:
         verbose_name = 'Servicio' #singular 
@@ -19,13 +17,11 @@ class Servicios(models.Model):
     def __str__(self):
         return self.nombre
     
-class promocion(models.Model):
-    codigo_promocion = models.CharField(max_length=8, unique=True, verbose_name='Código de promoción')
+class Promocion(models.Model):
     nombre = models.CharField(max_length=150, verbose_name='nombre')
-    descuento = models.CharField(max_length=10, verbose_name='Descuento')
-    duracion = models.CharField(max_length=20, verbose_name='Duración')
-    descripcion = models.TextField(verbose_name='Descripción')
-    cita_promocion = models.ForeignKey('promocion', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='cita_promocion')
+    descuento = models.CharField(max_length=100, verbose_name='Descuento')
+    duracion = models.CharField(max_length=30, verbose_name='Duración')
+    descripcion = models.TextField(verbose_name='Descripcion')
 
     class Meta:
         verbose_name = 'Promoción' #singular 
@@ -34,3 +30,9 @@ class promocion(models.Model):
     def __str__(self):
         return self.nombre
 
+class CitaServicios(models.Model):
+    codigo_cita = models.CharField(max_length=8, unique=True, verbose_name='Código de cita')
+    cantidad=models.CharField(max_length=10, verbose_name='Cantidad')
+    subtotal=models.CharField(max_length=10, verbose_name='Subtotal')
+    servicio=models.ForeignKey(Servicios, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='servicio')
+    # cita= models.ForeignKey('cita', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='cita')
