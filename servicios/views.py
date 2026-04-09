@@ -105,6 +105,7 @@ def crear_promocion(request):
             
             # 4. Ahora sí guardamos en la base de datos
             form.save()
+            messages.success(request, "Promoción creada exitosamente.")
             return redirect('promocion')
         else:
             messages.error(request, "Error al crear la promoción. Revisa los campos marcados en rojo.")
