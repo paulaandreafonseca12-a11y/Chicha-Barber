@@ -1,11 +1,21 @@
 {% extends "base-clientes.html" %}
 {% load static %}
 
-{% block content %}
-<main class="p-4 w-75 m-auto">
-    <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
-        <h2 style="text-align: center; color: #d4af37; margin-bottom: 40px;">Ofertas de la Semana</h2>
 
+{% block content %}
+
+        <main class="p-4 w-75 m-auto">
+       
+           
+            <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
+        
+            <div class="container-fluid py-1">
+                <h1 class="display-5 fw-bold">Nuestras Promociones</h1> 
+            
+                   
+            </div>
+       
+        </div>
         <section class="layout" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
 
             <div class="card" style="width: 18rem;">
@@ -86,7 +96,6 @@
                 </div>
             </div>
         </section>
-    </div>
 </main>
 
 <script>

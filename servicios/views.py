@@ -2,8 +2,10 @@ from django.shortcuts import render # type: ignore
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.contrib import messages # type: ignore
 from .models import *
-from .forms import serviciosForm, serviciosEditarForm
-from django.contrib.auth.decorators import login_required
+from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
+from.models import Servicios, Promocion 
+
+         
 
 def servicios_view(request):
     servicios = Servicios.objects.all()
@@ -29,7 +31,7 @@ def calificacion_views(request):
 
 def crear_servicios(request):
     if request.method == 'POST':
-        form = serviciosForm(request.POST)
+        form = ServiciosForm(request.POST)
         if form.is_valid():
             servicio = form.save(commit=False)
             
@@ -43,7 +45,7 @@ def crear_servicios(request):
         else:
             messages.error(request, "Error al crear el servicio. Revisa los campos marcados en rojo.")
     else:
-        form = serviciosForm()
+        form = ServiciosForm()
     
     context={
         'form': form,
@@ -56,7 +58,7 @@ def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
 
     if request.method == 'POST':
-        form = serviciosEditarForm(request.POST, instance=servicio)
+        form = ServiciosEditarForm(request.POST, instance=servicio)
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {servicio.first_name} actualizados correctamente.")
@@ -64,7 +66,7 @@ def editar_servicios(request, pk):
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
-        form = serviciosEditarForm(instance=servicio)
+        form = ServiciosEditarForm(instance=servicio)
 
     context = {
         'form': form,
@@ -72,12 +74,11 @@ def editar_servicios(request, pk):
     }
     return render(request, 'servicios/agregar_servicio.html', context)
 
-
-
+                                                                     
 # Create your views here.
-
-
-def promocion_views(request):
+def promocion(request):
+    Promociones = Promocion.objects.all()
+    
     context = {
         'titulo' : 'Promociones'
     }
@@ -94,3 +95,48 @@ def seleccionar_promocion(request, nombre_promo):
     
     # Redirigimos a la página de reservas
     return redirect('reservas:reservas') # Asegúrate que este name sea el correcto
+def crear_promocion(request):
+    if request.method == 'POST':
+        form = PromocionForm(request.POST)
+        if form.is_valid():
+            
+            
+            
+            
+            
+            # 4. Ahora sí guardamos en la base de datos
+            form.save()
+            return redirect('promocion')
+        else:
+            messages.error(request, "Error al crear la promoción. Revisa los campos marcados en rojo.")
+    else:
+        form = PromocionForm()
+    
+    context={
+        'form': form,
+        'titulo': 'Crear nueva promoción',
+    }
+    return render(request, 'servicios/agregar_promocion.html', context)
+
+
+def editar_promocion(request, pk):
+    promocion = get_object_or_404(promocion, pk=pk)
+
+    if request.method == 'POST':
+        form = PromocionEditarForm(request.POST, instance=promocion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Datos de {promocion.nombre} actualizados correctamente.")
+            return redirect('servicios:inicio_servicios')
+        else:
+            messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
+    else:
+        form = PromocionEditarForm(instance=promocion)
+
+    context = {
+        'form': form,
+        'titulo': f'Editar a {promocion.nombre}',
+    }
+    return render(request, 'servicios/agregar_promocion.html', context)
+
+    
