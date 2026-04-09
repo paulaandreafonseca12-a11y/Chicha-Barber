@@ -14,14 +14,24 @@ class ProductoForm(forms.ModelForm):
         fields = ['nombre', 'descripcion', 'precio_venta', 'precio_compra', 'stock']
 
 
-
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = ['fecha_compra'] # Añade aquí los otros campos que necesites
+        fields = ['nombre_cliente', 'correo', 'telefono', 'direccion', 'metodo_pago']  # ← sin 'total'
         widgets = {
-            'fecha_compra': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'nombre_cliente': forms.TextInput(attrs={'class': 'form-control'}),
+            'correo': forms.EmailInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'metodo_pago': forms.Select(
+                choices=[
+                    ('persona', 'Pago en persona'),
+                    ('contraentrega', 'Pago contraentrega')
+                ],
+                attrs={'class': 'form-select'}
+            ),
         }
+
 
 class DetalleCompraForm(forms.ModelForm):
     class Meta:
@@ -31,13 +41,13 @@ class DetalleCompraForm(forms.ModelForm):
             'producto': forms.Select(attrs={'class': 'form-select'}),
             'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
         }
-# 🔥 FORMULARIO DE PAGO
+
+
 class PagoForm(forms.Form):
     nombre = forms.CharField()
     correo = forms.EmailField()
     telefono = forms.CharField()
     direccion = forms.CharField()
-
     metodo_pago = forms.ChoiceField(
         choices=[
             ('persona', 'Pago en persona'),

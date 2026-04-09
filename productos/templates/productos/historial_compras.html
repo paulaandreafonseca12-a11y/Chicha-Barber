@@ -27,14 +27,14 @@
                     {% for compra in compras %}
                     <tr class="align-middle">
                         <td class="ps-4">
-                            <span class="badge bg-secondary">#{{ compra.id }}</span>
+                            <span class="badge bg-secondary">#{{ compra.codigo_compra }}</span>
                         </td>
                         <td class="fw-bold">
                             <i class="bi bi-calendar-event me-2 text-info"></i>
                             {{ compra.fecha_compra|date:"d/m/Y" }}
                         </td>
                         <td class="text-center">
-                            <a href="{% url 'productos:detalle_compra' compra.id %}" class="btn btn-sm btn-info px-3 fw-bold shadow-sm">
+                            <a href="{% url 'productos:detalle_compra' compra.codigo_compra %}" class="btn btn-sm btn-info px-3 fw-bold shadow-sm">
                                 <i class="bi bi-cursor-fill me-1"></i> Seleccionar
                             </a>
                         </td>

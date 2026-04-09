@@ -24,15 +24,18 @@ from . import views
 app_name = 'productos'
 
 urlpatterns = [
-    # Rutas para el Cliente
+    # Rutas Cliente
     path('', views.productos_galeria, name='productos_galeria'),
     path('carrito/', views.carrito, name='carrito'),
     path('pago/', views.pago, name='pago'),
     path('procesar_compra/', views.procesar_pago_cliente, name='procesar_pago_cliente'),
 
-    # Rutas del Administrador (sin cambios)
+    # Rutas Admin
     path('gestion/', views.lista_productos_admin, name='lista_productos_admin'),
     path('registrar-compra/', views.registrar_compra, name='registrar_compra'),
     path('crear-nuevo/', views.crear_nuevo_producto, name='crear_nuevo_producto'),
     path('historial/', views.historial_compras, name='historial_compras'),
+    path('historial/<int:pk>/', views.detalle_compra, name='detalle_compra'),       # ← nuevo
+    path('producto/editar/<int:pk>/', views.editar_producto, name='editar_producto'), # ← nuevo
+    path('producto/eliminar/<int:pk>/', views.eliminar_producto, name='eliminar_producto'), # ← nuevo
 ]

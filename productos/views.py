@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Compra, Producto
 from django.contrib import messages
 from .forms import CompraForm, DetalleCompraForm, ProductoForm
@@ -20,7 +20,7 @@ def carrito(request):
 def pago(request):
     return render(request, 'productos/pago.html')
 
-# --- VISTAS DEL ADMINISTRADOR (sin cambios) ---
+# --- VISTAS DEL ADMINISTRADOR ---
 
 def lista_productos_admin(request):
     productos_listado = Producto.objects.all()
@@ -41,9 +41,54 @@ def registrar_compra(request):
             detalle = form_detalle.save(commit=False)
             detalle.compra = nueva_compra
             detalle.save()
-            messages.success(request, "✅ Compra registrada y total calculado exitosamente.")
-            return redirect('productos:lista_productos_admin')
+            messages.success(request, "✅ Compra registrada exitosamente.")
+            return redirect('productos:historial_compras')  # ← redirige al historial
+        else:
+            # Muestra los errores
+            messages.error(request, f"❌ Errores compra: {form_compra.errors}")
+            messages.error(request, f"❌ Errores detalle: {form_detalle.errors}")
     return redirect('productos:lista_productos_admin')
+
+def historial_compras(request):
+    compras_registradas = Compra.objects.all().order_by('-fecha_compra')
+    return render(request, 'productos/historial_compras.html', {
+        'compras': compras_registradas
+    })
+
+def detalle_compra(request, pk):
+    compra = get_object_or_404(Compra, codigo_compra=pk)
+    detalles = compra.detalles.all()
+    return render(request, 'productos/detalle_compra.html', {
+        'compra': compra,
+        'detalles': detalles
+    })
+
+def editar_producto(request, pk):
+    producto = get_object_or_404(Producto, codigo_producto=pk)
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, instance=producto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Producto actualizado correctamente.")
+            return redirect('productos:lista_productos_admin')
+        else:
+            messages.error(request, "❌ Error al actualizar. Revisa los campos.")
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request, 'productos/editar_producto.html', {
+        'form': form,
+        'producto': producto
+    })
+
+def eliminar_producto(request, pk):
+    producto = get_object_or_404(Producto, codigo_producto=pk)
+    if request.method == 'POST':
+        producto.delete()
+        messages.success(request, "✅ Producto eliminado correctamente.")
+        return redirect('productos:lista_productos_admin')
+    return render(request, 'productos/confirmar_eliminar.html', {
+        'producto': producto
+    })
 
 def procesar_pago_cliente(request):
     if request.method == 'POST':
@@ -70,14 +115,8 @@ def crear_nuevo_producto(request):
         form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, "Producto creado exitosamente")
+            messages.success(request, "✅ Producto creado exitosamente")
             return redirect('productos:lista_productos_admin')
     else:
         form = ProductoForm()
-    return render(request, 'crear_producto.html', {'form': form})
-
-def historial_compras(request):
-    compras_registradas = Compra.objects.all().order_by('-fecha_compra')
-    return render(request, 'productos/historial_compras.html', {
-        'compras': compras_registradas
-    })
+    return render(request, 'productos/crear_producto.html', {'form': form})
