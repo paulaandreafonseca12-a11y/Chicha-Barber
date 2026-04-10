@@ -2,14 +2,29 @@
 {% load static %}
 
 
-{% block content %}
-<main class="p-4 w-75 m-auto">
-    <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
-        <h2 style="text-align: center; color: #d4af37; margin-bottom: 40px;">Ofertas de la Semana</h2>
 
+{% block content %}
+
+        <main class="p-4 w-75 m-auto">
+       
+           
+            <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-75">
+        
+            <div class="container-fluid py-1">
+                <h1 class="display-5 fw-bold">Nuestras Promociones</h1> 
+            
+                   
+            </div>
+       
+        </div>
         <section class="layout" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
 
-<<<<<<<<< Temporary merge branch 1
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo Especial</h5>
+                    <p class="card-text">Por un Corte + Barba, el cliente se lleva un aceite de barba pequeño o un bálsamo con un 15% de descuento.</p>
+                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
      </div>
         {% comment %} Tarjetas {% endcomment %}
         <section class="layout d-flex flex-wrap justify-content-around">
@@ -39,14 +54,6 @@
                 <div class="promo-price">
                     <span class="old-price">$25.00</span>
                     <span class="new-price">$20.00</span>
-=========
-            <div class="card" style="width: 18rem;">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Promo Especial</h5>
-                    <p class="card-text">Por un Corte + Barba, el cliente se lleva un aceite de barba pequeño o un bálsamo con un 15% de descuento.</p>
-                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
->>>>>>>>> Temporary merge branch 2
                 </div>
             </div>
 
@@ -94,9 +101,5 @@
                     <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
                 </div>
             </div>
-             
-            
-
-        </section>
 </main>
 {% endblock %}
