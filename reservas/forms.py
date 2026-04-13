@@ -16,9 +16,8 @@ class ReservaForm(forms.ModelForm):
         # Quitamos fecha_reserva y servicio de la validación obligatoria del form
         # porque los construiremos manualmente en la vista.
         exclude = ['fecha_reserva', 'servicio']
-class ReservaEditarForm(ModelForm):
-# reservas/forms.py
-class ReservaForm(forms.ModelForm):
+
+class EditarReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
         fields = ['nombre_cliente', 'correo_cliente', 'telefono_cliente', 'fecha_reserva', 'servicio']
