@@ -15,18 +15,18 @@
     <div class="d-flex min-vh-100">
         {% include "partials/aside.html" %}
         <div class="d-flex flex-column flex-grow-1 w-100">
-            {% include "partials/header.html" %}
             <main class="container-fluid py-4 overflow-auto">
                 {% block content %}
                 {% endblock content %}
             </main>
+    {% include 'partials/footer.html' %}
+
         </div>
     </div>
     
        
   
   
-    {% include 'partials/footer.html' %}
 
     {% block scripts %}{% endblock scripts %}
 

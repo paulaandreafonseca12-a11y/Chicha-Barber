@@ -33,11 +33,11 @@
                         </td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-outline-info me-1"
-                                onclick="window.location='{% url 'productos:editar_producto' producto.codigo_producto %}'">
+                                onclick="window.location='{% url 'editar_producto' producto.codigo_producto %}'">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button class="btn btn-sm btn-outline-danger"
-                                onclick="window.location='{% url 'productos:eliminar_producto' producto.codigo_producto %}'">
+                                onclick="window.location='{% url 'eliminar_producto' producto.codigo_producto %}'">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
@@ -66,7 +66,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
-            <form method="POST" action="{% url 'productos:registrar_compra' %}">
+            <form method="POST" action="{% url 'registrar_compra' %}">
                 {% csrf_token %}
                 <div class="modal-body">
 

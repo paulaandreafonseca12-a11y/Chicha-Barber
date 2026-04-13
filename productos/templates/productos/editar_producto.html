@@ -7,7 +7,7 @@
         <h2 class="text-warning fw-bold">
             <i class="bi bi-pencil me-2"></i>Editar Producto: {{ producto.nombre }}
         </h2>
-        <a href="{% url 'productos:lista_productos_admin' %}" class="btn btn-outline-warning">
+        <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-warning">
             <i class="bi bi-arrow-left me-2"></i>Volver al Inventario
         </a>
     </div>
@@ -29,7 +29,7 @@
                     <button type="submit" class="btn btn-warning fw-bold px-4">
                         <i class="bi bi-save me-2"></i>Guardar Cambios
                     </button>
-                    <a href="{% url 'productos:lista_productos_admin' %}" class="btn btn-outline-light">
+                    <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-light">
                         Cancelar
                     </a>
                 </div>
