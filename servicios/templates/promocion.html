@@ -16,27 +16,110 @@
                    
             </div>
        
-            
-     </div>
-        {% comment %} Tarjetas {% endcomment %}
-        <section class="layout d-flex flex-wrap justify-content-around">
+        </div>
+        <section class="layout" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
 
-             {% for promocion in promociones %}
-            <div class="card mb-4" style="width: 18rem; ">
-                <img src="{% static 'img/promocion/promocion_1.jpg' %}" class="img-thumbnail" alt="...">
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">{{ promocion.nombre }}</h5>
-                    <p class="card-text">{{ promocion.descripcion }}</p>    
-                    <p class="card-text">Precio: ${{ promocion.precio }}</p>
-                    <a class="btn btn-primary" href="#" role="button">Seleccionar</a>
+                    <h5 class="card-title">Promo Especial</h5>
+                    <p class="card-text">Por un Corte + Barba, el cliente se lleva un aceite de barba pequeño o un bálsamo con un 15% de descuento.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Especial' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
                 </div>
             </div>
-            
-           
-               
-            {% endfor %}
-            
 
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo Fin de Semana</h5>
+                    <p class="card-text">Disfruta de un corte de cabello y un afeitado con un 20% de descuento en todos nuestros servicios.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Fin de Semana' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
             </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo mensual</h5>
+                    <p class="card-text">Terapia Capilar Anticaída: Un masaje capilar profundo utilizando un tónico especializado y alta frecuencia.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Mensual' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Look Impecable 24/7"</h5>
+                    <p class="card-text">Por tu corte, llévate la cera con un 20% de descuento para que te peines igual en casa.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Look Impecable' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Barba de Acero"</h5>
+                    <p class="card-text">Realízate el servicio de barba y lleva el aceite protector por solo un precio especial de combo.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Barba de Acero' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Caballero Moderno"</h5>
+                    <p class="card-text">El kit completo tiene un 10% de ahorro comparado con los precios individuales. Incluye bolsa de regalo.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Caballero Moderno' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
+            </div>
+        </section>
 </main>
-{% endblock %}
+
+<script>
+function gestionarSeleccion(event, urlOriginal) {
+    // Verificamos si el usuario está logueado (inyectado por Django)
+    var estaAutenticado = {{ user.is_authenticated|yesno:"true,false" }};
+    
+    if (!estaAutenticado) {
+        // 1. Evitamos que se vaya a la URL original de una vez
+        event.preventDefault();
+        
+        // 2. Mostramos el mensaje de advertencia
+        alert("🎁 ¡Atención! Las promociones de Chicha Barber son exclusivas para clientes registrados. Dale a aceptar para ir al registro.");
+        
+        // 3. Al darle "Aceptar", lo mandamos manualmente a la URL de registro
+        window.location.href = "{% url 'registro' %}";
+        
+        return false;
+    }
+    
+    // Si está autenticado, dejamos que el enlace (urlOriginal) funcione normal
+    return true;
+}
+</script>
+
+{% endblock content %}

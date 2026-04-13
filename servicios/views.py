@@ -75,15 +75,24 @@ def editar_servicios(request, pk):
     return render(request, 'servicios/agregar_servicio.html', context)
 
                                                                      
-# Create your views here.
 def promocion(request):
-    Promociones = Promocion.objects.all()
-    
+    promociones = Promocion.objects.all()
     context = {
-        'titulo': 'Nuestras Promociones',
-        'promociones': Promociones
+        'titulo': 'Promociones',
+        'promociones': promociones  # ← agregado
     }
     return render(request, 'promocion.html', context)
+
+def seleccionar_promocion(request, nombre_promo):
+    
+    # Guardamos la promoción en la sesión
+    request.session['promocion_seleccionada'] = nombre_promo
+    
+    # Mandamos un mensaje de éxito opcional para la página de reservas
+    messages.success(request, f"✅ Has seleccionado la promoción: {nombre_promo}")
+    
+    # Redirigimos a la página de reservas
+    return redirect('reservas:reservas') # Asegúrate que este name sea el correcto
 
 def crear_promocion(request):
     if request.method == 'POST':

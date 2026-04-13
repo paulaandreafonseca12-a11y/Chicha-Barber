@@ -1,10 +1,4 @@
-/* 1. Quitamos los márgenes que el navegador pone por defecto */
-html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100%;
-    height: 100%;
-}
+
 
 /* 2. Configuramos el fondo en la clase 'back' que ya tienes en el body */
 
@@ -177,22 +171,111 @@ justify-content:space-between;
   --slot-bg:      rgba(41, 197, 246, 0.07);
   --slot-hover:   rgba(41, 197, 246, 0.16);
   }
-/* estilo de registro */
-.btn-registrar {
-    background-color: #48cae4; /* El color azul cian */
-    color: #000000;            /* Texto negro para mejor contraste */
-    border: none;              /* Quitar bordes si los tiene */
-    transition: background-color 0.3s ease; /* Para que el cambio al pasar el mouse sea suave */
+
+  /* ============================================================
+   DISEÑO REGISTRO - CHICHA BARBER
+   ============================================================ */
+
+.back .registro-card {
+    background-color: #000000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 15px !important;
+    padding: 1.5rem 2rem !important;
+    width: 100%;
+    max-width: 400px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg-dark);
-  min-height: 100vh;
-  overflow-x: hidden;
+/* 2. Contenedores de Input (40px de alto) */
+.back .input-group {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.8rem !important;
+    height: 40px !important; 
+    display: flex;
+    align-items: center;
+    position: relative; /* Base necesaria para posicionar el ojo */
+    overflow: hidden;
 }
+
+.back .form-control, 
+.back input {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+    height: 100% !important;
+    font-size: 0.85rem !important;
+    padding: 0 45px 0 10px !important; /* Espacio a la derecha para que el texto no tape el ojo */
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Forzar que el autocompletado sea Negro y no Blanco */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important; /* Crea un fondo negro interno */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* 4. EL OJITO (Posicionamiento Absoluto) */
+.back .toggle-password {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    position: absolute; /* Se clava a la derecha del contenedor */
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100; /* Asegura que esté por encima de cualquier cuadro blanco */
+    cursor: pointer;
+    padding: 0 !important;
+    font-size: 1rem !important;
+    display: flex;
+    align-items: center;
+}
+
+.back .toggle-password:hover {
+    color: #00bcd4 !important;
+}
+
+/* 5. Iconos de la izquierda y Labels */
+.back .input-group-text {
+    background-color: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    padding-left: 15px !important;
+}
+
+.back .form-label {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* 6. Botón Registrarse */
+.back .btn-registrar {
+    background-color: #00bcd4 !important;
+    color: #000000 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* 7. Limpieza de iconos nativos del navegador */
+input::-ms-reveal, 
+input::-ms-clear { 
+    display: none !important; 
+}
+
 
 /* ---------- background photo ---------- */
 .bg-photo {
@@ -386,3 +469,20 @@ body {
 .custom-btn:hover {
     background-color: #ffffff; /* Brilla un poco más al pasar el mouse */
 } 
+
+.btn-seleccionar {
+    display: inline-block;
+    background-color: #00d1ff; /* El azul de tu barbería */
+    color: black;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-seleccionar:hover {
+    background-color: #008fb3;
+    transform: scale(1.05);
+}
