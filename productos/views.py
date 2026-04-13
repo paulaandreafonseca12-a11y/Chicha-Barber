@@ -11,12 +11,25 @@ def productos_galeria(request):
         'productos': productos
     })
 
+from .models import Compra, Producto, DetalleCompra, Pago
+from .forms import ProductoForm
+
+
+# 🔹 LISTAR PRODUCTOS
+def productos(request):
+    productos = Producto.objects.all()
+    return render(request, 'Productos.html', {'productos': productos})
+
+
+# 🔹 CARRITO
 def carrito(request):
     carrito_items = request.session.get('carrito', {})
     return render(request, 'productos/carrito.html', {
         'carrito': carrito_items
     })
 
+
+# 🔹 PAGO
 def pago(request):
     return render(request, 'productos/pago.html')
 
