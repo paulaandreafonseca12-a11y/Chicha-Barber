@@ -50,6 +50,57 @@
             {% endfor %}
             
 
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo mensual</h5>
+                    <p class="card-text">Terapia Capilar Anticaída: Un masaje capilar profundo utilizando un tónico especializado y alta frecuencia.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Mensual' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Look Impecable 24/7"</h5>
+                    <p class="card-text">Por tu corte, llévate la cera con un 20% de descuento para que te peines igual en casa.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Look Impecable' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Barba de Acero"</h5>
+                    <p class="card-text">Realízate el servicio de barba y lleva el aceite protector por solo un precio especial de combo.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Barba de Acero' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">"Caballero Moderno"</h5>
+                    <p class="card-text">El kit completo tiene un 10% de ahorro comparado con los precios individuales. Incluye bolsa de regalo.</p>
+                    <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Caballero Moderno' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
             </div>
         </section>
 </main>
