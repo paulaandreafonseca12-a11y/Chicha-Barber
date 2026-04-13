@@ -33,4 +33,6 @@ class Calificacion(models.Model):
         return f"Calificación de {self.nombre_cliente} para {self.servicio_calificado}: {self.calificacion} estrellas"
     
     
+    
+    
 
