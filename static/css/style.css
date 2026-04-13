@@ -108,15 +108,7 @@ color:#c59d5f;
 font-weight:bold;
 }
 
-.card{
-/* height:100%; causa error en las cards   */
-border-radius:10px;
-transition:0.3s;
-}
 
-.card:hover{
-transform:scale(1.05);
-}
 
 .card-body{
 display:flex;

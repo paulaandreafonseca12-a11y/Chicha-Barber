@@ -60,19 +60,32 @@
         </div>
 
         <div class="accordion-item bg-dark border-0 mt-2">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProductos">
-                    <i class="bi bi-bag-check me-2"></i> Productos
-                </button>
-            </h2>
-            <div id="collapseProductos" class="accordion-collapse collapse {% if 'productos' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
-                <div class="accordion-body p-0">
-                    <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Inventario</a>
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">Agregar Producto</a>
-                    </div>
-                </div>
+            <div class="accordion-item bg-dark border-0 mt-2">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" 
+            type="button" data-bs-toggle="collapse" data-bs-target="#collapseProductos">
+            <i class="bi bi-bag-check me-2"></i> Productos
+        </button>
+    </h2>
+
+    <div id="collapseProductos" class="accordion-collapse collapse {% if 'productos' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+        <div class="accordion-body p-0">
+            <div class="list-group list-group-flush">
+
+                <a href="{% url 'lista_productos' %}" 
+                   class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                    <i class="bi bi-box-seam me-2"></i> Inventario
+                </a>
+
+                <a href="{% url 'crear_producto' %}" 
+                   class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                    <i class="bi bi-plus-circle me-2"></i> Agregar Producto
+                </a>
+
             </div>
+        </div>
+    </div>
+</div>
         </div>
 
         <div class="accordion-item bg-dark border-0 mt-2">
