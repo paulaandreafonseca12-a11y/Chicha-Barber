@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Stock(models.Model):
     codigo = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
@@ -9,7 +8,6 @@ class Stock(models.Model):
 
     def __str__(self):
         return f"{self.nombre} - Stock: {self.cantidad}"
-
 
 class Producto(models.Model):
     codigo_producto = models.AutoField(primary_key=True)
@@ -43,49 +41,30 @@ class Producto(models.Model):
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"
 
-
-class Compra(models.Model):
+class Compra(models.Model):  # En realidad es una Venta al cliente
     codigo_compra = models.AutoField(primary_key=True)
     nombre_cliente = models.CharField(max_length=100)
     correo = models.EmailField()
     telefono = models.CharField(max_length=20)
     direccion = models.CharField(max_length=255)
     metodo_pago = models.CharField(max_length=20)
-
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    fecha = models.DateTimeField(auto_now_add=True)
-
+    total = models.DecimalField(max_digits=10, decimal_places=2)    
     def __str__(self):
-        return f"{self.nombre_cliente} - Compra {self.codigo_compra}"
-
+        return f"Venta #{self.codigo_compra} - {self.nombre_cliente}"
 
 class DetalleCompra(models.Model):
     codigo_detalle = models.AutoField(primary_key=True)
-
-    producto = models.ForeignKey(
-        Producto,
-        on_delete=models.CASCADE
-    )
-
-    compra = models.ForeignKey(
-        Compra,
-        on_delete=models.CASCADE,
-        related_name="detalles"
-    )
-
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name="detalles")
     cantidad = models.IntegerField()
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
     def __str__(self):
-        return f"{self.producto.codigo} x {self.cantidad}"
+        return f"Detalle {self.codigo_detalle}"
 
 
 class Pago(models.Model):
-    compra = models.ForeignKey(
-        Compra,
-        on_delete=models.CASCADE,
-        related_name="pagos"
-    )
+    compra = models.ForeignKey('Compra', on_delete=models.CASCADE)
 
     METODOS_PAGO = [
         ('persona', 'Pago en persona'),
@@ -96,10 +75,9 @@ class Pago(models.Model):
     correo = models.EmailField()
     telefono = models.CharField(max_length=20)
     direccion = models.CharField(max_length=255)
-
     metodo_pago = models.CharField(max_length=20, choices=METODOS_PAGO)
 
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Pago de {self.nombre} - Compra {self.compra.codigo_compra}"
+        return f"Pago de {self.nombre}"

@@ -42,4 +42,3 @@ def crear_promocion(request):
 
 
 
-# Create your views here.

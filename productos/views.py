@@ -1,7 +1,15 @@
-import json
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Compra, Producto
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
+from .forms import CompraForm, DetalleCompraForm, ProductoForm
+
+# --- VISTAS DE CLIENTES ---
+
+def productos_galeria(request):
+    productos = Producto.objects.all()
+    return render(request, 'productos/productos_galeria.html', {
+        'productos': productos
+    })
 
 from .models import Compra, Producto, DetalleCompra, Pago
 from .forms import ProductoForm
@@ -15,20 +23,44 @@ def productos(request):
 
 # 🔹 CARRITO
 def carrito(request):
-    return render(request, 'Carrito.html')
+    carrito_items = request.session.get('carrito', {})
+    return render(request, 'productos/carrito.html', {
+        'carrito': carrito_items
+    })
 
 
 # 🔹 PAGO
 def pago(request):
-    return render(request, 'pago.html')
+    return render(request, 'productos/pago.html')
 
-def lista_productos(request):
-    productos = Producto.objects.all()
-    return render(request, 'admin/productos/lista.html', {'productos': productos})
+# --- VISTAS DEL ADMINISTRADOR ---
 
-# 🔥 PROCESAR COMPRA (VERSIÓN PRO)
-def procesar_compra(request):
+def lista_productos_admin(request):
+    productos_listado = Producto.objects.all()
+    form_compra = CompraForm()
+    form_detalle = DetalleCompraForm()
+    return render(request, 'productos/productos_admin.html', {
+        'productos': productos_listado,
+        'form_compra': form_compra,
+        'form_detalle': form_detalle
+    })
+
+def registrar_compra(request):
     if request.method == 'POST':
+        form_compra = CompraForm(request.POST)
+        form_detalle = DetalleCompraForm(request.POST)
+        if form_compra.is_valid() and form_detalle.is_valid():
+            nueva_compra = form_compra.save()
+            detalle = form_detalle.save(commit=False)
+            detalle.compra = nueva_compra
+            detalle.save()
+            messages.success(request, "✅ Compra registrada exitosamente.")
+            return redirect('productos:historial_compras')  # ← redirige al historial
+        else:
+            # Muestra los errores
+            messages.error(request, f"❌ Errores compra: {form_compra.errors}")
+            messages.error(request, f"❌ Errores detalle: {form_detalle.errors}")
+    return redirect('productos:lista_productos_admin')
 
         try:
             # 📥 Datos del cliente

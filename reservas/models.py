@@ -1,35 +1,36 @@
 from django.db import models
+# Importamos el modelo Barbero de tu aplicación de usuarios
+from usuarios.models import Barbero 
 
-# Create your models here.
 
 class Reserva(models.Model):
-    nombre_cliente = models.CharField(max_length=100)
-    correo = models.EmailField()
-    telefono = models.CharField(max_length=20)
-    fecha_reserva = models.DateTimeField()
-    servicio = models.CharField(max_length=100)
+    nombre_cliente = models.CharField(max_length=100, verbose_name="Nombre del Cliente")
+    correo_cliente = models.EmailField(verbose_name="Correo Electrónico")
+    telefono_cliente = models.CharField(max_length=20, verbose_name="Teléfono")
+    fecha_reserva = models.CharField(max_length=150, verbose_name="Fecha y Hora")
+    servicio = models.CharField(max_length=100, default="Corte de Cabello")
     
-    class Meta:
-        verbose_name = "Reserva"
-        verbose_name_plural = "Reservas"
+    ESTADO_CHOICES = [
+        ('reservada', 'Reservada'),
+        ('confirmada', 'Confirmada'),
+        ('cancelada', 'Cancelada'),
+    ]
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='reservada')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Reserva de {self.nombre_cliente} para {self.servicio} el {self.fecha_reserva}"
+        return f"{self.nombre_cliente} - {self.fecha_reserva}"
     
 class Calificacion(models.Model):
-    nombre_cliente = models.CharField(max_length=100)
-    servicio_calificado = models.CharField(max_length=100)
-    calificacion = models.IntegerField()
-    comentario = models.TextField(blank=True, null=True)
+    # Relación con el barbero que trabaja en Chicha Barber
+    barbero_a_calificar = models.ForeignKey(Barbero, on_delete=models.CASCADE)
+    nombre_cliente = models.CharField(max_length=100, default="Anónimo")
+    calificacion = models.IntegerField() # Escala de 1 a 5
+    resenia = models.TextField(verbose_name="Reseña")
 
     class Meta:
         verbose_name = "Calificación"
         verbose_name_plural = "Calificaciones"
 
     def __str__(self):
-        return f"Calificación de {self.nombre_cliente} para {self.servicio_calificado}: {self.calificacion} estrellas"
-    
-    
-    
-    
-
+        return f"Reseña para {self.barbero_a_calificar.nombre} - {self.calificacion}★"
