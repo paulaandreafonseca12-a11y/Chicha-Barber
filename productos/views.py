@@ -62,101 +62,74 @@ def registrar_compra(request):
             messages.error(request, f"❌ Errores detalle: {form_detalle.errors}")
     return redirect('productos:lista_productos_admin')
 
-        try:
-            # 📥 Datos del cliente
-            nombre = request.POST.get('nombre')
-            correo = request.POST.get('correo')
-            telefono = request.POST.get('telefono')
-            direccion = request.POST.get('direccion')
-            metodo_pago = request.POST.get('pago')
+def historial_compras(request):
+    compras_registradas = Compra.objects.all().order_by('-fecha_compra')
+    return render(request, 'productos/historial_compras.html', {
+        'compras': compras_registradas
+    })
 
-            # 📦 Carrito (JSON)
-            carrito_data = request.POST.get('carrito')
+def detalle_compra(request, pk):
+    compra = get_object_or_404(Compra, codigo_compra=pk)
+    detalles = compra.detalles.all()
+    return render(request, 'productos/detalle_compra.html', {
+        'compra': compra,
+        'detalles': detalles
+    })
 
-            if not carrito_data:
-                messages.error(request, "❌ Carrito vacío")
-                return redirect('productos')
-
-            carrito = json.loads(carrito_data)
-
-            total = 0
-
-            # 🧾 Crear compra
-            compra = Compra.objects.create(
-                nombre_cliente=nombre,
-                correo=correo,
-                telefono=telefono,
-                direccion=direccion,
-                metodo_pago=metodo_pago,
-                total=0
-            )
-
-            # 🔁 Recorrer carrito
-            for item in carrito:
-
-                try:
-                    producto = Producto.objects.get(nombre=item["nombre"])
-                except Producto.DoesNotExist:
-                    messages.error(request, f"❌ Producto no encontrado: {item['nombre']}")
-                    continue
-
-                cantidad = int(item["cantidad"])
-
-                # ⚠️ Validar stock
-                if producto.stock.cantidad < cantidad:
-                    messages.error(request, f"❌ Stock insuficiente para {producto.nombre}")
-                    continue
-
-                subtotal = producto.precio_venta * cantidad
-                total += subtotal
-
-                # 🧾 Guardar detalle
-                DetalleCompra.objects.create(
-                    producto=producto,
-                    compra=compra,
-                    cantidad=cantidad,
-                    subtotal=subtotal
-                )
-
-                # 📉 Actualizar stock
-                producto.stock.cantidad -= cantidad
-                producto.stock.save()
-
-            # 💰 Actualizar total
-            compra.total = total
-            compra.save()
-
-            # 💳 Guardar pago
-            Pago.objects.create(
-                compra=compra,
-                nombre=nombre,
-                correo=correo,
-                telefono=telefono,
-                direccion=direccion,
-                metodo_pago=metodo_pago
-            )
-
-            messages.success(request, "✅ Compra realizada con éxito")
-
-            return redirect('productos')
-
-        except Exception as e:
-            print("ERROR:", e)
-            messages.error(request, "❌ Ocurrió un error al procesar la compra")
-            return redirect('productos')
-
-    return redirect('productos')
-
-
-# 🔹 CREAR PRODUCTO (ADMIN)
-def crear_producto(request):
+def editar_producto(request, pk):
+    producto = get_object_or_404(Producto, codigo_producto=pk)
     if request.method == 'POST':
-        form = ProductoForm(request.POST)
+        form = ProductoForm(request.POST, instance=producto)
         if form.is_valid():
             form.save()
-            messages.success(request, "✅ Producto creado correctamente")
-            return redirect('crear_producto')
+            messages.success(request, "✅ Producto actualizado correctamente.")
+            return redirect('productos:lista_productos_admin')
+        else:
+            messages.error(request, "❌ Error al actualizar. Revisa los campos.")
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request, 'productos/editar_producto.html', {
+        'form': form,
+        'producto': producto
+    })
+
+def eliminar_producto(request, pk):
+    producto = get_object_or_404(Producto, codigo_producto=pk)
+    if request.method == 'POST':
+        producto.delete()
+        messages.success(request, "✅ Producto eliminado correctamente.")
+        return redirect('productos:lista_productos_admin')
+    return render(request, 'productos/confirmar_eliminar.html', {
+        'producto': producto
+    })
+
+def procesar_pago_cliente(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        telefono = request.POST.get('telefono')
+        direccion = request.POST.get('direccion')
+        metodo_pago = request.POST.get('metodo_pago')
+        total = request.POST.get('total')
+        Compra.objects.create(
+            nombre_cliente=nombre,
+            correo=correo,
+            telefono=telefono,
+            direccion=direccion,
+            metodo_pago=metodo_pago,
+            total=total
+        )
+        messages.success(request, "✅ Pago realizado con éxito")
+        return redirect('productos:productos_galeria')
+    return redirect('productos:productos_galeria')
+
+def crear_nuevo_producto(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Producto creado exitosamente")
+            return redirect('productos:lista_productos_admin')
     else:
         form = ProductoForm()
-
-    return render(request, 'crear_producto.html', {'form': form})
+    return render(request, 'productos/crear_producto.html', {'form': form})
