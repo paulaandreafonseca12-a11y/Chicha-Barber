@@ -9,6 +9,7 @@ class Servicios(models.Model):
     precio = models.CharField(max_length=10, verbose_name='Precio')
     duracion = models.CharField(max_length=20, verbose_name='Duración')
     descripcion = models.TextField(verbose_name='Descripción')
+    imagen = models.ImageField(upload_to='servicios/', null=True, blank=True, verbose_name='Imagen del servicio')
 
     class Meta:
         verbose_name = 'Servicio' #singular 
@@ -31,6 +32,7 @@ class Promocion(models.Model):
         return self.nombre
 
 class CitaServicios(models.Model):
+    
     codigo_cita = models.CharField(max_length=8, unique=True, verbose_name='Código de cita')
     cantidad=models.CharField(max_length=10, verbose_name='Cantidad')
     subtotal=models.CharField(max_length=10, verbose_name='Subtotal')

@@ -55,12 +55,12 @@ def registrar_compra(request):
             detalle.compra = nueva_compra
             detalle.save()
             messages.success(request, "✅ Compra registrada exitosamente.")
-            return redirect('productos:historial_compras')  # ← redirige al historial
+            return redirect('historial_compras')  # ← redirige al historial
         else:
             # Muestra los errores
             messages.error(request, f"❌ Errores compra: {form_compra.errors}")
             messages.error(request, f"❌ Errores detalle: {form_detalle.errors}")
-    return redirect('productos:lista_productos_admin')
+    return redirect('lista_productos_admin')
 
 def historial_compras(request):
     compras_registradas = Compra.objects.all().order_by('-fecha_compra')
@@ -83,7 +83,7 @@ def editar_producto(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Producto actualizado correctamente.")
-            return redirect('productos:lista_productos_admin')
+            return redirect('lista_productos_admin')
         else:
             messages.error(request, "❌ Error al actualizar. Revisa los campos.")
     else:
@@ -98,7 +98,7 @@ def eliminar_producto(request, pk):
     if request.method == 'POST':
         producto.delete()
         messages.success(request, "✅ Producto eliminado correctamente.")
-        return redirect('productos:lista_productos_admin')
+        return redirect('lista_productos_admin')
     return render(request, 'productos/confirmar_eliminar.html', {
         'producto': producto
     })
@@ -120,8 +120,8 @@ def procesar_pago_cliente(request):
             total=total
         )
         messages.success(request, "✅ Pago realizado con éxito")
-        return redirect('productos:productos_galeria')
-    return redirect('productos:productos_galeria')
+        return redirect('productos_galeria')
+    return redirect('productos_galeria')
 
 def crear_nuevo_producto(request):
     if request.method == 'POST':
@@ -129,7 +129,7 @@ def crear_nuevo_producto(request):
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Producto creado exitosamente")
-            return redirect('productos:lista_productos_admin')
+            return redirect('lista_productos_admin')
     else:
         form = ProductoForm()
     return render(request, 'productos/crear_producto.html', {'form': form})

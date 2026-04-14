@@ -12,7 +12,7 @@ def reservas_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "¡Cita agendada con éxito!")
-            return redirect('reservas:ver_agenda')
+            return redirect('ver_agenda')
         return render(request, 'reservas.html', {'form': form})
     else:
         form = ReservaForm()
@@ -24,7 +24,7 @@ def crear_reserva(request):
         if form.is_valid():
             form.save()
             messages.success(request, "¡Cita agendada con éxito!")
-            return redirect('reservas:ver_agenda')
+            return redirect('ver_agenda')
         return render(request, 'reservas.html', {'form': form})
     else:
         form = ReservaForm()
@@ -35,7 +35,7 @@ def cancelar_cita(request, pk):
     cita.estado = 'cancelada'
     cita.save()
     messages.warning(request, f"La cita de {cita.nombre_cliente} ha sido cancelada.")
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 # --- VISTAS DE CALIFICACIÓN ---
 
@@ -45,7 +45,7 @@ def calificacion_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, '¡Gracias por calificar nuestro servicio!')
-            return redirect('reservas:calificacion')
+            return redirect('calificacion')
     else:
         form = CalificacionForm()
     return render(request, 'calificacion.html', {'form': form})
@@ -57,7 +57,7 @@ def editar_calificacion(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Calificación actualizada.')
-            return redirect('reservas:calificacion')
+            return redirect('calificacion')
     else:
         form = CalificacionEditarForm(instance=calificacion)
     return render(request, 'calificacion/editar_calificacion.html', {'form': form})
@@ -75,7 +75,7 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
         reserva.estado = nuevo_estado
         reserva.save()
         messages.info(request, f"Estado de la cita actualizado a {nuevo_estado}.")
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 def reprogramar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
@@ -84,7 +84,7 @@ def reprogramar_cita(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Cita reprogramada correctamente.")
-            return redirect('reservas:ver_agenda')
+            return redirect('ver_agenda')
     else:
         form = EditarReservaForm(instance=cita)
     return render(request, 'reservas/reprogramar.html', {'form': form, 'cita': cita})
