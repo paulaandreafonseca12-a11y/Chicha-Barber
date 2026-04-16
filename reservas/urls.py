@@ -17,7 +17,6 @@ Including another URLconf
 from django.urls import path
 from . import views
 
-app_name = 'reservas'
 
 urlpatterns = [
     # Ahora la página principal de reservas SÍ procesa el guardado

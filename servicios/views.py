@@ -21,7 +21,7 @@ def servicios_admin_view(request):
         'titulo': 'Nuestros Servicios',
         'servicios': servicios
     }
-    return render(request, 'servicios.html', context)
+    return render(request, 'servicios/listado-admin.html', context)
 
 def calificacion_views(request):
     context = {
@@ -62,7 +62,7 @@ def editar_servicios(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {servicio.first_name} actualizados correctamente.")
-            return redirect('servicios:inicio_servicios')
+            return redirect('inicio_servicios')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
@@ -92,7 +92,7 @@ def seleccionar_promocion(request, nombre_promo):
     messages.success(request, f"✅ Has seleccionado la promoción: {nombre_promo}")
     
     # Redirigimos a la página de reservas
-    return redirect('reservas:reservas') # Asegúrate que este name sea el correcto
+    return redirect('reservas') # Asegúrate que este name sea el correcto
 
 def crear_promocion(request):
     if request.method == 'POST':
@@ -127,7 +127,7 @@ def editar_promocion(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {promocion.nombre} actualizados correctamente.")
-            return redirect('servicios:inicio_servicios')
+            return redirect('inicio_servicios')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:

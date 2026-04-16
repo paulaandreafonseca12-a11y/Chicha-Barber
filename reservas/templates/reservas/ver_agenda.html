@@ -30,10 +30,10 @@
                         <td>
                             <div class="btn-group">
                                 {% if cita.estado == 'reservada' %}
-                                    <a href="{% url 'reservas:cambiar_estado' cita.pk 'confirmada' %}" class="btn btn-sm btn-success">Confirmar</a>
-                                    <a href="{% url 'reservas:cambiar_estado' cita.pk 'cancelada' %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro?')">Cancelar</a>
+                                    <a href="{% url 'cambiar_estado' cita.pk 'confirmada' %}" class="btn btn-sm btn-success">Confirmar</a>
+                                    <a href="{% url 'cambiar_estado' cita.pk 'cancelada' %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro?')">Cancelar</a>
                                 {% endif %}
-                                <a href="{% url 'reservas:reprogramar_cita' cita.pk %}" class="btn btn-sm btn-outline-info">Reprogramar</a>
+                                <a href="{% url 'reprogramar_cita' cita.pk %}" class="btn btn-sm btn-outline-info">Reprogramar</a>
                             </div>
                         </td>
                     </tr>
@@ -53,7 +53,7 @@
                 <h5 class="modal-title" style="color: #d4af37;">Registrar Cita</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{% url 'reservas:crear_reserva' %}" method="POST">
+            <form action="{% url 'crear_reserva' %}" method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
                     <label class="form-label">Cliente</label>
