@@ -12,5 +12,8 @@ urlpatterns = [
     path('promocion/', views.promocion, name='promocion'),  # ← era promocion_views, es promocion
     path('promocion/crear/', views.crear_promocion, name='crear-promocion'),
     path('promocion/seleccionar/<str:nombre_promo>/', views.seleccionar_promocion, name='seleccionar_promocion'),
-]
+    path('panel/listado/', views.listado, name='listado'),
+    path('panel/listado/promocion/', views.promocion, name='listado-promocion')
+
+    ]
     

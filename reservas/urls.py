@@ -27,4 +27,6 @@ urlpatterns = [
     path('crear/', views.crear_reserva, name='crear_reserva'),
     path('cambiar-estado/<int:pk>/<str:nuevo_estado>/', views.cambiar_estado_reserva, name='cambiar_estado'),
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),
+    
 ]
+
