@@ -36,8 +36,8 @@
                               {% endif %}
                           </td>
                           <td>
-                              <button class="btn btn-sm btn-outline-info" onclick="window.location.href='{% url 'editar-promociones' promocion.pk %}'">Editar</button>
-                              <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='{% url 'eliminar-promociones' promocion.pk %}'">Eliminar</button>
+                              <button class="btn btn-sm btn-outline-info" onclick="window.location.href='{% url 'editar-promocion' promocion.pk %}'">Editar</button>
+                              <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='{% url 'eliminar-promocion' promocion.pk %}'">Eliminar</button>
                           </td>
                       </tr>
                       {% empty %} <tr>
