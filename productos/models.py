@@ -19,10 +19,6 @@ class Producto(models.Model):
     descripcion = models.TextField()
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
-<<<<<<<<< Temporary merge branch 1
-=========
-
->>>>>>>>> Temporary merge branch 2
     stock = models.ForeignKey(
         Stock,
         on_delete=models.CASCADE,
@@ -46,7 +42,6 @@ class Producto(models.Model):
 
 class Compra(models.Model):  # En realidad es una Venta al cliente
     codigo_compra = models.AutoField(primary_key=True)
-<<<<<<<<< Temporary merge branch 1
     # Datos del cliente
     nombre_cliente = models.CharField(max_length=100, verbose_name="Nombre del Cliente")
     correo = models.EmailField(verbose_name="Correo", blank=True, null=True)
@@ -56,19 +51,6 @@ class Compra(models.Model):  # En realidad es una Venta al cliente
     # Totales y fechas
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     fecha_compra = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Compra")
-=========
-    nombre_cliente = models.CharField(max_length=100)
-    correo = models.EmailField()
-    telefono = models.CharField(max_length=20)
-    direccion = models.CharField(max_length=255)
-    metodo_pago = models.CharField(max_length=20)
-
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    fecha = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.nombre_cliente} - Compra {self.codigo_compra}"
->>>>>>>>> Temporary merge branch 2
 
     def __str__(self):
         return f"Venta #{self.codigo_compra} - {self.nombre_cliente}"
@@ -80,15 +62,22 @@ class DetalleCompra(models.Model):
     cantidad = models.IntegerField()
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
+    def save(self, *args, **kwargs):
+        self.subtotal = self.cantidad * self.producto.precio_venta  # ← precio_venta, no precio_compra
+        super().save(*args, **kwargs)
+        self.compra.total = sum(d.subtotal for d in self.compra.detalles.all())
+        self.compra.save()
+
     def __str__(self):
-<<<<<<<<< Temporary merge branch 1
-        return f"{self.producto.nombre} x {self.cantidad}"
-=========
         return f"{self.producto.codigo} x {self.cantidad}"
 
 
 class Pago(models.Model):
-    compra = models.ForeignKey('Compra', on_delete=models.CASCADE)
+    compra = models.ForeignKey(
+        Compra,
+        on_delete=models.CASCADE,
+        related_name="pagos"
+    )
 
     METODOS_PAGO = [
         ('persona', 'Pago en persona'),
@@ -99,10 +88,10 @@ class Pago(models.Model):
     correo = models.EmailField()
     telefono = models.CharField(max_length=20)
     direccion = models.CharField(max_length=255)
+
     metodo_pago = models.CharField(max_length=20, choices=METODOS_PAGO)
 
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Pago de {self.nombre} - Compra {self.compra.codigo_compra}"
->>>>>>>>> Temporary merge branch 2
