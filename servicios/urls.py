@@ -15,6 +15,8 @@ urlpatterns = [
 
     # Promociones → /servicios/promocion/
     path('promocion/', views.promocion, name='promocion'),
+    
+    path('crear-promocion/', views.crear_promocion, name='crear_promocion'),
 
     # Seleccionar promoción
     path(
