@@ -1,8 +1,9 @@
 {% extends 'base-admin.html' %}
 
 {% block content %}
+
 <div class="container-fluid py-4" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/static/img/fondo-barber.jpg'); background-size: cover; min-height: 100vh;">
-    
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-warning fw-bold">Gestión de Inventario - Chicha Barber</h2>
         <button type="button" class="btn btn-warning fw-bold shadow" data-bs-toggle="modal" data-bs-target="#modalNuevaCompra">
@@ -16,6 +17,7 @@
                 <thead class="table-light">
                     <tr>
                         <th class="ps-4">Código</th>
+                        <th>Imagen</th>
                         <th>Producto</th>
                         <th>Precio Venta</th>
                         <th>Stock</th>
@@ -25,26 +27,45 @@
                 <tbody>
                     {% for producto in productos %}
                     <tr class="align-middle">
-                        <td class="ps-4 fw-bold text-warning">{{ producto.codigo_producto }}</td>
+
+                        <td class="ps-4 fw-bold text-warning">
+                            {{ producto.codigo_producto }}
+                        </td>
+
+                        <!-- IMAGEN -->
+                        <td>
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen.url }}" width="60" height="60"
+                                     style="object-fit: cover; border-radius: 10px; border: 2px solid #ffc107;">
+                            {% else %}
+                                <span class="text-muted">Sin imagen</span>
+                            {% endif %}
+                        </td>
+
                         <td>{{ producto.nombre }}</td>
                         <td>${{ producto.precio_venta }}</td>
+
                         <td>
                             <span class="badge bg-info">{{ producto.stock.nombre }}</span>
                         </td>
+
                         <td class="text-center">
-                            <button class="btn btn-sm btn-outline-info me-1"
-                                onclick="window.location='{% url 'editar_producto' producto.codigo_producto %}'">
+                            <a href="{% url 'editar_producto' producto.codigo_producto %}" 
+                               class="btn btn-sm btn-outline-info me-1">
                                 <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger"
-                                onclick="window.location='{% url 'eliminar_producto' producto.codigo_producto %}'">
+                            </a>
+
+                            <a href="{% url 'eliminar_producto' producto.codigo_producto %}" 
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('¿Seguro que deseas eliminar este producto?');">
                                 <i class="bi bi-trash"></i>
-                            </button>
+                            </a>
                         </td>
+
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
+                        <td colspan="6" class="text-center py-5 text-muted">
                             <i class="bi bi-box-seam fs-1 d-block mb-3"></i>
                             No hay productos registrados en el inventario.
                         </td>
@@ -54,38 +75,47 @@
             </table>
         </div>
     </div>
+
 </div>
 
-<div class="modal fade" id="modalNuevaCompra" tabindex="-1" aria-labelledby="modalNuevaCompraLabel" aria-hidden="true">
+<!-- MODAL COMPRA -->
+
+<div class="modal fade" id="modalNuevaCompra" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white border-secondary">
+
             <div class="modal-header border-secondary">
-                <h5 class="modal-title text-warning" id="modalNuevaCompraLabel">
+                <h5 class="modal-title text-warning">
                     <i class="bi bi-cart-plus me-2"></i>Nueva Entrada de Inventario
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            
+
             <form method="POST" action="{% url 'registrar_compra' %}">
                 {% csrf_token %}
+
                 <div class="modal-body">
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nombre del Cliente</label>
                         {{ form_compra.nombre_cliente }}
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Correo</label>
                         {{ form_compra.correo }}
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Teléfono</label>
                         {{ form_compra.telefono }}
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Dirección</label>
                         {{ form_compra.direccion }}
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Método de Pago</label>
                         {{ form_compra.metodo_pago }}
@@ -97,19 +127,27 @@
                         <label class="form-label fw-bold">Producto</label>
                         {{ form_detalle.producto }}
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Cantidad</label>
                         {{ form_detalle.cantidad }}
                     </div>
 
                 </div>
-                
+
                 <div class="modal-footer border-secondary">
-                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-warning fw-bold px-4">Guardar Registro</button>
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning fw-bold px-4">
+                        Guardar Registro
+                    </button>
                 </div>
+
             </form>
+
         </div>
     </div>
 </div>
+
 {% endblock %}

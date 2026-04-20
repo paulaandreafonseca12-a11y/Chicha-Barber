@@ -8,11 +8,20 @@ class StockForm(forms.ModelForm):
         fields = ['nombre', 'descripcion']
 
 
+
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['nombre', 'descripcion', 'precio_venta', 'precio_compra', 'stock']
-
+        fields = ['nombre', 'descripcion', 'precio_venta', 'precio_compra', 'imagen', 'stock']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
+            'precio_venta': forms.NumberInput(attrs={'class': 'form-control'}),
+            'precio_compra': forms.NumberInput(attrs={'class': 'form-control'}),
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'stock': forms.Select(attrs={'class': 'form-select'}),
+        }
+       
 
 class CompraForm(forms.ModelForm):
     class Meta:
