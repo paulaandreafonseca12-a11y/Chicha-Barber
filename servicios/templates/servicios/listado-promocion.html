@@ -1,5 +1,3 @@
-
-
 {% extends "base-admin.html" %}
 {% load static %}
 
@@ -8,42 +6,42 @@
     
     <div class="p-5 mb-5 bg-body-tertiary rounded-3 opacity-75 shadow-sm text-center">
         <div class="container-fluid py-1">
-            <h1 class="display-5 fw-bold text-uppercase">Listado de Servicios</h1> 
-            <p class="fs-4">Administra los servicios disponibles para tus clientes.</p> 
+            <h1 class="display-5 fw-bold text-uppercase">Listado de Promociones</h1> 
+            <p class="fs-4">Administra las promociones disponibles para tus clientes.</p> 
         </div>
     </div>
 
     <div class="container mt-5">
       <div class="card shadow">
           <div class="card-header bg-primary text-white d-flex justify-content-between">
-              <h5 class="mb-0">Gestión de Servicios</h5>
-              <button class="btn btn-outline-light" onclick="window.location.href='{% url 'crear-servicios' %}'">+ Nuevo Servicio</button>
+              <h5 class="mb-0">Gestión de Promociones</h5>
+              <button class="btn btn-outline-light" onclick="window.location.href='{% url 'crear-promocion' %}'">+ Nueva Promoción</button>
           </div>
           <div class="card-body">
               <table class="table table-hover">
                   <thead class="table-light">
                       <tr>
                           <th>ID</th>
-                          <th>Servicio</th>
+                          <th>Promoción</th>
                           <th>Estado</th>
                           <th>Acciones</th>
                       </tr>
                   </thead>
                   <tbody>
-                      {% for servicio in servicios %} <tr>
-                          <td>#{{ servicio.pk }}</td> <td><strong>{{ servicio.nombre }}</strong></td> <td>
-                              {% if servicio.activo %} <span class="badge bg-success">Activo</span>
+                      {% for promocion in promociones %} <tr>
+                          <td>#{{ promocion.pk }}</td> <td><strong>{{ promocion.nombre }}</strong></td> <td>
+                              {% if promocion.activo %} <span class="badge bg-success">Activo</span>
                               {% else %}
                                 <span class="badge bg-secondary">Inactivo</span>
                               {% endif %}
                           </td>
                           <td>
-                              <button class="btn btn-sm btn-outline-info" onclick="window.location.href='{% url 'editar-servicios' servicio.pk %}'">Editar</button>
-                              <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='{% url 'eliminar-servicios' servicio.pk %}'">Eliminar</button>
+                              <button class="btn btn-sm btn-outline-info" onclick="window.location.href='{% url 'editar-promociones' promocion.pk %}'">Editar</button>
+                              <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='{% url 'eliminar-promociones' promocion.pk %}'">Eliminar</button>
                           </td>
                       </tr>
                       {% empty %} <tr>
-                          <td colspan="4" class="text-center">No hay servicios registrados.</td>
+                          <td colspan="4" class="text-center">No hay promociones registradas.</td>
                       </tr>
                       {% endfor %} </tbody>
               </table>
