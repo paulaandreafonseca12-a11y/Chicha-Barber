@@ -17,7 +17,6 @@ Including another URLconf
 from django.urls import path
 from . import views
 
-app_name = 'reservas'
 
 urlpatterns = [
     # Ahora la página principal de reservas SÍ procesa el guardado
@@ -30,4 +29,6 @@ urlpatterns = [
     path('crear/', views.crear_reserva, name='crear_reserva'),
     path('cambiar-estado/<int:pk>/<str:nuevo_estado>/', views.cambiar_estado_reserva, name='cambiar_estado'),
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),
+    
 ]
+

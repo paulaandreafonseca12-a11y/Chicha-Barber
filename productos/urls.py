@@ -21,7 +21,6 @@ Including another URLconf
 from django.urls import path
 from . import views
 
-app_name = 'productos'
 
 urlpatterns = [
     # Rutas Cliente
@@ -33,7 +32,7 @@ urlpatterns = [
     # Rutas Admin
     path('gestion/', views.lista_productos_admin, name='lista_productos_admin'),
     path('registrar-compra/', views.registrar_compra, name='registrar_compra'),
-    path('crear-nuevo/', views.crear_nuevo_producto, name='crear_nuevo_producto'),
+    path('crear_producto/', views.crear_producto, name='crear_producto'),
     path('historial/', views.historial_compras, name='historial_compras'),
     path('historial/<int:pk>/', views.detalle_compra, name='detalle_compra'),       # ← nuevo
     path('producto/editar/<int:pk>/', views.editar_producto, name='editar_producto'), # ← nuevo

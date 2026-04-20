@@ -1,0 +1,46 @@
+{% extends "base-clientes.html" %}
+{% load static %}
+
+{% block content %}
+<main class="p-4 w-10 m-auto">
+    
+    <div class="p-5 mb-5 bg-body-tertiary rounded-3 opacity-75 shadow-sm text-center">
+        <div class="container-fluid py-1">
+            <h1 class="display-5 fw-bold text-uppercase">Nuestros Servicios</h1> 
+            <p class="fs-4">Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.</p> 
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4 bg-transparent">
+            
+            {% for servicio in servicios %}
+            <div class="col d-flex justify-content-center">
+                <div class="card h-100 shadow-sm border-0" style="width: 18rem; border-radius: 15px; overflow: hidden;">
+                    
+                    <img src="{% static 'img/corte/corte_1.jpg' %}" class="card-img-top" alt="{{ servicio.nombre }}" style="height: 300px; object-fit: cover;">
+                    
+                    <div class="card-body d-flex flex-column bg-white">
+                        <h5 class="card-title text-center fw-bold">{{ servicio.nombre }}</h5>
+                        <hr>
+                        <p class="card-text text-muted small">{{ servicio.descripcion }}</p>
+                        
+                        <div class="mt-auto">
+                            <p class="mb-1"><strong> Duración:</strong> {{ servicio.duracion }}</p>
+                            <p class="card-text text-primary fw-bold"><strong>Precio:</strong> ${{ servicio.precio }}</p>
+                            
+                            <a class="btn fw-bold text-white w-80 mt-2 justify-content-center d-flex mx-auto" 
+                               href="#" 
+                               style="background-color: #87CEEB; border: none; border-radius: 8px; padding: 10px;">
+                               Seleccionar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</main>
+{% endblock %}

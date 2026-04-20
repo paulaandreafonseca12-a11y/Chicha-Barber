@@ -19,6 +19,7 @@ class Producto(models.Model):
     descripcion = models.TextField()
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
     stock = models.ForeignKey(
         Stock,
         on_delete=models.CASCADE,

@@ -18,16 +18,15 @@
             <div id="collapseServicios" class="accordion-collapse collapse {% if 'servicios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
                 <div class="accordion-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="{% url 'servicios:servicios' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                        <a href="{% url 'listado-servicios' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-list-ul me-2"></i> Ver Todos
                         </a>
-                        <a href="{% url 'servicios:crear_servicios' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                        <a href="{% url 'crear-servicios' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-plus-circle me-2"></i> Crear Nuevo
                         </a>
-                        <a href="{% url 'servicios:calificacion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                        <a href="{% url 'calificacion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-star me-2"></i> Calificaciones
                         </a>
-                         
                     </div>
                 </div>
             </div>
@@ -53,7 +52,7 @@
             <div id="collapseReservas" class="accordion-collapse collapse {% if 'reservas' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
                 <div class="accordion-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="{% url 'reservas:ver_agenda' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                        <a href="{% url 'ver_agenda' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-calendar-check me-2"></i> Ver Agenda
                         </a>
                         <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4" data-bs-toggle="modal" data-bs-target="#nuevaCitaModal">
@@ -73,21 +72,18 @@
             <div id="collapseProductos" class="accordion-collapse collapse {% if 'productos' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
                 <div class="accordion-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="{% url 'productos:lista_productos_admin' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                        <a href="{% url 'lista_productos_admin' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-list-ul me-2"></i> Inventario
                         </a>
-                        <a href="{% url 'productos:historial_compras' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
-    <i class="bi bi-search me-2"></i> Seleccionar Compra
-</a>
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4" data-bs-toggle="modal" data-bs-target="#modalNuevaCompra">
-                            <i class="bi bi-plus-circle me-2"></i> Agregar Producto
+                        <a href="{% url 'historial_compras' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-search me-2"></i> Historial de Compras
                         </a>
+                       <a href="{% url 'crear_producto' %}"class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                             <i class="bi bi-plus-circle me-2"></i> Agregar Producto
+                       </a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
         </div>
 
         <div class="accordion-item bg-dark border-0 mt-2">
@@ -110,18 +106,17 @@
             </div>
         </div>
 
-    </div>
-    
-    <hr class="mt-auto border-secondary">
+    </div> <hr class="mt-auto border-secondary">
     
     <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2" id="userMenu" data-bs-toggle="dropdown">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-5 me-2"></i>
             <strong>Administrador</strong>
         </a>
-        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="userMenu">
             <li><a class="dropdown-item" href="{% url 'inicio_admin' %}">Inicio Panel</a></li>
             <li><a class="dropdown-item" href="{% url 'inicio' %}">Ver Sitio Web</a></li>
+            <li><a class="dropdown-item" href="#">Listado</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="#">Cerrar Sesión</a></li>
         </ul>

@@ -11,10 +11,6 @@ def productos_galeria(request):
         'productos': productos
     })
 
-from .models import Compra, Producto, DetalleCompra, Pago
-from .forms import ProductoForm
-
-
 # 🔹 LISTAR PRODUCTOS
 def productos(request):
     productos = Producto.objects.all()
@@ -55,12 +51,12 @@ def registrar_compra(request):
             detalle.compra = nueva_compra
             detalle.save()
             messages.success(request, "✅ Compra registrada exitosamente.")
-            return redirect('productos:historial_compras')  # ← redirige al historial
+            return redirect('historial_compras')  # ← redirige al historial
         else:
             # Muestra los errores
             messages.error(request, f"❌ Errores compra: {form_compra.errors}")
             messages.error(request, f"❌ Errores detalle: {form_detalle.errors}")
-    return redirect('productos:lista_productos_admin')
+    return redirect('lista_productos_admin')
 
 def historial_compras(request):
     compras_registradas = Compra.objects.all().order_by('-fecha_compra')
@@ -78,16 +74,18 @@ def detalle_compra(request, pk):
 
 def editar_producto(request, pk):
     producto = get_object_or_404(Producto, codigo_producto=pk)
+
     if request.method == 'POST':
-        form = ProductoForm(request.POST, instance=producto)
+        form = ProductoForm(request.POST, request.FILES, instance=producto)  # 🔥 AQUÍ
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Producto actualizado correctamente.")
-            return redirect('productos:lista_productos_admin')
+            return redirect('lista_productos_admin')
         else:
             messages.error(request, "❌ Error al actualizar. Revisa los campos.")
     else:
         form = ProductoForm(instance=producto)
+
     return render(request, 'productos/editar_producto.html', {
         'form': form,
         'producto': producto
@@ -95,13 +93,9 @@ def editar_producto(request, pk):
 
 def eliminar_producto(request, pk):
     producto = get_object_or_404(Producto, codigo_producto=pk)
-    if request.method == 'POST':
-        producto.delete()
-        messages.success(request, "✅ Producto eliminado correctamente.")
-        return redirect('productos:lista_productos_admin')
-    return render(request, 'productos/confirmar_eliminar.html', {
-        'producto': producto
-    })
+    producto.delete()
+    messages.success(request, "✅ Producto eliminado correctamente.")
+    return redirect('lista_productos_admin')
 
 def procesar_pago_cliente(request):
     if request.method == 'POST':
@@ -120,16 +114,17 @@ def procesar_pago_cliente(request):
             total=total
         )
         messages.success(request, "✅ Pago realizado con éxito")
-        return redirect('productos:productos_galeria')
-    return redirect('productos:productos_galeria')
+        return redirect('productos_galeria')
+    return redirect('productos_galeria')
 
-def crear_nuevo_producto(request):
+def crear_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
+       
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Producto creado exitosamente")
-            return redirect('productos:lista_productos_admin')
+            return redirect('lista_productos_admin')
     else:
         form = ProductoForm()
     return render(request, 'productos/crear_producto.html', {'form': form})
