@@ -191,7 +191,7 @@ justify-content:space-between;
     overflow: hidden;
 }
 
-.back .form-control, 
+/* .back .form-control, 
 .back input {
     background-color: transparent !important;
     color: #ffffff !important;
@@ -201,7 +201,7 @@ justify-content:space-between;
     padding: 0 45px 0 10px !important; /* Espacio a la derecha para que el texto no tape el ojo */
     box-shadow: none !important;
     outline: none !important;
-}
+} */
 
 /* Forzar que el autocompletado sea Negro y no Blanco */
 input:-webkit-autofill,
@@ -242,12 +242,12 @@ input:-webkit-autofill:active {
     padding-left: 15px !important;
 }
 
-.back .form-label {
+/* .back .form-label {
     color: rgba(255, 255, 255, 0.8) !important;
     font-size: 0.8rem;
     margin-bottom: 4px;
     display: block;
-}
+} */
 
 /* 6. Botón Registrarse */
 .back .btn-registrar {

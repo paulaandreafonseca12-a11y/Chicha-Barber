@@ -55,24 +55,32 @@ def crear_servicios(request):
 
 
 def editar_servicios(request, pk):
-    servicio = get_object_or_404(Servicios, pk=pk)
+    servicio = get_object_or_404(Servicios, pk=pk) #pk es igual que id, pero pk es más genérico y se usa para cualquier modelo, no solo para Servicios. Es una buena práctica usar pk en las vistas genéricas de Django.
 
     if request.method == 'POST':
         form = ServiciosEditarForm(request.POST, instance=servicio)
         if form.is_valid():
             form.save()
-            messages.success(request, f"Datos de {servicio.first_name} actualizados correctamente.")
+            messages.success(request, f"Datos de {servicio.nombre} actualizados correctamente.")
             return redirect('inicio_servicios')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
-        form = ServiciosEditarForm(instance=servicio)
+        form = ServiciosForm(instance=servicio)
 
     context = {
         'form': form,
-        'titulo': f'Editar a {servicio.first_name}',
+        'titulo': f'Editar a {servicio.nombre}',
     }
-    return render(request, 'servicios/agregar_servicio.html', context)
+    return render(request, 'servicios/editar_servicio.html', context)
+
+def eliminar_servicios(request, id):
+    servicio = get_object_or_404(Servicios, id=id)
+    if request.method == 'POST':
+        servicio.delete()
+        messages.success(request, 'Servicio eliminado del sistema.')
+        return redirect('listar_fichas')
+    return render(request, 'usuarios/confirmar_eliminacion.html', {'servicio': servicio})
 
                                                                      
 def promocion(request):
@@ -106,7 +114,7 @@ def crear_promocion(request):
             # 4. Ahora sí guardamos en la base de datos
             form.save()
             messages.success(request, "Promoción creada exitosamente.")
-            return redirect('promocion')
+            return redirect('listado-promocion')
         else:
             messages.error(request, "Error al crear la promoción. Revisa los campos marcados en rojo.")
     else:
@@ -131,16 +139,16 @@ def editar_promocion(request, pk):
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
-        form = PromocionEditarForm(instance=promocion)
+        form = PromocionForm(instance=promocion)
 
     context = {
         'form': form,
         'titulo': f'Editar a {promocion.nombre}',
     }
-    return render(request, 'servicios/agregar_promocion.html', context)
+    return render(request, 'servicios/editar_promocion.html', context)
 
     
-def listado(request):
+def listado_promocion(request):
     servicios = Servicios.objects.all()
     promociones = Promocion.objects.all()
     
@@ -149,4 +157,12 @@ def listado(request):
         'servicios': servicios,
         'promociones': promociones
     }
-    return render(request, 'listado.html', context)
+    return render(request, 'servicios/listado-promocion.html', context)
+
+def eliminar_promocion(request, id):
+    promocion = get_object_or_404(Promocion, id=id)
+    if request.method == 'POST':
+        promocion.delete()
+        messages.success(request, 'Promoción eliminada del sistema.')
+        return redirect('listar_promociones')
+    return render(request, 'usuarios/confirmar_eliminacion.html', {'promocion': promocion})
