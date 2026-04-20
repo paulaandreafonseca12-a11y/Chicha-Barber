@@ -140,3 +140,13 @@ def editar_promocion(request, pk):
     return render(request, 'servicios/agregar_promocion.html', context)
 
     
+def listado(request):
+    servicios = Servicios.objects.all()
+    promociones = Promocion.objects.all()
+    
+    context = {
+        'titulo': 'Listado de Servicios y Promociones',
+        'servicios': servicios,
+        'promociones': promociones
+    }
+    return render(request, 'listado.html', context)
