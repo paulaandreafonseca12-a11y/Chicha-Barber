@@ -1,0 +1,78 @@
+{% extends "base-admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 style="color: #d4af37;" class="mb-4">Agenda de Citas - Chicha Barber</h2>
+    
+    <div class="card bg-dark text-white border-secondary shadow">
+        <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+                <thead class="table-secondary text-dark">
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Servicio</th>
+                        <th>Fecha y Hora</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in reservas %}
+                    <tr>
+                        <td>{{ cita.nombre_cliente }}</td>
+                        <td>{{ cita.servicio }}</td>
+                        <td>{{ cita.fecha_reserva }}</td>
+                        <td>
+                            <span class="badge {% if cita.estado == 'reservada' %}bg-warning text-dark{% elif cita.estado == 'confirmada' %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ cita.get_estado_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                {% if cita.estado == 'reservada' %}
+                                    <a href="{% url 'cambiar_estado' cita.pk 'confirmada' %}" class="btn btn-sm btn-success">Confirmar</a>
+                                    <a href="{% url 'cambiar_estado' cita.pk 'cancelada' %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro?')">Cancelar</a>
+                                {% endif %}
+                                <a href="{% url 'reprogramar_cita' cita.pk %}" class="btn btn-sm btn-outline-info">Reprogramar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4">No hay citas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="nuevaCitaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" style="color: #d4af37;">Registrar Cita</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{% url 'crear_reserva' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <label class="form-label">Cliente</label>
+                    <input type="text" name="nombre_cliente" class="form-control mb-3 bg-secondary text-white border-0" required>
+                    
+                    <label class="form-label">Fecha y Hora</label>
+                    <input type="text" name="fecha_reserva" class="form-control mb-3 bg-secondary text-white border-0" placeholder="Ej: 15 Abril - 2:00 PM" required>
+                    
+                    <label class="form-label">Servicio</label>
+                    <input type="text" name="servicio" class="form-control mb-3 bg-secondary text-white border-0" value="Corte de Cabello">
+                    
+                    <input type="hidden" name="correo_cliente" value="cliente@barberia.com">
+                    <input type="hidden" name="telefono_cliente" value="000000000">
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="submit" class="btn btn-warning w-100 text-dark fw-bold">Guardar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

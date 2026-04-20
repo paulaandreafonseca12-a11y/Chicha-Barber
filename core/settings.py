@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-        'crispy_forms', # pip install django-crispy-forms
+    'crispy_forms', # pip install django-crispy-forms
     'crispy_bootstrap5', # pip install crispy-bootstrap5
     'servicios',
     'reservas',
@@ -100,7 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-co'
 
 TIME_ZONE = 'UTC'
 
@@ -114,3 +114,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+# A dónde redirigir después de un login exitoso
+LOGIN_REDIRECT_URL = '/'  # Te manda a la página principal de la barbería
+
+# A dónde enviar a los intrusos que no han iniciado sesión
+LOGIN_URL = '/login/'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Al final de settings.py
+AUTH_USER_MODEL = 'usuarios.Usuario'

@@ -42,6 +42,20 @@
         Reserva tu Cita
       </h2>
 
+{% if promo %}
+    <div class="d-flex justify-content-center mb-4">
+        <div class="alert shadow-sm border-0 d-inline-flex align-items-center" 
+             style="background-color: rgba(0, 212, 255, 0.1); color: #00d4ff; padding: 12px 25px; border-radius: 8px;">
+            
+            <i class="bi bi-check2-circle me-2"></i>
+            <span>¡Excelente! Escogiste la promoción de: <strong>{{ promo }}</strong></span>
+            
+            <a href="{% url 'promocion' %}" class="ms-3 text-white-50 text-decoration-none" style="font-size: 0.75rem;">
+                (Cambiar)
+            </a>
+        </div>
+    </div>
+{% endif %}
       <!-- Selector de día -->
       <div class="mb-4">
         <div class="section-label mb-3">
@@ -182,13 +196,15 @@
     <div id="panel-success" class="step-panel d-none text-center py-4">
       <div style="font-size:4rem;">🎉</div>
       <h2 class="success-title mt-3">¡CITA CONFIRMADA!</h2>
+{% if promo %}
+    <p style="color: #00d4ff;">Has reservado con éxito la promoción: <strong>{{ promo }}</strong></p>
+{% endif %}
       <p class="mt-2 mb-4" id="cancel-msg" style="color:#aaa;">
         Te esperamos en Chicha Barber.<br>
         Recibirás un recordatorio al correo registrado.
       </p>
       <button class="btn btn-cyan px-5" onclick="restart()">HACER OTRA RESERVA</button>
     </div>
-
   </div><!-- /booking-card -->
 </div>
 
@@ -199,8 +215,6 @@
   <div class="toast-wrap">
     <div class="toast-msg" id="toast"></div>
   </div>
-  
-
 {% endblock %}
 
 {% block scripts %}

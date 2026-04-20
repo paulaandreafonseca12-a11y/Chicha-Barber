@@ -1,0 +1,137 @@
+{% extends "base-clientes.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-lg border-0 rounded-4 p-4 bg-dark text-white">
+
+                <h4 class="text-center mb-4 text-warning fw-bold">
+                    🧾 Datos del Cliente
+                </h4>
+
+                <!-- 🔥 FORMULARIO -->
+                <form method="POST" action="{% url 'procesar_compra' %}">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" name="nombre" class="form-control form-control-lg" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Correo electrónico</label>
+                        <input type="email" name="correo" class="form-control form-control-lg" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="telefono" class="form-control form-control-lg" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Dirección de entrega</label>
+                        <input type="text" name="direccion" class="form-control form-control-lg" required>
+                    </div>
+
+                    <hr class="border-secondary">
+
+                    <h5 class="mt-3 text-warning">💳 Método de Pago</h5>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="pago" value="persona"
+                               onclick="mostrarInfoPago('persona')" required>
+                        <label class="form-check-label">
+                            Pago en persona (en el local)
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="pago" value="contraentrega"
+                               onclick="mostrarInfoPago('contraentrega')">
+                        <label class="form-check-label">
+                            Pago contraentrega
+                        </label>
+                    </div>
+
+                    <!-- 🔥 ENVÍO DEL CARRITO -->
+                    <input type="hidden" name="carrito" id="carritoInput">
+
+                    <!-- INFO DINÁMICA -->
+                    <div id="infoPago" class="alert alert-info mt-3 d-none"></div>
+
+                    <!-- BOTÓN -->
+                    <button type="submit" class="btn btn-success w-100 mt-4 rounded-pill">
+                        ✅ Confirmar Compra
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 🔥 MENSAJES -->
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-success text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<script>
+
+// 🔥 OBTENER CARRITO
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+// 🔥 ENVIARLO AL BACKEND
+document.getElementById("carritoInput").value = JSON.stringify(carrito);
+
+// 💳 INFO DE PAGO
+function mostrarInfoPago(tipo) {
+    let info = document.getElementById("infoPago");
+    info.classList.remove("d-none");
+
+    if (tipo === "persona") {
+        info.innerHTML = "💡 Puedes pagar directamente en nuestro local.";
+    } else {
+        info.innerHTML = "🚚 Pagarás cuando recibas el producto.";
+    }
+}
+
+// 🔥 LIMPIAR CARRITO DESPUÉS DE ENVIAR
+document.querySelector("form").addEventListener("submit", function() {
+    localStorage.removeItem("carrito");
+});
+
+</script>
+
+<!-- 🎨 ESTILOS -->
+<style>
+
+.card {
+    background: linear-gradient(145deg, #1f1f1f, #2c2c2c);
+}
+
+input {
+    background-color: #2c2c2c !important;
+    color: white !important;
+    border: 1px solid #555 !important;
+}
+
+input:focus {
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 5px #ffc107 !important;
+}
+
+</style>
+
+{% endblock content %}

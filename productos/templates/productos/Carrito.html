@@ -4,9 +4,15 @@
 
 <section class="container mt-5">
 
-    <h2 class="text-center mb-5 titulo-productos">
+    <h2 class="text-center mb-4 titulo-productos">
         Carrito de Compras
     </h2>
+
+    <!-- 🔥 MENSAJE + TEMPORIZADOR -->
+    <div class="alert alert-warning text-center">
+        ⏳ Tienes <strong><span id="tiempo">05:00</span></strong> minutos para completar tu compra.
+        Después de este tiempo el carrito se vaciará automáticamente.
+    </div>
 
     <table class="table table-striped text-center">
 
@@ -26,7 +32,8 @@
 
     <div class="text-end">
 
-        <h4 class="total">
+        <!-- 🔥 TOTAL MEJORADO -->
+        <h4 class="total" style="color: white;">
             Total a pagar:
             <span id="total"></span>
         </h4>
@@ -60,54 +67,37 @@
             total += subtotal;
 
             tabla.innerHTML += `
-
                 <tr>
-
                     <td>${producto.nombre}</td>
-
                     <td>$${producto.precio}</td>
 
                     <td>
-
                         <button class="btn btn-sm btn-dark"
-                            onclick="cambiarCantidad(${index}, -1)">
-                            -
-                        </button>
+                            onclick="cambiarCantidad(${index}, -1)">-</button>
 
                         ${producto.cantidad}
 
                         <button class="btn btn-sm btn-dark"
-                            onclick="cambiarCantidad(${index}, 1)">
-                            +
-                        </button>
-
+                            onclick="cambiarCantidad(${index}, 1)">+</button>
                     </td>
 
                     <td>$${subtotal}</td>
 
                     <td>
-
                         <button class="btn btn-danger btn-sm"
                             onclick="eliminarProducto(${index})">
                             Eliminar
                         </button>
-
                     </td>
-
                 </tr>
-
             `;
-
         });
 
         document.getElementById("total").textContent = "$" + total;
-
         localStorage.setItem("carrito", JSON.stringify(carrito));
-
     }
 
     function cambiarCantidad(index, cambio) {
-
         carrito[index].cantidad += cambio;
 
         if (carrito[index].cantidad <= 0) {
@@ -115,17 +105,41 @@
         }
 
         mostrarCarrito();
-
     }
 
     function eliminarProducto(index) {
-
         carrito.splice(index, 1);
         mostrarCarrito();
-
     }
 
     mostrarCarrito();
 
+    // 🔥 TEMPORIZADOR (5 minutos)
+    let tiempoRestante = 300; // 300 segundos = 5 min
+
+    function actualizarTiempo() {
+        let minutos = Math.floor(tiempoRestante / 60);
+        let segundos = tiempoRestante % 60;
+
+        document.getElementById("tiempo").textContent =
+            `${minutos}:${segundos < 10 ? "0" : ""}${segundos}`;
+
+        if (tiempoRestante <= 0) {
+            clearInterval(contador);
+
+            // 🔥 BORRAR CARRITO
+            localStorage.removeItem("carrito");
+
+            alert("⏰ Tiempo agotado. Tu carrito ha sido vaciado.");
+
+            location.reload();
+        }
+
+        tiempoRestante--;
+    }
+
+    let contador = setInterval(actualizarTiempo, 1000);
+
 </script>
+
 {% endblock content %}
