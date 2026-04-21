@@ -35,18 +35,18 @@
                     Seleccionar Promoción
                 </a>
             </div>
-        </div>
 
-        <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Promo mensual</h5>
-                <p class="card-text">Terapia Capilar Anticaída: Un masaje capilar profundo utilizando un tónico especializado y alta frecuencia.</p>
-                <a href="{% url 'servicios:seleccionar_promocion' nombre_promo='Promo Mensual' %}" 
-                   class="btn-seleccionar" 
-                   onclick="return gestionarSeleccion(event, this.href)">
-                    Seleccionar Promoción
-                </a>
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Promo mensual</h5>
+                    <p class="card-text">Terapia Capilar Anticaída: Un masaje capilar profundo utilizando un tónico especializado y alta frecuencia.</p>
+                    <a href="{% url 'seleccionar_promocion' nombre_promo='Promo Mensual' %}" 
+                       class="btn-seleccionar" 
+                       onclick="return gestionarSeleccion(event, this.href)">
+                        Seleccionar Promoción
+                    </a>
+                </div>
             </div>
         </div>
 
