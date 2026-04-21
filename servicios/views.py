@@ -85,7 +85,6 @@ def eliminar_servicios(request, id):
         return redirect('listar_fichas')
     return render(request, 'usuarios/confirmar_eliminacion.html', {'servicio': servicio})
 
-                                                                     
 def promocion(request):
     promociones = Promocion.objects.all()
     context = {

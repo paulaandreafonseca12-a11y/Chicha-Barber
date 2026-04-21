@@ -7,7 +7,7 @@ from .forms import CompraForm, DetalleCompraForm, ProductoForm
 
 def productos_galeria(request):
     productos = Producto.objects.all()
-    return render(request, 'productos/productos_galeria.html', {
+    return render(request, 'productos/Productos_galeria.html', {
         'productos': productos
     })
 
