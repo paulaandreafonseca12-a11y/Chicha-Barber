@@ -1,5 +1,19 @@
 
-
+.color-blanco{
+    background-color: #f5f8de
+}
+.color-negro{
+    background-color: #030301
+}
+.color-gris{
+    background-color: #8d818c
+}
+.color-naranja{
+    background-color: #c47a2c
+}
+.color-azul{
+    background-color: #4bc0d9
+}
 
 
 /* 2. Configuramos el fondo en la clase 'back' que ya tienes en el body */
@@ -32,50 +46,6 @@ background:#030301 !important;
 .hero-section{ 
 min-height:90vh;
 }
-.info-card{
-
-background:rgba(255,255,255,0.95);
-}
-
-.info-header{
-background:#000000;
-color:rgb(252, 251, 251);
-padding:20px;
-}
-
-.info-header p{
-margin:0;
-opacity:.7;
-}
-
-.info-body{
-padding:25px;
-}
-
-.info-item{
-display:flex;
-align-items:center;
-gap:12px;
-margin-bottom:15px;
-font-size:1rem;
-}
-
-.info-item i{
-color:#c47a2c;
-font-size:1.2rem;
-}
-.btn-btn-primary{
-background:#c47a2c;
-border:none;
-}
-
-.btn-btn-primary{
-background:#a8621f;
-}
-.about-section{
-background:rgba(0,0,0,0.85);
-}
-
 .about-section p{
 line-height:1.8;
 color:#e6e6e6;
