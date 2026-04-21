@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'servicios',
     'reservas',
     'usuarios',
-    'productos',  
+    'productos',
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -122,3 +122,6 @@ LOGIN_URL = '/login/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Al final de settings.py
 AUTH_USER_MODEL = 'usuarios.Usuario'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

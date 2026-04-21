@@ -16,7 +16,7 @@ def servicios_view(request):
         'titulo': 'Nuestros Servicios',
         'servicios': servicios  
     }
-    return render(request, 'servicios.html', context)
+    return render(request, 'servicios/servicios.html', context)
 def servicios_admin_view(request):
     servicios = Servicios.objects.all()
     
@@ -85,7 +85,6 @@ def eliminar_servicios(request, pk):
         return redirect('listar_fichas')
     return render(request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
 
-                                                                     
 def promocion(request):
     promociones = Promocion.objects.all()
     context = {

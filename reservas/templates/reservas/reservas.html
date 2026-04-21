@@ -2,16 +2,6 @@
 {% load static %}
 {% block content %}
 
-
-
-<!-- Navbar -->
-<nav class="navbar navbar-dark fixed-top px-4">
-  <a class="navbar-brand" href="#">
-    <span>CHICHA <span class="accent">BARBER</span></span>
-  </a>
-  <a href="#" class="nav-reserve">RESERVA EN LÍNEA</a>
-</nav>
-
 <!-- Contenedor principal centrado -->
 <div class="position-relative d-flex align-items-center justify-content-center"
       style="min-height:100vh; padding: 80px 16px 40px;">
@@ -191,6 +181,17 @@
         <button class="btn btn-cyan flex-fill" onclick="reservar()">✓ RESERVAR CITA</button>
       </div>
     </div>
+
+    <!-- ══════════════════════════ FORMULARIO OCULTO ══════════════════════ -->
+    <form id="reserva-form" method="POST" action="{% url 'crear_reserva' servicio.id %}" style="display: none;">
+      {% csrf_token %}
+      <input type="hidden" name="nombre_cliente" id="hidden-nombre_cliente">
+      <input type="hidden" name="correo" id="hidden-correo">
+      <input type="hidden" name="telefono" id="hidden-telefono">
+      <input type="hidden" name="fecha" id="hidden-fecha">
+      <input type="hidden" name="hora" id="hidden-hora">
+      <input type="hidden" name="fecha_reserva" id="hidden-fecha_reserva">
+    </form>
 
     <!-- ══════════════════════════ PANTALLA ÉXITO ══════════════════════════ -->
     <div id="panel-success" class="step-panel d-none text-center py-4">

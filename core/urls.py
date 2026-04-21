@@ -3,9 +3,16 @@ from django.urls import include, path
 from django.contrib.auth import views as auth_views
 from core.views import inicio, inicio_admin
 
+
+# 🔥 IMPORTANTE para imágenes
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),
+    path('productos/', include('productos.urls')),
+    
     
     # --- APPS DEL PROYECTO ---
     path('servicios/', include('servicios.urls')),
@@ -24,3 +31,8 @@ urlpatterns = [
     path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/recuperar_confirmar.html'), name='password_reset_confirm'),
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/recuperar_completo.html'), name='password_reset_complete'),
 ]
+
+
+# 🔥 ESTO HACE QUE LAS IMÁGENES FUNCIONEN
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

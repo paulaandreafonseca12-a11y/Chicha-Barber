@@ -7,13 +7,9 @@ from .forms import CompraForm, DetalleCompraForm, ProductoForm
 
 def productos_galeria(request):
     productos = Producto.objects.all()
-    return render(request, 'productos/productos_galeria.html', {
+    return render(request, 'productos/Productos_galeria.html', {
         'productos': productos
     })
-
-from .models import Compra, Producto, DetalleCompra, Pago
-from .forms import ProductoForm
-
 
 # 🔹 LISTAR PRODUCTOS
 def productos(request):
@@ -78,8 +74,9 @@ def detalle_compra(request, pk):
 
 def editar_producto(request, pk):
     producto = get_object_or_404(Producto, codigo_producto=pk)
+
     if request.method == 'POST':
-        form = ProductoForm(request.POST, instance=producto)
+        form = ProductoForm(request.POST, request.FILES, instance=producto)  # 🔥 AQUÍ
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Producto actualizado correctamente.")
@@ -88,6 +85,7 @@ def editar_producto(request, pk):
             messages.error(request, "❌ Error al actualizar. Revisa los campos.")
     else:
         form = ProductoForm(instance=producto)
+
     return render(request, 'productos/editar_producto.html', {
         'form': form,
         'producto': producto
@@ -95,13 +93,9 @@ def editar_producto(request, pk):
 
 def eliminar_producto(request, pk):
     producto = get_object_or_404(Producto, codigo_producto=pk)
-    if request.method == 'POST':
-        producto.delete()
-        messages.success(request, "✅ Producto eliminado correctamente.")
-        return redirect('lista_productos_admin')
-    return render(request, 'productos/confirmar_eliminar.html', {
-        'producto': producto
-    })
+    producto.delete()
+    messages.success(request, "✅ Producto eliminado correctamente.")
+    return redirect('lista_productos_admin')
 
 def procesar_pago_cliente(request):
     if request.method == 'POST':
@@ -123,9 +117,10 @@ def procesar_pago_cliente(request):
         return redirect('productos_galeria')
     return redirect('productos_galeria')
 
-def crear_nuevo_producto(request):
+def crear_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
+       
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Producto creado exitosamente")
