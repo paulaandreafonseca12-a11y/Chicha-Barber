@@ -69,7 +69,7 @@ def editar_servicios(request, pk):
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
-        form = ServiciosForm(instance=servicio)
+        form = ServiciosEditarForm(instance=servicio)
 
     context = {
         'form': form,
@@ -77,13 +77,13 @@ def editar_servicios(request, pk):
     }
     return render(request, 'servicios/editar_servicios.html', context)
 
-def eliminar_servicios(request, id):
-    servicio = get_object_or_404(Servicios, id=id)
+def eliminar_servicios(request, pk):
+    servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
         servicio.delete()
         messages.success(request, 'Servicio eliminado del sistema.')
         return redirect('listar_fichas')
-    return render(request, 'usuarios/confirmar_eliminacion.html', {'servicio': servicio})
+    return render(request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
 
 def promocion(request):
     promociones = Promocion.objects.all()
@@ -164,4 +164,4 @@ def eliminar_promocion(request, id):
         promocion.delete()
         messages.success(request, 'Promoción eliminada del sistema.')
         return redirect('listar_promociones')
-    return render(request, 'usuarios/confirmar_eliminacion.html', {'promocion': promocion})
+    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
