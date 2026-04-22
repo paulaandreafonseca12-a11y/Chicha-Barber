@@ -47,6 +47,7 @@ def promocion(request):
         'promociones': promociones
     }
     return render(request, 'servicios/promocion.html', context)
+
 def listado_admin(request):
     servicios = Servicios.objects.all()
     context = {
@@ -118,3 +119,11 @@ def eliminar_promocion(request, id):
         messages.success(request, 'Promoción eliminada.')
         return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
     return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
+
+def listado_promocion(request):
+    promociones = Promocion.objects.all()
+    context = {
+        'titulo': 'Listado de Promociones',
+        'promociones': promociones
+    }
+    return render(request, 'servicios/listado-promocion.html', context)

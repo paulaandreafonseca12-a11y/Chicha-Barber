@@ -162,16 +162,7 @@ justify-content:space-between;
 }
 
 .back .form-control, 
-.back input {
-    background-color: transparent !important;
-    color: #ffffff !important;
-    border: none !important;
-    height: 100% !important;
-    font-size: 0.85rem !important;
-    padding: 0 45px 0 10px !important; /* Espacio a la derecha para que el texto no tape el ojo */
-    box-shadow: none !important;
-    outline: none !important;
-}
+
 
 /* Forzar que el autocompletado sea Negro y no Blanco */
 input:-webkit-autofill,
