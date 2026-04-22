@@ -52,12 +52,14 @@ def registrar_compra(request):
         else:
             messages.error(request, f"❌ Errores compra: {form_compra.errors}")
             messages.error(request, f"❌ Errores detalle: {form_detalle.errors}")
-    return redirect('lista_productos_admin')
+    return redirect('historial_compras')
 
 def historial_compras(request):
     compras_registradas = Compra.objects.all().order_by('-fecha_compra')
     return render(request, 'productos/historial_compras.html', {
-        'compras': compras_registradas
+        'compras': compras_registradas,
+        'form_compra': CompraForm(),       # ← agregar
+        'form_detalle': DetalleCompraForm() # ← agregar
     })
 
 def detalle_compra(request, pk):
@@ -74,6 +76,13 @@ def detalle_compra(request, pk):
         'detalles': detalles,
         'total_calculado': total_real  # también lo pasamos directo
     })
+
+def eliminar_compra(request, pk):
+    compra = get_object_or_404(Compra, codigo_compra=pk)
+    if request.method == 'POST':
+        compra.delete()
+        messages.success(request, "✅ Compra eliminada correctamente.")
+    return redirect('historial_compras')
 
 def editar_producto(request, pk):
     producto = get_object_or_404(Producto, codigo_producto=pk)

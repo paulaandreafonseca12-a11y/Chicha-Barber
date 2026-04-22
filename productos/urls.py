@@ -36,6 +36,7 @@ urlpatterns = [
     path('historial/', views.historial_compras, name='historial_compras'),
     path('historial/<int:pk>/', views.detalle_compra, name='detalle_compra'),       # ← nuevo
     path('producto/editar/<int:pk>/', views.editar_producto, name='editar_producto'), # ← nuevo
+  path('historial/eliminar/<int:pk>/', views.eliminar_compra, name='eliminar_compra'),
     path('producto/eliminar/<int:pk>/', views.eliminar_producto, name='eliminar_producto'), # ← nuevo
     path('galeria', views.productos_galeria, name='productos_galeria'),
 ]
