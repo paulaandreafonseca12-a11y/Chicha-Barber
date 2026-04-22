@@ -139,13 +139,7 @@ justify-content:space-between;
    ============================================================ */
 
 .back .registro-card {
-    background-color: #000000 !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 15px !important;
-    padding: 1.5rem 2rem !important;
-    width: 100%;
     max-width: 400px !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important;
 }
 
 /* 2. Contenedores de Input (40px de alto) */
@@ -221,14 +215,12 @@ input:-webkit-autofill:active {
 
 /* 6. Botón Registrarse */
 .back .btn-registrar {
-    background-color: #00bcd4 !important;
     color: #000000 !important;
     border: none !important;
     border-radius: 8px !important;
     padding: 10px !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    width: 100%;
     margin-top: 10px;
 }
 
