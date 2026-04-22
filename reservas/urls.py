@@ -22,8 +22,10 @@ urlpatterns = [
     # Ahora la página principal de reservas SÍ procesa el guardado
     path('', views.reservas_view, name='reservas'),
     path('calificacion/', views.calificacion_view, name='calificacion'),
+    path('reservas/crear/<int:servicio_id>/', views.crear_reserva_user, name='crear_reserva'),
+    path('calificacion/crear/', views.calificacion_view, name='crear_calificacion'),
     path('cancelar/<int:pk>/', views.cancelar_cita, name='cancelar_cita'),
-    path('ver-agenda/', views.ver_agenda, name='ver_agenda'),
+    path('agenda/', views.ver_agenda, name='ver_agenda'),
     path('crear/', views.crear_reserva, name='crear_reserva'),
     path('cambiar-estado/<int:pk>/<str:nuevo_estado>/', views.cambiar_estado_reserva, name='cambiar_estado'),
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),

@@ -2,8 +2,22 @@ from django import forms
 from .models import Reserva, Calificacion
 from usuarios.models import Barbero
 
-# reservas/forms.py
+from django import forms
+from .models import Reserva
+
 class ReservaForm(forms.ModelForm):
+    # Definimos estos campos para que Django los acepte en el POST
+    fecha = forms.CharField(required=True)
+    hora = forms.CharField(required=True)
+
+    class Meta:
+        model = Reserva
+        fields = '__all__'
+        # Quitamos fecha_reserva y servicio de la validación obligatoria del form
+        # porque los construiremos manualmente en la vista.
+        exclude = ['fecha_reserva', 'servicio']
+
+class EditarReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
         fields = ['nombre_cliente', 'correo_cliente', 'telefono_cliente', 'fecha_reserva', 'servicio']

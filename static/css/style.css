@@ -1,179 +1,450 @@
-/* =========================
-   BACKGROUND
-========================= */
-body.back {
-    background-image:
-        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-        url('../img/Fondo.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+
+.color-blanco{
+    background-color: #f5f8de
+}
+.color-negro{
+    background-color: #030301
+}
+.color-gris{
+    background-color: #8d818c
+}
+.color-naranja{
+    background-color: #c47a2c
+}
+.color-azul{
+    background-color: #4bc0d9
+}
+
+
+/* 2. Configuramos el fondo en la clase 'back' que ya tienes en el body */
+
+.back{
+background-image:
+linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+url( '../img/Fondo.png' );
+background-size: cover;
+background-position:center;
+background-attachment:fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
-}
-
-/* Layout */
-main {
-    flex: 1;
-}
-
-/* =========================
-   COLORES GENERALES
-========================= */
-.color-negro-bg {
-    background: #111 !important;
-}
-
-.logo {
-    font-weight: bold;
-    font-size: 24px;
-}
-
-.titulo-productos {
-    color: #c59d5f;
-    font-weight: bold;
-}
-
-/* =========================
-   CARDS
-========================= */
-.card-body {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
-/* =========================
-   FORMULARIOS (ARREGLADO)
-   ❌ antes: global form-control
-   ✅ ahora: solo registro-card
-========================= */
-.registro-card .form-control {
+/* 3. Aseguramos que el contenido principal ocupe el espacio necesario */
+main {
+    flex: 1; /* Esto empuja el footer al fondo si hay poco contenido */
+    display: flex;
+    flex-direction: column;
+}
+
+
+.color-negro-bg{
+background:#030301 !important;
+}
+
+.hero-section{ 
+min-height:90vh;
+}
+.about-section p{
+line-height:1.8;
+color:#e6e6e6;
+}
+.carousel-item img{
+height:450px;
+object-fit:cover;
+}
+header a{
+transition:.3s;
+}
+/*Aqui va estilos de la pagina de Productos*/
+.color-negro-bg{
+background:#111;
+}
+
+.logo{
+font-weight:bold;
+font-size:24px;
+}
+
+.titulo-productos{
+color:#c59d5f;
+font-weight:bold;
+}
+
+
+
+.card-body{
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+.registro-card .form-control{
     background: #111;
     border: 1px solid #333;
     color: white;
     border-radius: 10px;
 }
 
-/* placeholder SOLO registro */
-.registro-card .form-control::placeholder {
+.form-control::placeholder{
     color: #999;
 }
-
-/* focus corregido */
-.registro-card .form-control:focus {
+.form-control:focus{
     background: #111;
     color: white;
     border-color: #c47a2c;
     box-shadow: 0 0 0 .2rem rgba(196,122,44,.25);
 }
-
-/* =========================
-   INPUT GROUP FIX
-========================= */
-.registro-card .input-group {
-    background-color: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
+.form-check-label{
+    color: #ccc;
 }
-
-/* =========================
-   BOTONES
-========================= */
-.btn-warning {
+.btn-warning{
     background: #c47a2c;
     border: none;
 }
-
-.btn-warning:hover {
+.btn-warning:hover{
     background: #a8621f;
 }
+    .img-thumbnail{
+        width: 100%;
+        height: 300px; 
+        object-fit: cover; 
+    }
 
-/* =========================
-   IMAGENES
-========================= */
-.img-thumbnail {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-}
-
-/* =========================
-   RESERVAS VARIABLES
-========================= */
+/* ---------- Estilos de RESERVAS ---------- */
 :root {
-    --cyan: #00d4f0;
-    --card-bg: rgba(20,24,32,0.97);
-    --card-border: rgba(255,255,255,0.07);
-    --surface: rgba(255,255,255,0.05);
+  --cyan: #00d4f0;
+  --cyan-dim: #0aa8bf;
+  --bg-dark: #0d0f13;
+  --card-bg: rgba(20,24,32,0.97);
+  --card-border: rgba(255,255,255,0.07);
+  --surface: rgba(255,255,255,0.05);
+  --surface-hover: rgba(0,212,240,0.12);
+  --text-muted-custom: #6b7280;
+  --bg:           #0e0f11;
+  --card:         rgba(18, 20, 23, 0.93);
+  --border:       rgba(255, 255, 255, 0.07);
+  --accent:       #29c5f6;
+  --glow:         rgba(41, 197, 246, 0.22);
+  --text:         #eef0f3;
+  --muted:        #6b7280;
+  --input-bg:     rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --slot-bg:      rgba(41, 197, 246, 0.07);
+  --slot-hover:   rgba(41, 197, 246, 0.16);
+  }
+
+  /* ============================================================
+   DISEÑO REGISTRO - CHICHA BARBER
+   ============================================================ */
+
+.back .registro-card {
+    background-color: #000000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 15px !important;
+    padding: 1.5rem 2rem !important;
+    width: 100%;
+    max-width: 400px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important;
 }
 
-/* =========================
-   BACK FIX (IMPORTANTE)
-========================= */
-.back {
-    min-height: 100vh;
-    display: block; /* ❗ FIX: quitado flex que rompía modales */
+/* 2. Contenedores de Input (40px de alto) */
+.back .input-group {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.8rem !important;
+    height: 40px !important; 
+    display: flex;
+    align-items: center;
+    position: relative; /* Base necesaria para posicionar el ojo */
+    overflow: hidden;
 }
 
-/* =========================
-   AUTOFILL FIX
-========================= */
+.back .form-control, 
+.back input {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+    height: 100% !important;
+    font-size: 0.85rem !important;
+    padding: 0 45px 0 10px !important; /* Espacio a la derecha para que el texto no tape el ojo */
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Forzar que el autocompletado sea Negro y no Blanco */
 input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
     -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px #111 inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important; /* Crea un fondo negro interno */
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* =========================
-   TOGGLE PASSWORD
-========================= */
-.toggle-password {
+/* 4. EL OJITO (Posicionamiento Absoluto) */
+.back .toggle-password {
     background: transparent !important;
     border: none !important;
-    color: rgba(255,255,255,0.5) !important;
-    position: absolute;
+    color: rgba(255, 255, 255, 0.5) !important;
+    position: absolute; /* Se clava a la derecha del contenedor */
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 100; /* Asegura que esté por encima de cualquier cuadro blanco */
     cursor: pointer;
+    padding: 0 !important;
+    font-size: 1rem !important;
+    display: flex;
+    align-items: center;
 }
 
-.toggle-password:hover {
+.back .toggle-password:hover {
     color: #00bcd4 !important;
 }
 
-/* =========================
-   INPUT ICONS
-========================= */
-.input-group-text {
-    background: transparent !important;
+/* 5. Iconos de la izquierda y Labels */
+.back .input-group-text {
+    background-color: transparent !important;
     border: none !important;
-    color: rgba(255,255,255,0.4) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    padding-left: 15px !important;
 }
 
-/* =========================
-   BOTÓN REGISTRO
-========================= */
-.btn-registrar {
+.back .form-label {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* 6. Botón Registrarse */
+.back .btn-registrar {
     background-color: #00bcd4 !important;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    padding: 10px;
-    font-weight: bold;
+    color: #000000 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
     width: 100%;
+    margin-top: 10px;
 }
 
-/* =========================
-   FIX BOOTSTRAP CONFLICT
-========================= */
-/* ❌ eliminado: form-control global override */
-/* ❌ eliminado: reglas que rompían modales */
+/* 7. Limpieza de iconos nativos del navegador */
+input::-ms-reveal, 
+input::-ms-clear { 
+    display: none !important; 
+}
+
+
+/* ---------- background photo ---------- */
+.bg-photo {
+  position: fixed; inset: 0; z-index: 0;
+  background: url('../img/Fondo.png') center/cover no-repeat;
+  filter: brightness(0.25) saturate(0.6);
+}
+
+/* ---------- navbar ---------- */
+.navbar-brand span { font-family: 'Bebas Neue', sans-serif; letter-spacing: 4px; font-size: 1.5rem; }
+.navbar-brand span.accent { color: var(--cyan); }
+.navbar { background: rgba(13,15,19,0.85) !important; backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); }
+.nav-reserve { color: var(--cyan) !important; font-size: .75rem; letter-spacing: 3px; font-weight: 500; }
+.navbar{
+    margin-top: 0px; /* Ajusta este valor a la altura de tu barra principal */
+    position: relative; 
+    z-index: 99; /* Un poco menos que la principal para que no se solapen */
+}
+
+/* ---------- booking card ---------- */
+.booking-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 30px 80px rgba(0,0,0,.7);
+  max-width: 780px;
+  width: 100%;
+}
+
+/* ---------- stepper ---------- */
+.stepper { position: relative; display: flex; align-items: center; justify-content: center; gap: 0; }
+.step-item { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; z-index: 1; }
+.step-circle {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .85rem; border: 2px solid var(--text-muted-custom);
+  color: var(--text-muted-custom); background: transparent;
+  transition: all .3s;
+}
+.step-item.active .step-circle { border-color: var(--cyan); color: var(--cyan); }
+.step-item.done .step-circle  { border-color: var(--cyan); background: var(--cyan); color: #000; }
+.step-label { font-size: .65rem; letter-spacing: 2px; color: var(--text-muted-custom); }
+.step-item.active .step-label,
+.step-item.done .step-label { color: var(--cyan); }
+.step-line { flex: 1; height: 1px; background: var(--card-border); max-width: 120px; }
+
+/* ---------- day cards ---------- */
+.day-card {
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 18px 12px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  background: var(--surface);
+  user-select: none;
+}
+.day-card:hover:not(.disabled) { border-color: var(--cyan); background: var(--surface-hover); }
+.day-card.selected { border-color: var(--cyan); background: var(--surface-hover); }
+.day-card .day-name { font-size: .65rem; letter-spacing: 2px; color: var(--text-muted-custom); }
+.day-card.selected .day-name { color: var(--cyan); }
+.day-card .day-number { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; line-height: 1; color: #fff; }
+.day-card.selected .day-number { color: var(--cyan); }
+.day-card .day-month { font-size: .75rem; color: #aaa; }
+.day-card.disabled { opacity: .4; cursor: not-allowed; }
+.day-card .badge-closed {
+  font-size: .6rem; letter-spacing: 1px; background: rgba(255,255,255,0.08);
+  color: #888; border-radius: 4px; padding: 2px 6px; margin-top: 4px; display: inline-block;
+}
+
+/* ---------- time slots ---------- */
+.time-slot {
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 12px 6px;
+  cursor: pointer;
+  text-align: center;
+  background: var(--surface);
+  font-size: .9rem;
+  font-weight: 500;
+  color: #ddd;
+  transition: all .2s;
+  position: relative;
+  user-select: none;
+}
+.time-slot::after { content: '•'; display: block; color: var(--cyan); font-size: .5rem; margin-top: 2px; }
+.time-slot:hover:not(.unavailable) { border-color: var(--cyan); background: var(--surface-hover); }
+.time-slot.selected { background: var(--cyan); border-color: var(--cyan); color: #000; font-weight: 700; }
+.time-slot.selected::after { color: #000; }
+.time-slot.unavailable { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+
+/* ---------- section label ---------- */
+.section-label { font-size: .7rem; letter-spacing: 2.5px; color: var(--cyan); font-weight: 600; }
+
+/* ---------- inputs ---------- */
+.form-control-dark {
+  background: var(--surface) !important;
+  border: 1px solid var(--card-border) !important;
+  color: #fff !important;
+  border-radius: 10px;
+}
+.form-control-dark:focus {
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 0 3px rgba(0,212,240,.15) !important;
+}
+.form-control-dark::placeholder { color: #555; }
+.form-label { font-size: .8rem; color: #aaa; margin-bottom: 6px; }
+
+/* ---------- payment options ---------- */
+.payment-option {
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--surface);
+}
+.payment-option:hover,
+.payment-option.selected { border-color: var(--cyan); background: var(--surface-hover); }
+.payment-option .pay-title { font-size: .9rem; font-weight: 500; color: #fff; }
+.payment-option .pay-sub   { font-size: .75rem; color: #888; }
+.payment-option .radio-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #555; display: inline-block; margin-right: 12px; flex-shrink: 0;
+  transition: all .2s; position: relative; top: 2px;
+}
+.payment-option.selected .radio-dot {
+  border-color: var(--cyan);
+  background: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,212,240,.2);
+}
+
+/* ---------- confirmation table ---------- */
+.confirm-table tr { border-bottom: 1px solid var(--card-border); }
+.confirm-table tr:last-child { border-bottom: none; }
+.confirm-table td { padding: 14px 0; }
+.confirm-table .label { font-size: .65rem; letter-spacing: 2px; color: #888; }
+.confirm-table .value { font-size: .9rem; color: #fff; }
+.confirm-table .value.accent { color: var(--cyan); font-weight: 600; }
+
+/* ---------- buttons ---------- */
+.btn-cyan {
+  background: var(--cyan); border: none; color: #000;
+  font-weight: 700; font-size: .8rem; letter-spacing: 2px;
+  border-radius: 10px; padding: 14px;
+  transition: all .2s;}
+.custom-btn {
+    background-color: #4bc0d9 !important;
+    border: none !important;
+    color: #111 !important;
+    padding: 12px !important;
+    border-radius: 5px !important;
+    letter-spacing: 1px !important;
+    font-size: 1rem !important;
+    transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s !important;
+    box-shadow: 0 4px 18px rgba(75, 192, 217, 0.25) !important;
+}
+.btn-cyan:hover { background: #fff; color: #000; }
+.btn-back {
+  background: var(--surface); border: 1px solid var(--card-border);
+  color: #aaa; font-size: .8rem; letter-spacing: 1px;
+  border-radius: 10px; padding: 14px 20px;
+  transition: all .2s;
+}
+.btn-back:hover { border-color: #aaa; color: #fff; }
+
+/* ---------- success screen ---------- */
+.success-icon { font-size: 4rem; color: var(--cyan); }
+.success-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 3px; color: #fff; }
+
+/* ---------- fade transition ---------- */
+.step-panel { animation: fadeUp .3s ease both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.custom-input {
+    background-color: rgba(240, 240, 240, 0.8) !important;
+    border: none;
+    padding: 12px;
+}
+
+.custom-btn {
+    background-color: #4bc0d9;
+    color: #333;
+    transition: background 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #ffffff; /* Brilla un poco más al pasar el mouse */
+} 
+
+.btn-seleccionar {
+    display: inline-block;
+    background-color: #00d1ff; /* El azul de tu barbería */
+    color: black;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-seleccionar:hover {
+    background-color: #008fb3;
+    transform: scale(1.05);
+}

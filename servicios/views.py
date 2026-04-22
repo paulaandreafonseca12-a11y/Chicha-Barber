@@ -1,6 +1,8 @@
 from django.shortcuts import render # type: ignore
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
-from django.contrib import messages # type: ignore
+from django.contrib import messages
+
+import servicios # type: ignore
 from .models import *
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
 from.models import Servicios, Promocion 
@@ -12,11 +14,12 @@ def servicios_view(request):
     
     context = {
         'titulo': 'Nuestros Servicios',
-        'servicios': servicios
+        'servicios': servicios  
     }
-    return render(request, 'servicios.html', context)
+    return render(request, 'servicios/servicios.html', context)
 def servicios_admin_view(request):
     servicios = Servicios.objects.all()
+    
     context = {
         'titulo': 'Nuestros Servicios',
         'servicios': servicios
@@ -62,27 +65,26 @@ def editar_servicios(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {servicio.nombre} actualizados correctamente.")
-            return redirect('inicio_servicios')
+            return redirect('listado-servicios')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
-        form = ServiciosForm(instance=servicio)
+        form = ServiciosEditarForm(instance=servicio)
 
     context = {
         'form': form,
         'titulo': f'Editar a {servicio.nombre}',
     }
-    return render(request, 'servicios/editar_servicio.html', context)
+    return render(request, 'servicios/editar_servicios.html', context)
 
-def eliminar_servicios(request, id):
-    servicio = get_object_or_404(Servicios, id=id)
+def eliminar_servicios(request, pk):
+    servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
         servicio.delete()
         messages.success(request, 'Servicio eliminado del sistema.')
         return redirect('listar_fichas')
-    return render(request, 'usuarios/confirmar_eliminacion.html', {'servicio': servicio})
+    return render(request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
 
-                                                                     
 def promocion(request):
     promociones = Promocion.objects.all()
     context = {
@@ -106,13 +108,10 @@ def crear_promocion(request):
     if request.method == 'POST':
         form = PromocionForm(request.POST)
         if form.is_valid():
-            
-            
-            
-            
+            Promocion = form.save(commit=False)
             
             # 4. Ahora sí guardamos en la base de datos
-            form.save()
+            promocion.save()
             messages.success(request, "Promoción creada exitosamente.")
             return redirect('listado-promocion')
         else:
@@ -128,14 +127,14 @@ def crear_promocion(request):
 
 
 def editar_promocion(request, pk):
-    promocion = get_object_or_404(promocion, pk=pk)
+    promocion = get_object_or_404(Promocion, pk=pk) #pk es igual que id, pero pk es más genérico y se usa para cualquier modelo, no solo para Promocion. Es una buena práctica usar pk en las vistas genéricas de Django.
 
     if request.method == 'POST':
         form = PromocionEditarForm(request.POST, instance=promocion)
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {promocion.nombre} actualizados correctamente.")
-            return redirect('inicio_servicios')
+            return redirect('listado-promocion')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
@@ -165,4 +164,4 @@ def eliminar_promocion(request, id):
         promocion.delete()
         messages.success(request, 'Promoción eliminada del sistema.')
         return redirect('listar_promociones')
-    return render(request, 'usuarios/confirmar_eliminacion.html', {'promocion': promocion})
+    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})

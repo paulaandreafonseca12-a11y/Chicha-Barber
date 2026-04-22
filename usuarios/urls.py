@@ -20,7 +20,7 @@ from . import views
 
 urlpatterns = [
     # Asegúrate de que el name sea 'registro'
-    path('registro/', views.registro_view, name='registro'), 
+    path('registro/', views.registro_view, name='registro'),
     # Debe tener el name='login' exacto
 path('login/', views.login_view, name='login'),
 ]
