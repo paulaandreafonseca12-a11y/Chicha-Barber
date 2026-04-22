@@ -1,0 +1,29 @@
+{% extends 'base-admin.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-warning">
+            <h4>Editar Stock - {{ stock.producto.nombre }}</h4>
+        </div>
+
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label>Cantidad</label>
+                    <input type="number" name="cantidad" 
+                           value="{{ stock.cantidad }}" 
+                           class="form-control">
+                </div>
+
+                <button class="btn btn-warning">Guardar</button>
+                <a href="{% url 'lista_productos_admin' %}" class="btn btn-secondary">Volver</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
