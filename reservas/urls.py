@@ -31,4 +31,3 @@ urlpatterns = [
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),
     
 ]
-
