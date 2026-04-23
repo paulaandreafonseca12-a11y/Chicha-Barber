@@ -1,30 +1,3 @@
-"""
-URL configuration for core project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-https://docs.djangoproject.com/en/6.0/topics/http/urls/
-
-Examples:
-
-Function views
-1. Add an import: from my_app import views
-2. Add a URL to urlpatterns: path('', views.home, name='home')
-
-Class-based views
-1. Add an import: from other_app.views import Home
-2. Add a URL to urlpatterns: path('', Home.as_view(), name='home')
-
-Including another URLconf
-1. Import the include() function: from django.urls import include, path
-2. Add a URL to urlpatterns: path('blog/', include('blog.urls'))
-"""
-from django.urls import path
-from . import views
-
-
-from django.urls import path
-from . import views
-
 from django.urls import path
 from . import views
 
@@ -45,7 +18,10 @@ urlpatterns = [
     path('producto/editar/<int:pk>/', views.editar_producto, name='editar_producto'),
     path('producto/eliminar/<int:pk>/', views.eliminar_producto, name='eliminar_producto'),
 
-    # 🔥 STOCK (SEPARADO)
+    # =========================
+    # 🔥 STOCK
+    # =========================
+    path('stock/', views.lista_stock, name='lista_stock'),  # 👈 INVENTARIO (tabla)
     path('stock/editar/<int:pk>/', views.editar_stock, name='editar_stock'),
 
     # =========================
