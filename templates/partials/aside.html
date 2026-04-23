@@ -32,14 +32,20 @@
         </div>
         
 
-        <div class="nav-item mt-2">
-            <a href="{% url 'promocion' %}" class="nav-link text-white p-3 rounded {% if 'promocion' in request.path %}bg-primary active{% endif %}">
-            <a href="{% url 'listado-promocion' %}" class="nav-link text-white p-3 rounded {% if 'promocion' in request.path %}bg-primary active{% endif %}">
-                <i class="bi bi-megaphone me-2"></i> Ofertas y Promos
-                <a href="{% url 'listado-promocion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
-                    <i class="bi bi-plus-circle me-2"></i>Ver todos
-                </a>
-            </a>
+        <div class="accordion accordion-flush bg-dark" id="sidebarAccordion">
+        
+        <div class="accordion-item bg-dark border-0">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios">
+                    <i class="bi bi-gear-wide-connected me-2"></i> Promociones 
+                </button>
+            </h2>
+            <div id="collapseServicios" class="accordion-collapse collapse {% if 'servicios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+                <div class="accordion-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'listado-promocion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-list-ul me-2"></i> Ver Todos
+                                      
           </a>
         </div>  
 
