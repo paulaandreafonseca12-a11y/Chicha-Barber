@@ -15,7 +15,7 @@
       <div class="card shadow">
           <div class="card-header bg-primary text-white d-flex justify-content-between">
               <h5 class="mb-0">Gestión de Promociones</h5>
-              <button class="btn btn-outline-light" onclick="window.location.href='{% url 'crear-promocion' %}'">+ Nueva Promoción</button>
+              <button class="btn btn-outline-light" onclick="window.location.href='{% url 'crear_promocion' %}'">+ Nueva Promoción</button>
           </div>
           <div class="card-body">
               <table class="table table-hover">
@@ -30,9 +30,9 @@
                   <tbody>
                       {% for promocion in promociones %} <tr>
                           <td>#{{ promocion.pk }}</td> <td><strong>{{ promocion.nombre }}</strong></td> <td>
-                              {% if promocion.activo %} <span class="badge bg-success">Activo</span>
+                              {% if promocion.activo %} <span class="btn btn-sm btn-success">Activo</span>
                               {% else %}
-                                <span class="badge bg-secondary">Inactivo</span>
+                                <span class="btn btn-sm btn-secondary">Inactivo</span>
                               {% endif %}
                           </td>
                           <td>

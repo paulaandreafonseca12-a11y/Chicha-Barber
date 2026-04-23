@@ -6,8 +6,10 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-warning fw-bold">Gestión de Inventario - Chicha Barber</h2>
-        <button type="button" class="btn btn-warning fw-bold shadow" data-bs-toggle="modal" data-bs-target="#modalNuevaCompra">
-            <i class="bi bi-plus-lg me-2"></i> Registrar Compra
+
+        <!-- BOTÓN -->
+        <button type="button" class="btn btn-warning fw-bold shadow" data-bs-toggle="modal" data-bs-target="#modalNuevoProducto">
+            <i class="bi bi-plus-lg me-2"></i> Nuevo Producto
         </button>
     </div>
 
@@ -20,19 +22,18 @@
                         <th>Imagen</th>
                         <th>Producto</th>
                         <th>Precio Venta</th>
-                        <th>Stock</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {% for producto in productos %}
                     <tr class="align-middle">
 
                         <td class="ps-4 fw-bold text-warning">
-                            {{ producto.codigo_producto }}
+                            {{ producto.codigo }}
                         </td>
 
-                        <!-- IMAGEN -->
                         <td>
                             {% if producto.imagen %}
                                 <img src="{{ producto.imagen.url }}" width="60" height="60"
@@ -43,11 +44,8 @@
                         </td>
 
                         <td>{{ producto.nombre }}</td>
-                        <td>${{ producto.precio_venta }}</td>
 
-                        <td>
-                            <span class="badge bg-info">{{ producto.stock.nombre }}</span>
-                        </td>
+                        <td>${{ producto.precio_venta }}</td>
 
                         <td class="text-center">
                             <a href="{% url 'editar_producto' producto.codigo_producto %}" 
@@ -67,18 +65,86 @@
                     <tr>
                         <td colspan="6" class="text-center py-5 text-muted">
                             <i class="bi bi-box-seam fs-1 d-block mb-3"></i>
-                            No hay productos registrados en el inventario.
+                            No hay productos registrados.
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
+
             </table>
         </div>
     </div>
 
 </div>
+
+<!-- MODAL CREAR PRODUCTO -->
+<div class="modal fade" id="modalNuevoProducto" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-white">
+
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-warning fw-bold">
+                    <i class="bi bi-box-seam"></i> Nuevo Producto
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label>Nombre</label>
+                            {{ form.nombre }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>Precio Venta</label>
+                            {{ form.precio_venta }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>Precio Compra</label>
+                            {{ form.precio_compra }}
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label>Descripción</label>
+                            {{ form.descripcion }}
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label>Imagen</label>
+                            {{ form.imagen }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning fw-bold">
+                        Guardar Producto
+                    </button>
+                </div>
+
+            </form>
+
         </div>
     </div>
 </div>
+
+<!-- 🔥 ABRIR MODAL SI HAY ERRORES -->
+{% if form.errors %}
+<script>
+    var modal = new bootstrap.Modal(document.getElementById('modalNuevoProducto'));
+    modal.show();
+</script>
+{% endif %}
 
 {% endblock %}

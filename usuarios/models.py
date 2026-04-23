@@ -12,28 +12,22 @@ ROLES = (
 
 # 2. Una SOLA clase Usuario con todos tus campos unidos
 class Usuario(AbstractUser):
-    nombre_completo = models.CharField(max_length=150, verbose_name="Nombre Completo")
+    # Usamos el campo username por defecto pero lo adaptamos para que sea el documento
+    username = models.CharField(
+        max_length=20, unique=True, verbose_name="Número de Documento"
+    )
     telefono = models.CharField(max_length=15, verbose_name="Teléfono")
     email = models.EmailField(unique=True) # Hacemos el email único
     rol = models.CharField(max_length=20, choices=ROLES, default='cliente')
+    especialidad = models.CharField(max_length=100, blank=True, null=True)
 
     # Estos campos son necesarios para que Django sepa cómo manejar el login
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'nombre_completo']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     def __str__(self):
-        return f"{self.nombre_completo} ({self.rol})"
+        return f"{self.first_name} {self.last_name} ({self.rol})"
 
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
-
-# 3. El modelo Barbero (que es independiente para tu lista de calificación)
-class Barbero(models.Model):
-    nombre = models.CharField(max_length=100, verbose_name="Nombre del Barbero")
-    especialidad = models.CharField(max_length=100, blank=True, null=True)
-    activo = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.nombre
-

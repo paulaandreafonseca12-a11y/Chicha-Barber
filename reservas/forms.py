@@ -1,6 +1,7 @@
 from django import forms
+
+from usuarios.models import Usuario
 from .models import Reserva, Calificacion
-from usuarios.models import Barbero
 
 from django import forms
 from .models import Reserva
@@ -30,7 +31,7 @@ class EditarReservaForm(forms.ModelForm):
 
 class CalificacionForm(forms.ModelForm):
     barbero_a_calificar = forms.ModelChoiceField(
-        queryset=Barbero.objects.all(),
+        queryset=Usuario.objects.filter(rol='barbero').order_by('username'),
         empty_label="Selecciona a tu barbero...",
         required=True,
         widget=forms.Select(attrs={'class': 'select-barbero'})
@@ -43,7 +44,7 @@ class CalificacionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Esto te ayudará a ver en la terminal si los barberos cargan bien
-        print(f"DEBUG: Barberos encontrados: {Barbero.objects.count()}")
+        print(f"DEBUG: Barberos encontrados: {Usuario.objects.filter(rol='barbero').count()}")
 
 class CalificacionEditarForm(forms.ModelForm):
     class Meta:

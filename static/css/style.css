@@ -1,18 +1,18 @@
 
 .color-blanco{
-    background-color: #f5f8de
+    background-color: #f5f8de !important
 }
 .color-negro{
-    background-color: #030301
+    background-color: #030301 !important
 }
 .color-gris{
-    background-color: #8d818c
+    background-color: #8d818c !important
 }
 .color-naranja{
-    background-color: #c47a2c
+    background-color: #c47a2c !important
 }
 .color-azul{
-    background-color: #4bc0d9
+    background-color: #4bc0d9 !important 
 }
 
 
@@ -139,13 +139,7 @@ justify-content:space-between;
    ============================================================ */
 
 .back .registro-card {
-    background-color: #000000 !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 15px !important;
-    padding: 1.5rem 2rem !important;
-    width: 100%;
     max-width: 400px !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important;
 }
 
 /* 2. Contenedores de Input (40px de alto) */
@@ -162,58 +156,19 @@ justify-content:space-between;
 }
 
 .back .form-control, 
-.back input {
-    background-color: transparent !important;
-    color: #ffffff !important;
-    border: none !important;
-    height: 100% !important;
-    font-size: 0.85rem !important;
-    padding: 0 45px 0 10px !important; /* Espacio a la derecha para que el texto no tape el ojo */
-    box-shadow: none !important;
-    outline: none !important;
-}
+
 
 /* Forzar que el autocompletado sea Negro y no Blanco */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
-input:-webkit-autofill:active {
-    -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important; /* Crea un fondo negro interno */
-    transition: background-color 5000s ease-in-out 0s;
-}
+
 
 /* 4. EL OJITO (Posicionamiento Absoluto) */
-.back .toggle-password {
-    background: transparent !important;
-    border: none !important;
-    color: rgba(255, 255, 255, 0.5) !important;
-    position: absolute; /* Se clava a la derecha del contenedor */
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100; /* Asegura que esté por encima de cualquier cuadro blanco */
-    cursor: pointer;
-    padding: 0 !important;
-    font-size: 1rem !important;
-    display: flex;
-    align-items: center;
-}
 
-.back .toggle-password:hover {
-    color: #00bcd4 !important;
-}
 
-/* 5. Iconos de la izquierda y Labels */
-.back .input-group-text {
-    background-color: transparent !important;
-    border: none !important;
-    color: rgba(255, 255, 255, 0.4) !important;
-    padding-left: 15px !important;
-}
 
 .back .form-label {
-    color: rgba(255, 255, 255, 0.8) !important;
     font-size: 0.8rem;
     margin-bottom: 4px;
     display: block;
@@ -221,14 +176,13 @@ input:-webkit-autofill:active {
 
 /* 6. Botón Registrarse */
 .back .btn-registrar {
-    background-color: #00bcd4 !important;
+    background-color: #c47a2c !important;
     color: #000000 !important;
     border: none !important;
     border-radius: 8px !important;
     padding: 10px !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    width: 100%;
     margin-top: 10px;
 }
 
@@ -243,7 +197,7 @@ input:-webkit-autofill:active {
 /* ---------- navbar ---------- */
 .navbar-brand span { font-family: 'Bebas Neue', sans-serif; letter-spacing: 4px; font-size: 1.5rem; }
 .navbar-brand span.accent { color: var(--cyan); }
-.navbar { background: rgba(13,15,19,0.85) !important; backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); }
+.navbar {  backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); }
 .nav-reserve { color: var(--cyan) !important; font-size: .75rem; letter-spacing: 3px; font-weight: 500; }
 .navbar{
     margin-top: 0px; /* Ajusta este valor a la altura de tu barra principal */
@@ -415,7 +369,7 @@ input:-webkit-autofill:active {
     padding: 12px;
 }
 
-.custom-btn {
+.custom-btn { 
     background-color: #4bc0d9;
     color: #333;
     transition: background 0.3s ease;

@@ -18,7 +18,7 @@
                     <strong class="text-white fs-1" style="letter-spacing: 5px;">CHICHA BARBER</strong>
                 </div>
 
-                <div class="registro-card shadow-lg p-4">
+                <div class="registro-card shadow-lg px-4 mx-auto py-5 color-negro shadow-lg p-4 w-100 rounded">
                     <h3 class="text-center text-white mb-1 fw-bold">Crear Cuenta</h3>
                     <p class="text-center text-white mb-4 opacity-75 small">Completa tus datos para el registro</p>
 
@@ -59,6 +59,15 @@
                             </div>
                         </div>
 
+                        <!-- ✅ CAMPO ROL -->
+                        <div class="mb-3">
+                            <label class="form-label">Rol</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                {{ form.rol }}
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">Contraseña</label>
                             <div class="input-group">
@@ -81,7 +90,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-registrar w-100">Registrarse</button>
+                        <button type="submit" class="btn btn-registrar w-100">REGISTRARSE</button>
                     </form>
                 </div> 
             </div> 

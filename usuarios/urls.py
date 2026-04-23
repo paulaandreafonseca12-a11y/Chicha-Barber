@@ -23,4 +23,6 @@ urlpatterns = [
     path('registro/', views.registro_view, name='registro'),
     # Debe tener el name='login' exacto
 path('login/', views.login_view, name='login'),
+    path('clientes/', views.lista_clientes, name='lista_clientes'),
+    path('barberos/', views.lista_barberos, name='lista_barberos'),
 ]

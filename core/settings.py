@@ -115,7 +115,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 # A dónde redirigir después de un login exitoso
-LOGIN_REDIRECT_URL = '/'  # Te manda a la página principal de la barbería
+LOGIN_REDIRECT_URL = '/panel/'  # Te manda a la página principal de la barbería
 
 # A dónde enviar a los intrusos que no han iniciado sesión
 LOGIN_URL = '/login/'

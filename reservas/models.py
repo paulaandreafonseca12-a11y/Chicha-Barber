@@ -1,5 +1,6 @@
 from django.db import models
-from servicios.models import Servicios 
+from servicios.models import Servicios
+from usuarios.models import Usuario 
 # Create your models here.
 
 class Reserva(models.Model):
@@ -20,7 +21,6 @@ class Reserva(models.Model):
     def __str__(self):
         return f"Reserva de {self.nombre_cliente} - {self.servicio.nombre} ({self.fecha_reserva})"
 # Importamos el modelo Barbero de tu aplicación de usuarios
-from usuarios.models import Barbero 
 
 
 class Reserva(models.Model):
@@ -43,7 +43,7 @@ class Reserva(models.Model):
     
 class Calificacion(models.Model):
     # Relación con el barbero que trabaja en Chicha Barber
-    barbero_a_calificar = models.ForeignKey(Barbero, on_delete=models.CASCADE)
+    barbero_a_calificar = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     nombre_cliente = models.CharField(max_length=100, default="Anónimo")
     calificacion = models.IntegerField() # Escala de 1 a 5
     resenia = models.TextField(verbose_name="Reseña")
@@ -53,4 +53,4 @@ class Calificacion(models.Model):
         verbose_name_plural = "Calificaciones"
 
     def __str__(self):
-        return f"Reseña para {self.barbero_a_calificar.nombre} - {self.calificacion}★"
+        return f"Reseña para {self.barbero_a_calificar.first_name} {self.barbero_a_calificar.last_name} - {self.calificacion}★"

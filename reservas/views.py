@@ -20,26 +20,22 @@ from servicios.models import Servicios
 
 def reservas_view(request):
     form = ReservaForm(request.POST or None)
-
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             messages.success(request, "¡Cita agendada con éxito!")
             return redirect('reservas:ver_agenda')
-
-    return render(request, 'reservas.html', {'form': form})
+    return render(request, 'reservas/reservas.html', {'form': form})
 
 
 def crear_reserva(request):
     form = ReservaForm(request.POST or None)
-
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             messages.success(request, "¡Cita agendada con éxito!")
             return redirect('reservas:ver_agenda')
-
-    return render(request, 'reservas.html', {'form': form})
+    return render(request, 'reservas/reservas.html', {'form': form})
 
 
 def crear_reserva_user(request, servicio_id):
@@ -50,9 +46,7 @@ def crear_reserva_user(request, servicio_id):
         if form.is_valid():
             reserva = form.save(commit=False)
             reserva.servicio = servicio
-
             fecha_str = request.POST.get('fecha_reserva')
-
             try:
                 reserva.fecha_reserva = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M")
                 reserva.save()
@@ -61,20 +55,17 @@ def crear_reserva_user(request, servicio_id):
             except (ValueError, TypeError):
                 messages.error(request, 'Formato de fecha inválido')
 
-    context = {
+    return render(request, 'reservas/reservas.html', {
         'servicio': servicio,
         'form': form,
         'titulo': f'Agendar {servicio.nombre}'
-    }
-
-    return render(request, 'reservas/reservas.html', context)
+    })
 
 
 def cancelar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
     cita.estado = 'cancelada'
     cita.save()
-
     messages.warning(request, f"Cita cancelada: {cita.nombre_cliente}")
     return redirect('reservas:ver_agenda')
 
@@ -108,7 +99,7 @@ def calificacion_view(request):
             messages.success(request, '¡Gracias por calificar!')
             return redirect('reservas:calificacion')
 
-    return render(request, 'calificacion.html', {'form': form})
+    return render(request, 'reservas/calificacion.html', {'form': form})
 
 
 def editar_calificacion(request, pk):
@@ -121,7 +112,7 @@ def editar_calificacion(request, pk):
             messages.success(request, 'Calificación actualizada.')
             return redirect('reservas:calificacion')
 
-    return render(request, 'calificacion/editar_calificacion.html', {'form': form})
+    return render(request, 'reservas/editar_calificacion.html', {'form': form})
 
 
 # =========================
@@ -130,17 +121,18 @@ def editar_calificacion(request, pk):
 
 def ver_agenda(request):
     reservas = Reserva.objects.all().order_by('-fecha_creacion')
-    return render(request, 'reservas/ver_agenda.html', {'reservas': reservas})
-
+    servicios = Servicios.objects.all()  # ← agregar
+    return render(request, 'reservas/ver_agenda.html', {
+        'reservas': reservas,
+        'servicios': servicios  # ← agregar
+    })
 
 def cambiar_estado_reserva(request, pk, nuevo_estado):
     reserva = get_object_or_404(Reserva, pk=pk)
-
     if nuevo_estado in ['reservada', 'confirmada', 'cancelada']:
         reserva.estado = nuevo_estado
         reserva.save()
         messages.info(request, f"Estado actualizado a {nuevo_estado}")
-
     return redirect('reservas:ver_agenda')
 
 
