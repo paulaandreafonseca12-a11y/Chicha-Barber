@@ -1,0 +1,89 @@
+{% extends 'base-admin.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="card bg-dark text-white shadow">
+
+        <div class="card-header bg-dark text-warning">
+            <h4>Inventario de Stock</h4>
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-dark table-hover mb-0">
+
+                <thead class="table-light text-dark">
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock actual</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for s in stocks %}
+                    <tr>
+
+                        <td class="text-warning fw-bold">
+                            {{ s.producto.codigo }}
+                        </td>
+
+                        <td>
+                            {{ s.producto.nombre }}
+                        </td>
+
+                        <td>
+                            {{ s.producto.descripcion|truncatechars:40 }}
+                        </td>
+
+                        <td>
+                            ${{ s.producto.precio_venta }}
+                        </td>
+
+                        <td>
+                            <span class="badge 
+                                {% if s.cantidad <= 5 %}
+                                    bg-danger
+                                {% elif s.cantidad <= 10 %}
+                                    bg-warning
+                                {% else %}
+                                    bg-success
+                                {% endif %}
+                            ">
+                                {{ s.cantidad }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <!-- MISMO EDITOR QUE YA TIENES -->
+                            <a href="{% url 'editar_stock' s.producto.codigo_producto %}" 
+                               class="btn btn-sm btn-outline-warning">
+                                Editar
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No hay stock registrado
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
