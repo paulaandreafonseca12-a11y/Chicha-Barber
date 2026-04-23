@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Usuario
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
@@ -11,9 +11,21 @@ ROLES_REGISTRO = (
 )
 
 class RegistroForm(UserCreationForm):
-    nombre_completo = forms.CharField(
+    username = forms.CharField(
+        max_length=20,
+        label="Número de Documento",
+        validators=[RegexValidator(r'^\d+$', 'El documento solo debe contener números.')],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. 1000123456'})
+    )
+    first_name = forms.CharField(
         max_length=150,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tu nombre completo'})
+        label="Nombre(s)",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Juan'})
+    )
+    last_name = forms.CharField(
+        max_length=150,
+        label="Apellido(s)",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Pérez'})
     )
     telefono = forms.CharField(
         max_length=15,
@@ -31,18 +43,14 @@ class RegistroForm(UserCreationForm):
 
     class Meta:
         model = Usuario
-        fields = ('nombre_completo', 'email', 'telefono', 'rol')
+        fields = ('username', 'first_name', 'last_name', 'email', 'telefono', 'rol')
 
-    def clean_password1(self):
-        password = self.cleaned_data.get('password1')
-        if len(password) < 8:
-            raise ValidationError("La contraseña debe tener al menos 8 caracteres.")
-        if not re.search(r'[A-Z]', password):
-            raise ValidationError("La contraseña debe contener al menos una mayúscula.")
-        if not re.search(r'[a-z]', password):
-            raise ValidationError("La contraseña debe contener al menos una minúscula.")
-        if not re.search(r'[0-9]', password):
-            raise ValidationError("La contraseña debe contener al menos un número.")
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            raise ValidationError("La contraseña debe contener al menos un carácter especial.")
-        return password
+class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(
+        label="Correo electrónico",
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'correo@ejemplo.com'})
+    )
+    password = forms.CharField(
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Tu contraseña'})
+    )

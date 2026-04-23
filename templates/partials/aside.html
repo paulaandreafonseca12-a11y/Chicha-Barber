@@ -111,14 +111,19 @@
     <div class="dropdown">
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-5 me-2"></i>
-            <strong>Administrador</strong>
+            <strong>{{ user.nombre_completo|default:user.username|default:"Administrador" }}</strong>
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="userMenu">
             <li><a class="dropdown-item" href="{% url 'inicio_admin' %}">Inicio Panel</a></li>
             <li><a class="dropdown-item" href="{% url 'inicio' %}">Ver Sitio Web</a></li>
             <li><a class="dropdown-item" href="#">Listado</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="#">Cerrar Sesión</a></li>
+            <li>
+                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start">Cerrar Sesión</button>
+                </form>
+            </li>
         </ul>
     </div>
 </aside>

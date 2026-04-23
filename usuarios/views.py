@@ -11,8 +11,7 @@ def registro_view(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.username = form.cleaned_data['email']
-            user.set_password(form.cleaned_data['password1'])
+            # El username (documento) y el password ya se procesan nativamente en el form
             user.rol = form.cleaned_data['rol']
             # Si es barbero, darle acceso al admin
             if user.rol == 'barbero':
@@ -28,9 +27,9 @@ def login_view(request):
     return render(request, 'registration/login.html')
 
 def lista_clientes(request):
-    clientes = Usuario.objects.filter(rol='cliente').order_by('nombre_completo')
+    clientes = Usuario.objects.filter(rol='cliente').order_by('first_name', 'last_name')
     return render(request, 'usuarios/clientes.html', {'clientes': clientes})
 
 def lista_barberos(request):
-    barberos = Usuario.objects.filter(rol='barbero').order_by('nombre_completo')
+    barberos = Usuario.objects.filter(rol='barbero').order_by('first_name', 'last_name')
     return render(request, 'usuarios/barberos.html', {'barberos': barberos})

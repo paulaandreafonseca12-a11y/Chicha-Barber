@@ -3,11 +3,26 @@ from django.contrib import messages  # type: ignore
 
 
 from django.shortcuts import render,redirect, get_object_or_404 # type: ignore
-
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 
 
 from servicios.forms import ServiciosEditarForm, ServiciosForm
 from servicios.models import Promocion
+from usuarios.forms import CustomLoginForm
+
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    form_class = CustomLoginForm
+    
+    def get_success_url(self):
+        url = self.get_redirect_url()
+        if url:
+            return url
+        # Redirigir al panel si es administrador, de lo contrario al inicio
+        if self.request.user.rol == 'admin':
+            return reverse_lazy('inicio_admin')
+        return reverse_lazy('inicio')
 
 def inicio(request):
     nombre = "Santiago"
@@ -37,8 +52,3 @@ def crear_promocion(request):
             
             
   
-
-
-
-
-
