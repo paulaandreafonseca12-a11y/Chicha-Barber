@@ -99,7 +99,7 @@ def calificacion_view(request):
             messages.success(request, '¡Gracias por calificar!')
             return redirect('reservas:calificacion')
 
-    return render(request, 'reservas/calificacion.html', {'form': form})
+    return render(request, 'calificacion/calificacion.html', {'form': form})
 
 
 def editar_calificacion(request, pk):
