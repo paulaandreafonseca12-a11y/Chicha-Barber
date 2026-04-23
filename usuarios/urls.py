@@ -16,13 +16,19 @@ Including another URLconf
 """
 # usuarios/urls.py
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    # Asegúrate de que el name sea 'registro'
+    # Inicio / Registro
     path('registro/', views.registro_view, name='registro'),
-    # Debe tener el name='login' exacto
-path('login/', views.login_view, name='login'),
-    path('clientes/', views.lista_clientes, name='lista_clientes'),
-    path('barberos/', views.lista_barberos, name='lista_barberos'),
+
+    # LOGIN: Usamos la vista integrada de Django para evitar errores
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    
+    # LOGOUT: También es importante tenerlo
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+    # LISTA UNIFICADA: Esta reemplaza a 'clientes' y 'barberos'
+    path('lista/', views.lista_usuarios, name='lista_usuarios'),
 ]
