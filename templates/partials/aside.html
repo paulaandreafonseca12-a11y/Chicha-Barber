@@ -96,12 +96,9 @@
             <div id="collapseUsuarios" class="accordion-collapse collapse {% if 'usuarios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
                 <div class="accordion-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="{#}rol=cliente" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
-                            <i class="bi bi-person me-2"></i> Clientes
-                        </a>
-                        <a href="{#}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
-                            <i class="bi bi-person-badge me-2"></i> Barberos
-                        </a>
+                        <a href="{% url 'lista_usuarios' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-person me-2"></i> Lista de usuarios
+        
                     </div>
                 </div>
             </div>
