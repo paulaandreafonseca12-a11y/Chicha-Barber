@@ -1,0 +1,63 @@
+{% extends 'base-admin.html' %}
+
+{% block content %}
+<div class="container-fluid py-4" style="background-color: #1a1d20; min-height: 100vh;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-warning fw-bold">
+            <i class="bi bi-scissors me-2"></i>Barberos Registrados
+        </h2>
+        <span class="badge bg-secondary fs-6">Total: {{ barberos.count }}</span>
+    </div>
+
+    <div class="card bg-dark text-white border-secondary shadow">
+        <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Nombre</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acceso Admin</th>
+                        <th>Fecha de Registro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for barbero in barberos %}
+                    <tr class="align-middle">
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle bg-info text-dark d-flex align-items-center justify-content-center fw-bold"
+                                     style="width:36px; height:36px; font-size:14px;">
+                                    {{ barbero.nombre_completo|first|upper }}
+                                </div>
+                                {{ barbero.nombre_completo }}
+                            </div>
+                        </td>
+                        <td>{{ barbero.email }}</td>
+                        <td>{{ barbero.telefono|default:"—" }}</td>
+                        <td>
+                            {% if barbero.is_staff %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Sí
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">No</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ barbero.date_joined|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="bi bi-scissors fs-1 d-block mb-3"></i>
+                            No hay barberos registrados aún.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
