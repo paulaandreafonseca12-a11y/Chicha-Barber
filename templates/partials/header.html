@@ -22,7 +22,7 @@
             </form>
 
             <div class="text-end">
-                {% if user.is_authenticated %}
+                {% if user.is authenticated %}
                     <span class="text-light me-3">Hola, {{ user.nombre_completo|default:user.username }}</span>
                     {% if user.rol == 'admin' %}
                         <a href="{% url 'inicio_admin' %}" class="btn btn-outline-info me-2">Panel Admin</a>
