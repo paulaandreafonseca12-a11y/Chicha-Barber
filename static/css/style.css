@@ -1,18 +1,18 @@
 
 .color-blanco{
-    background-color: #f5f8de
+    background-color: #f5f8de !important
 }
 .color-negro{
-    background-color: #030301
+    background-color: #030301 !important
 }
 .color-gris{
-    background-color: #8d818c
+    background-color: #8d818c !important
 }
 .color-naranja{
-    background-color: #c47a2c
+    background-color: #c47a2c !important
 }
 .color-azul{
-    background-color: #4bc0d9
+    background-color: #4bc0d9 !important 
 }
 
 
@@ -198,7 +198,6 @@ input:-webkit-autofill:active {
 }
 
 .back .form-label {
-    color: rgba(255, 255, 255, 0.8) !important;
     font-size: 0.8rem;
     margin-bottom: 4px;
     display: block;
@@ -254,7 +253,7 @@ input::-ms-clear {
 /* ---------- navbar ---------- */
 .navbar-brand span { font-family: 'Bebas Neue', sans-serif; letter-spacing: 4px; font-size: 1.5rem; }
 .navbar-brand span.accent { color: var(--cyan); }
-.navbar { background: rgba(13,15,19,0.85) !important; backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); }
+.navbar {  backdrop-filter: blur(12px); border-bottom: 1px solid var(--card-border); }
 .nav-reserve { color: var(--cyan) !important; font-size: .75rem; letter-spacing: 3px; font-weight: 500; }
 .navbar{
     margin-top: 0px; /* Ajusta este valor a la altura de tu barra principal */
