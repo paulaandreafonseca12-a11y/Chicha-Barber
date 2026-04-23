@@ -32,9 +32,9 @@
                   <tbody>
                       {% for servicio in servicios %} <tr>
                           <td>#{{ servicio.pk }}</td> <td><strong>{{ servicio.nombre }}</strong></td> <td>
-                              {% if servicio.activo %} <span class="badge bg-success">Activo</span>
+                              {% if servicio.activo %} <span class="btn btn-sm btn-success">Activo</span>
                               {% else %}
-                                <span class="badge bg-secondary">Inactivo</span>
+                                <span class="btn btn-sm btn-secondary">Inactivo</span>
                               {% endif %}
                           </td>
                           <td>
