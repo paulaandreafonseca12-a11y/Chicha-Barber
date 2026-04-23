@@ -162,40 +162,11 @@ justify-content:space-between;
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
-input:-webkit-autofill:active {
-    -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset !important; /* Crea un fondo negro interno */
-    transition: background-color 5000s ease-in-out 0s;
-}
+
 
 /* 4. EL OJITO (Posicionamiento Absoluto) */
-.back .toggle-password {
-    background: transparent !important;
-    border: none !important;
-    color: rgba(255, 255, 255, 0.5) !important;
-    position: absolute; /* Se clava a la derecha del contenedor */
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100; /* Asegura que esté por encima de cualquier cuadro blanco */
-    cursor: pointer;
-    padding: 0 !important;
-    font-size: 1rem !important;
-    display: flex;
-    align-items: center;
-}
 
-.back .toggle-password:hover {
-    color: #00bcd4 !important;
-}
 
-/* 5. Iconos de la izquierda y Labels */
-.back .input-group-text {
-    background-color: transparent !important;
-    border: none !important;
-    color: rgba(255, 255, 255, 0.4) !important;
-    padding-left: 15px !important;
-}
 
 .back .form-label {
     font-size: 0.8rem;
