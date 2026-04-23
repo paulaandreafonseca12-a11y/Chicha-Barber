@@ -22,7 +22,6 @@
                         <th>Imagen</th>
                         <th>Producto</th>
                         <th>Precio Venta</th>
-                        <th>Stock</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -47,13 +46,6 @@
                         <td>{{ producto.nombre }}</td>
 
                         <td>${{ producto.precio_venta }}</td>
-
-                        <!-- STOCK -->
-                        <td>
-                            <span class="badge bg-info">
-                                {{ producto.stock.cantidad|default:"0" }}
-                            </span>
-                        </td>
 
                         <td class="text-center">
                             <a href="{% url 'editar_producto' producto.codigo_producto %}" 

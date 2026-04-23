@@ -99,14 +99,14 @@ def eliminar_producto(request, pk):
 # =========================
 
 def editar_stock(request, pk):
-    stock = get_object_or_404(Stock, producto__codigo_producto=pk)
+    stock = get_object_or_404(Stock, pk=pk)
 
     if request.method == 'POST':
         form = StockForm(request.POST, instance=stock)
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Stock actualizado correctamente")
-            return redirect('lista_productos_admin')
+            return redirect('lista_stock')
         else:
             messages.error(request, "❌ Error al actualizar stock")
     else:
