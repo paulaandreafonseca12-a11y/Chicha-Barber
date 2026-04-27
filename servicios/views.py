@@ -112,8 +112,8 @@ def editar_promocion(request, pk):
 
     return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
 
-def eliminar_promocion(request, id):
-    promocion = get_object_or_404(Promocion, id=id)
+def eliminar_promocion(request, pk):
+    promocion = get_object_or_404(Promocion, pk=pk)
     if request.method == 'POST':
         promocion.delete()
         messages.success(request, 'Promoción eliminada.')

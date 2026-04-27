@@ -4,15 +4,17 @@
 {% block content %}
 <main class="p-4 w-10 m-auto">
     
-    <div class="p-5 mb-5 bg-body-tertiary rounded-3 opacity-75 shadow-sm text-center">
-        <div class="container-fluid py-1">
-            <h1 class="display-5 fw-bold text-uppercase">Nuestros Servicios</h1> 
-            <p class="fs-4">Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.</p> 
-        </div>
-    </div>
+   <div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">Servicios</h5>
+    <p class="card-text">Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.</p>
+   
+  </div>
+</div>
+    
 
     <div class="container">
-        <div class="row row-cols-1 row-cols-md-3 g-4 bg-transparent">
+        <div class="row row-cols-1 row-cols-md-3 g-4 bg-transparent p-4 rounded-3 shadow-sm">
 
             
             {% for servicio in servicios %}
