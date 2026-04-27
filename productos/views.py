@@ -2,7 +2,7 @@
 from django.contrib import messages
 from .models import Compra, Producto, DetalleCompra, Stock
 from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
-
+from django.http import JsonResponse
 
 # =========================
 # 🟢 VISTAS CLIENTE
@@ -11,11 +11,6 @@ from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
 def productos_galeria(request):
     productos = Producto.objects.all()
     return render(request, 'productos/productos_galeria.html', {'productos': productos})
-
-
-def productos(request):
-    productos = Producto.objects.all()
-    return render(request, 'Productos.html', {'productos': productos})
 
 
 def carrito(request):
@@ -39,6 +34,7 @@ def procesar_pago_cliente(request):
         )
         messages.success(request, "✅ Pago realizado con éxito")
         return redirect('productos_galeria')
+
     return redirect('productos_galeria')
 
 
@@ -47,13 +43,23 @@ def procesar_pago_cliente(request):
 # =========================
 
 def lista_productos_admin(request):
-    productos_listado = Producto.objects.all()
+    productos = Producto.objects.all()
 
-    # 🔥 Crear producto desde modal
+    return render(request, 'productos/productos_admin.html', {
+        'productos': productos
+    })
+
+
+# 🔥 CREAR PRODUCTO (SEPARADO)
+def crear_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            producto = form.save()
+
+            # 🔥 OPCIONAL: crear stock automático
+            Stock.objects.get_or_create(producto=producto)
+
             messages.success(request, "✅ Producto creado correctamente")
             return redirect('lista_productos_admin')
         else:
@@ -61,8 +67,7 @@ def lista_productos_admin(request):
     else:
         form = ProductoForm()
 
-    return render(request, 'productos/productos_admin.html', {
-        'productos': productos_listado,
+    return render(request, 'productos/editar_producto.html', {
         'form': form
     })
 
@@ -82,8 +87,7 @@ def editar_producto(request, pk):
         form = ProductoForm(instance=producto)
 
     return render(request, 'productos/editar_producto.html', {
-        'form': form,
-        'producto': producto
+        'form': form
     })
 
 
@@ -97,6 +101,13 @@ def eliminar_producto(request, pk):
 # =========================
 # 🔥 STOCK (SEPARADO)
 # =========================
+
+def lista_stock(request):
+    stocks = Stock.objects.select_related('producto')
+    return render(request, 'productos/stock_admin.html', {
+        'stocks': stocks
+    })
+
 
 def editar_stock(request, pk):
     stock = get_object_or_404(Stock, pk=pk)
@@ -117,11 +128,7 @@ def editar_stock(request, pk):
         'stock': stock
     })
 
-def lista_stock(request):
-    stocks = Stock.objects.select_related('producto')
-    return render(request, 'productos/stock_admin.html', {
-        'stocks': stocks
-    })
+
 # =========================
 # 🟡 COMPRAS
 # =========================
@@ -184,3 +191,30 @@ def eliminar_compra(request, pk):
         messages.success(request, "✅ Compra eliminada")
 
     return redirect('historial_compras')
+# =========================
+# 🛒 CARRITO
+# =========================
+
+def agregar_carrito(request):
+    if request.method == 'POST':
+        id_producto = request.POST.get('id')
+        nombre = request.POST.get('nombre')
+        precio = request.POST.get('precio')
+
+        carrito = request.session.get('carrito', {})
+
+        if id_producto in carrito:
+            carrito[id_producto]['cantidad'] += 1
+        else:
+            carrito[id_producto] = {
+                'nombre': nombre,
+                'precio': float(precio),
+                'cantidad': 1
+            }
+
+        request.session['carrito'] = carrito
+        request.session.modified = True
+
+        return JsonResponse({'ok': True})
+
+    return JsonResponse({'ok': False})
