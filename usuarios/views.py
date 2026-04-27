@@ -26,7 +26,7 @@ def registro_view(request):
         form = RegistroForm()
     return render(request, 'usuarios/registro.html', {'form': form})
 
-@login_required
+
 def lista_usuarios(request):
     # Capturamos el rol de la URL (ej: /usuarios/?rol=barbero)
     rol_filtro = request.GET.get('rol')
@@ -38,7 +38,7 @@ def lista_usuarios(request):
         
     usuarios = usuarios.order_by('first_name', 'last_name')
     
-    return render(request, 'usuarios/lista.html', {
+    return render(request, 'usuarios/lista_usuarios.html', {
         'usuarios': usuarios,
         'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios"
     })
