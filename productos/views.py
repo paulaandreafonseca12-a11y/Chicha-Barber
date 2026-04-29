@@ -3,39 +3,92 @@ from django.contrib import messages
 from .models import Compra, Producto, DetalleCompra, Stock
 from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
 from django.http import JsonResponse
+import json
+
 
 # =========================
-# 🟢 VISTAS CLIENTE
+# 🟢 CLIENTE
 # =========================
 
 def productos_galeria(request):
     productos = Producto.objects.all()
-    return render(request, 'productos/productos_galeria.html', {'productos': productos})
+    return render(request, 'productos/productos_galeria.html', {
+        'productos': productos
+    })
 
 
+# 🔥 YA NO USA SESSION (porque usas localStorage)
 def carrito(request):
-    carrito_items = request.session.get('carrito', {})
-    return render(request, 'productos/carrito.html', {'carrito': carrito_items})
+    return render(request, 'productos/carrito.html')
 
 
 def pago(request):
     return render(request, 'productos/pago.html')
 
 
+# 🔥 COMPRA REAL COMPLETA
 def procesar_pago_cliente(request):
     if request.method == 'POST':
-        Compra.objects.create(
-            nombre_cliente=request.POST.get('nombre'),
-            correo=request.POST.get('correo'),
-            telefono=request.POST.get('telefono'),
-            direccion=request.POST.get('direccion'),
-            metodo_pago=request.POST.get('metodo_pago'),
-            total=request.POST.get('total')
+
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        telefono = request.POST.get('telefono')
+        direccion = request.POST.get('direccion')
+        metodo_pago = request.POST.get('pago')
+        carrito_json = request.POST.get('carrito')
+
+        if not carrito_json:
+            messages.error(request, "❌ El carrito está vacío")
+            return redirect('carrito')
+
+        carrito = json.loads(carrito_json)
+
+        total = 0
+
+        # ✅ CREAR COMPRA
+        compra = Compra.objects.create(
+            nombre_cliente=nombre,
+            correo=correo,
+            telefono=telefono,
+            direccion=direccion,
+            metodo_pago=metodo_pago,
+            total=0
         )
-        messages.success(request, "✅ Pago realizado con éxito")
+
+        # 🔥 GUARDAR DETALLE
+        for item in carrito:
+            producto = Producto.objects.get(codigo_producto=item['id'])
+
+            stock = Stock.objects.get(producto=producto)
+
+            # 🚨 VALIDAR STOCK
+            if stock.cantidad < item['cantidad']:
+                messages.error(request, f"❌ Sin stock: {producto.nombre}")
+                return redirect('carrito')
+
+            subtotal = item['cantidad'] * float(item['precio'])
+            total += subtotal
+
+            DetalleCompra.objects.create(
+                compra=compra,
+                producto=producto,
+                cantidad=item['cantidad'],
+                precio=item['precio'],
+                subtotal=subtotal
+            )
+
+            # 🔥 DESCONTAR STOCK
+            stock.cantidad -= item['cantidad']
+            stock.save()
+
+        compra.total = total
+        compra.save()
+
+        messages.success(request, "✅ Compra realizada con éxito")
+
         return redirect('productos_galeria')
 
-    return redirect('productos_galeria')
+    return redirect('carrito')
 
 
 # =========================
@@ -44,20 +97,18 @@ def procesar_pago_cliente(request):
 
 def lista_productos_admin(request):
     productos = Producto.objects.all()
-
     return render(request, 'productos/productos_admin.html', {
         'productos': productos
     })
 
 
-# 🔥 CREAR PRODUCTO (SEPARADO)
 def crear_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
             producto = form.save()
 
-            # 🔥 OPCIONAL: crear stock automático
+            # 🔥 CREA STOCK AUTOMÁTICO
             Stock.objects.get_or_create(producto=producto)
 
             messages.success(request, "✅ Producto creado correctamente")
@@ -99,7 +150,7 @@ def eliminar_producto(request, pk):
 
 
 # =========================
-# 🔥 STOCK (SEPARADO)
+# 🔥 STOCK
 # =========================
 
 def lista_stock(request):
@@ -130,41 +181,13 @@ def editar_stock(request, pk):
 
 
 # =========================
-# 🟡 COMPRAS
+# 🟡 COMPRAS (ADMIN)
 # =========================
-
-def registrar_compra(request):
-    if request.method == 'POST':
-        form_compra = CompraForm(request.POST)
-        form_detalle = DetalleCompraForm(request.POST)
-
-        if form_compra.is_valid() and form_detalle.is_valid():
-            nueva_compra = form_compra.save()
-
-            detalle = form_detalle.save(commit=False)
-            detalle.compra = nueva_compra
-            detalle.subtotal = detalle.cantidad * detalle.producto.precio_venta
-            detalle.save()
-
-            nueva_compra.total = detalle.subtotal
-            nueva_compra.save()
-
-            messages.success(request, "✅ Compra registrada exitosamente")
-            return redirect('historial_compras')
-        else:
-            messages.error(request, f"❌ Error compra: {form_compra.errors}")
-            messages.error(request, f"❌ Error detalle: {form_detalle.errors}")
-
-    return redirect('historial_compras')
-
 
 def historial_compras(request):
     compras = Compra.objects.all().order_by('-fecha_compra')
-
     return render(request, 'productos/historial_compras.html', {
-        'compras': compras,
-        'form_compra': CompraForm(),
-        'form_detalle': DetalleCompraForm()
+        'compras': compras
     })
 
 
@@ -173,8 +196,6 @@ def detalle_compra(request, pk):
     detalles = compra.detalles.all()
 
     total = sum(d.subtotal for d in detalles)
-    compra.total = total
-    compra.save(update_fields=['total'])
 
     return render(request, 'productos/detalle_compra.html', {
         'compra': compra,
@@ -191,30 +212,3 @@ def eliminar_compra(request, pk):
         messages.success(request, "✅ Compra eliminada")
 
     return redirect('historial_compras')
-# =========================
-# 🛒 CARRITO
-# =========================
-
-def agregar_carrito(request):
-    if request.method == 'POST':
-        id_producto = request.POST.get('id')
-        nombre = request.POST.get('nombre')
-        precio = request.POST.get('precio')
-
-        carrito = request.session.get('carrito', {})
-
-        if id_producto in carrito:
-            carrito[id_producto]['cantidad'] += 1
-        else:
-            carrito[id_producto] = {
-                'nombre': nombre,
-                'precio': float(precio),
-                'cantidad': 1
-            }
-
-        request.session['carrito'] = carrito
-        request.session.modified = True
-
-        return JsonResponse({'ok': True})
-
-    return JsonResponse({'ok': False})
