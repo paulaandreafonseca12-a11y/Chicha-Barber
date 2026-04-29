@@ -150,3 +150,29 @@ def reprogramar_cita(request, pk):
         'form': form,
         'cita': cita
     })
+def crear_reserva_admin(request):
+    from servicios.models import Servicios
+    servicios = Servicios.objects.all()
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre_cliente')
+        correo = request.POST.get('correo_cliente')
+        telefono = request.POST.get('telefono_cliente')
+        fecha = request.POST.get('fecha_reserva')
+        servicio_id = request.POST.get('servicio')
+
+        try:
+            servicio = Servicios.objects.get(id=servicio_id)
+            Reserva.objects.create(
+                nombre_cliente=nombre,
+                correo_cliente=correo,
+                telefono_cliente=telefono,
+                fecha_reserva=fecha,
+                servicio=servicio,
+            )
+            messages.success(request, "¡Cita registrada con éxito!")
+            return redirect('ver_agenda')
+        except Exception as e:
+            messages.error(request, f"Error al guardar: {e}")
+
+    return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
