@@ -24,7 +24,7 @@ urlpatterns = [
     path('cancelar/<int:pk>/', views.cancelar_cita, name='cancelar_cita'),
     path('agenda/', views.ver_agenda, name='ver_agenda'),
     path('crear/', views.crear_reserva, name='crear_reserva'),
-    path('crear/<int:servicio_id>/', views.crear_reserva_user, name='crear_reserva_user'),  # ← nombre distinto
+    path('crear/<int:servicio_id>/', views.crear_reserva_user, name='crear_reserva'),  # ← nombre distinto
     path('cambiar-estado/<int:pk>/<str:nuevo_estado>/', views.cambiar_estado_reserva, name='cambiar_estado'),
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),
     
