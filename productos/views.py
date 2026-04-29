@@ -184,3 +184,9 @@ def eliminar_compra(request, pk):
         messages.success(request, "✅ Compra eliminada")
 
     return redirect('historial_compras')
+
+def registrar_compra_form(request):
+    return render(request, 'productos/registrar_compra.html', {
+        'form_compra': CompraForm(),
+        'form_detalle': DetalleCompraForm()
+    })
