@@ -152,11 +152,19 @@ def registrar_compra(request):
             messages.success(request, "✅ Compra registrada exitosamente")
             return redirect('historial_compras')
         else:
-            messages.error(request, f"❌ Error compra: {form_compra.errors}")
-            messages.error(request, f"❌ Error detalle: {form_detalle.errors}")
+            # Si hay errores en el POST, volvemos a renderizar la página con los errores
+            messages.error(request, "❌ Por favor corrige los errores en el formulario.")
+    else:
+        # --- ESTO ES LO QUE TE FALTABA ---
+        # Creamos los formularios vacíos para que el HTML los pueda dibujar
+        form_compra = CompraForm()
+        form_detalle = DetalleCompraForm()
 
-    return redirect('historial_compras')
-
+    # El render DEBE ir fuera del if/else o en el bloque else para manejar el GET
+    return render(request, 'productos/registrar_compra.html', {
+        'form_compra': form_compra,
+        'form_detalle': form_detalle
+    })
 
 def historial_compras(request):
     compras = Compra.objects.all().order_by('-fecha_compra')
