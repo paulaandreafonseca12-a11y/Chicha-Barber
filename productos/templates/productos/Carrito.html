@@ -8,10 +8,9 @@
         Carrito de Compras
     </h2>
 
-    <!-- 🔥 MENSAJE + TEMPORIZADOR -->
+    <!-- ⏳ TEMPORIZADOR -->
     <div class="alert alert-warning text-center">
         ⏳ Tienes <strong><span id="tiempo">05:00</span></strong> minutos para completar tu compra.
-        Después de este tiempo el carrito se vaciará automáticamente.
     </div>
 
     <table class="table table-striped text-center">
@@ -32,10 +31,9 @@
 
     <div class="text-end">
 
-        <!-- 🔥 TOTAL MEJORADO -->
         <h4 class="total" style="color: white;">
             Total a pagar:
-            <span id="total"></span>
+            <span id="total">$0</span>
         </h4>
 
         <a href="{% url 'pago' %}" class="btn btn-success mt-3">
@@ -52,93 +50,128 @@
 
 <script>
 
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    function mostrarCarrito() {
+// 🔥 FORMATEAR PRECIO
+function formatoCOP(valor) {
+    return new Intl.NumberFormat('es-CO').format(valor);
+}
 
-        let tabla = document.getElementById("tabla-carrito");
-        tabla.innerHTML = "";
+function mostrarCarrito() {
 
-        let total = 0;
+    let tabla = document.getElementById("tabla-carrito");
+    tabla.innerHTML = "";
 
-        carrito.forEach((producto, index) => {
+    let total = 0;
 
-            let subtotal = producto.precio * producto.cantidad;
-            total += subtotal;
-
-            tabla.innerHTML += `
-                <tr>
-                    <td>${producto.nombre}</td>
-                    <td>$${producto.precio}</td>
-
-                    <td>
-                        <button class="btn btn-sm btn-dark"
-                            onclick="cambiarCantidad(${index}, -1)">-</button>
-
-                        ${producto.cantidad}
-
-                        <button class="btn btn-sm btn-dark"
-                            onclick="cambiarCantidad(${index}, 1)">+</button>
-                    </td>
-
-                    <td>$${subtotal}</td>
-
-                    <td>
-                        <button class="btn btn-danger btn-sm"
-                            onclick="eliminarProducto(${index})">
-                            Eliminar
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
-
-        document.getElementById("total").textContent = "$" + total;
-        localStorage.setItem("carrito", JSON.stringify(carrito));
+    if (carrito.length === 0) {
+        tabla.innerHTML = `
+            <tr>
+                <td colspan="5">🛒 Tu carrito está vacío</td>
+            </tr>
+        `;
+        document.getElementById("total").textContent = "$0";
+        return;
     }
 
-    function cambiarCantidad(index, cambio) {
-        carrito[index].cantidad += cambio;
+    carrito.forEach((producto, index) => {
 
-        if (carrito[index].cantidad <= 0) {
-            carrito.splice(index, 1);
-        }
+        let subtotal = producto.precio * producto.cantidad;
+        total += subtotal;
 
-        mostrarCarrito();
-    }
+        tabla.innerHTML += `
+            <tr>
+                <td>${producto.nombre}</td>
+                <td>$${formatoCOP(producto.precio)}</td>
 
-    function eliminarProducto(index) {
+                <td>
+                    <button class="btn btn-sm btn-dark"
+                        onclick="cambiarCantidad(${index}, -1)">-</button>
+
+                    ${producto.cantidad}
+
+                    <button class="btn btn-sm btn-dark"
+                        onclick="cambiarCantidad(${index}, 1)">+</button>
+                </td>
+
+                <td>$${formatoCOP(subtotal)}</td>
+
+                <td>
+                    <button class="btn btn-danger btn-sm"
+                        onclick="eliminarProducto(${index})">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("total").textContent = "$" + formatoCOP(total);
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    actualizarContadorGlobal();
+}
+
+// 🔥 CAMBIAR CANTIDAD
+function cambiarCantidad(index, cambio) {
+    carrito[index].cantidad += cambio;
+
+    if (carrito[index].cantidad <= 0) {
         carrito.splice(index, 1);
-        mostrarCarrito();
     }
 
     mostrarCarrito();
+}
 
-    // 🔥 TEMPORIZADOR (5 minutos)
-    let tiempoRestante = 300; // 300 segundos = 5 min
+// 🔥 ELIMINAR
+function eliminarProducto(index) {
+    carrito.splice(index, 1);
+    mostrarCarrito();
+}
 
-    function actualizarTiempo() {
-        let minutos = Math.floor(tiempoRestante / 60);
-        let segundos = tiempoRestante % 60;
+// 🔥 CONTADOR GLOBAL (si lo tienes en navbar)
+function actualizarContadorGlobal() {
+    let total = 0;
+    carrito.forEach(p => total += p.cantidad);
 
-        document.getElementById("tiempo").textContent =
-            `${minutos}:${segundos < 10 ? "0" : ""}${segundos}`;
+    let contador = document.getElementById("contador");
+    if (contador) contador.textContent = total;
+}
 
-        if (tiempoRestante <= 0) {
-            clearInterval(contador);
+mostrarCarrito();
 
-            // 🔥 BORRAR CARRITO
-            localStorage.removeItem("carrito");
 
-            alert("⏰ Tiempo agotado. Tu carrito ha sido vaciado.");
+// ⏳ TEMPORIZADOR REAL (persistente)
+let tiempoRestante = localStorage.getItem("tiempo_carrito");
 
-            location.reload();
-        }
+if (!tiempoRestante) {
+    tiempoRestante = 300;
+} else {
+    tiempoRestante = parseInt(tiempoRestante);
+}
 
-        tiempoRestante--;
+function actualizarTiempo() {
+    let minutos = Math.floor(tiempoRestante / 60);
+    let segundos = tiempoRestante % 60;
+
+    document.getElementById("tiempo").textContent =
+        `${minutos}:${segundos < 10 ? "0" : ""}${segundos}`;
+
+    if (tiempoRestante <= 0) {
+        clearInterval(contador);
+
+        localStorage.removeItem("carrito");
+        localStorage.removeItem("tiempo_carrito");
+
+        alert("⏰ Tiempo agotado. Tu carrito ha sido vaciado.");
+        location.reload();
     }
 
-    let contador = setInterval(actualizarTiempo, 1000);
+    tiempoRestante--;
+    localStorage.setItem("tiempo_carrito", tiempoRestante);
+}
+
+let contador = setInterval(actualizarTiempo, 1000);
 
 </script>
 

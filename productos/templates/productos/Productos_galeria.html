@@ -19,7 +19,7 @@
         <div class="col-md-4">
             <div class="card shadow">
 
-                <!-- ✅ IMAGEN DINÁMICA -->
+                <!-- IMAGEN -->
                 <img 
                     src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'img/Aceite.jpg' %}{% endif %}" 
                     class="card-img-top"
@@ -40,9 +40,9 @@
                         ${{ producto.precio_venta }} COP
                     </p>
 
-                    <!-- ✅ BOTÓN CORREGIDO -->
+                    <!-- ✅ BOTÓN ARREGLADO -->
                     <button class="btn btn-dark"
-                        onclick="agregarCarrito({ producto_codigo_producto }, '{{ producto.nombre|escapejs }}', { producto_precio_venta })">
+                        onclick="agregarCarrito({{ producto.codigo_producto }}, '{{ producto.nombre|escapejs }}', {{ producto.precio_venta|floatformat:0 }})">
                         Agregar al carrito
                     </button>
 
@@ -97,8 +97,10 @@ function actualizarContador() {
     document.getElementById("contador").textContent = total;
 }
 
-// Ejecutar al cargar
-actualizarContador();
+// Ejecutar al cargar la página
+document.addEventListener("DOMContentLoaded", function() {
+    actualizarContador();
+});
 
 </script>
 
