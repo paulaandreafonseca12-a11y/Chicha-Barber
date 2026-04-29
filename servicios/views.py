@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-# Eliminados imports redundantes y corregido el import de modelos
 from .models import Servicios, Promocion 
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
 
+# --- VISTAS DE SERVICIOS ---
+
 def servicios_view(request):
+    """Vista para los clientes: muestra todos los servicios"""
     servicios = Servicios.objects.all()
     context = {
         'titulo': 'Nuestros Servicios',
@@ -12,10 +14,11 @@ def servicios_view(request):
     }
     return render(request, 'servicios/servicios.html', context)
 
-def servicios_admin_view(request):
+def listado_admin(request):
+    """Vista de administración: listado de servicios para editar/eliminar"""
     servicios = Servicios.objects.all()
     context = {
-        'titulo': 'Administración de Servicios',
+        'titulo': 'Listado de Servicios',
         'servicios': servicios
     }
     return render(request, 'servicios/listado-admin.html', context)
@@ -24,44 +27,15 @@ def crear_servicios(request):
     if request.method == 'POST':
         form = ServiciosForm(request.POST)
         if form.is_valid():
-            # ERROR CORREGIDO: Usabas 'servicios' (plural) en lugar de la instancia 'servicio'
-            servicio = form.save(commit=False)
-            
-            # Asignar el documento como username (Asegúrate que estos campos existan en tu modelo)
-            if hasattr(servicio, 'documento'):
-                servicio.username = servicio.documento
-            
-            servicio.save()
+            servicio = form.save()
             messages.success(request, "Servicio creado con éxito.")
-            return redirect('servicios_admin_view') 
+            return redirect('listado-admin') 
         else:
             messages.error(request, "Error al crear el servicio. Revisa los campos.")
     else:
         form = ServiciosForm()
-    
     return render(request, 'servicios/agregar_servicios.html', {'form': form, 'titulo': 'Crear nuevo servicio'})
-def promocion(request):
-    promociones = Promocion.objects.all()
-    context = {
-        'titulo': 'Promociones',
-        'promociones': promociones
-    }
-    return render(request, 'servicios/promocion.html', context)
 
-def listado_admin(request):
-    servicios = Servicios.objects.all()
-    context = {
-        'titulo': 'Listado de Servicios',
-        'servicios': servicios
-    }
-    return render(request, 'servicios/listado-admin.html', context)
-def listado_promocion(request):
-    promociones = Promocion.objects.all()
-    context = {
-        'titulo': 'Listado de Promociones',
-        'promociones': promociones
-    }
-    return render(request, 'servicios/listado-promocion.html', context)
 def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
@@ -72,7 +46,6 @@ def editar_servicios(request, pk):
             return redirect('listado-admin')
     else:
         form = ServiciosEditarForm(instance=servicio)
-
     return render(request, 'servicios/editar_servicios.html', {'form': form, 'servicio': servicio})
 
 def eliminar_servicios(request, pk):
@@ -83,47 +56,69 @@ def eliminar_servicios(request, pk):
         return redirect('listado-admin')
     return render(request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
 
-def crear_promocion(request):
-    if request.method == 'POST':
-        form = PromocionForm(request.POST)
-        if form.is_valid():
-            # ERROR CORREGIDO: No uses "Promocion = ..." porque borras la clase del Modelo
-            nueva_promo = form.save() 
-            messages.success(request, "Promoción creada exitosamente.")
-            return redirect('listado_promocion')
-        else:
-            messages.error(request, "Error al crear la promoción.")
-    else:
-        form = PromocionForm()
-    
-    return render(request, 'servicios/agregar_promocion.html', {'form': form, 'titulo': 'Crear nueva promoción'})
 
-def editar_promocion(request, pk):
-    promocion = get_object_or_404(Promocion, pk=pk)
-    if request.method == 'POST':
-        form = PromocionEditarForm(request.POST, instance=promocion)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f"Promoción {promocion.nombre} actualizada.")
-            return redirect('listado_promocion')
-    else:
-        # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
-        form = PromocionEditarForm(instance=promocion)
+# --- VISTAS DE CALIFICACIONES ---
 
-    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
+def calificacion_view(request):
+    """
+    Vista para gestionar las calificaciones. 
+    Esta función es la que resuelve el error NoReverseMatch del aside.
+    """
+    # Por ahora solo renderiza el template, luego puedes añadir lógica de modelos
+    context = {
+        'titulo': 'Gestión de Calificaciones',
+    }
+    return render(request, 'servicios/calificaciones.html', context)
 
-def eliminar_promocion(request, id):
-    promocion = get_object_or_404(Promocion, id=id)
-    if request.method == 'POST':
-        promocion.delete()
-        messages.success(request, 'Promoción eliminada.')
-        return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
+
+# --- VISTAS DE PROMOCIONES ---
+
+def promocion(request):
+    """Vista pública de promociones"""
+    promociones = Promocion.objects.all()
+    context = {
+        'titulo': 'Promociones',
+        'promociones': promociones
+    }
+    return render(request, 'servicios/promocion.html', context)
 
 def listado_promocion(request):
+    """Listado administrativo de promociones"""
     promociones = Promocion.objects.all()
     context = {
         'titulo': 'Listado de Promociones',
         'promociones': promociones
     }
     return render(request, 'servicios/listado-promocion.html', context)
+
+def crear_promocion(request):
+    if request.method == 'POST':
+        form = PromocionForm(request.POST)
+        if form.is_valid():
+            form.save() 
+            messages.success(request, "Promoción creada exitosamente.")
+            return redirect('listado-promocion')
+    else:
+        form = PromocionForm()
+    return render(request, 'servicios/agregar_promocion.html', {'form': form, 'titulo': 'Crear nueva promoción'})
+
+def editar_promocion(request, pk):
+    promocion_obj = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        form = PromocionEditarForm(request.POST, instance=promocion_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Promoción {promocion_obj.nombre} actualizada.")
+            return redirect('listado-promocion')
+    else:
+        form = PromocionEditarForm(instance=promocion_obj)
+    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion_obj})
+
+def eliminar_promocion(request, pk):
+    # Nota: Cambié 'id' por 'pk' para mantener consistencia con el urls.py
+    promocion_obj = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        promocion_obj.delete()
+        messages.success(request, 'Promoción eliminada.')
+        return redirect('listado-promocion')
+    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion_obj})
