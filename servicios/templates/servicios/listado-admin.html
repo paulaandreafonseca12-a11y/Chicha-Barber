@@ -15,6 +15,7 @@
                   <thead class="table-light">
                       <tr>
                           <th>ID</th>
+                          <th>Imagen</th>
                           <th>Servicio</th>
                           <th>Estado</th>
                           <th>Acciones</th>
@@ -22,10 +23,18 @@
                   </thead>
                   <tbody>
                       {% for servicio in servicios %} <tr>
-                          <td>#{{ servicio.pk }}</td> <td><strong>{{ servicio.nombre }}</strong></td> <td>
-                              {% if servicio.activo %} <span class="btn btn-sm btn-success">Activo</span>
+                          <td>#{{ servicio.pk }}</td> 
+                          <td>
+                              {% if servicio.imagen %}
+                                  <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
                               {% else %}
-                                <span class="btn btn-sm btn-secondary">Inactivo</span>
+                                  <img src="{% static 'img/Fondo.png' %}" alt="Sin imagen" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                              {% endif %}
+                          </td>
+                          <td><strong>{{ servicio.nombre }}</strong></td> <td>
+                              {% if servicio.estado %} <span class="btn btn-sm btn-success">Activo</span>
+                              {% else %}
+                                <span class="btn btn-sm btn-danger">Inactivo</span>
                               {% endif %}
                           </td>
                           <td>
@@ -34,7 +43,7 @@
                           </td>
                       </tr>
                       {% empty %} <tr>
-                          <td colspan="4" class="text-center">No hay servicios registrados.</td>
+                          <td colspan="5" class="text-center">No hay servicios registrados.</td>
                       </tr>
                       {% endfor %} </tbody>
               </table>

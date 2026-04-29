@@ -24,18 +24,12 @@ def servicios_admin_view(request):
 
 def crear_servicios(request):
     if request.method == 'POST':
-        form = ServiciosForm(request.POST)
+        form = ServiciosForm(request.POST, request.FILES)
         if form.is_valid():
-            # ERROR CORREGIDO: Usabas 'servicios' (plural) en lugar de la instancia 'servicio'
-            servicio = form.save(commit=False)
-            
-            # Asignar el documento como username (Asegúrate que estos campos existan en tu modelo)
-            if hasattr(servicio, 'documento'):
-                servicio.username = servicio.documento
-            
-            servicio.save()
+            # Limpiamos lógica innecesaria y guardamos directamente
+            form.save()
             messages.success(request, "Servicio creado con éxito.")
-            return redirect('servicios_admin_view') 
+            return redirect('listado-admin') 
         else:
             messages.error(request, "Error al crear el servicio. Revisa los campos.")
     else:
@@ -67,15 +61,19 @@ def listado_promocion(request):
 def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
-        form = ServiciosEditarForm(request.POST, instance=servicio)
+        form = ServiciosEditarForm(request.POST, request.FILES, instance=servicio)
         if form.is_valid():
             form.save()
             messages.success(request, f"Servicio {servicio.nombre} actualizado.")
             return redirect('listado-admin')
     else:
         form = ServiciosEditarForm(instance=servicio)
+    context = {
+        'form': form,
+        'servicio': servicio
+        }
 
-    return render(request, 'servicios/editar_servicios.html', {'form': form, 'servicio': servicio})
+    return render(request, 'servicios/editar_servicios.html', context)
 
 def eliminar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
@@ -87,7 +85,7 @@ def eliminar_servicios(request, pk):
 
 def crear_promocion(request):
     if request.method == 'POST':
-        form = PromocionForm(request.POST)
+        form = PromocionForm(request.POST, request.FILES)
         if form.is_valid():
             # ERROR CORREGIDO: No uses "Promocion = ..." porque borras la clase del Modelo
             nueva_promo = form.save() 
@@ -103,7 +101,7 @@ def crear_promocion(request):
 def editar_promocion(request, pk):
     promocion = get_object_or_404(Promocion, pk=pk)
     if request.method == 'POST':
-        form = PromocionEditarForm(request.POST, instance=promocion)
+        form = PromocionEditarForm(request.POST, request.FILES, instance=promocion)
         if form.is_valid():
             form.save()
             messages.success(request, f"Promoción {promocion.nombre} actualizada.")
@@ -122,14 +120,6 @@ def eliminar_promocion(request, pk):
         return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
     return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
 
-def listado_promocion(request):
-    promociones = Promocion.objects.all()
-    context = {
-        'titulo': 'Listado de Promociones',
-        'promociones': promociones
-    }
-    return render(request, 'servicios/listado-promocion.html', context)
-
 def listado_calificacion(request):
     calificacion = Calificacion.objects.all()
     context = {
@@ -141,5 +131,3 @@ def listado_calificacion(request):
 
     
    
-
-
