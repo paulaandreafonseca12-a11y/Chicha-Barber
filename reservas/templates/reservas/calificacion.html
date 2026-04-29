@@ -1,0 +1,123 @@
+{% extends "base-clientes.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+
+    /* 2. Tarjeta Glassmorphism */
+    .review-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        animation: fadeIn 0.8s ease-out;
+        margin-top: 50px; /* Ajusta este valor según prefieras */
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 3. Estrellas con Efecto Glow */
+    .rating-wrapper {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+    .rating-wrapper input { display: none; }
+    
+    .rating-wrapper label {
+        cursor: pointer;
+        width: 45px;
+        height: 45px;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: contain;
+        transition: all 0.3s ease;
+    }
+
+    .rating-wrapper input:checked ~ label,
+    .rating-wrapper label:hover,
+    .rating-wrapper label:hover ~ label {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700' stroke='%23FFD700'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+        transform: scale(1.1);
+    }
+
+    /* 4. Inputs y Textarea Estilizados */
+    .form-control {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white !important;
+        border-radius: 12px;
+    }
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    }
+    .form-control::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+    /* 5. Botón Premium */
+    .btn-premium {
+        background: linear-gradient(45deg, #007bff, #00d4ff);
+        border: none;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+    .btn-premium:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        color: white;
+    }
+</style>
+
+<section class="info-section">
+    <div class="container d-flex justify-content-center">
+        <div class="col-lg-6">
+            <div class="review-card">
+                <h1 class="display-5 fw-bold text-white mb-2">¿Qué tal tu corte?</h1>
+                <p class="text-white-50 mb-4">Tu opinión es la clave de nuestra calidad.</p>
+                
+                <form method="post" action="">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label text-white fw-light">Califica nuestro servicio:</label>
+                        <div class="rating-wrapper">
+                            <input type="radio" id="star5" name="rating" value="5" required />
+                            <label for="star5" title="Excelente"></label>
+                            <input type="radio" id="star4" name="rating" value="4" />
+                            <label for="star4" title="Bueno"></label>
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label for="star3" title="Regular"></label>
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label for="star2" title="Malo"></label>
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label for="star1" title="Muy malo"></label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="comments" class="form-label text-white fw-light">Déjanos una reseña:</label>
+                        <textarea class="form-control" id="comments" name="comments" rows="3" 
+                                placeholder="¿Cómo fue tu experiencia con el barbero?"></textarea>
+                    </div>
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-premium btn-lg py-3 shadow">Enviar Reseña</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
