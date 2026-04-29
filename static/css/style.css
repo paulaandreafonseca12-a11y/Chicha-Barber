@@ -186,33 +186,6 @@ input:-webkit-autofill:focus,
     margin-top: 10px;
 }
 
-/* 7. Limpieza de iconos nativos del navegador */
-input::-ms-reveal, 
-input::-ms-clear { 
-    display: none !important; 
-}
-#id_rol {
-    background-color: #000;
-    color: white;
-    border: none;
-    border-radius: 0 6px 6px 0;
-    padding: 10px 12px;
-    width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-}
-
-#id_rol option {
-    background-color: #1e1e1e;
-    color: white;
-}
-
-#id_rol:focus {
-    outline: none;
-    box-shadow: none;
-    background-color: #2b2b2b;
-}
 
 /* ---------- background photo ---------- */
 .bg-photo {
@@ -229,7 +202,6 @@ input::-ms-clear {
 .navbar{
     margin-top: 0px; /* Ajusta este valor a la altura de tu barra principal */
     position: relative; 
-    z-index: 99; /* Un poco menos que la principal para que no se solapen */
 }
 
 /* ---------- booking card ---------- */

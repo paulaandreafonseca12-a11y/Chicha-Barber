@@ -18,7 +18,7 @@ class ReservaForm(forms.ModelForm):
         # porque los construiremos manualmente en la vista.
         exclude = ['fecha_reserva', 'servicio']
 
-class EditarReservaForm(forms.ModelForm):
+class ReservaFormCompleto(forms.ModelForm):
     class Meta:
         model = Reserva
         fields = ['nombre_cliente', 'correo_cliente', 'telefono_cliente', 'fecha_reserva', 'servicio']
