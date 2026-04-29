@@ -6,7 +6,7 @@ from reservas.models import Calificacion
 from .models import Servicios, Promocion 
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
 
-def servicios_view(request):
+def servicios(request):
     servicios = Servicios.objects.all()
     context = {
         'titulo': 'Nuestros Servicios',
@@ -14,11 +14,11 @@ def servicios_view(request):
     }
     return render(request, 'servicios/servicios.html', context)
 
-def servicios_admin_view(request):
+def servicios_admin(request):
     servicios = Servicios.objects.all()
     context = {
         'titulo': 'Administración de Servicios',
-        'servicios': servicios
+        'servicios': servicios  
     }
     return render(request, 'servicios/listado-admin.html', context)
 
@@ -51,6 +51,7 @@ def listado_admin(request):
         'servicios': servicios
     }
     return render(request, 'servicios/listado-admin.html', context)
+
 def listado_promocion(request):
     promociones = Promocion.objects.all()
     context = {
