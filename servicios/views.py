@@ -8,7 +8,7 @@ from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosE
 
 # --- VISTAS DE SERVICIOS ---
 
-def servicios_view(request):
+def servicios(request):
     """Vista para los clientes: muestra todos los servicios"""
     servicios = Servicios.objects.all()
     context = {
