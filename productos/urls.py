@@ -9,9 +9,7 @@ urlpatterns = [
     path('', views.productos_galeria, name='productos_galeria'),
     path('carrito/', views.carrito, name='carrito'),
     path('pago/', views.pago, name='pago'),
-    path('procesar_compra/', views.procesar_pago_cliente, name='procesar_compra'),
-    path('agregar-carrito/', views.agregar_carrito, name='agregar_carrito'),  # 🔥 FALTABA
-
+    path('procesar_pago_cliente/', views.procesar_pago_cliente, name='procesar_compra'),
     # =========================
     # 🔵 ADMIN PRODUCTOS
     # =========================

@@ -90,6 +90,52 @@
     </div>
 </div>
 
+<!-- Modal Nueva Cita -->
+<div class="modal fade" id="nuevaCitaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" style="color: #d4af37;">Registrar Cita</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            
+                {% csrf_token %}
+                <div class="modal-body">
+                    <label class="form-label fw-bold text-warning">Cliente</label>
+                    <input type="text" name="nombre_cliente" 
+                           class="form-control mb-3 bg-secondary text-white border-0" required>
+                    
+                    <label class="form-label fw-bold text-warning">Fecha y Hora</label>
+                    <input type="text" name="fecha_reserva" id="fecha_nueva_cita"
+                           class="form-control mb-3 bg-secondary text-white border-0"
+                           placeholder="Selecciona fecha y hora"
+                           autocomplete="off" required>
+                    
+                    <label class="form-label fw-bold text-warning">Servicio</label>
+                    <select name="servicio" class="form-select mb-3 bg-secondary text-white border-0">
+                        {% for servicio in servicios %}
+                            <option value="{{ servicio.nombre }}">{{ servicio.nombre }}</option>
+                        {% empty %}
+                            <option disabled>No hay servicios disponibles</option>
+                        {% endfor %}
+                    </select>
+
+                    <input type="hidden" name="correo_cliente" value="cliente@barberia.com">
+                    <input type="hidden" name="telefono_cliente" value="000000000">
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="submit" class="btn btn-warning w-100 text-dark fw-bold">
+                        <i class="bi bi-calendar-plus me-2"></i>Guardar Reserva
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Flatpickr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/es.min.js"></script>
 <script>
 function abrirModalCancelar(btn) {
     document.getElementById('nombreClienteModal').textContent = btn.dataset.nombre;

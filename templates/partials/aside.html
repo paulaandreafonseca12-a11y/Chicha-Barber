@@ -21,34 +21,33 @@
                         <a href="{% url 'listado-admin' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-list-ul me-2"></i> Ver Todos
                         </a>
-                       
-                    
-                        <a href="{% url 'calificacion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-star me-2"></i> Calificaciones
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-        
 
-        <div class="accordion accordion-flush bg-dark" id="sidebarAccordion">
-        
-        <div class="accordion-item bg-dark border-0">
+        <div class="accordion-item bg-dark border-0 mt-2">
             <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios">
-                    <i class="bi bi-gear-wide-connected me-2"></i> Promociones 
+                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromos">
+                    <i class="bi bi-megaphone me-2"></i> Ofertas y Promos
                 </button>
             </h2>
-            <div id="collapseServicios" class="accordion-collapse collapse {% if 'servicios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+            <div id="collapsePromos" class="accordion-collapse collapse {% if 'promocion' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
                 <div class="accordion-body p-0">
                     <div class="list-group list-group-flush">
                         <a href="{% url 'listado-promocion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
-                            <i class="bi bi-list-ul me-2"></i> Ver Todos
-                                      
-          </a>
-        </div>  
-
+                            <i class="bi bi-list-ul me-2"></i> Ver todas
+                        </a>
+                        <a href="{% url 'crear_promocion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-plus-circle me-2"></i> Crear Nueva
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="accordion-item bg-dark border-0 mt-2">
             <h2 class="accordion-header">
@@ -62,6 +61,9 @@
                         <a href="{% url 'ver_agenda' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
                             <i class="bi bi-calendar-check me-2"></i> Ver Agenda
                         </a>
+                        <button type="button" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4 text-start" data-bs-toggle="modal" data-bs-target="#nuevaCitaModal">
+                            <i class="bi bi-plus-circle me-2"></i> Nueva Cita
+                        </button>
                     </div>
                 </div>
             </div>
@@ -107,7 +109,9 @@
             </div>
         </div>
 
-    </div> <hr class="mt-auto border-secondary">
+    </div> 
+
+    <hr class="mt-auto border-secondary">
     
     <div class="dropdown">
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
@@ -117,7 +121,6 @@
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="userMenu">
             <li><a class="dropdown-item" href="{% url 'inicio_admin' %}">Inicio Panel</a></li>
             <li><a class="dropdown-item" href="{% url 'inicio' %}">Ver Sitio Web</a></li>
-            <li><a class="dropdown-item" href="#">Listado</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
                 <form action="{% url 'logout' %}" method="post" class="d-inline">

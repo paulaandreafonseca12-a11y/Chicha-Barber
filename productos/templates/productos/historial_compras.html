@@ -65,7 +65,63 @@
     </div>
 </div>
 
-<!-- Modal Eliminar -->
+<!-- Modal Registrar Compra -->
+<div class="modal fade" id="modalRegistrarCompra" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-warning fw-bold">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Registrar Compra
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'procesar_compra' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre del Cliente</label>
+                        {{ form_compra.nombre_cliente }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Correo</label>
+                        {{ form_compra.correo }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Teléfono</label>
+                        {{ form_compra.telefono }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Dirección</label>
+                        {{ form_compra.direccion }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Método de Pago</label>
+                        {{ form_compra.metodo_pago }}
+                    </div>
+                    <hr class="border-secondary">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Producto</label>
+                        {{ form_detalle.producto }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Cantidad</label>
+                        {{ form_detalle.cantidad }}
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning fw-bold px-4">
+                        <i class="bi bi-save me-1"></i>Guardar Registro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar Compra -->
 <div class="modal fade" id="modalEliminar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white border-danger">
