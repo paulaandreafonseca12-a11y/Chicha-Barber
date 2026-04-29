@@ -21,6 +21,7 @@ class Promocion(models.Model):
     descuento = models.CharField(max_length=100, verbose_name='Descuento')
     duracion = models.CharField(max_length=30, verbose_name='Duración')
     descripcion = models.TextField(verbose_name='Descripcion')
+    imagen = models.ImageField(upload_to='promociones/', null=True, blank=True, verbose_name='Imagen de la promoción')
 
     class Meta:
         verbose_name = 'Promoción' #singular 

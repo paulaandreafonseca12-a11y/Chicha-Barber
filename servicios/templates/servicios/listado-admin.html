@@ -1,21 +1,12 @@
 
-
 {% extends "base-admin.html" %}
 {% load static %}
 
 {% block content %}
-<main class="p-4 w-10 m-auto">
-    
-    <div class="p-5 mb-5 bg-body-tertiary rounded-3 opacity-75 shadow-sm text-center">
-        <div class="container-fluid py-1">
-            <h1 class="display-5 fw-bold text-uppercase">Listado de Servicios</h1> 
-            <p class="fs-4">Administra los servicios disponibles para tus clientes.</p> 
-        </div>
-    </div>
 
     <div class="container mt-5">
       <div class="card shadow">
-          <div class="card-header bg-primary text-white d-flex justify-content-between">
+          <div  class="card-header bg-primary text-white d-flex justify-content-between color-azul">
               <h5 class="mb-0">Gestión de Servicios</h5>
               <button class="btn btn-outline-light" onclick="window.location.href='{% url 'crear_servicios' %}'">+ Nuevo Servicio</button>
           </div>

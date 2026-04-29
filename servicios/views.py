@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+
+from reservas.models import Calificacion
 # Eliminados imports redundantes y corregido el import de modelos
 from .models import Servicios, Promocion 
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
@@ -127,3 +129,17 @@ def listado_promocion(request):
         'promociones': promociones
     }
     return render(request, 'servicios/listado-promocion.html', context)
+
+def listado_calificacion(request):
+    calificacion = Calificacion.objects.all()
+    context = {
+        'titulo': 'Listado de Calificaciones',
+        'calificacion': calificacion
+    }
+    return render(request, 'servicios/listado_calificacion.html', context)
+
+
+    
+   
+
+
