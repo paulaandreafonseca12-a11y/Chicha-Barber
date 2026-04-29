@@ -40,9 +40,9 @@
                         ${{ producto.precio_venta }} COP
                     </p>
 
-                    <!-- ✅ BOTÓN ARREGLADO -->
+                    <!-- BOTÓN -->
                     <button class="btn btn-dark"
-                        onclick="agregarCarrito({{ producto.codigo_producto }}, '{{ producto.nombre|escapejs }}', {{ producto.precio_venta|floatformat:0 }})">
+                        onclick="agregarCarrito(event, {{ producto.codigo_producto }}, '{{ producto.nombre|escapejs }}', {{ producto.precio_venta|floatformat:0 }})">
                         Agregar al carrito
                     </button>
 
@@ -60,7 +60,8 @@
 
 <script>
 
-function agregarCarrito(id, nombre, precio) {
+// 🔥 AGREGAR AL CARRITO
+function agregarCarrito(event, id, nombre, precio) {
 
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
@@ -81,25 +82,58 @@ function agregarCarrito(id, nombre, precio) {
 
     actualizarContador();
 
-    alert("Producto agregado al carrito");
+    // 🔥 feedback visual
+    event.target.innerText = "✔ Agregado";
+    setTimeout(() => {
+        event.target.innerText = "Agregar al carrito";
+    }, 1000);
+
+    mostrarMensaje("✅ Producto agregado al carrito");
 }
 
+
+// 🔢 CONTADOR
 function actualizarContador() {
 
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    let total = 0;
+    let total = carrito.reduce((acc, p) => acc + p.cantidad, 0);
 
-    carrito.forEach(p => {
-        total += p.cantidad;
-    });
-
-    document.getElementById("contador").textContent = total;
+    let contador = document.getElementById("contador");
+    if (contador) {
+        contador.textContent = total;
+    }
 }
 
-// Ejecutar al cargar la página
+
+// 🔔 MENSAJE BONITO
+function mostrarMensaje(texto) {
+
+    let alerta = document.createElement("div");
+    alerta.className = "alert alert-success text-center position-fixed top-0 start-50 translate-middle-x mt-3";
+    alerta.style.zIndex = "9999";
+    alerta.innerText = texto;
+
+    document.body.appendChild(alerta);
+
+    setTimeout(() => {
+        alerta.remove();
+    }, 1500);
+}
+
+
+// 🚀 AL CARGAR
 document.addEventListener("DOMContentLoaded", function() {
+
     actualizarContador();
+
+    // 🔥 LIMPIAR CARRITO SOLO DESPUÉS DE COMPRA
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get("compra") === "ok") {
+        localStorage.removeItem("carrito");
+        actualizarContador();
+    }
 });
 
 </script>

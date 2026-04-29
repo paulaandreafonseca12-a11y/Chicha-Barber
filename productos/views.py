@@ -4,6 +4,7 @@ from .models import Compra, Producto, DetalleCompra, Stock
 from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
 from django.http import JsonResponse
 import json
+from django.db import transaction
 
 
 # =========================
@@ -37,60 +38,59 @@ def procesar_pago_cliente(request):
         metodo_pago = request.POST.get('pago')
         carrito_json = request.POST.get('carrito')
 
+        # 🔴 Validar carrito
         if not carrito_json:
             messages.error(request, "❌ El carrito está vacío")
             return redirect('carrito')
 
-        carrito = json.loads(carrito_json)
+        try:
+            carrito = json.loads(carrito_json)
+        except:
+            messages.error(request, "❌ Error en el carrito")
+            return redirect('carrito')
 
-        total = 0
+        if not carrito:
+            messages.error(request, "❌ El carrito está vacío")
+            return redirect('carrito')
 
-        # ✅ CREAR COMPRA
-        compra = Compra.objects.create(
-            nombre_cliente=nombre,
-            correo=correo,
-            telefono=telefono,
-            direccion=direccion,
-            metodo_pago=metodo_pago,
-            total=0
-        )
+        try:
+            # 🔥 TRANSACCIÓN SEGURA
+            with transaction.atomic():
 
-        # 🔥 GUARDAR DETALLE
-        for item in carrito:
-            producto = Producto.objects.get(codigo_producto=item['id'])
+                # ✅ Crear compra
+                compra = Compra.objects.create(
+                    nombre_cliente=nombre,
+                    correo=correo,
+                    telefono=telefono,
+                    direccion=direccion,
+                    metodo_pago=metodo_pago,
+                    total=0
+                )
 
-            stock = Stock.objects.get(producto=producto)
+                # ✅ Crear detalles (el modelo hace TODO)
+                for item in carrito:
+                    producto = get_object_or_404(
+                        Producto, 
+                        codigo_producto=item['id']
+                    )
 
-            # 🚨 VALIDAR STOCK
-            if stock.cantidad < item['cantidad']:
-                messages.error(request, f"❌ Sin stock: {producto.nombre}")
-                return redirect('carrito')
+                    DetalleCompra.objects.create(
+                        compra=compra,
+                        producto=producto,
+                        cantidad=item['cantidad']
+                    )
 
-            subtotal = item['cantidad'] * float(item['precio'])
-            total += subtotal
+        except Exception as e:
+            messages.error(request, f"❌ Error en la compra: {str(e)}")
+            return redirect('carrito')
 
-            DetalleCompra.objects.create(
-                compra=compra,
-                producto=producto,
-                cantidad=item['cantidad'],
-                precio=item['precio'],
-                subtotal=subtotal
-            )
-
-            # 🔥 DESCONTAR STOCK
-            stock.cantidad -= item['cantidad']
-            stock.save()
-
-        compra.total = total
-        compra.save()
-
+        # ✅ ÉXITO
         messages.success(request, "✅ Compra realizada con éxito")
 
-        return redirect('productos_galeria')
+        # 🔥 IMPORTANTE: esto limpia el carrito en el frontend
+        return redirect('/productos/?compra=ok')
 
     return redirect('carrito')
-
-
 # =========================
 # 🔵 ADMIN PRODUCTOS
 # =========================
