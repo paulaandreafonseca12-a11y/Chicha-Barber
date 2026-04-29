@@ -184,6 +184,39 @@ def editar_stock(request, pk):
 # 🟡 COMPRAS (ADMIN)
 # =========================
 
+def registrar_compra(request):
+    if request.method == 'POST':
+        form_compra = CompraForm(request.POST)
+        form_detalle = DetalleCompraForm(request.POST)
+
+        if form_compra.is_valid() and form_detalle.is_valid():
+            nueva_compra = form_compra.save()
+
+            detalle = form_detalle.save(commit=False)
+            detalle.compra = nueva_compra
+            detalle.subtotal = detalle.cantidad * detalle.producto.precio_venta
+            detalle.save()
+
+            nueva_compra.total = detalle.subtotal
+            nueva_compra.save()
+
+            messages.success(request, "✅ Compra registrada exitosamente")
+            return redirect('historial_compras')
+        else:
+            # Si hay errores en el POST, volvemos a renderizar la página con los errores
+            messages.error(request, "❌ Por favor corrige los errores en el formulario.")
+    else:
+        # --- ESTO ES LO QUE TE FALTABA ---
+        # Creamos los formularios vacíos para que el HTML los pueda dibujar
+        form_compra = CompraForm()
+        form_detalle = DetalleCompraForm()
+
+    # El render DEBE ir fuera del if/else o en el bloque else para manejar el GET
+    return render(request, 'productos/registrar_compra.html', {
+        'form_compra': form_compra,
+        'form_detalle': form_detalle
+    })
+
 def historial_compras(request):
     compras = Compra.objects.all().order_by('-fecha_compra')
     return render(request, 'productos/historial_compras.html', {
