@@ -212,3 +212,30 @@ def eliminar_compra(request, pk):
         messages.success(request, "✅ Compra eliminada")
 
     return redirect('historial_compras')
+# =========================
+# 🛒 CARRITO
+# =========================
+
+def agregar_carrito(request):
+    if request.method == 'POST':
+        id_producto = request.POST.get('id')
+        nombre = request.POST.get('nombre')
+        precio = request.POST.get('precio')
+
+        carrito = request.session.get('carrito', {})
+
+        if id_producto in carrito:
+            carrito[id_producto]['cantidad'] += 1
+        else:
+            carrito[id_producto] = {
+                'nombre': nombre,
+                'precio': float(precio),
+                'cantidad': 1
+            }
+
+        request.session['carrito'] = carrito
+        request.session.modified = True
+
+        return JsonResponse({'ok': True})
+
+    return JsonResponse({'ok': False})

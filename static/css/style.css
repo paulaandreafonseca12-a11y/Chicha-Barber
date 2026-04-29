@@ -185,7 +185,38 @@ input:-webkit-autofill:focus,
     text-transform: uppercase;
     margin-top: 10px;
 }
+.custom-input {
+    background-color: rgba(240, 240, 240, 0.8) !important;
+    border: none;
+    padding: 12px;
+}
 
+.custom-btn { 
+    background-color: #4bc0d9;
+    color: #333;
+    transition: background 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #ffffff; /* Brilla un poco más al pasar el mouse */
+} 
+
+.btn-seleccionar {
+    display: inline-block;
+    background-color: #00d1ff; /* El azul de tu barbería */
+    color: black;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-seleccionar:hover {
+    background-color: #008fb3;
+    transform: scale(1.05);
+}
 
 /* ---------- background photo ---------- */
 .bg-photo {
@@ -363,35 +394,44 @@ input:-webkit-autofill:focus,
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.custom-input {
-    background-color: rgba(240, 240, 240, 0.8) !important;
-    border: none;
-    padding: 12px;
+/* ============================================================
+   FIX INPUT NEGRO - REGISTRAR COMPRA
+   ============================================================ */
+
+/* Todos los inputs en blanco */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border: 1px solid #dee2e6 !important;
 }
 
-.custom-btn { 
-    background-color: #4bc0d9;
-    color: #333;
-    transition: background 0.3s ease;
+/* Al hacer foco también en blanco */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #07d2ff !important;
+    box-shadow: 0 0 0 2px rgba(7, 210, 255, 0.25) !important;
+    outline: none !important;
 }
 
-.custom-btn:hover {
-    background-color: #ffffff; /* Brilla un poco más al pasar el mouse */
-} 
-
-.btn-seleccionar {
-    display: inline-block;
-    background-color: #00d1ff; /* El azul de tu barbería */
-    color: black;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-seleccionar:hover {
-    background-color: #008fb3;
-    transform: scale(1.05);
+/* Fix autocompletado navegador */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+    -webkit-text-fill-color: #212529 !important;
+    caret-color: #212529 !important;
 }
