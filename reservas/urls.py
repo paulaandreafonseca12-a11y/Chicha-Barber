@@ -7,7 +7,9 @@ from . import views
 urlpatterns = [
     # Gestión de reservas
     path('', views.ver_agenda, name='reservas_index'), # Cambiado para evitar conflicto
+    path('agenda/crear/', views.crear_reserva_admin, name='crear_reserva_admin'), # Nombre directo
     path('crear/<int:servicio_id>/', views.crear_reserva, name='crear_reserva'),
+
     
     # Agenda y Estados
     path('agenda/', views.ver_agenda, name='ver_agenda'),
