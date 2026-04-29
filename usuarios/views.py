@@ -42,3 +42,5 @@ def lista_usuarios(request):
         'usuarios': usuarios,
         'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios"
     })
+    
+   

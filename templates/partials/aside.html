@@ -48,6 +48,30 @@
                 </div>
             </div>
         </div>
+                            <i class="bi bi-list-ul me-2"></i> Ver Todos
+                                      
+          </a>
+        </div>  
+                </div>
+            </div>
+        </div>
+
+         <div class="accordion accordion-flush bg-dark" id="sidebarAccordion">
+        
+        <div class="accordion-item bg-dark border-0">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios">
+                    <i class="bi bi-gear-wide-connected me-2"></i> Calificaciones
+                </button>
+            </h2>
+            <div id="collapseServicios" class="accordion-collapse collapse {% if 'servicios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+                <div class="accordion-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'listado_calificacion' %}" class="list-group-item list-group-item-action bg-dark text-white-50 border-0 ps-4">
+                            <i class="bi bi-list-ul me-2"></i> Ver Todas
+                                      
+
+
 
         <div class="accordion-item bg-dark border-0 mt-2">
             <h2 class="accordion-header">
