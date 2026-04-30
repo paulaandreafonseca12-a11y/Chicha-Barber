@@ -6,10 +6,7 @@ from reservas.models import Calificacion
 from .models import Servicios, Promocion 
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
 
-# --- VISTAS DE SERVICIOS ---
-
 def servicios(request):
-    """Vista para los clientes: muestra todos los servicios"""
     servicios = Servicios.objects.all()
     context = {
         'titulo': 'Nuestros Servicios',
@@ -17,12 +14,11 @@ def servicios(request):
     }
     return render(request, 'servicios/servicios.html', context)
 
-def listado_admin(request):
-    """Vista de administración: listado de servicios para editar/eliminar"""
+def servicios_admin(request):
     servicios = Servicios.objects.all()
     context = {
-        'titulo': 'Listado de Servicios',
-        'servicios': servicios
+        'titulo': 'Administración de Servicios',
+        'servicios': servicios  
     }
     return render(request, 'servicios/listado-admin.html', context)
 
@@ -38,8 +34,31 @@ def crear_servicios(request):
             messages.error(request, "Error al crear el servicio. Revisa los campos.")
     else:
         form = ServiciosForm()
+    
     return render(request, 'servicios/agregar_servicios.html', {'form': form, 'titulo': 'Crear nuevo servicio'})
+def promocion(request):
+    promociones = Promocion.objects.all()
+    context = {
+        'titulo': 'Promociones',
+        'promociones': promociones
+    }
+    return render(request, 'servicios/promocion.html', context)
 
+def listado_admin(request):
+    servicios = Servicios.objects.all()
+    context = {
+        'titulo': 'Listado de Servicios',
+        'servicios': servicios
+    }
+    return render(request, 'servicios/listado-admin.html', context)
+
+def listado_promocion(request):
+    promociones = Promocion.objects.all()
+    context = {
+        'titulo': 'Listado de Promociones',
+        'promociones': promociones
+    }
+    return render(request, 'servicios/listado-promocion.html', context)
 def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
@@ -87,33 +106,20 @@ def editar_promocion(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Promoción {promocion.nombre} actualizada.")
-            return redirect('listado_promocion')
+            return redirect('listado-promocion')
     else:
         # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
         form = PromocionEditarForm(instance=promocion)
 
-def calificacion_view(request):
-    """
-    Vista para gestionar las calificaciones. 
-    Esta función es la que resuelve el error NoReverseMatch del aside.
-    """
-    # Por ahora solo renderiza el template, luego puedes añadir lógica de modelos
-    context = {
-        'titulo': 'Gestión de Calificaciones',
-    }
-    return render(request, 'servicios/calificaciones.html', context)
+    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
 
-
-# --- VISTAS DE PROMOCIONES ---
-
-def promocion(request):
-    """Vista pública de promociones"""
-    promociones = Promocion.objects.all()
-    context = {
-        'titulo': 'Promociones',
-        'promociones': promociones
-    }
-    return render(request, 'servicios/promocion.html', context)
+def eliminar_promocion(request, pk):
+    promocion = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        promocion.delete()
+        messages.success(request, 'Promoción eliminada.')
+        return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
+    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
 
 def listado_calificacion(request):
     calificacion = Calificacion.objects.all()
@@ -122,7 +128,3 @@ def listado_calificacion(request):
         'calificacion': calificacion
     }
     return render(request, 'servicios/listado_calificacion.html', context)
-
-
-    
-   

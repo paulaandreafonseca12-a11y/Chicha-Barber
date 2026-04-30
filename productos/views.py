@@ -98,7 +98,8 @@ def procesar_pago_cliente(request):
 def lista_productos_admin(request):
     productos = Producto.objects.all()
     return render(request, 'productos/productos_admin.html', {
-        'productos': productos
+        'productos': productos,
+        'titulo': "Nuestros Productos",
     })
 
 
@@ -156,7 +157,8 @@ def eliminar_producto(request, pk):
 def lista_stock(request):
     stocks = Stock.objects.select_related('producto')
     return render(request, 'productos/stock_admin.html', {
-        'stocks': stocks
+        'stocks': stocks,
+        'titulo': "Stock de Productos"
     })
 
 
@@ -214,13 +216,15 @@ def registrar_compra(request):
     # El render DEBE ir fuera del if/else o en el bloque else para manejar el GET
     return render(request, 'productos/registrar_compra.html', {
         'form_compra': form_compra,
-        'form_detalle': form_detalle
+        'form_detalle': form_detalle,
+        'titulo': "Registrar Nueva Compra"
     })
 
 def historial_compras(request):
     compras = Compra.objects.all().order_by('-fecha_compra')
     return render(request, 'productos/historial_compras.html', {
-        'compras': compras
+        'compras': compras,
+        'titulo': "Historial de Compras"
     })
 
 
