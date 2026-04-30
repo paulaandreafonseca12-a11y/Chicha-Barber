@@ -128,7 +128,3 @@ def listado_calificacion(request):
         'calificacion': calificacion
     }
     return render(request, 'servicios/listado_calificacion.html', context)
-
-
-    
-   

@@ -1,13 +1,13 @@
 {% extends "base-admin.html" %}
 
 {% block content %}
-<!-- Flatpickr CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/dark.min.css">
-
 <div class="container-fluid">
-    <h2 style="color: #d4af37;" class="mb-4">Agenda de Citas - Chicha Barber</h2>
-    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{% url 'crear_reserva_admin' %}" class="btn btn-warning fw-bold text-dark">
+            <i class="bi bi-calendar-plus me-2"></i>Registrar Cita
+        </a>
+    </div>
+
     <div class="card bg-dark text-white border-secondary shadow">
         <div class="card-body p-0">
             <table class="table table-dark table-hover mb-0">
@@ -34,9 +34,8 @@
                         <td>
                             <div class="d-flex gap-2">
                                 {% if cita.estado == 'reservada' %}
-                                    <a href="{% url 'cambiar_estado' cita.pk 'confirmada' %}" 
-                                       class="btn btn-sm btn-success" 
-                                       title="Confirmar">
+                                    <a href="{% url 'cambiar_estado' cita.pk 'confirmada' %}"
+                                       class="btn btn-sm btn-success" title="Confirmar">
                                         <i class="bi bi-check-circle-fill"></i>
                                     </a>
                                     <button class="btn btn-sm btn-danger"
@@ -47,16 +46,15 @@
                                         <i class="bi bi-x-circle-fill"></i>
                                     </button>
                                 {% endif %}
-                                <a href="{% url 'reprogramar_cita' cita.pk %}" 
-                                   class="btn btn-sm btn-outline-info" 
-                                   title="Reprogramar">
+                                <a href="{% url 'reprogramar_cita' cita.pk %}"
+                                   class="btn btn-sm btn-outline-info" title="Reprogramar">
                                     <i class="bi bi-calendar2-event-fill"></i>
                                 </a>
                             </div>
                         </td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="5" class="text-center py-4">No hay citas.</td></tr>
+                    <tr><td colspan="5" class="text-center py-4">No hay citas registradas.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -64,7 +62,7 @@
     </div>
 </div>
 
-<!-- Modal Confirmar Cancelación -->
+<!-- Modal Cancelar -->
 <div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white border-danger">
@@ -99,7 +97,7 @@
                 <h5 class="modal-title" style="color: #d4af37;">Registrar Cita</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{% url 'crear_reserva' %}" method="POST">
+            
                 {% csrf_token %}
                 <div class="modal-body">
                     <label class="form-label fw-bold text-warning">Cliente</label>
@@ -138,22 +136,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/es.min.js"></script>
 <script>
-    document.getElementById('nuevaCitaModal').addEventListener('shown.bs.modal', function () {
-        flatpickr("#fecha_nueva_cita", {
-            enableTime: true,
-            dateFormat: "d/m/Y H:i",
-            time_24hr: true,
-            locale: "es",
-            minDate: "today",
-            defaultHour: 9,
-            minuteIncrement: 15,
-        });
-    });
-
-    function abrirModalCancelar(btn) {
-        document.getElementById('nombreClienteModal').textContent = btn.dataset.nombre;
-        document.getElementById('btnConfirmarCancelar').href = btn.dataset.url;
-        new bootstrap.Modal(document.getElementById('modalCancelar')).show();
-    }
+function abrirModalCancelar(btn) {
+    document.getElementById('nombreClienteModal').textContent = btn.dataset.nombre;
+    document.getElementById('btnConfirmarCancelar').href = btn.dataset.url;
+    new bootstrap.Modal(document.getElementById('modalCancelar')).show();
+}
 </script>
 {% endblock %}

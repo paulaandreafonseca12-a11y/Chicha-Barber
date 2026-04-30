@@ -9,9 +9,7 @@ urlpatterns = [
     path('', views.productos_galeria, name='productos_galeria'),
     path('carrito/', views.carrito, name='carrito'),
     path('pago/', views.pago, name='pago'),
-    path('procesar_compra/', views.procesar_pago_cliente, name='procesar_compra'),
-    path('agregar-carrito/', views.agregar_carrito, name='agregar_carrito'),  # 🔥 FALTABA
-
+    path('procesar_pago_cliente/', views.procesar_pago_cliente, name='procesar_compra'),
     # =========================
     # 🔵 ADMIN PRODUCTOS
     # =========================
@@ -30,6 +28,7 @@ urlpatterns = [
     # 🟡 COMPRAS
     # =========================
     path('registrar-compra/', views.registrar_compra, name='registrar_compra'),
+    path('historial/registrar/', views.registrar_compra, name='registrar_compra'),  # ← nueva
     path('historial/', views.historial_compras, name='historial_compras'),
     path('historial/<int:pk>/', views.detalle_compra, name='detalle_compra'),
     path('historial/eliminar/<int:pk>/', views.eliminar_compra, name='eliminar_compra'),

@@ -1,105 +1,119 @@
 {% extends "base-clientes.html" %}
+{% load crispy_forms_tags %}
 {% load static %}
 
 {% block content %}
 
-<section class="container mt-5">
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
 
-    <h2 class="text-center mb-5 titulo-productos">
-        Productos de Cuidado Personal
-    </h2>
+<main class="container mt-5">
+    <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-60 shadow-sm text-center bg-light border border-1 border-light">
+        <div class="container-fluid py-1">
+            <h1 class="display-5 fw-bold">Productos de Cuidado Personal</h1> 
+            <p class="fs-4">Encuentra los mejores complementos para mantener <br> tu estilo y cuidar tu imagen.</p>
+        </div>
+    </div>
 
-    <a href="{% url 'carrito' %}" class="btn btn-warning me-3">
-        Carrito (<span id="contador">0</span>)
-    </a>
+    <div class="d-flex justify-content-start mb-4">
+        <a href="{% url 'carrito' %}" class="btn btn-warning shadow-sm btn-sm">
+            <i class="bi bi-cart"></i> Carrito (<span id="contador">0</span>)
+        </a>
+    </div>
 
-    <div class="row g-4">
-
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
         {% for producto in productos %}
-        <div class="col-md-4">
-            <div class="card shadow">
-
-                <!-- ✅ IMAGEN DINÁMICA -->
-                <img 
-                    src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'img/Aceite.jpg' %}{% endif %}" 
-                    class="card-img-top"
-                    style="height: 250px; object-fit: cover;"
-                >
-
-                <div class="card-body text-center">
-
-                    <h5 class="card-title">
-                        {{ producto.nombre }}
-                    </h5>
-
-                    <p class="card-text">
-                        {{ producto.descripcion }}
-                    </p>
-
-                    <p class="precio">
-                        ${{ producto.precio_venta }} COP
-                    </p>
-
-                    <!-- ✅ BOTÓN CORREGIDO -->
-                    <button class="btn btn-dark"
-                        onclick="agregarCarrito({ producto_codigo_producto }, '{{ producto.nombre|escapejs }}', { producto_precio_venta })">
-                        Agregar al carrito
-                    </button>
-
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0" style="font-size: 0.9rem;">
+                <div class="p-2 d-flex align-items-center justify-content-center" style="height: 160px; overflow: hidden;">
+                    <img 
+                        src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'img/Aceite.jpg' %}{% endif %}" 
+                        class="card-img-top"
+                        style="max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; image-rendering: -webkit-optimize-contrast;"
+                        alt="{{ producto.nombre }}"
+                    >
                 </div>
 
+                <div class="card-body text-center d-flex flex-column p-3">
+                    <h6 class="card-title fw-bold mb-2 text-truncate">
+                        {{ producto.nombre }}
+                    </h6>
+
+                    <p class="card-text text-muted flex-grow-1 mb-2" style="font-size: 0.8rem; line-height: 1.2;">
+                        {{ producto.descripcion|truncatechars:60 }}
+                    </p>
+
+                    <p class="fw-bold text-dark mb-2">
+                        ${{ producto.precio_venta }}
+                    </p>
+
+                    <button class="btn btn-dark btn-sm w-100 mt-auto"
+                        onclick="agregarCarrito(event, {{ producto.codigo_producto }}, '{{ producto.nombre|escapejs }}', {{ producto.precio_venta|floatformat:0 }})">
+                        Agregar
+                    </button>
+                </div>
             </div>
         </div>
         {% empty %}
-        <p class="text-center text-muted">No hay productos disponibles</p>
+        <div class="col-12 text-center">
+            <p class="text-muted">No hay productos disponibles.</p>
+        </div>
         {% endfor %}
-
     </div>
-
-</section>
+</main>
 
 <script>
-
-function agregarCarrito(id, nombre, precio) {
-
+// (El script se mantiene igual que en tu versión original para que no pierdas funcionalidad)
+function agregarCarrito(event, id, nombre, precio) {
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
     let productoExistente = carrito.find(p => p.id === id);
 
     if (productoExistente) {
         productoExistente.cantidad++;
     } else {
-        carrito.push({
-            id: id,
-            nombre: nombre,
-            precio: precio,
-            cantidad: 1
-        });
+        carrito.push({ id: id, nombre: nombre, precio: precio, cantidad: 1 });
     }
 
     localStorage.setItem("carrito", JSON.stringify(carrito));
-
     actualizarContador();
 
-    alert("Producto agregado al carrito");
+    const btn = event.target;
+    const originalText = btn.innerText;
+    btn.innerText = "✔";
+    btn.classList.replace("btn-dark", "btn-success");
+    
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.replace("btn-success", "btn-dark");
+    }, 1000);
+    mostrarMensaje("✅ Agregado");
 }
 
 function actualizarContador() {
-
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-    let total = 0;
-
-    carrito.forEach(p => {
-        total += p.cantidad;
-    });
-
-    document.getElementById("contador").textContent = total;
+    let total = carrito.reduce((acc, p) => acc + p.cantidad, 0);
+    let contador = document.getElementById("contador");
+    if (contador) contador.textContent = total;
 }
 
-// Ejecutar al cargar
-actualizarContador();
+function mostrarMensaje(texto) {
+    let alerta = document.createElement("div");
+    alerta.className = "alert alert-success text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow-sm py-2 px-4";
+    alerta.style.zIndex = "9999";
+    alerta.innerText = texto;
+    document.body.appendChild(alerta);
+    setTimeout(() => { alerta.remove(); }, 1500);
+}
 
+document.addEventListener("DOMContentLoaded", function() {
+    actualizarContador();
+});
 </script>
 
 {% endblock content %}
