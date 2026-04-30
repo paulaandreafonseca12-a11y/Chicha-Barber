@@ -139,7 +139,7 @@ def editar_producto(request, pk):
         form = ProductoForm(instance=producto)
 
     return render(request, 'productos/editar_producto.html', {
-        'form': form
+        'form': form,
     })
 
 
@@ -178,7 +178,8 @@ def editar_stock(request, pk):
 
     return render(request, 'productos/editar_stock.html', {
         'form': form,
-        'stock': stock
+        'stock': stock,
+        'titulo': f"Editar Stock - {stock.producto.nombre}"
     })
 
 
