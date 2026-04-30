@@ -107,7 +107,8 @@ def ver_agenda(request):
     servicios = Servicios.objects.all() 
     return render(request, 'reservas/ver_agenda.html', {
         'reservas': reservas,
-        'servicios': servicios 
+        'servicios': servicios,
+        'titulo': 'Agenda de Citas'
     })
 
 def cambiar_estado_reserva(request, pk, nuevo_estado):
