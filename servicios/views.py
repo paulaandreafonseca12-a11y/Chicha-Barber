@@ -47,7 +47,7 @@ def promocion(request):
 def listado_admin(request):
     servicios = Servicios.objects.all()
     context = {
-        'titulo': 'Listado de Servicios',
+        'titulo': 'Listado de Servicios', # Título corregido para reflejar que es un listado
         'servicios': servicios
     }
     return render(request, 'servicios/listado-admin.html', context)
@@ -106,7 +106,7 @@ def editar_promocion(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Promoción {promocion.nombre} actualizada.")
-            return redirect('listado_promocion')
+            return redirect('listado-promocion')
     else:
         # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
         form = PromocionEditarForm(instance=promocion)
