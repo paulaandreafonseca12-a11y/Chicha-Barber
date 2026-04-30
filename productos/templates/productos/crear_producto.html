@@ -1,76 +1,68 @@
-{% extends 'base-admin.html' %}
+{% extends "base-admin.html" %}
+
 {% block content %}
-
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
-
-    <div class="col-md-8 col-lg-5">
-        <div class="card shadow border-0">
-
-            <!-- HEADER -->
-            <div class="card-header bg-white text-center border-bottom">
-                <h4 class="mb-0 fw-bold">
-                    ✏️ {% if form.instance.pk %}
-                        Editar Producto
-                    {% else %}
-                        Crear Producto
-                    {% endif %}
-                </h4>
-            </div>
-
-            <!-- BODY -->
-            <div class="card-body bg-white">
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        {{ form.nombre }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        {{ form.descripcion }}
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Precio Venta</label>
-                            {{ form.precio_venta }}
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card shadow-sm border-0 mb-4">
+                
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 fw-bold text-center">
+                        {% if form.instance.pk %}
+                            ✏️ Editar Producto
+                        {% else %}
+                            ✨ Crear Nuevo Producto
+                        {% endif %}
+                    </h5>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            {{ form.nombre|as_crispy_field }}
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Precio Compra</label>
-                            {{ form.precio_compra }}
+                        <div class="mb-3">
+                            {{ form.descripcion|as_crispy_field }}
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Imagen</label>
-                        {{ form.imagen }}
-                    </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.precio_venta|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.precio_compra|as_crispy_field }}
+                            </div>
+                        </div>
 
-                    {% if form.stock %}
-                    <div class="mb-3">
-                        <label class="form-label">Stock</label>
-                        {{ form.stock }}
-                    </div>
-                    {% endif %}
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                {{ form.imagen|as_crispy_field }}
+                            </div>
+                            {% if form.stock %}
+                            <div class="col-md-4 mb-3">
+                                {{ form.stock|as_crispy_field }}
+                            </div>
+                            {% endif %}
+                        </div>
 
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-secondary">
-                            Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-warning">
-                            Guardar
-                        </button>
-                    </div>
+                        <hr class="my-4 text-secondary opacity-25">
 
-                </form>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-secondary px-4">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                {% if form.instance.pk %}Actualizar Producto{% else %}Guardar Producto{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
-
         </div>
     </div>
-
 </div>
-
 {% endblock %}
