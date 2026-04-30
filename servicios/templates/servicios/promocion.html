@@ -2,58 +2,69 @@
 {% load static %}
 
 {% block content %}
-<main class="p-4 w-75 m-auto">
-    <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-60 shadow-sm text-center mb-4 bg-light border border-1 border-light rounded-3 ">
+<main class="p-4 w-10 m-auto">
+    
+     <div class="p-5 mb-4 bg-body-tertiary rounded-3 opacity-60 shadow-sm text-center mb-4 bg-light border border-1 border-light rounded-3 ">
         <div class="container-fluid py-1">
             <h1 class="display-5 fw-bold">Nuestras Promociones</h1> 
-            <p class="fs-4">Aprovecha nuestros beneficios exclusivos para clientes registrados.</p>
+            <p class="fs-4">Descubre nuestras ofertas especiales y ahorra en tus servicios preferidos.</p>
         </div>
-    </div>
+  </div>
+</div>
+    
 
-    <section class="layout" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
-        
-        {% for promocion in promociones %}
-        <div class="card shadow-sm" style="width: 18rem; border-radius: 15px; overflow: hidden;">
-            <img src="{% static 'img/promos/promo_banner.jpg' %}" class="card-img-top" alt="{{ promocion.nombre }}">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4 bg-transparent p-4 rounded-3 shadow-sm">
+
             
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title fw-bold text-center">{{ promocion.nombre }}</h5>
-                <hr>
-                <p class="card-text text-muted">{{ promocion.descripcion }}</p>
-                
-                <div class="mt-auto">
-                    <a href="{% url 'listado-promocion' %}" 
-                       class="btn w-100 fw-bold text-white" 
-                       style="background-color: #87CEEB; border-radius: 8px;"
-                       onclick="return gestionarSeleccion(event, this.href)">
-                        Seleccionar Promoción
-                    </a>
+            {% for promocion in promociones %}
+            <div class="col d-flex justify-content-center">
+                <div class="card h-100 shadow-sm border-0 w-75 rounded-4" >
+                    {% if promocion.imagen %}
+                        <img src="{{ promocion.imagen.url }}" alt="{{ promocion.nombre }}" class="card-img-top rounded-4" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <!-- Imagen por defecto si no hay imagen de servicio, usa 'img/Fondo.png' como sugeriste -->
+                        <img src="{% static 'img/Fondo.png' %}" alt="Servicio sin imagen" class="card-img-top rounded-4" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+
+
+                    <div class="card-body rounded-4 d-flex flex-column bg-white">
+                        <h5 class="card-title text-center fw-bold">{{ promocion.nombre }}</h5>
+                        <hr>
+                        <p class="card-text text-muted small">{{ promocion.descripcion }}</p>
+                        
+                        <div class="mt-auto">
+                            <p class="mb-1"><strong> Duración:</strong> {{ promocion.duracion }}</p>
+                            <p class="card-text text-primary fw-bold"><strong>Precio:</strong> ${{ promocion.descuento }}</p>
+                            
+                            <a class="btn fw-bold text-white w-80 mt-2 justify-content-center d-flex mx-auto" 
+     href="{% url 'crear_reserva' promocion.id %}"
+   style="background-color: #87CEEB; border: none; border-radius: 8px; padding: 10px;">
+   Seleccionar
+</a>
+                        </div>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
+
         </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <p class="fs-5 text-muted">Próximamente tendremos nuevas promociones para ti.</p>
-        </div>
-        {% endfor %}
+    </div>
+</main>
 
     </section>
 </main>
 
 <script>
 function gestionarSeleccion(event, urlOriginal) {
-    // Verificamos si el usuario está logueado
     var estaAutenticado = {{ user.is_authenticated|yesno:"true,false" }};
-    
     if (!estaAutenticado) {
         event.preventDefault();
-        alert("🎁 ¡Atención! Las promociones de Chicha Barber son exclusivas para clientes registrados. Dale a aceptar para ir al registro.");
+        alert("🎁 ¡Atención! Las promociones son exclusivas para clientes registrados.");
         window.location.href = "{% url 'registro' %}";
         return false;
     }
-    
-    // Si está autenticado, el enlace funciona normal
     return true;
 }
 </script>
-{% endblock content %}
+{% endblock %}
