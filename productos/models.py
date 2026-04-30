@@ -31,12 +31,14 @@ class Stock(models.Model):
     producto = models.OneToOneField(
         Producto,
         on_delete=models.CASCADE,
-        related_name="stock"
+        related_name="stock",
+        null=True,
+        blank=True
     )
     cantidad = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.producto.nombre} - Stock: {self.cantidad}"
+        return f"{self.producto.nombre if self.producto else 'Sin producto'} - Stock: {self.cantidad}"
 
 
 # 🔥 SIGNAL → crear stock automático
