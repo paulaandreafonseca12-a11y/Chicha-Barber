@@ -4,7 +4,7 @@ from django.shortcuts import render # type: ignore
 from .models import Carrusel
 
 def carrusel_view(request):
-    carruseles = Carrusel.objects.filter(estado=True)
+    carruseles = Carrusel.objects.all()
 
     context = {
         'carruseles': carruseles
