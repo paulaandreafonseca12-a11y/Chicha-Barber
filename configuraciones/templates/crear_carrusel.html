@@ -1,0 +1,63 @@
+{% extends "base-admin.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Agregar Nueva Imagen al Carrusel</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                                <div class="text-danger small">{{ form.nombre.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen</label>
+                            <input type="file" name="{{ form.imagen.name }}" class="form-control" accept="image/*" id="{{ form.imagen.id_for_label }}">
+                            {% if form.imagen.help_text %}
+                                <div class="form-text">{{ form.imagen.help_text }}</div>
+                            {% endif %}
+                            {% if form.imagen.errors %}
+                                <div class="text-danger small">{{ form.imagen.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.texto.id_for_label }}" class="form-label">Texto descriptivo (opcional)</label>
+                            {{ form.texto }}
+                            {% if form.texto.errors %}
+                                <div class="text-danger small">{{ form.texto.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            {{ form.estado }}
+                            <label class="form-check-label" for="{{ form.estado.id_for_label }}">
+                                Activo (Mostrar en el carrusel público)
+                            </label>
+                            {% if form.estado.errors %}
+                                <div class="text-danger small">{{ form.estado.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'carrusel' %}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Guardar Imagen</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
