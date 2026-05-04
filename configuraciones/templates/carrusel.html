@@ -1,0 +1,32 @@
+{%extends "base-admin.html"%}
+{% load static %}
+
+{% block content %}
+    <div class="carrusel-container p-4 w-10 m-auto">
+        <h1>Carrusel</h1>
+        <p>Contenido del carrusel</p>
+        <div class="row">
+            {% for item in carrusel_items %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if item.imagen %}
+                    <img src="{{ item.imagen.url }}" class="card-img-top" alt="{{ item.nombre }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'img/Fondo.png' %}" class="card-img-top" alt="Imagen por defecto" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.nombre }}</h5>
+                        <p class="card-text">{{ item.texto }}</p>
+                        <a href="{% url 'carrusel' %}" class="btn btn-primary mb-3">Agregar Imagen al Carrusel</a>
+                    
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
