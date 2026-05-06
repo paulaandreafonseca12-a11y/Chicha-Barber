@@ -183,7 +183,7 @@
     </div>
 
     <!-- ══════════════════════════ FORMULARIO OCULTO ══════════════════════ -->
-    <form id="reserva-form" method="POST" action="{% url 'reservas:crear_reserva' servicio.id %}" style="display: none;">
+    <form id="reserva-form" method="POST" action="{% url 'crear_reserva' servicio.id %}" style="display: none;">
       {% csrf_token %}
       <input type="hidden" name="nombre_cliente" id="hidden-nombre_cliente">
       <input type="hidden" name="correo" id="hidden-correo">
