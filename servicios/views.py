@@ -47,7 +47,7 @@ def promocion(request):
 def listado_admin(request):
     servicios = Servicios.objects.all()
     context = {
-        'titulo': 'Listado de Servicios',
+        'titulo': 'Listado de Servicios', # Título corregido para reflejar que es un listado
         'servicios': servicios
     }
     return render(request, 'servicios/listado-admin.html', context)

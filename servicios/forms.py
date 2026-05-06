@@ -7,7 +7,7 @@ from .models import Servicios,Promocion
 class ServiciosForm(ModelForm):
     class Meta:
         model = Servicios
-        fields=['nombre', 'precio', 'duracion','imagen','estado' ]
+        fields=['nombre', 'precio', 'duracion','imagen','estado', ]
         
 class ServiciosEditarForm(ModelForm):
     class Meta:
@@ -17,7 +17,7 @@ class ServiciosEditarForm(ModelForm):
 class PromocionForm(ModelForm):
     class Meta:
         model = Promocion
-        fields=['nombre', 'descuento', 'duracion', 'descripcion', 'imagen',]
+        fields=['nombre', 'descuento', 'duracion', 'descripcion', 'imagen','estado',]
         
 class PromocionEditarForm(ModelForm):
     class Meta:

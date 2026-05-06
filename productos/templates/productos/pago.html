@@ -81,21 +81,27 @@
     <div class="container mt-3">
         {% for message in messages %}
             <div class="alert alert-success text-center">
-                {{ message }}
-            </div>
+                {{ message }} <br>
         {% endfor %}
     </div>
 {% endif %}
 
 <script>
 
-// 🔥 OBTENER CARRITO
+// =======================
+// 🛒 CARRITO
+// =======================
+
+// Obtener carrito
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// 🔥 ENVIARLO AL BACKEND
+// Enviarlo al backend
 document.getElementById("carritoInput").value = JSON.stringify(carrito);
 
+// =======================
 // 💳 INFO DE PAGO
+// =======================
+
 function mostrarInfoPago(tipo) {
     let info = document.getElementById("infoPago");
     info.classList.remove("d-none");
@@ -107,6 +113,25 @@ function mostrarInfoPago(tipo) {
     }
 }
 
+</script>
+
+<!-- =======================
+🔥 BORRAR + REDIRIGIR
+======================= -->
+<script>
+{% if messages %}
+    {% for message in messages %}
+
+            // 💥 borrar carrito
+            localStorage.removeItem("carrito");
+            localStorage.removeItem("tiempo_carrito");
+
+            // 🚀 redirigir al inicio
+            setTimeout(function(){
+                window.location.href = "{% url 'inicio' %}";
+            }, 2000);
+    {% endfor %}
+{% endif %}
 </script>
 
 {% endblock content %}

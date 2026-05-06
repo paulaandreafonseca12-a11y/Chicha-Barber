@@ -46,6 +46,7 @@ class Promocion(models.Model):
     duracion = models.CharField(max_length=30, verbose_name='Duración')
     descripcion = models.TextField(verbose_name='Descripcion')
     imagen = models.ImageField(upload_to=renombrar_imagen_promocion, null=True, blank=True, verbose_name='Imagen de la promoción')
+    estado = models.BooleanField(default=True, verbose_name='Estado')
 
     class Meta:
         verbose_name = 'Promoción' #singular 
