@@ -97,7 +97,10 @@ def procesar_pago_cliente(request):
 
         # ✅ ÉXITO + 📧 CORREO
         try:
-            enviar_correo_compra(correo, nombre)
+            enviar_correo_compra(correo_cliente=correo,
+              nombre=nombre,
+              carrito=carrito,
+              total=total_compra)
         except Exception as e:
             print(f"Error enviando correo: {e}")  # no rompe la compra
 
