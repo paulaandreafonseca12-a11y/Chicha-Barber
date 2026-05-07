@@ -1,0 +1,60 @@
+{% extends "base-admin.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Gestión de Carrusel</h5>
+                <!-- Aquí puedes añadir la URL para crear una nueva imagen cuando exista la vista -->
+                <button class="btn btn-outline-light" onclick="window.location.href='{% url 'crear_carrusel' %}'">+ Nueva Imagen</button>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Texto</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in carruseles %} 
+                        <tr>
+                            <td>#{{ item.pk }}</td> 
+                            <td>
+                                {% if item.imagen %}
+                                    <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="img-thumbnail rounded" style="width: 80px; height: 60px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'img/Fondo.png' %}" alt="Sin imagen" class="img-thumbnail rounded" style="width: 80px; height: 60px; object-fit: cover;">
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ item.nombre }}</strong></td> 
+                            <td>{{ item.texto|truncatechars:50 }}</td>
+                            <td>
+                                {% if item.estado %} 
+                                    <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <!-- Aquí puedes añadir las URLs para editar y eliminar cuando existan las vistas -->
+                                <button class="btn btn-sm btn-outline-info" onclick="window.location.href='#'">Editar</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='#'">Eliminar</button>
+                            </td>
+                        </tr>
+                        {% empty %} 
+                        <tr>
+                            <td colspan="6" class="text-center py-4">No hay imágenes de carrusel registradas.</td>
+                        </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
