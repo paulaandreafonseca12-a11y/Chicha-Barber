@@ -5,6 +5,7 @@ from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
 from django.http import JsonResponse
 import json
 from django.db import transaction
+from core.utils import enviar_correo_compra
 
 
 # =========================
@@ -54,7 +55,6 @@ def procesar_pago_cliente(request):
             return redirect('carrito')
 
         try:
-            # 🔥 TRANSACCIÓN SEGURA
             with transaction.atomic():
 
                 # ✅ Crear compra
@@ -67,28 +67,42 @@ def procesar_pago_cliente(request):
                     total=0
                 )
 
-                # ✅ Crear detalles (el modelo hace TODO)
+                total_compra = 0
+
+                # ✅ Crear detalles
                 for item in carrito:
                     producto = get_object_or_404(
-                        Producto, 
+                        Producto,
                         codigo_producto=item['id']
                     )
+
+                    cantidad = int(item['cantidad'])
+                    subtotal = producto.precio_venta * cantidad
+                    total_compra += subtotal
 
                     DetalleCompra.objects.create(
                         compra=compra,
                         producto=producto,
-                        cantidad=item['cantidad']
+                        cantidad=cantidad,
+                        subtotal=subtotal
                     )
+
+                # ✅ Guardar total
+                compra.total = total_compra
+                compra.save()
 
         except Exception as e:
             messages.error(request, f"❌ Error en la compra: {str(e)}")
             return redirect('carrito')
 
-        # ✅ ÉXITO
-        messages.success(request, "✅ Compra realizada con éxito")
+        # ✅ ÉXITO + 📧 CORREO
+        try:
+            enviar_correo_compra(correo, nombre)
+        except Exception as e:
+            print(f"Error enviando correo: {e}")  # no rompe la compra
 
-        # 🔥 IMPORTANTE: esto limpia el carrito en el frontend
-        return redirect('/productos/?compra=ok')
+        messages.success(request, "✅ Compra realizada con éxito")
+        return redirect('pago')
 
     return redirect('carrito')
 # =========================

@@ -15,7 +15,7 @@
         ⏳ Tienes <strong><span id="tiempo">05:00</span></strong> minutos para completar tu compra.
     </div>
 
-    <table class="table table-striped text-center">
+    <table class="table table-striped text-center color-blanco">
 
         <thead class="table-dark">
             <tr>
@@ -52,9 +52,12 @@
 
 <script>
 
+// =======================
+// 🛒 CARRITO
+// =======================
+
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// 🔥 FORMATEAR PRECIO
 function formatoCOP(valor) {
     return new Intl.NumberFormat('es-CO').format(valor);
 }
@@ -114,7 +117,6 @@ function mostrarCarrito() {
     actualizarContadorGlobal();
 }
 
-// 🔥 CAMBIAR CANTIDAD
 function cambiarCantidad(index, cambio) {
     carrito[index].cantidad += cambio;
 
@@ -125,13 +127,11 @@ function cambiarCantidad(index, cambio) {
     mostrarCarrito();
 }
 
-// 🔥 ELIMINAR
 function eliminarProducto(index) {
     carrito.splice(index, 1);
     mostrarCarrito();
 }
 
-// 🔥 CONTADOR GLOBAL (si lo tienes en navbar)
 function actualizarContadorGlobal() {
     let total = 0;
     carrito.forEach(p => total += p.cantidad);
@@ -143,13 +143,19 @@ function actualizarContadorGlobal() {
 mostrarCarrito();
 
 
-// ⏳ TEMPORIZADOR REAL (persistente)
-let tiempoRestante = localStorage.getItem("tiempo_carrito");
+// =======================
+// ⏳ TEMPORIZADOR CORREGIDO
+// =======================
 
-if (!tiempoRestante) {
-    tiempoRestante = 300;
+// 🔥 Obtener tiempo guardado
+let tiempoGuardado = localStorage.getItem("tiempo_carrito");
+
+// 🔥 CORRECCIÓN CLAVE
+if (!tiempoGuardado || parseInt(tiempoGuardado) <= 0) {
+    tiempoRestante = 300; // 5 minutos
+    localStorage.setItem("tiempo_carrito", tiempoRestante);
 } else {
-    tiempoRestante = parseInt(tiempoRestante);
+    tiempoRestante = parseInt(tiempoGuardado);
 }
 
 function actualizarTiempo() {
@@ -162,6 +168,7 @@ function actualizarTiempo() {
     if (tiempoRestante <= 0) {
         clearInterval(contador);
 
+        // 🔥 AHORA SOLO SE EJECUTA CUANDO LLEGA A 0 EN VIVO
         localStorage.removeItem("carrito");
         localStorage.removeItem("tiempo_carrito");
 
