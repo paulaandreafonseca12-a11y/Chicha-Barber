@@ -5,6 +5,7 @@ from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
 from django.http import JsonResponse
 import json
 from django.db import transaction
+from core.utils import enviar_correo_compra
 
 
 # =========================
@@ -94,10 +95,13 @@ def procesar_pago_cliente(request):
             messages.error(request, f"❌ Error en la compra: {str(e)}")
             return redirect('carrito')
 
-        # ✅ ÉXITO
-        messages.success(request, "✅ Compra realizada con éxito")
+        # ✅ ÉXITO + 📧 CORREO
+        try:
+            enviar_correo_compra(correo, nombre)
+        except Exception as e:
+            print(f"Error enviando correo: {e}")  # no rompe la compra
 
-        # 🔥 IMPORTANTE (CORREGIDO)
+        messages.success(request, "✅ Compra realizada con éxito")
         return redirect('pago')
 
     return redirect('carrito')

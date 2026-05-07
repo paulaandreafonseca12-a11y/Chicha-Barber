@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'reservas',
     'usuarios',
     'productos',
+    'configuraciones',
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -125,3 +126,12 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'chichabarber39@gmail.com'   # el que verificaste
+EMAIL_HOST_PASSWORD = 'chichabarber2026'      # clave de Brevo
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
