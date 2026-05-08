@@ -132,7 +132,7 @@ def cancelar_cita(request, pk):
         f"Cita cancelada: {cita.nombre_cliente}"
     )
 
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 
 # =========================
@@ -162,7 +162,7 @@ def editar_reserva(request, pk):
                 'Reserva actualizada.'
             )
 
-            return redirect('reservas:ver_agenda')
+            return redirect('ver_agenda')
 
     return render(
         request,
@@ -195,7 +195,7 @@ def calificacion_view(request):
                 '¡Gracias por calificar!'
             )
 
-            return redirect('reservas:calificacion')
+            return redirect('calificacion')
 
     return render(
         request,
@@ -229,7 +229,7 @@ def editar_calificacion(request, pk):
                 'Calificación actualizada.'
             )
 
-            return redirect('reservas:calificacion')
+            return redirect('calificacion')
 
     return render(
         request,
@@ -293,7 +293,7 @@ def cambiar_estado_reserva(
             f"Estado actualizado a {nuevo_estado}"
         )
 
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 
 # =========================
@@ -323,7 +323,7 @@ def reprogramar_cita(request, pk):
                 "Cita reprogramada"
             )
 
-            return redirect('reservas:ver_agenda')
+            return redirect('ver_agenda')
 
     return render(
         request,

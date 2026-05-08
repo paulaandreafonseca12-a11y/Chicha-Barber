@@ -1,60 +1,164 @@
 {% extends "base-admin.html" %}
 
 {% block content %}
+
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/dark.min.css">
 
 <div class="container py-4">
-    <div class="card bg-dark text-white border-secondary shadow m-auto" style="max-width: 600px;">
-        <div class="card-header border-secondary">
-            <h3 style="color: #d4af37;">Reprogramar Cita</h3>
-            <p class="text-muted mb-0">Cliente: {{ cita.nombre_cliente }}</p>
+
+    <!-- Header superior -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-white">
+            <i class="bi bi-calendar2-event-fill me-2"></i>
+            Reprogramar Cita
+        </h2>
+
+        <a href="{% url 'ver_agenda' %}"
+           class="btn fw-bold text-white"
+           style="background-color: #07d2ff;">
+            <i class="bi bi-arrow-left me-2"></i>
+            Volver
+        </a>
+    </div>
+
+    <!-- Card principal -->
+    <div class="card border-0 shadow-lg mx-auto"
+     style="max-width: 850px; border-radius: 18px;">
+
+        <!-- Header -->
+        <div class="card-header text-white py-3"
+             style="background-color: #07d2ff;">
+
+            <h4 class="mb-1 fw-bold">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar Reserva
+            </h4>
+
+            <small>
+                Cliente: {{ cita.nombre_cliente }}
+            </small>
         </div>
-        <div class="card-body">
+
+        <!-- Body -->
+        <div class="card-body bg-white p-4">
+
             <form method="POST">
                 {% csrf_token %}
 
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label text-warning fw-bold">{{ field.label }}</label>
+                <div class="row">
+
+                    {% for field in form %}
+
+                    <div class="col-md-12 mb-4">
+
+                        <label class="form-label fw-bold text-dark">
+                            {{ field.label }}
+                        </label>
+
                         {% if field.name == 'fecha_reserva' %}
-                            <input type="text"
-                                   id="fecha_picker"
-                                   name="{{ field.html_name }}"
-                                   value="{{ field.value|default:'' }}"
-                                   class="form-control bg-secondary text-white border-0"
-                                   placeholder="Selecciona fecha y hora"
-                                   autocomplete="off"
-                                   required>
+
+                            <input
+                                type="text"
+                                id="fecha_picker"
+                                name="{{ field.html_name }}"
+                                value="{{ field.value|default:'' }}"
+                                class="form-control form-control-lg"
+                                placeholder="Selecciona fecha y hora"
+                                autocomplete="off"
+                                required
+                            >
+
                         {% else %}
-                            <div class="form-control bg-secondary text-white border-0 p-0">
+
+                            <div class="custom-input">
                                 {{ field }}
                             </div>
-                        {% endif %}
-                        {% if field.errors %}
-                            <div class="text-danger small mt-1">{{ field.errors }}</div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
 
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-warning fw-bold">
-                        <i class="bi bi-check-circle-fill me-2"></i>Guardar Cambios
-                    </button>
-                    <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light">
-                        <i class="bi bi-arrow-left me-2"></i>Volver
-                    </a>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <div class="text-danger small mt-2">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
                 </div>
+
+                <!-- Botones -->
+                <div class="d-flex gap-3 mt-4">
+
+                    <button type="submit"
+                            class="btn btn-lg text-white fw-bold px-4"
+                            style="background-color: #07d2ff;">
+
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Guardar Cambios
+
+                    </button>
+
+                    <a href="{% url 'ver_agenda' %}"
+                       class="btn btn-outline-secondary btn-lg fw-bold px-4">
+
+                        <i class="bi bi-x-circle me-2"></i>
+                        Cancelar
+
+                    </a>
+
+                </div>
+
             </form>
+
         </div>
     </div>
 </div>
 
+<style>
+
+    .custom-input input,
+    .custom-input select,
+    .custom-input textarea {
+        width: 100%;
+        border: 1px solid #ced4da;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 16px;
+        transition: 0.3s;
+        background-color: white;
+    }
+
+    .custom-input input:focus,
+    .custom-input select:focus,
+    .custom-input textarea:focus,
+    #fecha_picker:focus {
+        border-color: #07d2ff;
+        box-shadow: 0 0 0 0.2rem rgba(7, 210, 255, 0.25);
+        outline: none;
+    }
+
+    #fecha_picker {
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+
+    .card {
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+</style>
+
 <!-- Flatpickr JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/es.min.js"></script>
+
 <script>
+
     flatpickr("#fecha_picker", {
         enableTime: true,
         dateFormat: "d/m/Y H:i",
@@ -64,5 +168,7 @@
         defaultHour: 9,
         minuteIncrement: 15,
     });
+
 </script>
+
 {% endblock %}

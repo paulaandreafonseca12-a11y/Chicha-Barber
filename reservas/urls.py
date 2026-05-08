@@ -68,7 +68,7 @@ urlpatterns = [
     
     #calendario
     
-   path(
+    path(
     'api/disponibilidad/', 
     views.obtener_disponibilidad_json, 
     name='api_disponibilidad'
