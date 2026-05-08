@@ -61,17 +61,18 @@
                                 </a>
                                 {% if cita.estado == 'confirmada' %}
 
-                        <a href="https://wa.me/57{{ cita.telefono_cliente }}?text=
-                        Hola%20{{ cita.nombre_cliente|urlencode }}%20👋%0A%0A
-                        Te%20recordamos%20tu%20cita%20en%20Chicha%20Barber%20💈%0A%0A
-                        📅%20Fecha:%20{{ cita.fecha_reserva|date:'d/m/Y' }}%0A
-                        🕒%20Hora:%20{{ cita.fecha_reserva|date:'H:i' }}%0A
-                        ✂️%20Servicio:%20{{ cita.servicio|urlencode }}%0A%0A
-                        ¡Te%20esperamos!%20🔥"
-                        target="_blank"
-                        class="btn btn-sm btn-success"
-                        title="Enviar WhatsApp"> <i class="bi bi-whatsapp"></i>
+                        {% if cita.estado == 'confirmada' %}
+
+<a href="https://wa.me/57{{ cita.telefono_cliente }}?text=Hola%20{{ cita.nombre_cliente|urlencode }}.%0A%0ATe%20recordamos%20tu%20cita%20en%20Chicha%20Barber.%0A%0AFecha:%20{{ cita.fecha_reserva|date:'d/m/Y' }}%0AHora:%20{{ cita.fecha_reserva|date:'H:i' }}%0AServicio:%20{{ cita.servicio|urlencode }}.%0A%0A¡Te%20esperamos!"
+   target="_blank"
+   class="btn btn-sm btn-success"
+   title="Enviar WhatsApp">
+
+    <i class="bi bi-whatsapp"></i>
+
 </a>
+
+{% endif %}
 
 {% endif %}
 
