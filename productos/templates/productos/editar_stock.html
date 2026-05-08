@@ -1,27 +1,64 @@
 {% extends 'base-admin.html' %}
 
 {% block content %}
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6"> <!-- Tamaño ajustado para un formulario de stock -->
+            
+            <!-- Encabezado con el estilo azul que ya manejas -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-dark"></h2>
+                <a href="{% url 'lista_productos_admin' %}" class="btn btn-primary color-azul">
+                    <i class="bi bi-arrow-left me-2"></i>Volver
+                </a>
+            </div>
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-dark text-warning">
-            <h4></h4>
-        </div>
-
-        <div class="card-body">
-            <form method="POST">
-                {% csrf_token %}
-
-                <div class="mb-3">
-                    <label>Cantidad</label>
-                    <input type="number" name="cantidad" 
-                           value="{{ stock.cantidad }}" 
-                           class="form-control">
+            <div class="card shadow-sm border-0 bg-white">
+                <!-- Header con el azul característico -->
+                <div class="card-header bg-white py-3 border-bottom color-azul">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-box-seam me-2 text-primary"></i>Actualizar Cantidad
+                    </h5>
                 </div>
 
-                <button class="btn btn-warning">Guardar</button>
-                <a href="{% url 'lista_productos_admin' %}" class="btn btn-secondary">Volver</a>
-            </form>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Producto Info (Opcional, ayuda visualmente) -->
+                        <div class="mb-4">
+                            <label class="text-muted small d-block">Producto</label>
+                            <span class="fw-bold text-dark h5">{{ stock.producto.nombre }}</span>
+                            <hr class="my-2">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark small text-uppercase">Cantidad en Inventario</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-hash text-primary"></i></span>
+                                <input type="number" name="cantidad" 
+                                       value="{{ stock.cantidad }}" 
+                                       class="form-control form-control-lg border-primary-subtle"
+                                       placeholder="0" required>
+                            </div>
+                            <div class="form-text">Ingrese el número total de unidades disponibles.</div>
+                        </div>
+
+                        <!-- Botones alineados con tu estilo -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary color-azul fw-bold py-2">
+                                <i class="bi bi-save me-2"></i>Guardar Cambios
+                            </button>
+                            <a href="{% url 'lista_productos_admin' %}" class="btn btn-light border py-2">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Footer decorativo azul (opcional para consistencia total) -->
+                <div class="card-footer bg-primary border-0 py-2 color-azul mt-auto"></div>
+            </div>
         </div>
     </div>
 </div>

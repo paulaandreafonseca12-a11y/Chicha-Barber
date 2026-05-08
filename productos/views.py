@@ -255,7 +255,8 @@ def detalle_compra(request, pk):
     return render(request, 'productos/detalle_compra.html', {
         'compra': compra,
         'detalles': detalles,
-        'total_calculado': total
+        'total_calculado': total,
+        'titulo': "Detalle de Compra"
     })
 
 
