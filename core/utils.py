@@ -149,3 +149,95 @@ def enviar_correo_compra(correo_cliente, nombre, carrito, total):
     email.attach_alternative(html_content, "text/html")
     email.send()
 
+#reservas correo
+def enviar_correo_reserva(correo_cliente, nombre, servicio, fecha):
+
+    asunto = 'Confirmación de tu reserva 💈'
+
+    html_content = f"""
+    <div style="
+        background:#f4f4f4;
+        padding:40px;
+        font-family:Arial;
+    ">
+
+        <div style="
+            max-width:700px;
+            margin:auto;
+            background:white;
+            border-radius:15px;
+            overflow:hidden;
+            box-shadow:0 0 15px rgba(0,0,0,.1);
+        ">
+
+            <!-- HEADER -->
+            <div style="
+                background:black;
+                color:white;
+                padding:35px;
+                text-align:center;
+            ">
+
+                <img
+                    src="logo.png"
+                    width="90"
+                >
+
+                <h1 style="margin-top:15px;">
+                    Chicha Barber 💈
+                </h1>
+
+                <p>
+                    Confirmación de reserva
+                </p>
+
+            </div>
+
+            <!-- BODY -->
+            <div style="padding:35px;">
+
+                <h2>Hola {nombre} 👋</h2>
+
+                <p>
+                    Tu reserva ha sido registrada correctamente.
+                </p>
+
+                <h3 style="margin-top:25px;">
+                    📅 Detalles de la cita
+                </h3>
+
+                <p><strong>Servicio:</strong> {servicio.nombre}</p>
+
+                <p><strong>Fecha:</strong> {fecha.strftime('%Y-%m-%d %H:%M')}</p>
+
+                <p style="margin-top:30px;">
+                    Te esperamos en nuestra barbería ✂️
+                </p>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div style="
+                background:#111;
+                color:#bbb;
+                text-align:center;
+                padding:20px;
+                font-size:14px;
+            ">
+                © 2026 Chicha Barber
+            </div>
+
+        </div>
+
+    </div>
+    """
+
+    email = EmailMultiAlternatives(
+        asunto,
+        '',
+        settings.DEFAULT_FROM_EMAIL,
+        [correo_cliente]
+    )
+
+    email.attach_alternative(html_content, "text/html")
+    email.send()
