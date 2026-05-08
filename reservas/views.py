@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
-from .models import  Calificacion
+from django.http import JsonResponse
+
+from .models import Calificacion, Reserva
 from .forms import (
     ReservaForm,
     ReservaEditarForm,
@@ -13,19 +15,19 @@ from .forms import (
 
 from servicios.models import Servicios
 
-#reserva calendario
-from django.http import JsonResponse
-from datetime import date, timedelta
-from .models import Reserva
+# 📧 IMPORTANTE: correo reserva
+from core.utils import enviar_correo_reserva
 
+
+# =========================
+# 📅 DISPONIBILIDAD JSON
+# =========================
 
 def obtener_disponibilidad_json(request):
 
     hoy = date.today()
-
     resultado = {}
 
-    # próximos 3 días
     for i in range(3):
 
         fecha_evaluar = hoy + timedelta(days=i)
@@ -41,24 +43,21 @@ def obtener_disponibilidad_json(request):
         horas = []
 
         for reserva in reservas:
-
             hora = reserva.fecha_reserva.strftime('%H:%M')
-
             horas.append(hora)
 
         resultado[fecha_key] = horas
 
     return JsonResponse(resultado)
+
+
 # =========================
-# 🔹 RESERVAS (CLIENTE)
+# 🔹 CREAR RESERVA CLIENTE
 # =========================
 
 def crear_reserva(request, servicio_id):
 
-    servicio = get_object_or_404(
-        Servicios,
-        id=servicio_id
-    )
+    servicio = get_object_or_404(Servicios, id=servicio_id)
 
     if request.method == 'POST':
 
@@ -69,16 +68,13 @@ def crear_reserva(request, servicio_id):
             telefono = request.POST.get('telefono_cliente')
             fecha_reserva = request.POST.get('fecha_reserva')
 
-            print(request.POST)
-
-            # Convertir fecha
             fecha_convertida = datetime.strptime(
                 fecha_reserva,
                 "%Y-%m-%d %H:%M"
             )
 
-            # Guardar reserva
-            Reserva.objects.create(
+            # 💾 GUARDAR RESERVA
+            reserva = Reserva.objects.create(
                 nombre_cliente=nombre,
                 correo_cliente=correo,
                 telefono_cliente=telefono,
@@ -86,22 +82,22 @@ def crear_reserva(request, servicio_id):
                 servicio=servicio,
             )
 
-            messages.success(
-                request,
-                '¡Reserva creada con éxito!'
+            # 📧 ENVIAR CORREO
+            enviar_correo_reserva(
+                correo_cliente=correo,
+                nombre=nombre,
+                servicio=servicio,
+                fecha=fecha_convertida
             )
 
-            # VOLVER AL INICIO
+            messages.success(request, '¡Reserva creada con éxito!')
+
             return redirect('inicio')
 
         except Exception as e:
 
             print(e)
-
-            messages.error(
-                request,
-                f'Error al crear reserva: {e}'
-            )
+            messages.error(request, f'Error al crear reserva: {e}')
 
     return render(
         request,
@@ -119,10 +115,7 @@ def crear_reserva(request, servicio_id):
 
 def cancelar_cita(request, pk):
 
-    cita = get_object_or_404(
-        Reserva,
-        pk=pk
-    )
+    cita = get_object_or_404(Reserva, pk=pk)
 
     cita.estado = 'cancelada'
     cita.save()
@@ -141,15 +134,9 @@ def cancelar_cita(request, pk):
 
 def editar_reserva(request, pk):
 
-    reserva = get_object_or_404(
-        Reserva,
-        pk=pk
-    )
+    reserva = get_object_or_404(Reserva, pk=pk)
 
-    form = ReservaEditarForm(
-        request.POST or None,
-        instance=reserva
-    )
+    form = ReservaEditarForm(request.POST or None, instance=reserva)
 
     if request.method == 'POST':
 
@@ -180,9 +167,7 @@ def editar_reserva(request, pk):
 
 def calificacion_view(request):
 
-    form = CalificacionForm(
-        request.POST or None
-    )
+    form = CalificacionForm(request.POST or None)
 
     if request.method == 'POST':
 
@@ -200,23 +185,15 @@ def calificacion_view(request):
     return render(
         request,
         'calificacion/calificacion.html',
-        {
-            'form': form
-        }
+        {'form': form}
     )
 
 
 def editar_calificacion(request, pk):
 
-    calificacion = get_object_or_404(
-        Calificacion,
-        pk=pk
-    )
+    calificacion = get_object_or_404(Calificacion, pk=pk)
 
-    form = CalificacionEditarForm(
-        request.POST or None,
-        instance=calificacion
-    )
+    form = CalificacionEditarForm(request.POST or None, instance=calificacion)
 
     if request.method == 'POST':
 
@@ -234,9 +211,7 @@ def editar_calificacion(request, pk):
     return render(
         request,
         'reservas/editar_calificacion.html',
-        {
-            'form': form
-        }
+        {'form': form}
     )
 
 
@@ -246,10 +221,7 @@ def editar_calificacion(request, pk):
 
 def ver_agenda(request):
 
-    reservas = Reserva.objects.all().order_by(
-        '-fecha_reserva'
-    )
-
+    reservas = Reserva.objects.all().order_by('-fecha_reserva')
     servicios = Servicios.objects.all()
 
     return render(
@@ -267,25 +239,13 @@ def ver_agenda(request):
 # 🔄 CAMBIAR ESTADO
 # =========================
 
-def cambiar_estado_reserva(
-    request,
-    pk,
-    nuevo_estado
-):
+def cambiar_estado_reserva(request, pk, nuevo_estado):
 
-    reserva = get_object_or_404(
-        Reserva,
-        pk=pk
-    )
+    reserva = get_object_or_404(Reserva, pk=pk)
 
-    if nuevo_estado in [
-        'reservada',
-        'confirmada',
-        'cancelada'
-    ]:
+    if nuevo_estado in ['reservada', 'confirmada', 'cancelada']:
 
         reserva.estado = nuevo_estado
-
         reserva.save()
 
         messages.info(
@@ -302,15 +262,9 @@ def cambiar_estado_reserva(
 
 def reprogramar_cita(request, pk):
 
-    cita = get_object_or_404(
-        Reserva,
-        pk=pk
-    )
+    cita = get_object_or_404(Reserva, pk=pk)
 
-    form = EditarReservaForm(
-        request.POST or None,
-        instance=cita
-    )
+    form = EditarReservaForm(request.POST or None, instance=cita)
 
     if request.method == 'POST':
 
@@ -347,38 +301,21 @@ def crear_reserva_admin(request):
 
         try:
 
-            nombre = request.POST.get(
-                'nombre_cliente'
-            )
+            nombre = request.POST.get('nombre_cliente')
+            correo = request.POST.get('correo_cliente')
+            telefono = request.POST.get('telefono_cliente')
+            fecha_reserva = request.POST.get('fecha_reserva')
+            servicio_id = request.POST.get('servicio')
 
-            correo = request.POST.get(
-                'correo_cliente'
-            )
+            servicio = Servicios.objects.get(id=servicio_id)
 
-            telefono = request.POST.get(
-                'telefono_cliente'
-            )
-
-            fecha_reserva = request.POST.get(
-                'fecha_reserva'
-            )
-
-            servicio_id = request.POST.get(
-                'servicio'
-            )
-
-            servicio = Servicios.objects.get(
-                id=servicio_id
-            )
-
-            # Convertir fecha
             fecha_convertida = datetime.strptime(
                 fecha_reserva,
                 "%Y-%m-%d %H:%M"
             )
 
-            # Guardar
-            Reserva.objects.create(
+            # 💾 GUARDAR
+            reserva = Reserva.objects.create(
                 nombre_cliente=nombre,
                 correo_cliente=correo,
                 telefono_cliente=telefono,
@@ -386,27 +323,25 @@ def crear_reserva_admin(request):
                 servicio=servicio,
             )
 
-            messages.success(
-                request,
-                '¡Cita registrada con éxito!'
+            # 📧 ENVIAR CORREO
+            enviar_correo_reserva(
+                correo_cliente=correo,
+                nombre=nombre,
+                servicio=servicio,
+                fecha=fecha_convertida
             )
 
-            # REDIRECCIÓN AL INICIO
+            messages.success(request, '¡Cita registrada con éxito!')
+
             return redirect('inicio')
 
         except Exception as e:
 
             print(e)
-
-            messages.error(
-                request,
-                f'Error al guardar: {e}'
-            )
+            messages.error(request, f'Error al guardar: {e}')
 
     return render(
         request,
         'reservas/crear_cita_admin.html',
-        {
-            'servicios': servicios
-        }
+        {'titulo': "Crear Reserva", 'servicios': servicios}
     )
