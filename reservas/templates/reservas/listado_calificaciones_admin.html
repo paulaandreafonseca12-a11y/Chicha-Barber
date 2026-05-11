@@ -1,0 +1,36 @@
+{% extends 'base-admin.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">Gestión de Calificaciones</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Puntuación</th>
+                        <th>Comentario</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in calificaciones %}
+                    <tr>
+                        <td>{{ c.usuario.username|default:"Anónimo" }}</td>
+                        <td>{{ c.puntuacion }} ⭐</td>
+                        <td>{{ c.resena }}</td>
+                        <td>{{ c.fecha|date:"d/M/Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No hay calificaciones registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

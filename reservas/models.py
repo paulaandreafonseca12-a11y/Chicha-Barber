@@ -1,34 +1,14 @@
 from django.db import models
 from servicios.models import Servicios
-from usuarios.models import Usuario 
-# Create your models here.
-
-class Reserva(models.Model):
-    nombre_cliente = models.CharField(max_length=100)
-    correo = models.EmailField()
-    telefono = models.CharField(max_length=20)
-    fecha_reserva = models.DateTimeField()
-    # RELACIÓN: Una reserva pertenece a un Servicio
-    servicio = models.ForeignKey(Servicios, on_delete=models.CASCADE, related_name='reservas')
-    
-    # Campo extra útil: saber cuándo se creó la reserva
-    creado_el = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Reserva"
-        verbose_name_plural = "Reservas"
-
-    def __str__(self):
-        return f"Reserva de {self.nombre_cliente} - {self.servicio.nombre} ({self.fecha_reserva})"
-# Importamos el modelo Barbero de tu aplicación de usuarios
-
+from django.contrib.auth.models import User
 
 class Reserva(models.Model):
     nombre_cliente = models.CharField(max_length=100, verbose_name="Nombre del Cliente")
     correo_cliente = models.EmailField(verbose_name="Correo Electrónico")
     telefono_cliente = models.CharField(max_length=20, verbose_name="Teléfono")
-    fecha_reserva = models.CharField(max_length=150, verbose_name="Fecha y Hora")
-    servicio = models.CharField(max_length=100, default="Corte de Cabello")
+    fecha_reserva = models.DateTimeField(verbose_name="Fecha y Hora")
+    # Relacionamos con el modelo Servicios que ya tienes
+    servicio = models.ForeignKey(Servicios, on_delete=models.CASCADE, related_name='reservas_detalle')
     
     ESTADO_CHOICES = [
         ('reservada', 'Reservada'),
@@ -39,18 +19,23 @@ class Reserva(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.nombre_cliente} - {self.fecha_reserva}"
-    
-class Calificacion(models.Model):
-    # Relación con el barbero que trabaja en Chicha Barber
-    barbero_a_calificar = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    nombre_cliente = models.CharField(max_length=100, default="Anónimo")
-    calificacion = models.IntegerField() # Escala de 1 a 5
-    resenia = models.TextField(verbose_name="Reseña")
+        return f"{self.nombre_cliente} - {self.servicio.nombre}"
 
-    class Meta:
-        verbose_name = "Calificación"
-        verbose_name_plural = "Calificaciones"
+from django.db import models
+from django.conf import settings # Importante para usar AUTH_USER_MODEL
+from servicios.models import Servicios
+
+class Calificacion(models.Model):
+    # CORRECCIÓN: Apuntar al modelo de usuario configurado en el proyecto
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True
+    )
+    puntuacion = models.IntegerField(verbose_name="Estrellas")
+    resena = models.TextField(verbose_name="Comentario")
+    fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Reseña para {self.barbero_a_calificar.first_name} {self.barbero_a_calificar.last_name} - {self.calificacion}★"
+        return f"{self.usuario.username if self.usuario else 'Anónimo'} - {self.puntuacion} estrellas"
