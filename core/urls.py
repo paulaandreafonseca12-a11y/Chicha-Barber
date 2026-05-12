@@ -11,7 +11,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),
-    path('productos/', include('productos.urls')),
     
     
     # --- APPS DEL PROYECTO ---
@@ -19,6 +18,7 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')),  # Solo el include aquí
     path('usuarios/', include('usuarios.urls')),
     path('productos/', include('productos.urls')),
+    path('configuracion/', include('configuraciones.urls')),
     
     path('panel/', inicio_admin, name='inicio_admin'),
     # ... resto de tus urls

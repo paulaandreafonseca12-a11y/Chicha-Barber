@@ -3,32 +3,36 @@
 {% block content %}
 <div class="container-fluid py-4">
 
-    <div class="d-flex justify-content-end align-items-center mb-4">
-        <div class="d-flex gap-2">
-            <a href="{% url 'lista_usuarios' %}"
-               class="btn btn-sm {% if not request.GET.rol %}text-white{% else %}btn-outline-secondary{% endif %}"
-               {% if not request.GET.rol %}style="background-color: #07d2ff;"{% endif %}>
-                Todos
-            </a>
-            <a href="{% url 'lista_usuarios' %}?rol=cliente"
-               class="btn btn-sm {% if request.GET.rol == 'cliente' %}text-white{% else %}btn-outline-secondary{% endif %}"
-               {% if request.GET.rol == 'cliente' %}style="background-color: #07d2ff;"{% endif %}>
-                Clientes
-            </a>
-            <a href="{% url 'lista_usuarios' %}?rol=barbero"
-               class="btn btn-sm {% if request.GET.rol == 'barbero' %}text-white{% else %}btn-outline-secondary{% endif %}"
-               {% if request.GET.rol == 'barbero' %}style="background-color: #07d2ff;"{% endif %}>
-                Barberos
-            </a>
-        </div>
-    </div>
-
     <div class="card border-0 shadow">
-        <div class="card-header d-flex align-items-center" style="background-color: #07d2ff;">
+
+        <!-- HEADER CON FILTROS -->
+        <div class="card-header d-flex justify-content-between align-items-center color-azul">
+            
             <h5 class="mb-0 text-white fw-bold">
                 <i class="bi bi-people-fill me-2"></i>Lista de Usuarios
             </h5>
+
+            <div class="d-flex gap-2">
+
+                <a href="{% url 'lista_usuarios' %}"
+                   class="btn btn-sm fw-bold {% if not request.GET.rol %}text-white color-azul border-0{% else %}btn-outline-light{% endif %}">
+                    Todos
+                </a>
+
+                <a href="{% url 'lista_usuarios' %}?rol=cliente"
+                   class="btn btn-sm fw-bold {% if request.GET.rol == 'cliente' %}text-white color-azul border-0{% else %}btn-outline-light{% endif %}">
+                    Clientes
+                </a>
+
+                <a href="{% url 'lista_usuarios' %}?rol=barbero"
+                   class="btn btn-sm fw-bold {% if request.GET.rol == 'barbero' %}text-white color-azul border-0{% else %}btn-outline-light{% endif %}">
+                    Barberos
+                </a>
+
+            </div>
+
         </div>
+
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
@@ -88,9 +92,11 @@
                 </tbody>
             </table>
         </div>
+
         <div class="card-footer text-muted small">
             Total: {{ usuarios.count }} usuario{{ usuarios.count|pluralize:"s" }}
         </div>
+
     </div>
 </div>
 {% endblock %}

@@ -4,17 +4,20 @@
 {% block content %}
 <div class="container-fluid py-4">
 
-    <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'crear_producto' %}" class="btn fw-bold text-white"
-           style="background-color: #07d2ff;">
-            <i class="bi bi-plus-lg me-2"></i>Nuevo Producto
-        </a>
-    </div>
-
     <div class="card border-0 shadow">
-        <div class="card-header d-flex align-items-center" style="background-color: #07d2ff;">
-        
+
+        <!-- HEADER CON BOTÓN -->
+        <div class="card-header d-flex justify-content-end align-items-center"
+             style="background-color: #07d2ff;">
+
+            <a href="{% url 'crear_producto' %}" 
+               class="btn fw-bold text-white"
+               style="background-color: #07d2ff;">
+                <i class="bi bi-plus-lg me-2"></i>Nuevo Producto
+            </a>
+
         </div>
+
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
@@ -63,6 +66,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
 {% endblock %}

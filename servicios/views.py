@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
+from django.contrib import messages # type: ignore
 
 from reservas.models import Calificacion
 # Eliminados imports redundantes y corregido el import de modelos
@@ -47,7 +47,7 @@ def promocion(request):
 def listado_admin(request):
     servicios = Servicios.objects.all()
     context = {
-        'titulo': 'Listado de Servicios',
+        'titulo': 'Listado de Servicios', # Título corregido para reflejar que es un listado
         'servicios': servicios
     }
     return render(request, 'servicios/listado-admin.html', context)

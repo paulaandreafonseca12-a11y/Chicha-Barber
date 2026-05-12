@@ -15,17 +15,27 @@
                   <thead class="table-light">
                       <tr>
                           <th>ID</th>
+                          <th>Imagen</th>
                           <th>Promoción</th>
                           <th>Estado</th>   
                           <th>Acciones</th>
                       </tr>
                   </thead>
                   <tbody>
-                      {% for promocion in promociones %} <tr>
-                          <td>#{{ promocion.pk }}</td> <td><strong>{{ promocion.nombre }}</strong></td> <td>
-                              {% if promocion.activo %} <span class="btn btn-sm btn-success">Activo</span>
+                    
+                    {% for promocion in promociones %} <tr>
+                          <td>#{{ promocion.pk }}</td> 
+                          <td>
+                              {% if promocion.imagen %}
+                                  <img src="{{ promocion.imagen.url }}" alt="{{ promocion.nombre }}" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
                               {% else %}
-                                <span class="btn btn-sm btn-secondary">Inactivo</span>
+                                  <img src="{% static 'img/Fondo.png' %}" alt="Sin imagen" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                              {% endif %}
+                          </td>
+                          <td><strong>{{ promocion.nombre }}</strong></td> <td>
+                              {% if promocion.estado %} <span class="btn btn-sm btn-success">Activo</span>
+                              {% else %}
+                                <span class="btn btn-sm btn-danger">Inactivo</span>
                               {% endif %}
                           </td>
                           <td>
@@ -34,7 +44,7 @@
                           </td>
                       </tr>
                       {% empty %} <tr>
-                          <td colspan="4" class="text-center">No hay promociones registradas.</td>
+                          <td colspan="5" class="text-center">No hay promociones registradas.</td>
                       </tr>
                       {% endfor %} </tbody>
               </table>
@@ -43,3 +53,5 @@
     </div>
   </main>
 {% endblock %}
+                      
+  

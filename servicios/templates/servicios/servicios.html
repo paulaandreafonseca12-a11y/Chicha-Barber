@@ -31,7 +31,7 @@
                             <p class="card-text text-primary fw-bold"><strong>Precio:</strong> ${{ servicio.precio }}</p>
                             
                             <a class="btn fw-bold text-white w-80 mt-2 justify-content-center d-flex mx-auto" 
-                               href="{% url 'crear_servicios'  %}"
+                               href="{% url 'crear_reserva' servicio.id  %}"
                                style="background-color: #87CEEB; border: none; border-radius: 8px; padding: 10px;">
                                 Seleccionar
                             </a>
