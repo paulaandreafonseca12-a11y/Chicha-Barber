@@ -1,7 +1,7 @@
 import os
 from django.db import models # type: ignore
-from django.utils.text import slugify
-from PIL import Image
+from django.utils.text import slugify # type: ignore
+from PIL import Image # type: ignore
 
 # Create your models here.
 
@@ -11,6 +11,7 @@ def carrusel_view(instance, filename):
     nombre_limpio = slugify(instance.nombre)
     return os.path.join('carrusel/', f"{nombre_limpio}_{instance.pk}.{ext}")
 
+
 class Carrusel(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de creación')
     fecha_modificacion = models.DateTimeField(auto_now=True, verbose_name='Fecha de modificación')
@@ -19,11 +20,12 @@ class Carrusel(models.Model):
     texto = models.TextField(null=True, blank=True, verbose_name='Texto del carrusel')
     estado = models.BooleanField(default=True, verbose_name='Estado')
     
-
+    
+    
     class Meta:
         verbose_name = 'Carrusel'
         verbose_name_plural = 'Carruseles'
-        
+    
     def __str__(self):
         return self.nombre
         
@@ -35,7 +37,7 @@ class Carrusel(models.Model):
             self.imagen = imagen_temp
             super().save(update_fields=['imagen']) # Save the image with the new pk
         else:
-            super().save(*args, **kwargs)
+            super().save(*args, **kwargs),
             
         if self.imagen:
             try:
@@ -60,5 +62,14 @@ class Carrusel(models.Model):
             except Exception as e:
                 print(f"Error al redimensionar la imagen: {e}")
 
+def eliminar_carrusel(instance, filename):
+    ext = filename.split('.')[-1]
+    nombre_limpio = slugify(instance.nombre)
+    return os.path.join('carrusel/', f"{nombre_limpio}_{instance.pk}_quitar.{ext}")
+
+def editar_carrusel(instance, filename):
+    ext = filename.split('.')[-1]
+    nombre_limpio = slugify(instance.nombre)
+    return os.path.join('carrusel/', f"{nombre_limpio}_{instance.pk}_editar.{ext}")
 
 
