@@ -18,10 +18,10 @@
                 <tbody>
                     {% for c in calificaciones %}
                     <tr>
-                        <td>{{ c.usuario.username|default:"Anónimo" }}</td>
-                        <td>{{ c.puntuacion }} ⭐</td>
-                        <td>{{ c.resena }}</td>
-                        <td>{{ c.fecha|date:"d/M/Y" }}</td>
+                        <td>{{ c.barbero_a_calificar.get_full_name|default:c.barbero_a_calificar.email|default:"Sin barbero" }}</td>
+                        <td>{{ c.calificacion }} ⭐</td>
+                        <td>{{ c.resenia }}</td>
+                        <td>{{ c.fecha_creacion|date:"d/M/Y" }}</td>
                     </tr>
                     {% empty %}
                     <tr>
