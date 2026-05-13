@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -16,14 +15,12 @@
 
 
 <body class="back">
-    {% include 'partials/header.html' %}
 
     <main class="d-flex flex-column">
     {% block content %}
     {% endblock %}
     </main>
 
-    {% include 'partials/footer.html' %}
 
     {% block scripts %}{% endblock scripts %}
 
