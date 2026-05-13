@@ -6,7 +6,7 @@ Este proyecto está desarrollado en **Django** y sigue una arquitectura modular 
 
 A continuación se detalla la estructura de la base de datos, optimizada para el flujo de reservas por turnos y facturación unificada:
 
-![Modelo Entidad Relación (MER)](static/docs/MER.png)
+![Modelo Entidad Relación (MER)](static/docs/MER.p  ng)
 
 ---
 
