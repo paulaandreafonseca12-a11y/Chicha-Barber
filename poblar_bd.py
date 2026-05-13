@@ -79,15 +79,19 @@ def poblar_promociones():
 def poblar_reservas():
     print("Poblando Reservas...")
     estados = ['reservada', 'confirmada', 'cancelada']
-    servicios_nombres = ['Corte Clásico', 'Degradado (Fade)', 'Arreglo de Barba']
     
+    servicios_disponibles = list(Servicios.objects.all())
+    if not servicios_disponibles:
+        print("  ⚠️ No se pueden crear reservas porque no hay servicios en la base de datos.")
+        return
+
     for i in range(1, 11):
         Reserva.objects.create(
             nombre_cliente=f"Cliente Reserva {i}",
             correo_cliente=f"cliente_reserva{i}@correo.com",
             telefono_cliente=f"32000000{i:02d}",
             fecha_reserva=f"2024-11-{random.randint(10, 28)} 15:00",
-            servicio=random.choice(servicios_nombres),
+            servicio=random.choice(servicios_disponibles),
             estado=random.choice(estados)
         )
 
