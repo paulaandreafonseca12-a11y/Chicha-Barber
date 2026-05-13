@@ -156,7 +156,7 @@ def cancelar_cita(request, pk):
     cita.estado = 'cancelada'
     cita.save()
     messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 
 def editar_reserva(request, pk):
@@ -165,7 +165,7 @@ def editar_reserva(request, pk):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Reserva actualizada.')
-        return redirect('reservas:ver_agenda')
+        return redirect('ver_agenda')
     return render(request, 'reservas/editar_reserva.html', {'form': form, 'reserva': reserva})
 
 
@@ -187,7 +187,7 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
         messages.info(request, f'Estado actualizado a {nuevo_estado}.')
     else:
         messages.error(request, 'Estado inválido.')
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 
 def reprogramar_cita(request, pk):
@@ -196,7 +196,7 @@ def reprogramar_cita(request, pk):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Cita reprogramada.')
-        return redirect('reservas:ver_agenda')
+        return redirect('ver_agenda')
     return render(request, 'reservas/reprogramar.html', {'form': form, 'cita': cita})
 
 
@@ -235,7 +235,7 @@ def crear_reserva_admin(request):
                 servicio=servicio,
             )
             messages.success(request, '¡Cita registrada!')
-            return redirect('reservas:ver_agenda')
+            return redirect('ver_agenda')
         except Servicios.DoesNotExist:
             messages.error(request, 'Servicio seleccionado no existe.')
         except Exception as e:
@@ -285,5 +285,5 @@ def editar_calificacion(request, pk):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Calificación actualizada correctamente.')
-        return redirect('reservas:listado_calificaciones_admin')
+        return redirect('listado_calificaciones_admin')
     return render(request, 'reservas/editar_calificacion.html', {'form': form, 'calificacion': calificacion})

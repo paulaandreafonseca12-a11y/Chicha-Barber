@@ -9,6 +9,7 @@ urlpatterns = [
     path('agenda/crear/', views.crear_reserva_admin, name='crear_reserva_admin'),
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),
     path('cancelar/<int:pk>/', views.cancelar_cita, name='cancelar_cita'),
+    path('estado/<int:pk>/<str:nuevo_estado>/', views.cambiar_estado_reserva, name='cambiar_estado'),
 
     # --- GESTIÓN DE RESERVAS (CLIENTES) ---
     path('crear/', views.crear_reserva, {'servicio_id': None}, name='crear_reserva_directa'),
