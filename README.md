@@ -1,105 +1,32 @@
-erDiagram
-    USUARIO ||--o{ RESERVA : "Pertenece"
-    USUARIO ||--o{ ROL : "Posee"
-    
-    RESERVA ||--|| AGENDA : "Pertenece"
-    RESERVA ||--o{ CALIFICACION : "Corresponde"
-    RESERVA ||--|| SERVICIO : "Pertenece"
-    
-    SERVICIO ||--o{ PROMOCION : "Corresponde"
-    
-    FACTURA ||--|| RESERVA : "Corresponde"
-    FACTURA ||--|| COMPRA : "Tiene"
-    
-    COMPRA ||--o{ DETALLE_COMPRA : "Corresponde"
-    
-    DETALLE_COMPRA ||--|| STOCK : "Corresponde"
-    
-    STOCK ||--|| PRODUCTO : "Tiene"
+# Documentación del Sistema de Reservas y Facturación
 
-    USUARIO {
-        string documento PK
-        string nombre
-        string apellido
-        string telefono
-        string especialidad
-        string cod_rol FK
-    }
+Este proyecto está desarrollado en **Django** y sigue una arquitectura modular orientada a dominios de negocio. Esta estructura garantiza escalabilidad, fácil mantenimiento y una separación clara de responsabilidades.
 
-    ROL {
-        string cod_rol PK
-        string nombre_rol
-    }
+## Modelo Entidad Relación (MER)
 
-    AGENDA {
-        string cod_cita PK
-        string usuario
-        datetime datetime
-    }
+A continuación se detalla la estructura de la base de datos, optimizada para el flujo de reservas por turnos y facturación unificada:
 
-    RESERVA {
-        string cod PK
-        date fecha
-        time hora
-        string codigo_calificacion FK
-        string codigo_usuario FK
-    }
+![Modelo Entidad Relación (MER)](static/docs/MER.png)
 
-    CALIFICACION {
-        string cod PK
-        string comentario
-        int calificacion
-    }
+---
 
-    SERVICIO {
-        string cod PK
-        string nombre
-        float precio
-        string duracion
-        string codigo_cita_servicio FK
-    }
+## Arquitectura de Módulos (Apps de Django)
 
-    PROMOCION {
-        string cod PK
-        string cod_servici FK
-        string nombre
-        float descuento
-        date fecha_final
-    }
+El sistema está dividido en las siguientes aplicaciones principales, respetando la regla de mantener la temática general como el módulo (carpeta) y las entidades como submódulos (modelos).
 
-    FACTURA {
-        string cod PK
-        date fecha
-        string metodo
-        string cod_servicio FK
-        string cod_venta FK
-    }
+| Módulo (App Django) | Modelos (Subtemas) | Descripción de Responsabilidades |
+| :--- | :--- | :--- |
+| **`usuarios`** | `Usuario` | Gestión de cuentas, autenticación y control de acceso. Utiliza un campo ENUM para los roles (ADMIN, BARBERO, CLIENTE) simplificando las consultas. |
+| **`servicios`** | `Servicio`, `Promocion` | Catálogo de servicios ofrecidos (con su duración en minutos) y gestión de descuentos o promociones con vigencia temporal. |
+| **`reservas`** | `Turno`, `Reserva`, `Calificacion` | Motor principal de citas. Administra la disponibilidad de los profesionales por bloques de tiempo (`Turnos`), asigna las `Reservas` congelando el precio histórico y recopila el feedback de los clientes (`Calificacion`). |
+| **`inventario`** | `Producto`, `MovimientoInventario` | Control de stock tipo Kardex. Administra el catálogo de artículos físicos y registra el historial detallado de entradas y salidas para auditoría. |
+| **`facturacion`** | `Factura`, `DetalleFactura` | Procesamiento unificado de pagos (POS). Permite cobrar en una sola transacción tanto los servicios prestados (mediante la `Reserva`) como la venta directa de `Productos`. |
+| **`configuracion`** | `Carrusel` | Administración del contenido visual dinámico del frontend, como los banners promocionales, optimizando y gestionando el ciclo de vida de las imágenes. |
 
-    COMPRA {
-        string cod PK
-        date fecha
-        float total
-    }
+---
 
-    DETALLE_COMPRA {
-        string cod_producto PK
-        string nombre
-        string descripcion
-        string codigo_stock FK
-    }
+## Notas de Implementación
 
-    STOCK {
-        string cod PK
-        int cantidad
-        string cod_producto FK
-    }
-
-    PRODUCTO {
-        string cod PK
-        string nombre
-        string descripcion
-        float precio_venta
-        float precio_compra
-    }
-
-
+*   **Autenticación:** El modelo `Usuario` debe extender de `AbstractUser` o `AbstractBaseUser` de Django, utilizando el identificador (ej. documento o email) según los requerimientos de acceso.
+*   **Gestión de Inventario:** Las salidas de inventario se gestionan automáticamente mediante señales (*Signals*) de Django (`post_save`) al momento de emitir una factura que contenga productos.
+*   **Limpieza de Archivos:** El módulo de configuración utiliza señales (`pre_save`, `post_delete`) para eliminar archivos multimedia huérfanos (imágenes del carrusel) y optimizar el almacenamiento del servidor.
