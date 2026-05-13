@@ -158,10 +158,13 @@ def eliminar_promocion(request, pk):
     if request.method == 'POST':
         promocion_obj.delete()
         messages.success(request, 'Promoción eliminada.')
-        return redirect('listado-promocion')
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion_obj})
+        return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
+    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
+
+def listado_calificacion(request):
+    calificacion = Calificacion.objects.all()
+    context = {
+        'titulo': 'Listado de Calificaciones',
+        'calificacion': calificacion
+    }
     return render(request, 'servicios/listado_calificacion.html', context)
-
-
-    
-   

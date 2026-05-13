@@ -155,6 +155,12 @@ def crear_reserva_admin(request):
             messages.error(request, 'Fecha de cita inválida.')
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
 
+            messages.success(
+                request,
+                'Reserva actualizada.'
+            )
+
+            return redirect('ver_agenda')
         try:
             servicio = Servicios.objects.get(id=servicio_id)
             Reserva.objects.create(

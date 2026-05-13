@@ -11,7 +11,7 @@
         <p class="fs-4">Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.</p>
     </div>
   </div>
-    <div class="container">
+    <div class="container"> 
         <div class="row row-cols-1 row-cols-md-3 g-4 bg-transparent p-4 rounded-3 shadow-sm">
             
             {# CAMBIO AQUÍ: 'servicios' en minúscula para coincidir con el contexto de la vista #}
@@ -31,7 +31,7 @@
                             <p class="card-text text-primary fw-bold"><strong>Precio:</strong> ${{ servicio.precio }}</p>
                             
                             <a class="btn fw-bold text-white w-80 mt-2 justify-content-center d-flex mx-auto" 
-                               href="{% url 'crear_reserva' servicio.id  %}"
+                               href="{% url 'crear_reserva' servicio.id %}"
                                style="background-color: #87CEEB; border: none; border-radius: 8px; padding: 10px;">
                                 Seleccionar
                             </a>

@@ -22,6 +22,13 @@ urlpatterns = [
     # Esta es la ruta que corregirá tu primera imagen (la tabla de administración)
     path('calificacion/listado/', views.listado_calificaciones_admin, name='listado_calificaciones_admin'),
     
+    #calendario
+    
+    path(
+    'api/disponibilidad/', 
+    views.obtener_disponibilidad_json, 
+    name='api_disponibilidad'
+   ),
     # Edición (si la necesitas)
     path('calificacion/editar/<int:pk>/', views.editar_calificacion, name='editar_calificacion'),
 ]

@@ -13,6 +13,7 @@ urlpatterns = [
     path('', inicio, name='inicio'),
     
     
+    
     # --- APPS DEL PROYECTO ---
     path('servicios/', include('servicios.urls')),
     path('reservas/', include('reservas.urls')),  # Solo el include aquí
