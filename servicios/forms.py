@@ -17,7 +17,7 @@ class ServiciosEditarForm(ModelForm):
 class PromocionForm(ModelForm):
     class Meta:
         model = Promocion
-        fields=['nombre', 'descuento', 'duracion', 'descripcion', 'imagen','estado',]
+        fields=['servicio', 'nombre', 'porcentaje_descuento', 'duracion', 'descripcion', 'imagen', 'estado']
         
 class PromocionEditarForm(ModelForm):
     class Meta:

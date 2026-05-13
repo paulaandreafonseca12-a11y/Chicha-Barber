@@ -11,7 +11,8 @@ urlpatterns = [
     path('cancelar/<int:pk>/', views.cancelar_cita, name='cancelar_cita'),
 
     # --- GESTIÓN DE RESERVAS (CLIENTES) ---
-    path('crear/', views.crear_reserva, {'servicio_id': None}, name='crear_reserva_directa'), 
+    path('crear/', views.crear_reserva, {'servicio_id': None}, name='crear_reserva_directa'),
+    path('crear/promocion/<int:promocion_id>/', views.crear_reserva, name='crear_reserva_promocion'),
     path('crear/<int:servicio_id>/', views.crear_reserva, name='crear_reserva'),
 
     # --- CALIFICACIONES (CLIENTES) ---
@@ -25,9 +26,9 @@ urlpatterns = [
     #calendario
     
     path(
-    'api/disponibilidad/', 
-    views.obtener_disponibilidad_json, 
-    name='api_disponibilidad'
+    'api/disponibilidad/',
+    views.obtener_turnos_disponibles_json,
+    name='api_turnos_disponibles'
    ),
     # Edición (si la necesitas)
     path('calificacion/editar/<int:pk>/', views.editar_calificacion, name='editar_calificacion'),
