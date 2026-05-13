@@ -11,7 +11,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),
-    path('productos/', include('productos.urls')),
     
     
     # --- APPS DEL PROYECTO ---
