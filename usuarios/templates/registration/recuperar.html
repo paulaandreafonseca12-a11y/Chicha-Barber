@@ -1,44 +1,80 @@
+{% extends "base-login.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chicha Barber - Recuperar</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body class="back">
-    <div class="main-container py-4"> <div class="text-center mb-4"> 
-            <a href="/" class="text-white text-decoration-none fs-1"> 
-                <strong>CHICHA BARBER</strong>
-            </a>
+
+{% block content %}
+
+<div class="background-decor">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+</div>
+
+<div class="main-wrapper">
+
+    <!-- HEADER -->
+    <header class="header-brand">
+
+        <div class="logo-wrap">
+            <img src="{% static 'img/logo.png' %}" alt="Logo">
         </div>
-    
-    <div class="main-container d-flex justify-content-center align-items-center vh-100"> 
-        <div class="login-card p-5 shadow-lg text-center" style="background: rgba(0,0,0,0.8); border-radius: 15px;">
-            <h2 class="text-center mb-3 text-uppercase fw-bold text-white">Recuperar</h2>
-            <p class="text-white-50 mb-4 small">Ingresa tu correo electrónico para enviarte las instrucciones.</p>
 
-            <form method="POST">
-                {% csrf_token %}
-                
-                <div class="mb-4">
-                    <input type="email" name="email" class="form-control custom-input" 
-                           placeholder="Tu correo electrónico" required autofocus>
-                </div>
+        <h1 class="brand-name">CHICHA BARBER</h1>
+        <span class="brand-sub">Studio · Nobsa</span>
 
-                <button type="submit" class="btn btn-light custom-btn w-100 text-uppercase fw-bold">
-                    Enviar Instrucciones
-                </button>
-            </form>
+    </header>
 
-            <div class="mt-4 text-center">
-                <a href="{% url 'login' %}" class="text-white-50 text-decoration-none small">
-                    Volver al inicio de sesión
-                </a>
+    <!-- FORMULARIO -->
+    <main class="form-box">
+
+        <h2 class="form-heading">Recuperar</h2>
+
+        <p class="form-sub">
+            Ingresa tu correo para recibir las instrucciones.
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <!-- EMAIL -->
+            <label class="cb-label">
+                Correo Electrónico
+            </label>
+
+            <div class="input-wrap">
+
+                <span class="input-icon">
+                    ✉️
+                </span>
+
+                <input
+                    type="email"
+                    name="email"
+                    class="cb-input"
+                    placeholder="correo@ejemplo.com"
+                    autocomplete="email"
+                    required
+                >
+
             </div>
+
+            <!-- BOTÓN -->
+            <button type="submit" class="btn-auth">
+                ENVIAR INSTRUCCIONES
+            </button>
+
+        </form>
+
+        <!-- VOLVER -->
+        <div class="aux-text">
+
+            <a href="{% url 'login' %}" class="aux-link">
+                ← Volver al inicio de sesión
+            </a>
+
         </div>
-    </div>
-</body>
-</html>
+
+    </main>
+
+</div>
+
+{% endblock content %}

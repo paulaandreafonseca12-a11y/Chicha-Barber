@@ -3,8 +3,7 @@
 
 {% block content %}
 <style>
-
-    /* 2. Tarjeta Glassmorphism */
+    /* Tu CSS se mantiene igual porque está excelente */
     .review-card {
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(15px);
@@ -14,7 +13,7 @@
         padding: 3rem;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         animation: fadeIn 0.8s ease-out;
-        margin-top: 50px; /* Ajusta este valor según prefieras */
+        margin-top: 50px;
     }
 
     @keyframes fadeIn {
@@ -22,7 +21,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 3. Estrellas con Efecto Glow */
     .rating-wrapper {
         display: flex;
         flex-direction: row-reverse;
@@ -49,7 +47,6 @@
         transform: scale(1.1);
     }
 
-    /* 4. Inputs y Textarea Estilizados */
     .form-control {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -63,7 +60,6 @@
     }
     .form-control::placeholder { color: rgba(255, 255, 255, 0.5); }
 
-    /* 5. Botón Premium */
     .btn-premium {
         background: linear-gradient(45deg, #007bff, #00d4ff);
         border: none;
@@ -87,29 +83,29 @@
                 <h1 class="display-5 fw-bold text-white mb-2">¿Qué tal tu corte?</h1>
                 <p class="text-white-50 mb-4">Tu opinión es la clave de nuestra calidad.</p>
                 
-                <form method="post" action="">
+                <form method="POST" action="">
                     {% csrf_token %}
                     
                     <div class="mb-4">
                         <label class="form-label text-white fw-light">Califica nuestro servicio:</label>
-                        <div class="rating-wrapper">
-                            <input type="radio" id="star5" name="rating" value="5" required />
-                            <label for="star5" title="Excelente"></label>
-                            <input type="radio" id="star4" name="rating" value="4" />
-                            <label for="star4" title="Bueno"></label>
-                            <input type="radio" id="star3" name="rating" value="3" />
-                            <label for="star3" title="Regular"></label>
-                            <input type="radio" id="star2" name="rating" value="2" />
-                            <label for="star2" title="Malo"></label>
-                            <input type="radio" id="star1" name="rating" value="1" />
-                            <label for="star1" title="Muy malo"></label>
-                        </div>
+                       <div class="mb-4">
+    <label class="form-label text-white fw-light">Califica (1 al 5):</label>
+    <select name="puntuacion" class="form-control" required style="background: white; color: black !important;">
+        <option value="">Selecciona una opción</option>
+        <option value="1">1 Estrella</option>
+        <option value="2">2 Estrellas</option>
+        <option value="3">3 Estrellas</option>
+        <option value="4">4 Estrellas</option>
+        <option value="5">5 Estrellas</option>
+    </select>
+</div>
                     </div>
 
                     <div class="mb-4">
                         <label for="comments" class="form-label text-white fw-light">Déjanos una reseña:</label>
-                        <textarea class="form-control" id="comments" name="comments" rows="3" 
-                                placeholder="¿Cómo fue tu experiencia con el barbero?"></textarea>
+                        <!-- IMPORTANTE: name="resena" para coincidir con el modelo -->
+                        <textarea class="form-control" id="comments" name="resena" rows="3" 
+                            placeholder="¿Cómo fue tu experiencia con el barbero?"></textarea>
                     </div>
 
                     <div class="d-grid mt-5">
@@ -120,4 +116,16 @@
         </div>
     </div>
 </section>
+<script>
+    document.querySelectorAll('.star-label').forEach(label => {
+        label.addEventListener('click', function() {
+            const starId = this.getAttribute('for');
+            const radioButton = document.getElementById(starId);
+            if (radioButton) {
+                radioButton.checked = true;
+                console.log("Estrella seleccionada: " + radioButton.value);
+            }
+        });
+    });
+</script>
 {% endblock content %}
