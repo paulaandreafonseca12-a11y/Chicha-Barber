@@ -18,9 +18,16 @@ class Usuario(AbstractUser):
     email = models.EmailField(unique=True)
     telefono = models.CharField(max_length=15, verbose_name="Teléfono")
     rol = models.CharField(max_length=20, choices=ROLES, default='cliente')
+    estado = models.BooleanField(default=True, verbose_name='Estado')
     
     # Campo específico para barberos
     especialidad = models.CharField(max_length=100, blank=True, null=True)
+    foto_perfil = models.ImageField(
+        upload_to='usuarios/',
+        blank=True,
+        null=True,
+        verbose_name='Foto de perfil'
+    )
 
     # Configuración de Login: Entrarán con el EMAIL
     USERNAME_FIELD = 'email'
