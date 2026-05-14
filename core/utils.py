@@ -209,6 +209,9 @@ def enviar_correo_reserva(correo_cliente, nombre, servicio, fecha):
                 <p><strong>Servicio:</strong> {servicio.nombre}</p>
 
                 <p><strong>Fecha:</strong> {fecha.strftime('%Y-%m-%d %H:%M')}</p>
+                
+                <p><strong>Servicio:</strong> {servicio.precio}</p>
+                
 
                 <p style="margin-top:30px;">
                     Te esperamos en nuestra barbería ✂️

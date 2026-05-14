@@ -1,17 +1,17 @@
 {% extends 'base-admin.html' %}
 
 {% block content %}
-<div class="container-fluid py-5">
+<div class="container-fluid py-5 min-vh-100 d-flex flex-column justify-content-center">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             
             <!-- Encabezado y Botón de Volver (Original) -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2 class="fw-bold text-dark"></h2>
-                    <p class="text-secondary"></p>
+                    <h2 class="fw-bold text-white">{{ titulo }} #{{ compra.codigo_compra }}</h2>
+                    <p class="text-white-50">Visualiza la información detallada de esta transacción.</p>
                 </div>
-                <a href="{% url 'historial_compras' %}" class="btn btn-primary color-azul">
+                <a href="{% url 'historial_compras' %}" class="btn color-azul text-dark fw-bold border-0 px-4 rounded-pill">
                     <i class="bi bi-arrow-left me-2"></i>Volver al Historial
                 </a>
             </div>
@@ -20,8 +20,8 @@
                 <!-- Tarjeta: Datos del Cliente (Mantiene tu estilo) -->
                 <div class="col-md-4">
                     <div class="card shadow-sm border-0 h-100 bg-white">
-                        <div class="card-header bg-white py-3 border-bottom color-azul">
-                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-person-circle me-2 text-primary"></i>Datos del Cliente</h5>
+                        <div class="card-header py-3 border-0 color-azul">
+                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-person-circle me-2 text-dark"></i>Datos del Cliente</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
@@ -61,7 +61,7 @@
                                     <option value="Contraentrega">Contraentrega</option>
                                 </select>
 
-                                <button type="button" onclick="registrarEntrega()" class="btn btn-success btn-sm w-100 mb-3 color-azul">
+                                <button type="button" onclick="registrarEntrega()" class="btn color-azul text-dark fw-bold btn-sm w-100 mb-3 border-0">
                                     MARCAR COMO ENTREGADO
                                 </button>
 
@@ -77,8 +77,8 @@
                         </div>
 
                         <!-- Parte inferior en Azul (Original) -->
-                        <div class="card-footer bg-primary border-0 py-3 color-azul mt-auto">
-                            <div class="d-flex justify-content-between align-items-center text-white">
+                        <div class="card-footer border-0 py-3 color-azul mt-auto rounded-bottom">
+                            <div class="d-flex justify-content-between align-items-center text-dark">
                                 <span class="fw-bold text-uppercase small">Total Pagado:</span>
                                 <h4 class="mb-0 fw-bold">${{ total_calculado }}</h4>
                             </div>
@@ -89,8 +89,8 @@
                 <!-- Tarjeta: Tabla de Productos (Mantiene tu estilo) -->
                 <div class="col-md-8">
                     <div class="card shadow-sm border-0 h-100 bg-white">
-                        <div class="card-header bg-white py-3 border-bottom color-azul">
-                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-box-seam me-2 text-primary"></i>Productos Comprados</h5>
+                        <div class="card-header py-3 border-0 color-azul">
+                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-box-seam me-2 text-dark"></i>Productos Comprados</h5>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
