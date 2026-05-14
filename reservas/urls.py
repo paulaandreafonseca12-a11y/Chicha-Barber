@@ -10,6 +10,11 @@ urlpatterns = [
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),
     path('cancelar/<int:pk>/', views.cancelar_cita, name='cancelar_cita'),
     path('estado/<int:pk>/<str:nuevo_estado>/', views.cambiar_estado_reserva, name='cambiar_estado'),
+    
+    # --- GESTIÓN DE DISPONIBILIDAD (ADMIN) ---
+    path('gestion-dias/', views.gestionar_disponibilidad_dias, name='gestionar_dias'),
+    path('gestion-dias/activar/<str:fecha_str>/', views.activar_dia_agenda, name='activar_dia'),
+    path('gestion-dias/desactivar/<str:fecha_str>/', views.desactivar_dia_agenda, name='desactivar_dia'),
 
     # --- GESTIÓN DE RESERVAS (CLIENTES) ---
     path('crear/', views.crear_reserva, {'servicio_id': None}, name='crear_reserva_directa'),
