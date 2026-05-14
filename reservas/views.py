@@ -1,12 +1,14 @@
 from datetime import datetime, date, timedelta
+from decimal import Decimal
 
+from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Calificacion, Reserva
-from .forms import CalificacionEditarForm, ReservaEditarForm
-from servicios.models import Servicios
+from reservas.models import Calificacion, Reserva, Turno
+from reservas.forms import CalificacionEditarForm, ReservaEditarForm
+from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario
 from core.utils import enviar_correo_reserva
 
@@ -25,66 +27,128 @@ def _parse_fecha_reserva(fecha_str):
     return None
 
 
-def obtener_disponibilidad_json(request):
+def obtener_turnos_disponibles_json(request):
     hoy = date.today()
-    resultado = {}
+    fin = hoy + timedelta(days=6)
+    barbero_id = request.GET.get('barbero_id', 'any')
 
-    for i in range(3):
-        fecha_evaluar = hoy + timedelta(days=i)
-        reservas = Reserva.objects.filter(
-            fecha_reserva__date=fecha_evaluar
-        ).exclude(estado='cancelada')
+    turnos = Turno.objects.filter(
+        fecha__range=(hoy, fin),
+        estado='disponible'
+    ).order_by('fecha', 'hora_inicio')
 
-        resultado[fecha_evaluar.strftime('%Y-%m-%d')] = [
-            reserva.fecha_reserva.strftime('%H:%M')
-            for reserva in reservas
-        ]
+    if barbero_id and barbero_id != 'any':
+        turnos = turnos.filter(profesional_id=barbero_id)
 
-    return JsonResponse(resultado)
+    resultado = [
+        {
+            'id': turno.id,
+            'barbero_id': turno.profesional.id,
+            'barbero': turno.profesional.get_full_name(),
+            'fecha': turno.fecha.isoformat(),
+            'hora': turno.hora_inicio.strftime('%H:%M'),
+            'imagen': turno.profesional.foto_perfil.url if turno.profesional.foto_perfil else None,
+        }
+        for turno in turnos
+    ]
+
+    return JsonResponse({'turnos': resultado})
 
 
-def crear_reserva(request, servicio_id=None):
-    if servicio_id is None:
-        messages.warning(request, 'Debe seleccionar un servicio.')
+def crear_reserva(request, servicio_id=None, promocion_id=None):
+    servicio = None
+    promo = None
+
+    if promocion_id is not None:
+        promo = get_object_or_404(Promocion, pk=promocion_id)
+        servicio = promo.servicio
+    elif servicio_id is not None:
+        servicio = get_object_or_404(Servicios, id=servicio_id)
+    else:
+        messages.warning(request, 'Debe seleccionar un servicio o promoción.')
         return redirect('inicio')
 
-    servicio = get_object_or_404(Servicios, id=servicio_id)
+    barberos = Usuario.objects.filter(rol='barbero', estado=True)
+    
+    hoy = date.today()
+    fin = hoy + timedelta(days=6)
+    turnos_disponibles = Turno.objects.filter(
+        fecha__range=(hoy, fin),
+        estado='disponible'
+    ).order_by('fecha', 'hora_inicio')
+
+    action_url = (
+        reverse('crear_reserva_promocion', args=[promo.id])
+        if promo else
+        reverse('crear_reserva', args=[servicio.id])
+    )
 
     if request.method == 'POST':
+        turno_id = request.POST.get('turno_id')
         nombre = request.POST.get('nombre_cliente', '').strip()
         correo = request.POST.get('correo_cliente', '').strip()
         telefono = request.POST.get('telefono_cliente', '').strip()
-        fecha_reserva_raw = request.POST.get('fecha_reserva', '').strip()
 
-        if not (nombre and correo and telefono and fecha_reserva_raw):
+        if request.user.is_authenticated and not nombre:
+            nombre = request.user.get_full_name()
+
+        if not turno_id:
+            messages.error(request, 'Selecciona un turno disponible.')
+            return render(request, 'reservas/reservas.html', {
+                'servicio': servicio,
+                'promo': promo,
+                'barberos': barberos,
+                'action_url': action_url,
+            })
+
+        if not (nombre and correo and telefono):
             messages.error(request, 'Todos los campos son obligatorios.')
-            return render(request, 'reservas/reservas.html', {'servicio': servicio})
-
-        fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
-        if fecha_reserva is None:
-            messages.error(request, 'Formato de fecha inválido.')
-            return render(request, 'reservas/reservas.html', {'servicio': servicio})
+            return render(request, 'reservas/reservas.html', {
+                'servicio': servicio,
+                'promo': promo,
+                'barberos': barberos,
+                'action_url': action_url,
+            })
 
         try:
+            turno = Turno.objects.get(pk=turno_id, estado='disponible')
+            precio = servicio.precio
+            if promo:
+                descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
+                precio = round(precio * (Decimal('1') - descuento), 2)
+
             Reserva.objects.create(
+                turno=turno,
+                cliente=request.user if request.user.is_authenticated else None,
                 nombre_cliente=nombre,
                 correo_cliente=correo,
                 telefono_cliente=telefono,
-                fecha_reserva=fecha_reserva,
                 servicio=servicio,
+                precio_historico=precio,
             )
+            turno.estado = 'reservado'
+            turno.save()
+
             enviar_correo_reserva(
                 correo_cliente=correo,
                 nombre=nombre,
                 servicio=servicio,
-                fecha=fecha_reserva,
+                fecha=datetime.combine(turno.fecha, turno.hora_inicio),
             )
             messages.success(request, '¡Reserva creada con éxito!')
             return redirect('inicio')
+        except Turno.DoesNotExist:
+            messages.error(request, 'El turno seleccionado ya no está disponible. Por favor elige otro.')
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
 
-    return render(request, 'reservas/reservas.html', {'servicio': servicio})
+    return render(request, 'reservas/reservas.html', {
+        'servicio': servicio,
+        'promo': promo,
+        'barberos': barberos,
+        'turnos_disponibles': turnos_disponibles,
+        'action_url': action_url,
+    })
 
 
 def cancelar_cita(request, pk):
@@ -92,7 +156,7 @@ def cancelar_cita(request, pk):
     cita.estado = 'cancelada'
     cita.save()
     messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 
 def editar_reserva(request, pk):
@@ -101,7 +165,7 @@ def editar_reserva(request, pk):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Reserva actualizada.')
-        return redirect('reservas:ver_agenda')
+        return redirect('ver_agenda')
     return render(request, 'reservas/editar_reserva.html', {'form': form, 'reserva': reserva})
 
 
@@ -123,7 +187,7 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
         messages.info(request, f'Estado actualizado a {nuevo_estado}.')
     else:
         messages.error(request, 'Estado inválido.')
-    return redirect('reservas:ver_agenda')
+    return redirect('ver_agenda')
 
 
 def reprogramar_cita(request, pk):
@@ -132,7 +196,7 @@ def reprogramar_cita(request, pk):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Cita reprogramada.')
-        return redirect('reservas:ver_agenda')
+        return redirect('ver_agenda')
     return render(request, 'reservas/reprogramar.html', {'form': form, 'cita': cita})
 
 
@@ -171,7 +235,7 @@ def crear_reserva_admin(request):
                 servicio=servicio,
             )
             messages.success(request, '¡Cita registrada!')
-            return redirect('reservas:ver_agenda')
+            return redirect('ver_agenda')
         except Servicios.DoesNotExist:
             messages.error(request, 'Servicio seleccionado no existe.')
         except Exception as e:
@@ -221,5 +285,5 @@ def editar_calificacion(request, pk):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Calificación actualizada correctamente.')
-        return redirect('reservas:listado_calificaciones_admin')
+        return redirect('listado_calificaciones_admin')
     return render(request, 'reservas/editar_calificacion.html', {'form': form, 'calificacion': calificacion})
