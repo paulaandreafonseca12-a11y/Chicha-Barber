@@ -22,7 +22,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in carrusel %} 
+                        {% for item in carruseles %} 
                         <tr>
                             <td>#{{ item.pk }}</td> 
                             <td>
@@ -43,8 +43,8 @@
                             </td>
                             <td>
                                 <!-- Aquí puedes añadir las URLs para editar y eliminar cuando existan las vistas -->
-                                <button class="btn btn-sm btn-outline-info" onclick="window.location.href='#'">Editar</button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='#'">Eliminar</button>
+                                <button class="btn btn-sm btn-outline-info" onclick="window.location.href='{% url 'editar_carrusel' item.pk %}'">Editar</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='{% url 'eliminar_carrusel' item.pk %}'">Eliminar</button>
                             </td>
                         </tr>
                         {% empty %} 
