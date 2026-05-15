@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db import models
+from django.utils import timezone
 from servicios.models import Servicios
 from usuarios.models import Usuario
 
@@ -141,7 +142,7 @@ class Reserva(models.Model):
 
     def save(self, *args, **kwargs):
         if self.turno and not self.fecha_reserva:
-            self.fecha_reserva = datetime.combine(self.turno.fecha, self.turno.hora_inicio)
+            self.fecha_reserva = timezone.make_aware(datetime.combine(self.turno.fecha, self.turno.hora_inicio))
         super().save(*args, **kwargs)
 
     def __str__(self):

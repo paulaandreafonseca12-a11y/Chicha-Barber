@@ -4,7 +4,10 @@
 <div class="container-fluid py-4">
 
     <!-- Botón a la derecha -->
-    <div class="d-flex justify-content-end align-items-center mb-4">
+    <div class="d-flex justify-content-end align-items-center mb-4 gap-2">
+        <a href="{% url 'gestionar_dias' %}" class="btn fw-bold btn-outline-info">
+            <i class="bi bi-calendar-range me-2"></i>Configurar Disponibilidad
+        </a>
         <a href="{% url 'crear_reserva_admin' %}" class="btn fw-bold text-white"
            style="background-color: #07d2ff;">
             <i class="bi bi-calendar-plus me-2"></i>Registrar Cita
@@ -13,16 +16,30 @@
 
     <!-- Tabla con header cyan y fondo blanco -->
     <div class="card border-0 shadow">
-        <div class="card-header d-flex align-items-center" style="background-color: #07d2ff;">
-            <h5 class="mb-0 text-white fw-bold">
-                <i class="bi bi-calendar-event me-2"></i>Agenda de Citas - Chicha Barber
-            </h5>
+        <div class="card-header p-0" style="background-color: #07d2ff;">
+            <!-- Navegación por pestañas para alternar entre citas y disponibilidad -->
+            <ul class="nav nav-tabs border-0" id="agendaTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-bold text-white border-0 bg-transparent px-4 py-3" id="reservas-tab" data-bs-toggle="tab" data-bs-target="#tab-reservas" type="button" role="tab">
+                        <i class="bi bi-calendar-check me-2"></i>Citas Reservadas
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold text-white border-0 bg-transparent px-4 py-3" id="disponibilidad-tab" data-bs-toggle="tab" data-bs-target="#tab-disponibilidad" type="button" role="tab">
+                        <i class="bi bi-clock-history me-2"></i>Turnos Disponibles
+                    </button>
+                </li>
+            </ul>
         </div>
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+        <div class="card-body p-4 tab-content" id="agendaTabContent">
+            
+            <!-- PESTAÑA: CITAS RESERVADAS -->
+            <div class="tab-pane fade show active" id="tab-reservas" role="tabpanel">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
                     <tr>
                         <th>Cliente</th>
+                        <th>Barbero</th>
                         <th>Servicio</th>
                         <th>Fecha y Hora</th>
                         <th>Estado</th>
@@ -33,6 +50,7 @@
                     {% for cita in reservas %}
                     <tr class="align-middle">
                         <td>{{ cita.nombre_cliente }}</td>
+                        <td><span class="fw-bold text-dark"><i class="bi bi-person-badge me-1"></i>{{ cita.turno.profesional.get_full_name }}</span></td>
                         <td>{{ cita.servicio }}</td>
                         <td>{{ cita.fecha_reserva }}</td>
                         <td>
@@ -60,29 +78,19 @@
                                     <i class="bi bi-calendar2-event-fill"></i>
                                 </a>
                                 {% if cita.estado == 'confirmada' %}
-
-                        {% if cita.estado == 'confirmada' %}
-
-<a href="https://wa.me/57{{ cita.telefono_cliente }}?text=Hola%20{{ cita.nombre_cliente|urlencode }}.%0A%0ATe%20recordamos%20tu%20cita%20en%20Chicha%20Barber.%0A%0AFecha:%20{{ cita.fecha_reserva|date:'d/m/Y' }}%0AHora:%20{{ cita.fecha_reserva|date:'H:i' }}%0AServicio:%20{{ cita.servicio|urlencode }}.%0A%0A¡Te%20esperamos!"
-   target="_blank"
-   class="btn btn-sm btn-success"
-   title="Enviar WhatsApp">
-
-    <i class="bi bi-whatsapp"></i>
-
-</a>
-
-{% endif %}
-
-{% endif %}
-
-</a>
+                                    <a href="https://wa.me/57{{ cita.telefono_cliente }}?text=Hola%20{{ cita.nombre_cliente|urlencode }}.%0A%0ATe%20recordamos%20tu%20cita%20en%20Chicha%20Barber.%0A%0AFecha:%20{{ cita.fecha_reserva|date:'d/m/Y' }}%0AHora:%20{{ cita.fecha_reserva|date:'H:i' }}%0AServicio:%20{{ cita.servicio|urlencode }}.%0A%0A¡Te%20esperamos!"
+                                       target="_blank"
+                                       class="btn btn-sm btn-success"
+                                       title="Enviar WhatsApp">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
+                        <td colspan="6" class="text-center py-5 text-muted">
                             <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
                             No hay citas registradas.
                         </td>
@@ -90,6 +98,35 @@
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
+
+            <!-- PESTAÑA: DISPONIBILIDAD (TURNOS LIBRES) -->
+            <div class="tab-pane fade" id="tab-disponibilidad" role="tabpanel">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Barbero</th>
+                            <th>Fecha</th>
+                            <th>Horario</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for turno in turnos_disponibles %}
+                        <tr class="align-middle">
+                            <td>{{ turno.profesional.get_full_name }}</td>
+                            <td>{{ turno.fecha|date:"d/m/Y" }}</td>
+                            <td>{{ turno.hora_inicio|time:"H:i" }} - {{ turno.hora_fin|time:"H:i" }}</td>
+                            <td><span class="badge bg-info text-dark">Disponible</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">No hay turnos libres registrados para los próximos días.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -128,4 +165,8 @@ function abrirModalCancelar(btn) {
     new bootstrap.Modal(document.getElementById('modalCancelar')).show();
 }
 </script>
+
+<style>
+    .nav-tabs .nav-link.active { border-bottom: 3px solid white !important; }
+</style>
 {% endblock %}

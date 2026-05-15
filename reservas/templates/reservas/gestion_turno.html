@@ -1,0 +1,173 @@
+{% extends "base-admin.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-white">
+            <i class="bi bi-calendar-week-fill me-2"></i>{{ titulo }}
+        </h2>
+        <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left me-2"></i>Volver a la Agenda
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card border-0 shadow-lg">
+        <div class="card-header py-3 text-white" style="background-color: #07d2ff;">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2"></i>Gestión de Disponibilidad (Próximos 15 Días)</h5>
+        </div>
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Día / Fecha</th>
+                            <th>Estado</th>
+                            <th class="text-center">Turnos Disponibles</th>
+                            <th class="text-center">Citas Ya Reservadas</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dia in dias %}
+                        <tr class="{% if dia.es_hoy %}table-primary{% endif %}">
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">{{ dia.fecha|date:"l"|capfirst }}</div>
+                                <div class="text-muted small">{{ dia.fecha|date:"d M, Y" }}</div>
+                                {% if dia.es_hoy %}<span class="badge bg-primary">HOY</span>{% endif %}
+                            </td>
+                            <td>
+                                {% if dia.disponible %}
+                                    <span class="badge bg-success px-3 py-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i> ABIERTO
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary px-3 py-2 text-white">
+                                        <i class="bi bi-moon-stars-fill me-1"></i> CERRADO
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="fs-5 fw-bold {% if dia.cantidad > 0 %}text-info{% else %}text-muted{% endif %}">
+                                    {{ dia.cantidad }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge rounded-pill {% if dia.reservas > 0 %}bg-warning text-dark{% else %}bg-light text-muted border{% endif %}">
+                                    {{ dia.reservas }} citas
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                {% if dia.disponible %}
+                                    <button class="btn btn-danger btn-sm px-3 shadow-sm" 
+                                            onclick="confirmarDesactivar('{{ dia.fecha|date:'Y-m-d' }}', '{{ dia.fecha|date:'l d/m' }}', {{ dia.reservas }})">
+                                        <i class="bi bi-toggle-off me-1"></i> Desactivar
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-success btn-sm px-3 shadow-sm" 
+                                            onclick="abrirModalActivar('{{ dia.fecha|date:'Y-m-d' }}', '{{ dia.fecha|date:'l d/m' }}')">
+                                        <i class="bi bi-toggle-on me-1"></i> Activar Agenda
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Activar Agenda -->
+<div class="modal fade" id="modalActivar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="formActivar" method="POST">
+                {% csrf_token %}
+                <div class="modal-header text-white" style="background-color: #07d2ff;">
+                    <h5 class="modal-title">
+                        <i class="bi bi-calendar-plus me-2"></i>Activar Agenda: <span id="fechaLegibleActivar"></span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Barbero(s)</label>
+                        <select name="barbero" class="form-select" required>
+                            <option value="todos">Todos los barberos activos</option>
+                            {% for barbero in barberos %}
+                                <option value="{{ barbero.id }}">{{ barbero.get_full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Hora Inicio (24h)</label>
+                            <input type="number" name="hora_inicio" class="form-control" value="8" min="0" max="23">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Hora Fin (24h)</label>
+                            <input type="number" name="hora_fin" class="form-control" value="18" min="0" max="23">
+                        </div>
+                    </div>
+                    <div class="row bg-light p-2 rounded mb-3 border">
+                        <div class="col-12"><label class="form-label fw-bold text-muted small uppercase">Excluir Hora de Almuerzo (Opcional)</label></div>
+                        <div class="col-md-6 mb-2">
+                            <label class="small">Inicio Almuerzo</label>
+                            <input type="number" name="h_almuerzo_inicio" class="form-control form-control-sm" placeholder="Ej: 13" min="0" max="23">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="small">Fin Almuerzo</label>
+                            <input type="number" name="h_almuerzo_fin" class="form-control form-control-sm" placeholder="Ej: 14" min="0" max="23">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Duración de cada Turno</label>
+                        <select name="duracion" class="form-select">
+                            <option value="30">30 minutos</option>
+                            <option value="45">45 minutos</option>
+                            <option value="60" selected>1 hora</option>
+                            <option value="90">1 hora 30 min</option>
+                        </select>
+                    </div>
+                    <p class="text-muted small"><i class="bi bi-info-circle me-1"></i> El sistema generará turnos consecutivos basándose en esta configuración.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn text-white px-4" style="background-color: #07d2ff;">Generar Turnos</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModalActivar(fechaIso, fechaLegible) {
+    document.getElementById('fechaLegibleActivar').textContent = fechaLegible;
+    const form = document.getElementById('formActivar');
+    form.action = `/reservas/gestion-dias/activar/${fechaIso}/`;
+    new bootstrap.Modal(document.getElementById('modalActivar')).show();
+}
+
+function confirmarDesactivar(fechaIso, fechaLegible, reservas) {
+    let mensaje = `¿Estás seguro de que quieres cerrar la agenda del ${fechaLegible}?\n\nSe eliminarán todos los turnos libres.`;
+    
+    if (reservas > 0) {
+        mensaje += `\n\nATENCIÓN: Tienes ${reservas} cita(s) ya reservada(s) que NO se borrarán, deberás atenderlas o cancelarlas manualmente.`;
+    }
+
+    if (confirm(mensaje)) {
+        window.location.href = `/reservas/gestion-dias/desactivar/${fechaIso}/`;
+    }
+}
+</script>
+{% endblock %}
