@@ -137,3 +137,8 @@ EMAIL_HOST_USER = 'aa9420001@smtp-brevo.com'
 EMAIL_HOST_PASSWORD = 'CcHkS6yZ21UIJWw7'
 
 DEFAULT_FROM_EMAIL = 'chichabarber39@gmail.com'
+
+
+# Al final de settings.py
+LOGIN_URL = 'login' 
+LOGIN_REDIRECT_URL = 'reservas'  # Esto asegura que, por defecto, siempre vayan a reservas

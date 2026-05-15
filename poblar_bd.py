@@ -3,7 +3,7 @@ import django
 import random
 import requests
 from io import BytesIO
-from django.core.files.base import ContentFile
+from django.core.files.base import ContentFile 
 from datetime import datetime, date, time, timedelta
 
 # 1. Configurar el entorno de Django para poder usar sus modelos desde este script externo

@@ -2,9 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.contrib import messages # type: ignore
 
 from reservas.models import Calificacion
+from usuarios.forms import RegistroForm
 # Eliminados imports redundantes y corregido el import de modelos
 from .models import Servicios, Promocion 
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
+
+
+
 
 def servicios(request):
     servicios = Servicios.objects.all()
@@ -13,6 +17,47 @@ def servicios(request):
         'servicios': servicios 
     }
     return render(request, 'servicios/servicios.html', context)
+
+def registro(request, servicio_pk):
+    servicio = get_object_or_404(Servicios, pk=servicio_pk)
+    if request.method == 'POST':
+        form = RegistroForm(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+
+            # 🔥 FIJO: todos son cliente
+            user.rol = "cliente"
+
+            # Seguridad extra
+            user.is_staff = False
+            user.is_superuser = False
+
+            user.save()
+
+            messages.success(
+                request,
+                "✅ Usuario registrado como cliente con éxito."
+            )
+
+            return redirect('login')
+        
+
+    else:
+        form = RegistroForm()
+        
+    context = {
+        'titulo': f'Registro para {servicio.nombre}',
+        'servicio': servicio,
+        'form': form
+    }
+    return render(request, 'usuarios/registro.html', context)
+
+
+def login(request):
+    return render(request, 'login/reservas.html')
+
+
 
 def servicios_admin(request):
     servicios = Servicios.objects.all()
@@ -56,13 +101,13 @@ def listado_promocion(request):
     promociones = Promocion.objects.all()
     context = {
         'titulo': 'Listado de Promociones',
-        'promociones': promociones
+        'promocion': promociones
     }
     return render(request, 'servicios/listado-promocion.html', context)
 def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
-        form = ServiciosEditarForm(request.POST, request.FILES, instance=servicio)
+        form = ServiciosEditarForm(request.POST, request.FILES, instance=servicios)
         if form.is_valid():
             form.save()
             messages.success(request, f"Servicio {servicio.nombre} actualizado.")
