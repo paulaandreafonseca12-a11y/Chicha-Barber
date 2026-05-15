@@ -30,4 +30,3 @@ El sistema está dividido en las siguientes aplicaciones principales, respetando
 *   **Autenticación:** El modelo `Usuario` debe extender de `AbstractUser` o `AbstractBaseUser` de Django, utilizando el identificador (ej. documento o email) según los requerimientos de acceso.
 *   **Gestión de Inventario:** Las salidas de inventario se gestionan automáticamente mediante señales (*Signals*) de Django (`post_save`) al momento de emitir una factura que contenga productos.
 *   **Limpieza de Archivos:** El módulo de configuración utiliza señales (`pre_save`, `post_delete`) para eliminar archivos multimedia huérfanos (imágenes del carrusel) y optimizar el almacenamiento del servidor.
-*   **Limpieza de Archivos:** El módulo de configuración utiliza señales (`pre_save`, `post_delete`) para eliminar archivos multimedia huérfanos (imágenes del carrusel) y optimizar el almacenamiento del servidor.
