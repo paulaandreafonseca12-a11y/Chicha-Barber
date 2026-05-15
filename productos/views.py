@@ -24,32 +24,21 @@ def productos_galeria(request):
 
 
 # 🔒 CARRITO PROTEGIDO
-# Si no tiene sesión -> va a registro
+@login_required
 def carrito(request):
-    if not request.user.is_authenticated:
-        login_url = reverse('registro')
-        return redirect(f'{login_url}?next={request.get_full_path()}')
-
     return render(request, 'productos/carrito.html')
 
 
 # 🔒 PAGO PROTEGIDO
+@login_required
 def pago(request):
-    if not request.user.is_authenticated:
-        login_url = reverse('registro')
-        return redirect(f'{login_url}?next={request.get_full_path()}')
-
     return render(request, 'productos/pago.html')
 
 
 # 🔒 PROCESAR PAGO PROTEGIDO
+@login_required
 def procesar_pago_cliente(request):
-    if not request.user.is_authenticated:
-        login_url = reverse('registro')
-        return redirect(f'{login_url}?next={request.get_full_path()}')
-
     if request.method == 'POST':
-
         nombre = request.POST.get('nombre')
         correo = request.POST.get('correo')
         telefono = request.POST.get('telefono')

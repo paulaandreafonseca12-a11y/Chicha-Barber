@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
+from django.urls import reverse
 from django.contrib import messages # type: ignore
 
 from reservas.models import Calificacion
@@ -20,9 +21,11 @@ def servicios(request):
 
 def registro(request, servicio_pk):
     servicio = get_object_or_404(Servicios, pk=servicio_pk)
+    # Capturamos la URL de destino original (si existe)
+    next_url = request.GET.get('next') or request.POST.get('next') or ''
+
     if request.method == 'POST':
         form = RegistroForm(request.POST)
-
         if form.is_valid():
             user = form.save(commit=False)
 
@@ -39,17 +42,21 @@ def registro(request, servicio_pk):
                 request,
                 "✅ Usuario registrado como cliente con éxito."
             )
+            
+            # Si no hay un destino explícito, lo mandamos a la reserva del servicio actual
+            if not next_url:
+                next_url = reverse('crear_reserva', args=[servicio.pk])
 
-            return redirect('login')
+            return redirect(f"{reverse('login')}?next={next_url}")
         
-
     else:
         form = RegistroForm()
         
     context = {
         'titulo': f'Registro para {servicio.nombre}',
         'servicio': servicio,
-        'form': form
+        'form': form,
+        'next': next_url # Pasamos 'next' al contexto para el template
     }
     return render(request, 'usuarios/registro.html', context)
 
@@ -107,7 +114,8 @@ def listado_promocion(request):
 def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
-        form = ServiciosEditarForm(request.POST, request.FILES, instance=servicios)
+        # ERROR CORREGIDO: se debe usar 'servicio' (el objeto), no 'servicios' (la clase/modelo)
+        form = ServiciosEditarForm(request.POST, request.FILES, instance=servicio)
         if form.is_valid():
             form.save()
             messages.success(request, f"Servicio {servicio.nombre} actualizado.")
