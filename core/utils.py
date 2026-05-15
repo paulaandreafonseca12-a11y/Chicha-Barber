@@ -1,6 +1,55 @@
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 
+from django.core.mail import send_mail
+from django.utils import timezone
+import pytz #es la calculadora que hace el cambio de moneda exacto entre la hora global del servidor y la hora de tu barbería.
+import locale
+
+try:
+    locale.setlocale(locale.LC_TIME, 'es_CO.UTF-8') # Para Linux/macOS
+except:
+    locale.setlocale(locale.LC_TIME, 'es_ES') # Para Windows
+
+def enviar_correo_cancelacion_admin(correo_cliente, nombre, servicio, fecha):
+    subject = f"IMPORTANTE: Cambio en tu cita - Chicha Barber Studio"
+    
+    # 1. Convertimos la fecha a la zona horaria de Colombia explícitamente
+    zona_local = pytz.timezone('America/Bogota')
+    
+    # Si la fecha ya tiene zona horaria, la convertimos. Si no, la localizamos.
+    if timezone.is_aware(fecha):
+        fecha_local = fecha.astimezone(zona_local)
+    else:
+        fecha_local = zona_local.localize(fecha)
+    
+    # 2. Formateamos usando la fecha local
+    # %H:%M para formato 24h o %I:%M %p para 12h con AM/PM
+    fecha_formateada = fecha_local.strftime('%A %d de %B a las %I:%M %p')
+    
+    message = f"""
+    Hola, {nombre}.
+    
+    Te escribimos de Chicha Barber Studio para informarte que, debido a motivos de fuerza mayor, 
+    no podremos atender tu cita de {servicio} programada para el {fecha_formateada}.
+    
+    Lamentamos mucho los inconvenientes que esto pueda causarte. Queremos invitarte a que 
+    programes una nueva cita a través de nuestra web en un horario que te sea cómodo.
+    
+    ¡Estamos listos para dejarte con el mejor estilo apenas regreses!
+    
+    Atentamente,
+    El equipo de Chicha Barber Studio ✂️💈
+    """
+    
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [correo_cliente],
+        fail_silently=False,
+    )
+
 
 def enviar_correo_compra(correo_cliente, nombre, carrito, total):
 

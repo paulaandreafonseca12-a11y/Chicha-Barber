@@ -59,7 +59,7 @@ class Reserva(models.Model):
 
     turno = models.ForeignKey(
         'Turno',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='reservas',
         null=True,
         blank=True,

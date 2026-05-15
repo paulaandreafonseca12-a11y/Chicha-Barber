@@ -11,6 +11,7 @@ from reservas.forms import CalificacionEditarForm, ReservaEditarForm
 from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario
 from core.utils import enviar_correo_reserva
+from core.utils import enviar_correo_cancelacion_admin
 
 
 def _parse_fecha_reserva(fecha_str):
@@ -387,8 +388,87 @@ def activar_dia_agenda(request, fecha_str):
 
 
 def desactivar_dia_agenda(request, fecha_str):
-    """Elimina solo los turnos que están 'disponibles' para una fecha, ocultándola del cliente."""
+    """
+    Cancela profesionalmente la agenda de un día:
+    1. Notifica y cancela las reservas existentes.
+    2. Elimina los turnos sobrantes para limpiar la vista.
+    """
     fecha = date.fromisoformat(fecha_str)
+    
+    # 1. Identificar las reservas que se van a ver afectadas
+    reservas_afectadas = Reserva.objects.filter(
+        turno__fecha=fecha, 
+        estado__in=['reservada', 'confirmada']
+    )
+    
+    cantidad_notificada = 0
+    for reserva in reservas_afectadas:
+        # Cambiamos el estado de la reserva
+        reserva.estado = 'cancelada'
+        reserva.save()
+        
+        # Opcional: Enviar correo de notificación
+        try:
+            # Reutilizamos tu función de core.utils si permite mensajes personalizados,
+            # o puedes crear una nueva específica para cancelaciones.
+            enviar_correo_reserva(
+                correo_cliente=reserva.correo_cliente,
+                nombre=reserva.nombre_cliente,
+                servicio=reserva.servicio,
+                fecha=reserva.fecha_reserva,
+                # Podrías pasar un parámetro extra aquí para indicar que es CANCELACIÓN
+            )
+            cantidad_notificada += 1
+        except Exception as e:
+            print(f"Error enviando correo a {reserva.correo_cliente}: {e}")
+
+    # 2. Ahora tratamos los turnos
+    # Los turnos que tenían reserva ahora están ligados a una reserva 'cancelada'
+    # Los turnos 'disponibles' simplemente los borramos para que el día aparezca como CERRADO
     eliminados, _ = Turno.objects.filter(fecha=fecha, estado='disponible').delete()
-    messages.warning(request, f"Día {fecha_str} desactivado. Se eliminaron {eliminados} turnos disponibles.")
+    
+    # 3. Informar al administrador del resultado
+    if cantidad_notificada > 0:
+        messages.success(request, f"Se han cancelado {cantidad_notificada} citas y se notificó a los clientes.")
+    
+    messages.warning(request, f"Día {fecha_str} desactivado. Se limpiaron {eliminados} turnos disponibles.")
+    
+    return redirect('gestionar_dias')
+
+
+def desactivar_dia_agenda(request, fecha_str):
+    fecha = date.fromisoformat(fecha_str)
+    
+    # 1. Buscamos reservas activas
+    reservas_afectadas = Reserva.objects.filter(
+        turno__fecha=fecha, 
+        estado__in=['reservada', 'confirmada']
+    )
+    
+    cantidad_notificada = 0
+    for reserva in reservas_afectadas:
+        reserva.estado = 'cancelada'
+        reserva.save()
+        
+        try:
+            # Enviamos el correo específico de cancelación
+            enviar_correo_cancelacion_admin(
+                correo_cliente=reserva.correo_cliente,
+                nombre=reserva.nombre_cliente,
+                servicio=reserva.servicio.nombre,
+                fecha=reserva.fecha_reserva
+            )
+            cantidad_notificada += 1
+        except Exception as e:
+            print(f"Error al notificar a {reserva.correo_cliente}: {e}")
+
+    # 2. Borramos los turnos 'disponibles' para cerrar el día visualmente
+    Turno.objects.filter(fecha=fecha, estado='disponible').delete()
+    
+    # 3. Mensaje de éxito al administrador
+    if cantidad_notificada > 0:
+        messages.success(request, f"Se cancelaron {cantidad_notificada} citas y se enviaron los correos de notificación.")
+    
+    messages.warning(request, f"Día {fecha_str} desactivado. No se aceptarán más reservas para esta fecha.")
+    
     return redirect('gestionar_dias')
