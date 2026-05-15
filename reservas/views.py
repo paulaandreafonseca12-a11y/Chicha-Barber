@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
 
 from reservas.models import Calificacion, Reserva, Turno
 from reservas.forms import CalificacionEditarForm, ReservaEditarForm
@@ -58,6 +59,11 @@ def obtener_turnos_disponibles_json(request):
 def crear_reserva(request, servicio_id=None, promocion_id=None):
     servicio = None
     promo = None
+
+    if not request.user.is_authenticated:
+        # Redirigimos al registro usando el nombre de la URL y capturando la ruta actual completa
+        login_url = reverse('registro')
+        return redirect(f'{login_url}?next={request.get_full_path()}')
 
     if promocion_id is not None:
         promo = get_object_or_404(Promocion, pk=promocion_id)
