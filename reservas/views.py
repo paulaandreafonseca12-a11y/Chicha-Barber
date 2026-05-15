@@ -1,10 +1,11 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, time, timedelta
 from decimal import Decimal
 
 from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
 
 from reservas.models import Calificacion, Reserva, Turno
 from reservas.forms import CalificacionEditarForm, ReservaEditarForm
@@ -60,6 +61,11 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     servicio = None
     promo = None
 
+    if not request.user.is_authenticated:
+        # Redirigimos al registro usando el nombre de la URL y capturando la ruta actual completa
+        login_url = reverse('registro')
+        return redirect(f'{login_url}?next={request.get_full_path()}')
+
     if promocion_id is not None:
         promo = get_object_or_404(Promocion, pk=promocion_id)
         servicio = promo.servicio
@@ -71,12 +77,21 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
     barberos = Usuario.objects.filter(rol='barbero', estado=True)
     
-    hoy = date.today()
+    ahora = datetime.now()
+    hoy = ahora.date()
     fin = hoy + timedelta(days=6)
-    turnos_disponibles = Turno.objects.filter(
+    
+    # Obtenemos los turnos disponibles en el rango de 7 días
+    turnos_qs = Turno.objects.filter(
         fecha__range=(hoy, fin),
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
+
+    # FILTRO CLAVE: Solo mostrar turnos que no hayan pasado (si son de hoy)
+    turnos_disponibles = [
+        t for t in turnos_qs 
+        if t.fecha > hoy or (t.fecha == hoy and t.hora_inicio > ahora.time())
+    ]
 
     action_url = (
         reverse('crear_reserva_promocion', args=[promo.id])
@@ -93,23 +108,22 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         if request.user.is_authenticated and not nombre:
             nombre = request.user.get_full_name()
 
+        # Guardamos el contexto para re-enviarlo si hay errores de validación
+        context_error = {
+            'servicio': servicio,
+            'promo': promo,
+            'barberos': barberos,
+            'turnos_disponibles': turnos_disponibles,
+            'action_url': action_url,
+        }
+
         if not turno_id:
             messages.error(request, 'Selecciona un turno disponible.')
-            return render(request, 'reservas/reservas.html', {
-                'servicio': servicio,
-                'promo': promo,
-                'barberos': barberos,
-                'action_url': action_url,
-            })
+            return render(request, 'reservas/reservas.html', context_error)
 
         if not (nombre and correo and telefono):
             messages.error(request, 'Todos los campos son obligatorios.')
-            return render(request, 'reservas/reservas.html', {
-                'servicio': servicio,
-                'promo': promo,
-                'barberos': barberos,
-                'action_url': action_url,
-            })
+            return render(request, 'reservas/reservas.html', context_error)
 
         try:
             turno = Turno.objects.get(pk=turno_id, estado='disponible')
@@ -171,10 +185,16 @@ def editar_reserva(request, pk):
 
 
 def ver_agenda(request):
-    reservas = Reserva.objects.all().order_by('-fecha_reserva')
+    # Obtenemos las reservas y los turnos disponibles para tener una visión completa del negocio
+    # Usamos select_related para traer el profesional (barbero) y el servicio en una sola consulta
+    reservas = Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
+    turnos_disponibles = Turno.objects.select_related('profesional').filter(
+        estado='disponible'
+    ).order_by('fecha', 'hora_inicio')
     servicios = Servicios.objects.all()
     return render(request, 'reservas/ver_agenda.html', {
         'reservas': reservas,
+        'turnos_disponibles': turnos_disponibles,
         'servicios': servicios,
         'titulo': 'Agenda de Citas',
     })
@@ -219,13 +239,6 @@ def crear_reserva_admin(request):
         if fecha_reserva is None:
             messages.error(request, 'Fecha de cita inválida.')
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
-
-            messages.success(
-                request,
-                'Reserva actualizada.'
-            )
-
-            return redirect('ver_agenda')
         try:
             servicio = Servicios.objects.get(id=servicio_id)
             Reserva.objects.create(
@@ -288,3 +301,101 @@ def editar_calificacion(request, pk):
         messages.success(request, 'Calificación actualizada correctamente.')
         return redirect('listado_calificaciones_admin')
     return render(request, 'reservas/editar_calificacion.html', {'form': form, 'calificacion': calificacion})
+
+
+def gestionar_disponibilidad_dias(request):
+    """Muestra una lista de los próximos 14 días y si tienen turnos activos."""
+    hoy = date.today()
+    dias = []
+    
+    for i in range(15):
+        fecha = hoy + timedelta(days=i)
+        # Contamos cuántos turnos disponibles hay para ese día
+        turnos_count = Turno.objects.filter(fecha=fecha, estado='disponible').count()
+        # Contamos si hay reservas ya hechas (para no desactivar días con compromisos)
+        reservas_count = Turno.objects.filter(fecha=fecha, estado='reservado').count()
+        
+        dias.append({
+            'fecha': fecha,
+            'disponible': turnos_count > 0,
+            'cantidad': turnos_count,
+            'reservas': reservas_count,
+            'es_hoy': fecha == hoy
+        })
+
+    barberos = Usuario.objects.filter(rol='barbero', estado=True)
+
+    return render(request, 'reservas/gestion_turno.html', {
+        'dias': dias,
+        'barberos': barberos,
+        'titulo': 'Gestión de Agenda por Días'
+    })
+
+
+def activar_dia_agenda(request, fecha_str):
+    """Crea turnos personalizados para barberos seleccionados."""
+    if request.method == 'POST':
+        fecha = date.fromisoformat(fecha_str)
+        barbero_id = request.POST.get('barbero')
+        h_inicio_val = int(request.POST.get('hora_inicio', 8))
+        h_fin_val = int(request.POST.get('hora_fin', 18))
+        duracion = int(request.POST.get('duracion', 60))
+        # Parámetros para la hora de almuerzo
+        h_almuerzo_inicio = request.POST.get('h_almuerzo_inicio')
+        h_almuerzo_fin = request.POST.get('h_almuerzo_fin')
+
+        if barbero_id == 'todos':
+            barberos = Usuario.objects.filter(rol='barbero', estado=True)
+        else:
+            barberos = Usuario.objects.filter(id=barbero_id, rol='barbero', estado=True)
+
+        if not barberos.exists():
+            messages.error(request, "No se encontraron barberos seleccionados o activos.")
+            return redirect('gestionar_dias')
+
+        turnos_creados = 0
+        for barbero in barberos:
+            # Empezamos a la hora de inicio y vamos creando bloques hasta la hora de fin
+            inicio_dt = datetime.combine(fecha, time(hour=h_inicio_val))
+            fin_dt = datetime.combine(fecha, time(hour=h_fin_val))
+            
+            current = inicio_dt
+            while current + timedelta(minutes=duracion) <= fin_dt:
+                # Lógica para saltar la hora de almuerzo
+                es_almuerzo = False
+                if h_almuerzo_inicio != '' and h_almuerzo_fin != '' and h_almuerzo_inicio is not None:
+                    try:
+                        l_start = time(hour=int(h_almuerzo_inicio))
+                        l_end = time(hour=int(h_almuerzo_fin))
+                        if current.time() >= l_start and current.time() < l_end:
+                            es_almuerzo = True
+                    except ValueError:
+                        pass
+                
+                if es_almuerzo:
+                    current += timedelta(minutes=duracion)
+                    continue
+
+                # Evitar duplicados exactos si ya existen algunos turnos
+                if not Turno.objects.filter(profesional=barbero, fecha=fecha, hora_inicio=current.time()).exists():
+                    Turno.objects.create(
+                        profesional=barbero,
+                        fecha=fecha,
+                        hora_inicio=current.time(),
+                        hora_fin=(current + timedelta(minutes=duracion)).time(),
+                        estado='disponible'
+                    )
+                    turnos_creados += 1
+                current += timedelta(minutes=duracion)
+
+        messages.success(request, f"Día {fecha_str} configurado. Se crearon {turnos_creados} turnos.")
+    return redirect('gestionar_dias')
+
+
+
+def desactivar_dia_agenda(request, fecha_str):
+    """Elimina solo los turnos que están 'disponibles' para una fecha, ocultándola del cliente."""
+    fecha = date.fromisoformat(fecha_str)
+    eliminados, _ = Turno.objects.filter(fecha=fecha, estado='disponible').delete()
+    messages.warning(request, f"Día {fecha_str} desactivado. Se eliminaron {eliminados} turnos disponibles.")
+    return redirect('gestionar_dias')

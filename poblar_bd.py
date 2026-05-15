@@ -18,18 +18,17 @@ from productos.models import Producto, Stock, Compra, DetalleCompra
 
 def limpiar_datos():
     print("Limpiando datos anteriores...")
-    # Opcional: puedes descomentar estas líneas si quieres que el script borre todo antes de poblar
-    # DetalleCompra.objects.all().delete()
-    # Compra.objects.all().delete()
-    # Stock.objects.all().delete()
-    # Producto.objects.all().delete()
-    # Calificacion.objects.all().delete()
-    # Reserva.objects.all().delete()
-    # Turno.objects.all().delete()
-    # Promocion.objects.all().delete()
-    # Servicios.objects.all().delete()
-    # Usuario.objects.exclude(is_superuser=True).delete()
-    pass
+    # Ahora el script limpia todo automáticamente para garantizar datos frescos
+    DetalleCompra.objects.all().delete()
+    Compra.objects.all().delete()
+    Stock.objects.all().delete()
+    Producto.objects.all().delete()
+    Calificacion.objects.all().delete()
+    Reserva.objects.all().delete()
+    Turno.objects.all().delete()
+    Promocion.objects.all().delete()
+    Servicios.objects.all().delete()
+    Usuario.objects.exclude(is_superuser=True).delete()
 
 def descargar_avatar(nombre_completo, email):
     """Descarga un avatar de ejemplo usando UI Avatars API."""
@@ -53,12 +52,11 @@ def descargar_avatar(nombre_completo, email):
 def poblar_usuarios():
     print("Poblando Usuarios...")
     nombres_barberos = [
-        'Carlos López', 'Juan García', 'Pedro Martínez', 'Miguel Rodríguez',
-        'Luis Hernández', 'Diego Sánchez', 'Roberto Díaz', 'Javier Moreno'
+        'Carlos López', 'Juan García',
     ]
     
     # Crear barberos con nombres específicos
-    for idx, nombre_completo in enumerate(nombres_barberos[:4]):  # Crear 4 barberos
+    for idx, nombre_completo in enumerate(nombres_barberos[:2]):  # Reducido a 2 barberos
         nombre, apellido = nombre_completo.split()
         email = f"barbero{idx+1}@ejemplo.com"
         
@@ -135,6 +133,40 @@ def poblar_promociones():
             }
         )
 
+def poblar_turnos_disponibles():
+    print("Poblando Turnos Disponibles...")
+    barberos = list(Usuario.objects.filter(rol='barbero'))
+    if not barberos:
+        print("  ⚠️ No hay barberos registrados para crear turnos.")
+        return
+
+    # Generar turnos para los próximos 14 días
+    for i in range(1, 15): # Para los próximos 14 días
+        fecha_turno = date.today() + timedelta(days=i)
+        
+        # Evitar crear turnos en domingo si no se trabaja
+        if fecha_turno.weekday() == 6: # 6 es domingo
+            continue
+
+        for barbero in barberos:
+            # Crear 5 turnos por barbero por día
+            for _ in range(5):
+                hora_inicio_int = random.randint(8, 17) # Horas entre 8 AM y 5 PM
+                hora_inicio = time(hour=hora_inicio_int, minute=random.choice([0, 30]))
+                hora_fin = time(hour=hora_inicio_int + 1, minute=random.choice([0, 30]))
+
+                # Asegurarse de que la hora de fin sea posterior a la de inicio
+                if hora_fin <= hora_inicio:
+                    hora_fin = time(hour=hora_inicio.hour + 1, minute=hora_inicio.minute)
+
+                Turno.objects.get_or_create(
+                    profesional=barbero,
+                    fecha=fecha_turno,
+                    hora_inicio=hora_inicio,
+                    hora_fin=hora_fin,
+                    estado='disponible' # Aseguramos que estos turnos estén disponibles
+                )
+
 def poblar_reservas():
     print("Poblando Reservas...")
     estados_reserva = ['reservada', 'confirmada', 'cancelada']
@@ -152,7 +184,7 @@ def poblar_reservas():
         print("  ⚠️ Faltan barberos o clientes registrados para crear turnos y reservas.")
         return
 
-    for i in range(1, 11):
+    for i in range(1, 6): # Crear menos reservas para dejar más turnos disponibles
         # Crear fechas con date objects
         dias_adelante = random.randint(1, 7)
         fecha_turno = date.today() + timedelta(days=dias_adelante)
@@ -252,6 +284,7 @@ def poblar_compras():
 if __name__ == '__main__':
     print("Iniciando la inserción de datos de prueba...")
     limpiar_datos()
+    poblar_turnos_disponibles() # Primero creamos muchos turnos disponibles
     poblar_usuarios()
     poblar_servicios()
     poblar_promociones()

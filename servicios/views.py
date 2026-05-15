@@ -172,44 +172,4 @@ def listado_calificacion(request):
         'titulo': 'Listado de Calificaciones',
         'calificacion': calificacion
     }
-    return render(request, 'servicios/listado-promocion.html', context)
-
-def crear_promocion(request):
-    if request.method == 'POST':
-        form = PromocionForm(request.POST)
-        if form.is_valid():
-            form.save() 
-            messages.success(request, "Promoción creada exitosamente.")
-            return redirect('listado-promocion')
-    else:
-        form = PromocionForm()
-    return render(request, 'servicios/agregar_promocion.html', {'form': form, 'titulo': 'Crear nueva promoción'})
-
-def editar_promocion(request, pk):
-    promocion_obj = get_object_or_404(Promocion, pk=pk)
-    if request.method == 'POST':
-        form = PromocionEditarForm(request.POST, instance=promocion_obj)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f"Promoción {promocion_obj.nombre} actualizada.")
-            return redirect('listado-promocion')
-    else:
-        form = PromocionEditarForm(instance=promocion_obj)
-    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion_obj})
-
-def eliminar_promocion(request, pk):
-    # Nota: Cambié 'id' por 'pk' para mantener consistencia con el urls.py
-    promocion_obj = get_object_or_404(Promocion, pk=pk)
-    if request.method == 'POST':
-        promocion_obj.delete()
-        messages.success(request, 'Promoción eliminada.')
-        return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
-
-def listado_calificacion(request):
-    calificacion = Calificacion.objects.all()
-    context = {
-        'titulo': 'Listado de Calificaciones',
-        'calificacion': calificacion
-    }
     return render(request, 'servicios/listado_calificacion.html', context)

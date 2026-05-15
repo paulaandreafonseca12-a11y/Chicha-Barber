@@ -83,6 +83,9 @@
 
 {% block scripts %}
 <script>
+// Asegura que los turnos se filtren correctamente apenas cargue la página
+document.addEventListener('DOMContentLoaded', filterTurnos);
+
 function filterTurnos() {
     const selectedBarbero = document.getElementById('barbero-select').value;
     const turnos = document.querySelectorAll('.turno-item');
