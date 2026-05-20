@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
 
-from servicios.forms import ServiciosEditarForm, ServiciosForm
+from servicios.forms import ServiciosEditarForm, ServiciosForm, PromocionForm
 from servicios.models import Promocion
 from usuarios.forms import CustomLoginForm
 
@@ -41,8 +41,7 @@ def inicio_admin(request):
 
 def crear_promocion(request):
     if request.method == 'POST':
-        # Aquí puedes manejar la lógica para crear una promocion con los datos del formulario
-        form = Promocion(request.POST)
+        form = PromocionForm(request.POST, request.FILES)
         if form.is_valid():
             promocion = form.save()
             messages.success(request, 'Promoción creada exitosamente.')

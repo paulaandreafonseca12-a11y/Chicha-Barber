@@ -8,25 +8,21 @@
     <div class="ring ring-2"></div>
 </div>
 
-<div class="main-wrapper">
+<div class="main-wrapper mx-auto">
 
     <!-- HEADER -->
     <header class="header-brand">
-
         <div class="logo-wrap">
             <img src="{% static 'img/logo.png' %}" alt="Logo">
         </div>
-
-        <h1 class="brand-name">CHICHA BARBER</h1>
-        <span class="brand-sub">Studio · Nobsa</span>
-
+        <h1 class="brand-name text-white">CHICHA BARBER</h1>
+        <span class="brand-sub text-white">Studio · Nobsa</span>
     </header>
 
     <!-- LOGIN -->
     <main class="form-box">
-
-        <h2 class="form-heading">Inicia Sesión</h2>
-        <p class="form-sub">Bienvenido a la experiencia premium</p>
+        <h2 class="form-heading text-white">Inicia Sesión</h2>
+        <p class="form-sub text-white">Bienvenido a la experiencia premium</p>
 
         <!-- ERRORES -->
         {% if form.errors %}
@@ -36,18 +32,15 @@
         {% endif %}
 
         <form method="post">
-
             {% csrf_token %}
+
+            <!-- IMPLEMENTACIÓN: Captura la URL de reservas -->
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
 
             <!-- EMAIL -->
             <label class="cb-label">Correo Electrónico</label>
-
             <div class="input-wrap">
-
-                <span class="input-icon">
-                    ✉️
-                </span>
-
+                <span class="input-icon">✉️</span>
                 <input
                     type="email"
                     name="username"
@@ -56,18 +49,12 @@
                     autocomplete="email"
                     required
                 >
-
             </div>
 
             <!-- PASSWORD -->
             <label class="cb-label">Contraseña</label>
-
             <div class="input-wrap">
-
-                <span class="input-icon">
-                    🔒
-                </span>
-
+                <span class="input-icon">🔒</span>
                 <input
                     type="password"
                     name="password"
@@ -76,31 +63,21 @@
                     autocomplete="current-password"
                     required
                 >
-
             </div>
 
             <!-- RECUPERAR -->
             <div class="forgot-link-wrap">
-
                 <a href="{% url 'password_reset' %}" class="forgot-link">
                     ¿Olvidaste tu contraseña?
                 </a>
-
             </div>
 
             <!-- BOTÓN -->
             <button type="submit" class="btn-auth">
                 INGRESAR
             </button>
-
         </form>
-
-        
-
-        </div>
-
     </main>
-
 </div>
 
 {% endblock content %}

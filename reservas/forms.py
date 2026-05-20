@@ -20,21 +20,20 @@ class ReservaFormCompleto(forms.ModelForm):
 class CalificacionForm(forms.ModelForm):
     class Meta:
         model = Calificacion
-        # Solo puntuación y reseña, como pediste
-        fields = ['puntuacion', 'resena']
+        fields = ['calificacion', 'resenia']
         widgets = {
-            'resena': forms.Textarea(attrs={
-                'class': 'form-control', 
-                'rows': 3, 
+            'resenia': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
                 'placeholder': 'Cuéntanos tu experiencia...'
             }),
-            'puntuacion': forms.HiddenInput(),
+            'calificacion': forms.HiddenInput(),
         }
 
 class CalificacionEditarForm(forms.ModelForm):
     class Meta:
         model = Calificacion
-        fields = ['puntuacion', 'resena']
+        fields = ['calificacion', 'resenia']
 
 class ReservaEditarForm(forms.ModelForm):
     class Meta:

@@ -1,5 +1,7 @@
 ﻿from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Compra, Producto, DetalleCompra, Stock
 from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
 from django.http import JsonResponse
@@ -13,25 +15,30 @@ from core.utils import enviar_correo_compra
 # =========================
 
 def productos_galeria(request):
+
     productos = Producto.objects.all()
+
     return render(request, 'productos/productos_galeria.html', {
         'productos': productos
     })
 
 
-# 🔥 YA NO USA SESSION (porque usas localStorage)
+# 🔒 CARRITO PROTEGIDO
+@login_required
 def carrito(request):
     return render(request, 'productos/carrito.html')
 
 
+# 🔒 PAGO PROTEGIDO
+@login_required
 def pago(request):
     return render(request, 'productos/pago.html')
 
 
-# 🔥 COMPRA REAL COMPLETA
+# 🔒 PROCESAR PAGO PROTEGIDO
+@login_required
 def procesar_pago_cliente(request):
     if request.method == 'POST':
-
         nombre = request.POST.get('nombre')
         correo = request.POST.get('correo')
         telefono = request.POST.get('telefono')
@@ -41,20 +48,38 @@ def procesar_pago_cliente(request):
 
         # 🔴 Validar carrito
         if not carrito_json:
-            messages.error(request, "❌ El carrito está vacío")
+
+            messages.error(
+                request,
+                "❌ El carrito está vacío"
+            )
+
             return redirect('carrito')
 
         try:
+
             carrito = json.loads(carrito_json)
+
         except:
-            messages.error(request, "❌ Error en el carrito")
+
+            messages.error(
+                request,
+                "❌ Error en el carrito"
+            )
+
             return redirect('carrito')
 
         if not carrito:
-            messages.error(request, "❌ El carrito está vacío")
+
+            messages.error(
+                request,
+                "❌ El carrito está vacío"
+            )
+
             return redirect('carrito')
 
         try:
+
             with transaction.atomic():
 
                 # ✅ Crear compra
@@ -71,13 +96,18 @@ def procesar_pago_cliente(request):
 
                 # ✅ Crear detalles
                 for item in carrito:
+
                     producto = get_object_or_404(
                         Producto,
                         codigo_producto=item['id']
                     )
 
                     cantidad = int(item['cantidad'])
-                    subtotal = producto.precio_venta * cantidad
+
+                    subtotal = (
+                        producto.precio_venta * cantidad
+                    )
+
                     total_compra += subtotal
 
                     DetalleCompra.objects.create(
@@ -92,28 +122,46 @@ def procesar_pago_cliente(request):
                 compra.save()
 
         except Exception as e:
-            messages.error(request, f"❌ Error en la compra: {str(e)}")
+
+            messages.error(
+                request,
+                f"❌ Error en la compra: {str(e)}"
+            )
+
             return redirect('carrito')
 
-        # ✅ ÉXITO + 📧 CORREO
+        # ✅ Enviar correo
         try:
-            enviar_correo_compra(correo_cliente=correo,
-              nombre=nombre,
-              carrito=carrito,
-              total=total_compra)
-        except Exception as e:
-            print(f"Error enviando correo: {e}")  # no rompe la compra
 
-        messages.success(request, "✅ Compra realizada con éxito")
+            enviar_correo_compra(
+                correo_cliente=correo,
+                nombre=nombre,
+                carrito=carrito,
+                total=total_compra
+            )
+
+        except Exception as e:
+
+            print(f"Error enviando correo: {e}")
+
+        messages.success(
+            request,
+            "✅ Compra realizada con éxito"
+        )
+
         return redirect('pago')
 
     return redirect('carrito')
+
+
 # =========================
 # 🔵 ADMIN PRODUCTOS
 # =========================
 
 def lista_productos_admin(request):
+
     productos = Producto.objects.all()
+
     return render(request, 'productos/productos_admin.html', {
         'productos': productos,
         'titulo': "Nuestros Productos",
@@ -121,19 +169,39 @@ def lista_productos_admin(request):
 
 
 def crear_producto(request):
+
     if request.method == 'POST':
-        form = ProductoForm(request.POST, request.FILES)
+
+        form = ProductoForm(
+            request.POST,
+            request.FILES
+        )
+
         if form.is_valid():
+
             producto = form.save()
 
-            # 🔥 CREA STOCK AUTOMÁTICO
-            Stock.objects.get_or_create(producto=producto)
+            # 🔥 Crear stock automático
+            Stock.objects.get_or_create(
+                producto=producto
+            )
 
-            messages.success(request, "✅ Producto creado correctamente")
+            messages.success(
+                request,
+                "✅ Producto creado correctamente"
+            )
+
             return redirect('lista_productos_admin')
+
         else:
-            messages.error(request, "❌ Error al crear producto")
+
+            messages.error(
+                request,
+                "❌ Error al crear producto"
+            )
+
     else:
+
         form = ProductoForm()
 
     return render(request, 'productos/editar_producto.html', {
@@ -142,17 +210,40 @@ def crear_producto(request):
 
 
 def editar_producto(request, pk):
-    producto = get_object_or_404(Producto, codigo_producto=pk)
+
+    producto = get_object_or_404(
+        Producto,
+        codigo_producto=pk
+    )
 
     if request.method == 'POST':
-        form = ProductoForm(request.POST, request.FILES, instance=producto)
+
+        form = ProductoForm(
+            request.POST,
+            request.FILES,
+            instance=producto
+        )
+
         if form.is_valid():
+
             form.save()
-            messages.success(request, "✅ Producto actualizado correctamente")
+
+            messages.success(
+                request,
+                "✅ Producto actualizado correctamente"
+            )
+
             return redirect('lista_productos_admin')
+
         else:
-            messages.error(request, "❌ Error al actualizar")
+
+            messages.error(
+                request,
+                "❌ Error al actualizar"
+            )
+
     else:
+
         form = ProductoForm(instance=producto)
 
     return render(request, 'productos/editar_producto.html', {
@@ -161,9 +252,19 @@ def editar_producto(request, pk):
 
 
 def eliminar_producto(request, pk):
-    producto = get_object_or_404(Producto, codigo_producto=pk)
+
+    producto = get_object_or_404(
+        Producto,
+        codigo_producto=pk
+    )
+
     producto.delete()
-    messages.success(request, "✅ Producto eliminado correctamente")
+
+    messages.success(
+        request,
+        "✅ Producto eliminado correctamente"
+    )
+
     return redirect('lista_productos_admin')
 
 
@@ -172,7 +273,9 @@ def eliminar_producto(request, pk):
 # =========================
 
 def lista_stock(request):
+
     stocks = Stock.objects.select_related('producto')
+
     return render(request, 'productos/stock_admin.html', {
         'stocks': stocks,
         'titulo': "Stock de Productos"
@@ -180,17 +283,39 @@ def lista_stock(request):
 
 
 def editar_stock(request, pk):
-    stock = get_object_or_404(Stock, pk=pk)
+
+    stock = get_object_or_404(
+        Stock,
+        pk=pk
+    )
 
     if request.method == 'POST':
-        form = StockForm(request.POST, instance=stock)
+
+        form = StockForm(
+            request.POST,
+            instance=stock
+        )
+
         if form.is_valid():
+
             form.save()
-            messages.success(request, "✅ Stock actualizado correctamente")
+
+            messages.success(
+                request,
+                "✅ Stock actualizado correctamente"
+            )
+
             return redirect('lista_stock')
+
         else:
-            messages.error(request, "❌ Error al actualizar stock")
+
+            messages.error(
+                request,
+                "❌ Error al actualizar stock"
+            )
+
     else:
+
         form = StockForm(instance=stock)
 
     return render(request, 'productos/editar_stock.html', {
@@ -201,45 +326,64 @@ def editar_stock(request, pk):
 
 
 # =========================
-# 🟡 COMPRAS (ADMIN)
+# 🟡 COMPRAS ADMIN
 # =========================
 
 def registrar_compra(request):
+
     if request.method == 'POST':
+
         form_compra = CompraForm(request.POST)
         form_detalle = DetalleCompraForm(request.POST)
 
         if form_compra.is_valid() and form_detalle.is_valid():
+
             nueva_compra = form_compra.save()
 
             detalle = form_detalle.save(commit=False)
+
             detalle.compra = nueva_compra
-            detalle.subtotal = detalle.cantidad * detalle.producto.precio_venta
+
+            detalle.subtotal = (
+                detalle.cantidad *
+                detalle.producto.precio_venta
+            )
+
             detalle.save()
 
             nueva_compra.total = detalle.subtotal
             nueva_compra.save()
 
-            messages.success(request, "✅ Compra registrada exitosamente")
+            messages.success(
+                request,
+                "✅ Compra registrada exitosamente"
+            )
+
             return redirect('historial_compras')
+
         else:
-            # Si hay errores en el POST, volvemos a renderizar la página con los errores
-            messages.error(request, "❌ Por favor corrige los errores en el formulario.")
+
+            messages.error(
+                request,
+                "❌ Corrige los errores del formulario"
+            )
+
     else:
-        # --- ESTO ES LO QUE TE FALTABA ---
-        # Creamos los formularios vacíos para que el HTML los pueda dibujar
+
         form_compra = CompraForm()
         form_detalle = DetalleCompraForm()
 
-    # El render DEBE ir fuera del if/else o en el bloque else para manejar el GET
     return render(request, 'productos/registrar_compra.html', {
         'form_compra': form_compra,
         'form_detalle': form_detalle,
         'titulo': "Registrar Nueva Compra"
     })
 
+
 def historial_compras(request):
+
     compras = Compra.objects.all().order_by('-fecha_compra')
+
     return render(request, 'productos/historial_compras.html', {
         'compras': compras,
         'titulo': "Historial de Compras"
@@ -247,7 +391,12 @@ def historial_compras(request):
 
 
 def detalle_compra(request, pk):
-    compra = get_object_or_404(Compra, codigo_compra=pk)
+
+    compra = get_object_or_404(
+        Compra,
+        codigo_compra=pk
+    )
+
     detalles = compra.detalles.all()
 
     total = sum(d.subtotal for d in detalles)
@@ -261,19 +410,32 @@ def detalle_compra(request, pk):
 
 
 def eliminar_compra(request, pk):
-    compra = get_object_or_404(Compra, codigo_compra=pk)
+
+    compra = get_object_or_404(
+        Compra,
+        codigo_compra=pk
+    )
 
     if request.method == 'POST':
+
         compra.delete()
-        messages.success(request, "✅ Compra eliminada")
+
+        messages.success(
+            request,
+            "✅ Compra eliminada"
+        )
 
     return redirect('historial_compras')
+
+
 # =========================
-# 🛒 CARRITO
+# 🛒 AGREGAR AL CARRITO
 # =========================
 
 def agregar_carrito(request):
+
     if request.method == 'POST':
+
         id_producto = request.POST.get('id')
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
@@ -281,8 +443,11 @@ def agregar_carrito(request):
         carrito = request.session.get('carrito', {})
 
         if id_producto in carrito:
+
             carrito[id_producto]['cantidad'] += 1
+
         else:
+
             carrito[id_producto] = {
                 'nombre': nombre,
                 'precio': float(precio),

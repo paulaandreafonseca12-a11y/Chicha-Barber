@@ -9,8 +9,9 @@ class Producto(models.Model):
     codigo = models.CharField(max_length=20, unique=True, blank=True)
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
+    precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
+    estado = models.BooleanField(default=True)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -21,6 +22,12 @@ class Producto(models.Model):
         if not self.codigo:
             self.codigo = f"PROD-{self.codigo_producto:05d}"
             super().save(update_fields=['codigo'])
+
+    @property
+    def stock_actual(self):
+        if hasattr(self, 'stock') and self.stock is not None:
+            return self.stock.cantidad
+        return 0
 
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"
@@ -39,6 +46,27 @@ class Stock(models.Model):
 
     def __str__(self):
         return f"{self.producto.nombre if self.producto else 'Sin producto'} - Stock: {self.cantidad}"
+
+
+class MovimientoInventario(models.Model):
+    TIPO_CHOICES = [
+        ('entrada', 'Entrada'),
+        ('salida', 'Salida'),
+    ]
+
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name='movimientos',
+        verbose_name='Producto'
+    )
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, verbose_name='Tipo de movimiento')
+    cantidad = models.PositiveIntegerField(verbose_name='Cantidad')
+    fecha = models.DateTimeField(auto_now_add=True, verbose_name='Fecha')
+    motivo = models.CharField(max_length=200, verbose_name='Motivo')
+
+    def __str__(self):
+        return f"{self.producto.codigo} - {self.tipo} {self.cantidad}"
 
 
 # 🔥 SIGNAL → crear stock automático

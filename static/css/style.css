@@ -9,7 +9,7 @@
 /* ── FONDO GENERAL ── */
 .back {
   background-image:
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.7)),
     url('../img/Fondo.png');
   background-size: cover;
   background-position: center;
@@ -269,7 +269,7 @@ header a { transition: .3s; }
     padding: 0;
 }
 
-body {
+/* body {
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
     background: #0a0a0a;
@@ -278,7 +278,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 2rem 1rem;
-}
+} */
 
 /* =========================
    FONDO DECORATIVO

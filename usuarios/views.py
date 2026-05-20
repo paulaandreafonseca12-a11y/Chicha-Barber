@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from .forms import RegistroForm
 from .models import Usuario
@@ -9,6 +9,9 @@ def inicio(request):
 
 
 def registro_view(request):
+    # Capturamos la URL a la que el usuario quería ir originalmente
+    next_url = request.GET.get('next') or request.POST.get('next') or ''
+
     if request.method == 'POST':
         form = RegistroForm(request.POST)
 
@@ -29,12 +32,19 @@ def registro_view(request):
                 "✅ Usuario registrado como cliente con éxito."
             )
 
-            return redirect('login')
+            # Si existe una URL de destino, la pasamos al login
+            if next_url:
+                return redirect(f"{reverse('login')}?next={next_url}")
+            
+            return redirect('login') 
 
     else:
         form = RegistroForm()
 
-    return render(request, 'usuarios/registro.html', {'form': form})
+    return render(request, 'usuarios/registro.html', {
+        'form': form,
+        'next': next_url # Pasamos 'next' al template
+    })
 
 
 def lista_usuarios(request):
