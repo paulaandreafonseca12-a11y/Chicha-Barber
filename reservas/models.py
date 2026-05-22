@@ -6,7 +6,7 @@ from servicios.models import Servicios
 from usuarios.models import Usuario
 
 
-# =========================
+
 # TURNOS
 # =========================
 class Turno(models.Model):
@@ -149,50 +149,6 @@ class Reserva(models.Model):
         cliente_nombre = self.nombre_cliente or (self.cliente.get_full_name() if self.cliente else 'Sin cliente')
         fecha = self.fecha_reserva or (self.turno.fecha if self.turno else 'Sin fecha')
         return f"{cliente_nombre} - {self.servicio.nombre} ({fecha})"
+    
 
 
-# =========================
-# CALIFICACIONES
-# =========================
-class Calificacion(models.Model):
-
-    reserva = models.ForeignKey(
-        Reserva,
-        on_delete=models.CASCADE,
-        related_name='calificaciones',
-        null=True,
-        blank=True,
-        verbose_name='Reserva'
-    )
-    barbero_a_calificar = models.ForeignKey(
-        Usuario,
-        on_delete=models.CASCADE,
-        verbose_name="Barbero"
-    )
-
-    nombre_cliente = models.CharField(
-        max_length=100,
-        default="Anónimo",
-        verbose_name="Cliente"
-    )
-
-    # Escala de 1 a 5
-    calificacion = models.IntegerField(
-        verbose_name="Calificación"
-    )
-
-    resenia = models.TextField(
-        verbose_name="Reseña"
-    )
-
-    fecha_creacion = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    class Meta:
-        verbose_name = "Calificación"
-        verbose_name_plural = "Calificaciones"
-        ordering = ['-fecha_creacion']
-
-    def __str__(self):
-        return f"Reseña para {self.barbero_a_calificar.first_name} {self.barbero_a_calificar.last_name} - {self.calificacion}★"

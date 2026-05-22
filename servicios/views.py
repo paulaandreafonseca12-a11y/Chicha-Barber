@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.urls import reverse
 from django.contrib import messages # type: ignore
 
-from reservas.models import Calificacion
+from servicios.models import Calificacion
 from usuarios.forms import RegistroForm
 # Eliminados imports redundantes y corregido el import de modelos
 from .models import Servicios, Promocion 
@@ -181,3 +181,20 @@ def listado_calificacion(request):
         'calificacion': calificacion
     }
     return render(request, 'servicios/listado_calificacion.html', context)
+
+def calificacion_view(request):
+    calificaciones = Calificacion.objects.all()
+    context = {
+        'titulo': 'Califica nuestros servicios',
+        'calificaciones': calificaciones
+    }
+    return render(request, 'servicios/calificacion.html', context)
+
+
+def listado_calificacion(request):
+    calificaciones = Calificacion.objects.all()
+    context = {
+        'titulo': 'Listado de Calificaciones',
+        'calificaciones': calificaciones
+    }
+    return render(request, 'servicios/listado-calificacion.html', context)

@@ -23,11 +23,9 @@ urlpatterns = [
 
     # --- CALIFICACIONES (CLIENTES) ---
     # Esta es la página con las estrellas para el cliente
-    path('calificacion/', views.calificacion_view, name='calificacion'),
+    
 
-    # --- CALIFICACIONES (ADMIN) ---
-    # Esta es la ruta que corregirá tu primera imagen (la tabla de administración)
-    path('calificacion/listado/', views.listado_calificaciones_admin, name='listado_calificaciones_admin'),
+    
     
     #calendario
     
@@ -36,6 +34,5 @@ urlpatterns = [
     views.obtener_turnos_disponibles_json,
     name='api_turnos_disponibles'
    ),
-    # Edición (si la necesitas)
-    path('calificacion/editar/<int:pk>/', views.editar_calificacion, name='editar_calificacion'),
+
 ]
