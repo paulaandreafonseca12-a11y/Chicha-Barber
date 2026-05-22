@@ -9,7 +9,7 @@ urlpatterns = [
     # Crear servicio → /servicios/crear/
     path('crear/', views.crear_servicios, name='crear_servicios'),
 
-    # Calificación → /servicios/calificacion/
+
 
 
     # Promociones → /servicios/promocion/
@@ -25,6 +25,8 @@ urlpatterns = [
     path('promocion/editar/<int:pk>/', views.editar_promocion, name='editar-promocion'),
     path('promocion/eliminar/<int:pk>/', views.eliminar_promocion, name='eliminar-promocion'),
     path('registro/<int:servicio_pk>/', views.registro, name='registro'),
+    path('calificacion/', views.calificacion_view, name='calificacion'),
+    path('calificacion/listado /', views.listado_calificacion, name='listado-calificacion'),
     
 
 
