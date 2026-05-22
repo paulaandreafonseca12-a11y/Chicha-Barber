@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
 import reservas.models
+from reservas.models import Reserva, Turno
 from reservas.forms import ReservaEditarForm
 from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario
@@ -34,7 +35,7 @@ def obtener_turnos_disponibles_json(request):
     fin = hoy + timedelta(days=6)
     barbero_id = request.GET.get('barbero_id', 'any')
 
-    turnos = reservas.models.Turno.objects.filter(
+    turnos = Turno.objects.filter(
         fecha__range=(hoy, fin),
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
@@ -82,7 +83,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     fin = hoy + timedelta(days=6)
     
     # Obtenemos los turnos disponibles en el rango de 7 días
-    turnos_qs = reservas.models.Turno.objects.filter(
+    turnos_qs = Turno.objects.filter(
         fecha__range=(hoy, fin),
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
@@ -126,13 +127,13 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             return render(request, 'reservas/reservas.html', context_error)
 
         try:
-            turno = reservas.models.Turno.objects.get(pk=turno_id, estado='disponible')
+            turno = Turno.objects.get(pk=turno_id, estado='disponible')
             precio = servicio.precio
             if promo:
                 descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
                 precio = round(precio * (Decimal('1') - descuento), 2)
 
-            reservas.models.Reserva.objects.create(
+            Reserva.objects.create(
                 turno=turno,
                 cliente=request.user if request.user.is_authenticated else None,
                 nombre_cliente=nombre,
@@ -152,7 +153,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             )
             messages.success(request, '¡Reserva creada con éxito!')
             return redirect('inicio')
-        except reservas.models.Turno.DoesNotExist:
+        except Turno.DoesNotExist:
             messages.error(request, 'El turno seleccionado ya no está disponible. Por favor elige otro.')
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
@@ -167,7 +168,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
 
 def cancelar_cita(request, pk):
-    cita = get_object_or_404(reservas.models.Reserva, pk=pk)
+    cita = get_object_or_404(Reserva, pk=pk)
     cita.estado = 'cancelada'
     cita.save()
     messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
@@ -175,7 +176,7 @@ def cancelar_cita(request, pk):
 
 
 def editar_reserva(request, pk):
-    reserva = get_object_or_404(reservas.models.Reserva, pk=pk)
+    reserva = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=reserva)
     if request.method == 'POST' and form.is_valid():
         form.save()
@@ -187,13 +188,13 @@ def editar_reserva(request, pk):
 def ver_agenda(request):
     # Obtenemos las reservas y los turnos disponibles para tener una visión completa del negocio
     # Usamos select_related para traer el profesional (barbero) y el servicio en una sola consulta
-    reservas = reservas.models.Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
-    turnos_disponibles = reservas.models.Turno.objects.select_related('profesional').filter(
+    lista_reservas = Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
+    turnos_disponibles = Turno.objects.select_related('profesional').filter(
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
     servicios = Servicios.objects.all()
     return render(request, 'reservas/ver_agenda.html', {
-        'reservas': reservas,
+        'reservas': lista_reservas,
         'turnos_disponibles': turnos_disponibles,
         'servicios': servicios,
         'titulo': 'Agenda de Citas',
@@ -201,7 +202,7 @@ def ver_agenda(request):
 
 
 def cambiar_estado_reserva(request, pk, nuevo_estado):
-    reserva = get_object_or_404(reservas.models.Reserva, pk=pk)
+    reserva = get_object_or_404(Reserva, pk=pk)
     if nuevo_estado in ['reservada', 'confirmada', 'cancelada']:
         reserva.estado = nuevo_estado
         reserva.save()
@@ -212,7 +213,7 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
 
 
 def reprogramar_cita(request, pk):
-    cita = get_object_or_404(reservas.models.Reserva, pk=pk)
+    cita = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=cita)
     if request.method == 'POST' and form.is_valid():
         form.save()
@@ -241,7 +242,7 @@ def crear_reserva_admin(request):
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
         try:
             servicio = Servicios.objects.get(id=servicio_id)
-            reservas.models.Reserva.objects.create(
+            Reserva.objects.create(
                 nombre_cliente=nombre,
                 correo_cliente=correo,
                 telefono_cliente=telefono,
@@ -267,9 +268,9 @@ def gestionar_disponibilidad_dias(request):
     for i in range(15):
         fecha = hoy + timedelta(days=i)
         # Contamos cuántos turnos disponibles hay para ese día
-        turnos_count = reservas.models.Turno.objects.filter(fecha=fecha, estado='disponible').count()
+        turnos_count = Turno.objects.filter(fecha=fecha, estado='disponible').count()
         # Contamos si hay reservas ya hechas (para no desactivar días con compromisos)
-        reservas_count = reservas.models.Turno.objects.filter(fecha=fecha, estado='reservado').count()
+        reservas_count = Turno.objects.filter(fecha=fecha, estado='reservado').count()
         
         dias.append({
             'fecha': fecha,
@@ -333,8 +334,8 @@ def activar_dia_agenda(request, fecha_str):
                     continue
 
                 # Evitar duplicados exactos si ya existen algunos turnos
-                if not reservas.models.Turno.objects.filter(profesional=barbero, fecha=fecha, hora_inicio=current.time()).exists():
-                    reservas.models.Turno.objects.create(
+                if not Turno.objects.filter(profesional=barbero, fecha=fecha, hora_inicio=current.time()).exists():
+                    Turno.objects.create(
                         profesional=barbero,
                         fecha=fecha,
                         hora_inicio=current.time(),
@@ -352,6 +353,6 @@ def activar_dia_agenda(request, fecha_str):
 def desactivar_dia_agenda(request, fecha_str):
     """Elimina solo los turnos que están 'disponibles' para una fecha, ocultándola del cliente."""
     fecha = date.fromisoformat(fecha_str)
-    eliminados, _ = reservas.models.Turno.objects.filter(fecha=fecha, estado='disponible').delete()
+    eliminados, _ = Turno.objects.filter(fecha=fecha, estado='disponible').delete()
     messages.warning(request, f"Día {fecha_str} desactivado. Se eliminaron {eliminados} turnos disponibles.")
     return redirect('gestionar_dias')
