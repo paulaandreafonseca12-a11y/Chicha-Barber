@@ -30,7 +30,7 @@ main {
 .color-negro-bg { background: #030301 !important; }
 
 /* ── HERO ── */
-.hero-section { min-height: 90vh; }
+/*.hero-section { min-height: 90vh; } /
 .about-section p { line-height: 1.8; color: #e6e6e6; }
 
 /* ── CAROUSEL ── */

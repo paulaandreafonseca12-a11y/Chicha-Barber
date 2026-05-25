@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<section class="hero-section d-flex align-items-start pt-3">
+<section class="d-flex align-items-start pt-3">
         <div class="container">
             <!-- Branding Central Superior -->
             <div class="row justify-content-center mb-1">
@@ -157,4 +157,20 @@
         </div>
     </div>
 </section>
+
+<script>
+    // Verificación de expiración periódica
+    function verificarExpiracionCarrito() {
+        let expiracion = localStorage.getItem("carrito_expiracion");
+        if (expiracion && Date.now() > expiracion) {
+            localStorage.removeItem("carrito");
+            localStorage.removeItem("carrito_expiracion");
+            console.log("Carrito expirado y limpiado automáticamente.");
+        }
+    }
+
+    // Revisar cada 5 segundos
+    setInterval(verificarExpiracionCarrito, 5000);
+    verificarExpiracionCarrito();
+</script>
 {% endblock %}
