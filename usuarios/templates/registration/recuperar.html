@@ -12,69 +12,54 @@
 
     <!-- HEADER -->
     <header class="header-brand">
-
         <div class="logo-wrap">
             <img src="{% static 'img/logo.png' %}" alt="Logo">
         </div>
-
         <h1 class="brand-name">CHICHA BARBER</h1>
         <span class="brand-sub">Studio · Nobsa</span>
-
     </header>
 
     <!-- FORMULARIO -->
     <main class="form-box">
 
         <h2 class="form-heading">Recuperar</h2>
+        <p class="form-sub">Ingresa tu correo para recibir las instrucciones.</p>
 
-        <p class="form-sub">
-            Ingresa tu correo para recibir las instrucciones.
-        </p>
+        {% if form.errors %}
+            <div class="auth-alert">
+                {{ form.email.errors.0 }}
+            </div>
+        {% endif %}
 
         <form method="post">
-
-            {% csrf_token %}
-
-            <!-- EMAIL -->
-            <label class="cb-label">
-                Correo Electrónico
-            </label>
-
-            <div class="input-wrap">
-
-                <span class="input-icon">
-                    ✉️
-                </span>
-
-                <input
-                    type="email"
-                    name="email"
-                    class="cb-input"
-                    placeholder="correo@ejemplo.com"
-                    autocomplete="email"
-                    required
-                >
-
-            </div>
-
-            <!-- BOTÓN -->
-            <button type="submit" class="btn-auth">
-                ENVIAR INSTRUCCIONES
-            </button>
-
-        </form>
-
-        <!-- VOLVER -->
+    {% csrf_token %}
+    
+    <label class="cb-label">Correo Electrónico</label>
+    <div class="input-wrap">
+        <span class="input-icon">✉️</span>
+        {{ form.email }}   {# ← DEBE ser el form de Django, no un input manual #}
+    </div>
+    
+    <button type="submit" class="btn-auth">ENVIAR INSTRUCCIONES</button>
+</form>
+        
         <div class="aux-text">
-
-            <a href="{% url 'login' %}" class="aux-link">
-                ← Volver al inicio de sesión
-            </a>
-
+            <a href="{% url 'login' %}" class="aux-link">← Volver al inicio de sesión</a>
         </div>
 
     </main>
-
 </div>
 
 {% endblock content %}
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const emailInput = document.querySelector('input[name="email"]');
+    if (emailInput) {
+      emailInput.classList.add('cb-input');
+      emailInput.setAttribute('placeholder', 'correo@ejemplo.com');
+    }
+  });
+</script>
+{% endblock %}

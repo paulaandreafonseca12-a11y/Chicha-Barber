@@ -21,6 +21,11 @@ def servicios(request):
 
 def registro(request, servicio_pk):
     servicio = get_object_or_404(Servicios, pk=servicio_pk)
+
+    # Si el usuario ya está autenticado, lo enviamos directo a la reserva
+    if request.user.is_authenticated:
+        return redirect('crear_reserva', servicio_id=servicio.pk)
+
     # Capturamos la URL de destino original (si existe)
     next_url = request.GET.get('next') or request.POST.get('next') or ''
 

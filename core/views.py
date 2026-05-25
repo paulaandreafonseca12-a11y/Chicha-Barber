@@ -24,10 +24,14 @@ class CustomLoginView(LoginView):
             return reverse_lazy('inicio_admin')
         return reverse_lazy('inicio')
 
+from configuraciones.models import Carrusel
+
 def inicio(request):
+    carruseles = Carrusel.objects.filter(estado=True).order_by('-fecha_modificacion')[:4]
     nombre = "Santiago"
     context = {
-        'nombre': nombre
+        'nombre': nombre,
+        'carruseles': carruseles,
     }
     return render(request, 'index-clientes.html', context)
 

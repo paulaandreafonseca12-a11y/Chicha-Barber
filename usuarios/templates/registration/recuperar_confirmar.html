@@ -1,16 +1,7 @@
+{% extends "base-login.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Contraseña</title>
 
-    <!-- SOLO STATIC (como te exigen) -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.2">
-</head>
-
-<body>
+{% block content %}
 
 <div class="background-decor">
     <div class="ring ring-1"></div>
@@ -19,46 +10,89 @@
 
 <div class="main-wrapper">
 
+    <!-- HEADER -->
     <header class="header-brand">
         <div class="logo-wrap">
-            <img src="{% static 'img/logo.png' %}" alt="logo">
+            <img src="{% static 'img/logo.png' %}" alt="Logo">
         </div>
         <h1 class="brand-name">CHICHA BARBER</h1>
         <span class="brand-sub">Studio · Nobsa</span>
     </header>
 
+    <!-- FORMULARIO -->
     <main class="form-box">
 
         <h2 class="form-heading">Nueva Contraseña</h2>
         <p class="form-sub">Crea una clave segura para tu cuenta</p>
 
+        {% if form.errors %}
+            <div class="auth-alert">Por favor verifica los datos ingresados.</div>
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
 
-            {% if form.errors %}
-                <div class="auth-alert">
-                    Por favor verifica los datos ingresados.
-                </div>
-            {% endif %}
-
+            <!-- NUEVA CONTRASEÑA -->
             <label class="cb-label">Nueva contraseña</label>
             <div class="input-wrap">
+                <span class="input-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </span>
                 {{ form.new_password1 }}
+                <button type="button" class="input-eye" onclick="togglePwd('id_new_password1', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
             </div>
 
+            <!-- CONFIRMAR CONTRASEÑA -->
             <label class="cb-label">Confirmar contraseña</label>
             <div class="input-wrap">
+                <span class="input-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </span>
                 {{ form.new_password2 }}
+                <button type="button" class="input-eye" onclick="togglePwd('id_new_password2', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
             </div>
 
-            <button type="submit" class="btn-auth">
-                GUARDAR CONTRASEÑA
-            </button>
+            <button type="submit" class="btn-auth">GUARDAR CONTRASEÑA</button>
         </form>
 
-    </main>
+        <div class="aux-text">
+            <a href="{% url 'login' %}" class="aux-link">← Volver al inicio de sesión</a>
+        </div>
 
+    </main>
 </div>
 
-</body>
-</html>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    function togglePwd(id, btn) {
+        const input = document.getElementById(id);
+        const isText = input.type === 'text';
+        input.type = isText ? 'password' : 'text';
+        btn.style.color = isText ? 'rgba(255,255,255,0.3)' : '#f5a623';
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('input[type="password"]').forEach(el => {
+            el.classList.add('cb-input');
+        });
+    });
+</script>
+{% endblock %}

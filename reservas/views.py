@@ -8,10 +8,12 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
 import reservas.models
+from reservas.models import Reserva, Turno
 from reservas.forms import ReservaEditarForm
 from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario
 from core.utils import enviar_correo_reserva
+from core.utils import enviar_correo_cancelacion_admin
 
 
 
@@ -34,7 +36,7 @@ def obtener_turnos_disponibles_json(request):
     fin = hoy + timedelta(days=6)
     barbero_id = request.GET.get('barbero_id', 'any')
 
-    turnos = reservas.models.Turno.objects.filter(
+    turnos = Turno.objects.filter(
         fecha__range=(hoy, fin),
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
@@ -62,8 +64,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     promo = None
 
     if not request.user.is_authenticated:
-        # Redirigimos al registro usando el nombre de la URL y capturando la ruta actual completa
-        login_url = reverse('registro')
+        # Redirigimos al login para que usuarios con cuenta puedan iniciar sesión
+        login_url = reverse('login')
         return redirect(f'{login_url}?next={request.get_full_path()}')
 
     if promocion_id is not None:
@@ -82,7 +84,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     fin = hoy + timedelta(days=6)
     
     # Obtenemos los turnos disponibles en el rango de 7 días
-    turnos_qs = reservas.models.Turno.objects.filter(
+    turnos_qs = Turno.objects.filter(
         fecha__range=(hoy, fin),
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
@@ -126,13 +128,13 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             return render(request, 'reservas/reservas.html', context_error)
 
         try:
-            turno = reservas.models.Turno.objects.get(pk=turno_id, estado='disponible')
+            turno = Turno.objects.get(pk=turno_id, estado='disponible')
             precio = servicio.precio
             if promo:
                 descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
                 precio = round(precio * (Decimal('1') - descuento), 2)
 
-            reservas.models.Reserva.objects.create(
+            Reserva.objects.create(
                 turno=turno,
                 cliente=request.user if request.user.is_authenticated else None,
                 nombre_cliente=nombre,
@@ -152,7 +154,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             )
             messages.success(request, '¡Reserva creada con éxito!')
             return redirect('inicio')
-        except reservas.models.Turno.DoesNotExist:
+        except Turno.DoesNotExist:
             messages.error(request, 'El turno seleccionado ya no está disponible. Por favor elige otro.')
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
@@ -167,7 +169,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
 
 def cancelar_cita(request, pk):
-    cita = get_object_or_404(reservas.models.Reserva, pk=pk)
+    cita = get_object_or_404(Reserva, pk=pk)
     cita.estado = 'cancelada'
     cita.save()
     messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
@@ -175,7 +177,7 @@ def cancelar_cita(request, pk):
 
 
 def editar_reserva(request, pk):
-    reserva = get_object_or_404(reservas.models.Reserva, pk=pk)
+    reserva = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=reserva)
     if request.method == 'POST' and form.is_valid():
         form.save()
@@ -187,13 +189,13 @@ def editar_reserva(request, pk):
 def ver_agenda(request):
     # Obtenemos las reservas y los turnos disponibles para tener una visión completa del negocio
     # Usamos select_related para traer el profesional (barbero) y el servicio en una sola consulta
-    reservas = reservas.models.Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
-    turnos_disponibles = reservas.models.Turno.objects.select_related('profesional').filter(
+    lista_reservas = Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
+    turnos_disponibles = Turno.objects.select_related('profesional').filter(
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
     servicios = Servicios.objects.all()
     return render(request, 'reservas/ver_agenda.html', {
-        'reservas': reservas,
+        'reservas': lista_reservas,
         'turnos_disponibles': turnos_disponibles,
         'servicios': servicios,
         'titulo': 'Agenda de Citas',
@@ -201,7 +203,7 @@ def ver_agenda(request):
 
 
 def cambiar_estado_reserva(request, pk, nuevo_estado):
-    reserva = get_object_or_404(reservas.models.Reserva, pk=pk)
+    reserva = get_object_or_404(Reserva, pk=pk)
     if nuevo_estado in ['reservada', 'confirmada', 'cancelada']:
         reserva.estado = nuevo_estado
         reserva.save()
@@ -212,7 +214,7 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
 
 
 def reprogramar_cita(request, pk):
-    cita = get_object_or_404(reservas.models.Reserva, pk=pk)
+    cita = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=cita)
     if request.method == 'POST' and form.is_valid():
         form.save()
@@ -241,7 +243,7 @@ def crear_reserva_admin(request):
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
         try:
             servicio = Servicios.objects.get(id=servicio_id)
-            reservas.models.Reserva.objects.create(
+            Reserva.objects.create(
                 nombre_cliente=nombre,
                 correo_cliente=correo,
                 telefono_cliente=telefono,
@@ -267,9 +269,9 @@ def gestionar_disponibilidad_dias(request):
     for i in range(15):
         fecha = hoy + timedelta(days=i)
         # Contamos cuántos turnos disponibles hay para ese día
-        turnos_count = reservas.models.Turno.objects.filter(fecha=fecha, estado='disponible').count()
+        turnos_count = Turno.objects.filter(fecha=fecha, estado='disponible').count()
         # Contamos si hay reservas ya hechas (para no desactivar días con compromisos)
-        reservas_count = reservas.models.Turno.objects.filter(fecha=fecha, estado='reservado').count()
+        reservas_count = Turno.objects.filter(fecha=fecha, estado='reservado').count()
         
         dias.append({
             'fecha': fecha,
@@ -333,8 +335,8 @@ def activar_dia_agenda(request, fecha_str):
                     continue
 
                 # Evitar duplicados exactos si ya existen algunos turnos
-                if not reservas.models.Turno.objects.filter(profesional=barbero, fecha=fecha, hora_inicio=current.time()).exists():
-                    reservas.models.Turno.objects.create(
+                if not Turno.objects.filter(profesional=barbero, fecha=fecha, hora_inicio=current.time()).exists():
+                    Turno.objects.create(
                         profesional=barbero,
                         fecha=fecha,
                         hora_inicio=current.time(),
@@ -350,8 +352,87 @@ def activar_dia_agenda(request, fecha_str):
 
 
 def desactivar_dia_agenda(request, fecha_str):
-    """Elimina solo los turnos que están 'disponibles' para una fecha, ocultándola del cliente."""
+    """
+    Cancela profesionalmente la agenda de un día:
+    1. Notifica y cancela las reservas existentes.
+    2. Elimina los turnos sobrantes para limpiar la vista.
+    """
     fecha = date.fromisoformat(fecha_str)
-    eliminados, _ = reservas.models.Turno.objects.filter(fecha=fecha, estado='disponible').delete()
-    messages.warning(request, f"Día {fecha_str} desactivado. Se eliminaron {eliminados} turnos disponibles.")
+    
+    # 1. Identificar las reservas que se van a ver afectadas
+    reservas_afectadas = Reserva.objects.filter(
+        turno__fecha=fecha, 
+        estado__in=['reservada', 'confirmada']
+    )
+    
+    cantidad_notificada = 0
+    for reserva in reservas_afectadas:
+        # Cambiamos el estado de la reserva
+        reserva.estado = 'cancelada'
+        reserva.save()
+        
+        # Opcional: Enviar correo de notificación
+        try:
+            # Reutilizamos tu función de core.utils si permite mensajes personalizados,
+            # o puedes crear una nueva específica para cancelaciones.
+            enviar_correo_reserva(
+                correo_cliente=reserva.correo_cliente,
+                nombre=reserva.nombre_cliente,
+                servicio=reserva.servicio,
+                fecha=reserva.fecha_reserva,
+                # Podrías pasar un parámetro extra aquí para indicar que es CANCELACIÓN
+            )
+            cantidad_notificada += 1
+        except Exception as e:
+            print(f"Error enviando correo a {reserva.correo_cliente}: {e}")
+
+    # 2. Ahora tratamos los turnos
+    # Los turnos que tenían reserva ahora están ligados a una reserva 'cancelada'
+    # Los turnos 'disponibles' simplemente los borramos para que el día aparezca como CERRADO
+    eliminados, _ = Turno.objects.filter(fecha=fecha, estado='disponible').delete()
+    
+    # 3. Informar al administrador del resultado
+    if cantidad_notificada > 0:
+        messages.success(request, f"Se han cancelado {cantidad_notificada} citas y se notificó a los clientes.")
+    
+    messages.warning(request, f"Día {fecha_str} desactivado. Se limpiaron {eliminados} turnos disponibles.")
+    
+    return redirect('gestionar_dias')
+
+
+def desactivar_dia_agenda(request, fecha_str):
+    fecha = date.fromisoformat(fecha_str)
+    
+    # 1. Buscamos reservas activas
+    reservas_afectadas = Reserva.objects.filter(
+        turno__fecha=fecha, 
+        estado__in=['reservada', 'confirmada']
+    )
+    
+    cantidad_notificada = 0
+    for reserva in reservas_afectadas:
+        reserva.estado = 'cancelada'
+        reserva.save()
+        
+        try:
+            # Enviamos el correo específico de cancelación
+            enviar_correo_cancelacion_admin(
+                correo_cliente=reserva.correo_cliente,
+                nombre=reserva.nombre_cliente,
+                servicio=reserva.servicio.nombre,
+                fecha=reserva.fecha_reserva
+            )
+            cantidad_notificada += 1
+        except Exception as e:
+            print(f"Error al notificar a {reserva.correo_cliente}: {e}")
+
+    # 2. Borramos los turnos 'disponibles' para cerrar el día visualmente
+    Turno.objects.filter(fecha=fecha, estado='disponible').delete()
+    
+    # 3. Mensaje de éxito al administrador
+    if cantidad_notificada > 0:
+        messages.success(request, f"Se cancelaron {cantidad_notificada} citas y se enviaron los correos de notificación.")
+    
+    messages.warning(request, f"Día {fecha_str} desactivado. No se aceptarán más reservas para esta fecha.")
+    
     return redirect('gestionar_dias')

@@ -60,8 +60,8 @@ function gestionarSeleccion(event, urlOriginal) {
     var estaAutenticado = {{ user.is_authenticated|yesno:"true,false" }};
     if (!estaAutenticado) {
         event.preventDefault();
-        alert("🎁 ¡Atención! Las promociones son exclusivas para clientes registrados.");
-        window.location.href = "{% url 'registro' %}";
+        alert("🎁 ¡Atención! Debes iniciar sesión para acceder a nuestras promociones.");
+        window.location.href = "{% url 'login' %}?next=" + encodeURIComponent(window.location.pathname);
         return false;
     }
     return true;
