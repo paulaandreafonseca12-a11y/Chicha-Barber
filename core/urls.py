@@ -27,7 +27,11 @@ urlpatterns = [
     # --- AUTENTICACIÓN Y PASSWORD RESET ---
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='inicio'), name='logout'),
-    path('recuperar-password/', auth_views.PasswordResetView.as_view(template_name='registration/recuperar.html'), name='password_reset'),
+    path('recuperar-password/', auth_views.PasswordResetView.as_view(
+        template_name='registration/recuperar.html',
+        email_template_name='registration/password_reset_email.html',
+        subject_template_name='registration/password_reset_subject.txt'
+    ), name='password_reset'),
     path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='registration/recuperar_enviado.html'), name='password_reset_done'),
     path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/recuperar_confirmar.html'), name='password_reset_confirm'),
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/recuperar_completo.html'), name='password_reset_complete'),
