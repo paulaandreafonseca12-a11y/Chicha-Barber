@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
+from django.urls import reverse
 from django.contrib import messages # type: ignore
 
-from reservas.models import Calificacion
+from servicios.models import Calificacion
+from usuarios.forms import RegistroForm
 # Eliminados imports redundantes y corregido el import de modelos
 from .models import Servicios, Promocion 
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
+
+
+
 
 def servicios(request):
     servicios = Servicios.objects.all()
@@ -13,6 +18,53 @@ def servicios(request):
         'servicios': servicios 
     }
     return render(request, 'servicios/servicios.html', context)
+
+def registro(request, servicio_pk):
+    servicio = get_object_or_404(Servicios, pk=servicio_pk)
+    # Capturamos la URL de destino original (si existe)
+    next_url = request.GET.get('next') or request.POST.get('next') or ''
+
+    if request.method == 'POST':
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+
+            # 🔥 FIJO: todos son cliente
+            user.rol = "cliente"
+
+            # Seguridad extra
+            user.is_staff = False
+            user.is_superuser = False
+
+            user.save()
+
+            messages.success(
+                request,
+                "✅ Usuario registrado como cliente con éxito."
+            )
+            
+            # Si no hay un destino explícito, lo mandamos a la reserva del servicio actual
+            if not next_url:
+                next_url = reverse('crear_reserva', args=[servicio.pk])
+
+            return redirect(f"{reverse('login')}?next={next_url}")
+        
+    else:
+        form = RegistroForm()
+        
+    context = {
+        'titulo': f'Registro para {servicio.nombre}',
+        'servicio': servicio,
+        'form': form,
+        'next': next_url # Pasamos 'next' al contexto para el template
+    }
+    return render(request, 'usuarios/registro.html', context)
+
+
+def login(request):
+    return render(request, 'login/reservas.html')
+
+
 
 def servicios_admin(request):
     servicios = Servicios.objects.all()
@@ -56,12 +108,13 @@ def listado_promocion(request):
     promociones = Promocion.objects.all()
     context = {
         'titulo': 'Listado de Promociones',
-        'promociones': promociones
+        'promocion': promociones
     }
     return render(request, 'servicios/listado-promocion.html', context)
 def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
+        # ERROR CORREGIDO: se debe usar 'servicio' (el objeto), no 'servicios' (la clase/modelo)
         form = ServiciosEditarForm(request.POST, request.FILES, instance=servicio)
         if form.is_valid():
             form.save()
@@ -127,44 +180,21 @@ def listado_calificacion(request):
         'titulo': 'Listado de Calificaciones',
         'calificacion': calificacion
     }
-    return render(request, 'servicios/listado-promocion.html', context)
+    return render(request, 'servicios/listado_calificacion.html', context)
 
-def crear_promocion(request):
-    if request.method == 'POST':
-        form = PromocionForm(request.POST)
-        if form.is_valid():
-            form.save() 
-            messages.success(request, "Promoción creada exitosamente.")
-            return redirect('listado-promocion')
-    else:
-        form = PromocionForm()
-    return render(request, 'servicios/agregar_promocion.html', {'form': form, 'titulo': 'Crear nueva promoción'})
+def calificacion_view(request):
+    calificaciones = Calificacion.objects.all()
+    context = {
+        'titulo': 'Califica nuestros servicios',
+        'calificaciones': calificaciones
+    }
+    return render(request, 'servicios/calificacion.html', context)
 
-def editar_promocion(request, pk):
-    promocion_obj = get_object_or_404(Promocion, pk=pk)
-    if request.method == 'POST':
-        form = PromocionEditarForm(request.POST, instance=promocion_obj)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f"Promoción {promocion_obj.nombre} actualizada.")
-            return redirect('listado-promocion')
-    else:
-        form = PromocionEditarForm(instance=promocion_obj)
-    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion_obj})
-
-def eliminar_promocion(request, pk):
-    # Nota: Cambié 'id' por 'pk' para mantener consistencia con el urls.py
-    promocion_obj = get_object_or_404(Promocion, pk=pk)
-    if request.method == 'POST':
-        promocion_obj.delete()
-        messages.success(request, 'Promoción eliminada.')
-        return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
 
 def listado_calificacion(request):
-    calificacion = Calificacion.objects.all()
+    calificaciones = Calificacion.objects.all()
     context = {
         'titulo': 'Listado de Calificaciones',
-        'calificacion': calificacion
+        'calificaciones': calificaciones
     }
-    return render(request, 'servicios/listado_calificacion.html', context)
+    return render(request, 'servicios/listado-calificacion.html', context)

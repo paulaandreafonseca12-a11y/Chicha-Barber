@@ -3,7 +3,7 @@ import django
 import random
 import requests
 from io import BytesIO
-from django.core.files.base import ContentFile
+from django.core.files.base import ContentFile 
 from datetime import datetime, date, time, timedelta
 
 # 1. Configurar el entorno de Django para poder usar sus modelos desde este script externo
@@ -12,8 +12,8 @@ django.setup()
 
 # 2. Importar los modelos
 from usuarios.models import Usuario
-from servicios.models import Servicios, Promocion
-from reservas.models import Reserva, Calificacion, Turno
+from servicios.models import Servicios, Promocion,calificacion
+from reservas.models import Reserva, Turno
 from productos.models import Producto, Stock, Compra, DetalleCompra
 
 def limpiar_datos():
@@ -208,21 +208,7 @@ def poblar_reservas():
             estado=random.choice(estados_reserva)
         )
 
-def poblar_calificaciones():
-    print("Poblando Calificaciones...")
-    # Filtramos usuarios que sean barberos
-    barberos = Usuario.objects.filter(rol='barbero')
-    
-    if barberos.exists():
-        for i in range(1, 11):
-            Calificacion.objects.create(
-                barbero_a_calificar=random.choice(barberos),
-                nombre_cliente=f"Cliente Anónimo {i}",
-                calificacion=random.randint(1, 5),
-                resenia=f"Excelente atención y profesionalismo. Calificación de prueba {i}."
-            )
-    else:
-        print("  ⚠️ No se crearon calificaciones porque no hay usuarios con rol 'barbero'.")
+
 
 def poblar_productos_y_stock():
     print("Poblando Productos y Stock...")

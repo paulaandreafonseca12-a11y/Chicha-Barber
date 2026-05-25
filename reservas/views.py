@@ -5,13 +5,16 @@ from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
 
-from reservas.models import Calificacion, Reserva, Turno
-from reservas.forms import CalificacionEditarForm, ReservaEditarForm
+import reservas.models
+from reservas.models import Reserva, Turno
+from reservas.forms import ReservaEditarForm
 from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario
 from core.utils import enviar_correo_reserva
 from core.utils import enviar_correo_cancelacion_admin
+
 
 
 def _parse_fecha_reserva(fecha_str):
@@ -59,6 +62,11 @@ def obtener_turnos_disponibles_json(request):
 def crear_reserva(request, servicio_id=None, promocion_id=None):
     servicio = None
     promo = None
+
+    if not request.user.is_authenticated:
+        # Redirigimos al registro usando el nombre de la URL y capturando la ruta actual completa
+        login_url = reverse('registro')
+        return redirect(f'{login_url}?next={request.get_full_path()}')
 
     if promocion_id is not None:
         promo = get_object_or_404(Promocion, pk=promocion_id)
@@ -181,13 +189,13 @@ def editar_reserva(request, pk):
 def ver_agenda(request):
     # Obtenemos las reservas y los turnos disponibles para tener una visión completa del negocio
     # Usamos select_related para traer el profesional (barbero) y el servicio en una sola consulta
-    reservas = Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
+    lista_reservas = Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
     turnos_disponibles = Turno.objects.select_related('profesional').filter(
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
     servicios = Servicios.objects.all()
     return render(request, 'reservas/ver_agenda.html', {
-        'reservas': reservas,
+        'reservas': lista_reservas,
         'turnos_disponibles': turnos_disponibles,
         'servicios': servicios,
         'titulo': 'Agenda de Citas',
@@ -251,50 +259,6 @@ def crear_reserva_admin(request):
 
     return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
 
-
-def calificacion_view(request):
-    if request.method == 'POST':
-        puntuacion = request.POST.get('puntuacion') or request.POST.get('rating')
-        resena = request.POST.get('resena') or request.POST.get('comments') or ''
-        if not puntuacion:
-            messages.error(request, 'Por favor, selecciona una puntuación.')
-            return render(request, 'calificacion/calificacion.html')
-
-        barbero = Usuario.objects.filter(rol='barbero').first()
-        if barbero is None:
-            messages.error(request, 'No hay barbero asignado para la calificación.')
-            return render(request, 'calificacion/calificacion.html')
-
-        try:
-            Calificacion.objects.create(
-                barbero_a_calificar=barbero,
-                nombre_cliente=request.user.get_full_name() if request.user.is_authenticated else 'Anónimo',
-                calificacion=int(puntuacion),
-                resenia=resena,
-            )
-            messages.success(request, '¡Gracias por tu reseña!')
-            return redirect('inicio')
-        except Exception as e:
-            messages.error(request, f'Hubo un error al guardar tu calificación: {e}')
-
-    return render(request, 'calificacion/calificacion.html')
-
-
-def listado_calificaciones_admin(request):
-    calificaciones = Calificacion.objects.all().order_by('-fecha_creacion')
-    return render(request, 'reservas/listado_calificaciones_admin.html', {
-        'calificaciones': calificaciones,
-    })
-
-
-def editar_calificacion(request, pk):
-    calificacion = get_object_or_404(Calificacion, pk=pk)
-    form = CalificacionEditarForm(request.POST or None, instance=calificacion)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.success(request, 'Calificación actualizada correctamente.')
-        return redirect('listado_calificaciones_admin')
-    return render(request, 'reservas/editar_calificacion.html', {'form': form, 'calificacion': calificacion})
 
 
 def gestionar_disponibilidad_dias(request):

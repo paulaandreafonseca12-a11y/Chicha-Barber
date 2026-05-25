@@ -6,7 +6,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white color-azul">
                     <h5 class="mb-0">Agregar Nueva Imagen al Carrusel</h5>
                 </div>
                 <div class="card-body">
@@ -52,7 +52,7 @@
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{% url 'carrusel' %}" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-success">Guardar Imagen</button>
+                            <button type="submit" class="btn color-azul text-dark fw-bold">Guardar Imagen</button>
                         </div>
                     </form>
                 </div>
@@ -60,4 +60,16 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Agregamos clases de Bootstrap a los campos del formulario automáticamente
+    document.querySelectorAll('input, select, textarea').forEach(function(el) {
+        if (el.type !== 'checkbox') {
+            el.classList.add('form-control');
+        }
+    });
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+        el.classList.add('form-check-input');
+    });
+</script>
 {% endblock %}
