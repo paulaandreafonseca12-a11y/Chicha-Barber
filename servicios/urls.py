@@ -26,7 +26,11 @@ urlpatterns = [
     path('promocion/eliminar/<int:pk>/', views.eliminar_promocion, name='eliminar-promocion'),
     path('registro/<int:servicio_pk>/', views.registro, name='registro'),
     path('calificacion/', views.calificacion_view, name='calificacion'),
-    path('calificacion/listado /', views.listado_calificacion, name='listado-calificacion'),
+    path('calificacion/listado/', views.listado_calificacion, name='listado-calificacion'),
+    path('calificacion/responder/<int:pk>/', views.responder_calificacion, name='responder-calificacion'),
+    
+   
+    
     
 
 

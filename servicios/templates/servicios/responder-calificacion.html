@@ -1,0 +1,39 @@
+{% extends "base-admin.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between color-azul">
+                    <h5 class="mb-0">{{ titulo }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4 p-3 bg-light rounded border">
+                        <h6><strong>Detalles de la calificación:</strong></h6>
+                        <p class="mb-1"><strong>Cliente:</strong> {{ calificacion.cliente }}</p>
+                        <p class="mb-1"><strong>Servicio:</strong> {{ calificacion.servicio.nombre }}</p>
+                        <p class="mb-1"><strong>Puntuación:</strong> {{ calificacion.puntuacion }} / 5</p>
+                        <p class="mb-0"><strong>Comentario:</strong> {{ calificacion.comentario }}</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'listado-calificacion' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary color-azul">
+                                <i class="bi bi-send me-1 "></i>Enviar Respuesta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

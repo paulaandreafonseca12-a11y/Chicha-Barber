@@ -1,7 +1,7 @@
 from django import forms # type: ignore
 from django.forms import ModelForm # type: ignore
 from django.contrib.admin.widgets import FilteredSelectMultiple # type: ignore
-from .models import Servicios,Promocion
+from .models import Servicios, Promocion, Calificacion
 
 
 class ServiciosForm(ModelForm):
@@ -23,3 +23,21 @@ class PromocionEditarForm(ModelForm):
     class Meta:
         model = Promocion
         fields = '__all__'
+        
+class calificacionForm(ModelForm):
+    class Meta:
+        model = Calificacion
+        fields = ['servicio', 'cliente', 'puntuacion', 'comentario']
+        widgets = {
+            'servicio': forms.Select(attrs={'class': 'form-control'}),
+            'cliente': forms.TextInput(attrs={'class': 'form-control'}),
+            'puntuacion': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+            'comentario': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+class ResponderCalificacionForm(forms.Form):
+    respuesta = forms.CharField(
+        label='Escribe tu respuesta',
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Escribe aquí tu respuesta al cliente...'}),
+        required=True
+    )
