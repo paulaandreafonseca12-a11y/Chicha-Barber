@@ -8,33 +8,35 @@
     <div class="ring ring-2"></div>
 </div>
 
-<div class="main-wrapper">
+<div class="main-wrapper mx-auto">
 
     <!-- HEADER -->
-    <header class="header-brand">
-        <div class="logo-wrap">
-            <img src="{% static 'img/logo.png' %}" alt="Logo">
+    <header class="text-center mb-4">
+        <div class="logo-wrap rounded-circle overflow-hidden mx-auto mb-2">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-100 h-100 object-fit-cover">
         </div>
-        <h1 class="brand-name">CHICHA BARBER</h1>
-        <span class="brand-sub">Studio · Nobsa</span>
+        <h1 class="brand-name text-white">CHICHA BARBER</h1>
+        <span class="brand-sub small text-uppercase">Studio · Nobsa</span>
     </header>
 
     <!-- FORMULARIO -->
-    <main class="form-box">
+    <main class="form-box p-4 rounded-3">
 
-        <h2 class="form-heading">Nueva Contraseña</h2>
-        <p class="form-sub">Crea una clave segura para tu cuenta</p>
+        <h2 class="form-heading text-white mb-1">Nueva Contraseña</h2>
+        <p class="small text-white opacity-50 mb-3">Crea una clave segura para tu cuenta</p>
 
         {% if form.errors %}
-            <div class="auth-alert">Por favor verifica los datos ingresados.</div>
+        <div class="alert auth-alert mb-3">
+            Por favor verifica los datos ingresados.
+        </div>
         {% endif %}
 
         <form method="post">
             {% csrf_token %}
 
             <!-- NUEVA CONTRASEÑA -->
-            <label class="cb-label">Nueva contraseña</label>
-            <div class="input-wrap">
+            <label class="form-label cb-label">Nueva contraseña</label>
+            <div class="position-relative mb-3">
                 <span class="input-icon">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="11" width="18" height="11" rx="2"/>
@@ -42,7 +44,8 @@
                     </svg>
                 </span>
                 {{ form.new_password1 }}
-                <button type="button" class="input-eye" onclick="togglePwd('id_new_password1', this)">
+                <button type="button" class="input-eye btn p-0 border-0 bg-transparent position-absolute top-50 end-0 translate-middle-y me-2"
+                        onclick="togglePwd('id_new_password1', this)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
                         <circle cx="12" cy="12" r="3"/>
@@ -51,8 +54,8 @@
             </div>
 
             <!-- CONFIRMAR CONTRASEÑA -->
-            <label class="cb-label">Confirmar contraseña</label>
-            <div class="input-wrap">
+            <label class="form-label cb-label">Confirmar contraseña</label>
+            <div class="position-relative mb-3">
                 <span class="input-icon">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="11" width="18" height="11" rx="2"/>
@@ -60,7 +63,8 @@
                     </svg>
                 </span>
                 {{ form.new_password2 }}
-                <button type="button" class="input-eye" onclick="togglePwd('id_new_password2', this)">
+                <button type="button" class="input-eye btn p-0 border-0 bg-transparent position-absolute top-50 end-0 translate-middle-y me-2"
+                        onclick="togglePwd('id_new_password2', this)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
                         <circle cx="12" cy="12" r="3"/>
@@ -68,11 +72,13 @@
                 </button>
             </div>
 
-            <button type="submit" class="btn-auth">GUARDAR CONTRASEÑA</button>
+            <button type="submit" class="btn btn-auth w-100 mt-2">
+                GUARDAR CONTRASEÑA
+            </button>
         </form>
 
-        <div class="aux-text">
-            <a href="{% url 'login' %}" class="aux-link">← Volver al inicio de sesión</a>
+        <div class="mt-4 text-center">
+            <a href="{% url 'login' %}" class="aux-link small">← Volver al inicio de sesión</a>
         </div>
 
     </main>

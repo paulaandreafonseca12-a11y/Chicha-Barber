@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from .forms import RegistroForm
 from .models import Usuario
-
+from .forms import RegistroForm, CrearUsuarioAdminForm
 
 def inicio(request):
     return render(request, 'index.html')
@@ -61,3 +61,21 @@ def lista_usuarios(request):
         'usuarios': usuarios,
         'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios"
     })
+
+
+
+def crear_usuario_admin(request):
+    if request.method == 'POST':
+        form = CrearUsuarioAdminForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.rol = form.cleaned_data['rol']
+            user.is_staff = form.cleaned_data.get('is_staff', False)
+            user.is_superuser = False
+            user.save()
+            messages.success(request, "✅ Usuario creado con éxito.")
+            return redirect('lista_usuarios')
+    else:
+        form = CrearUsuarioAdminForm()
+
+    return render(request, 'usuarios/crear_usuario.html', {'form': form})

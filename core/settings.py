@@ -205,20 +205,21 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 # EMAIL
 # ======================================================
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+import ssl
+import certifi
+import os
 
+os.environ['SSL_CERT_FILE'] = certifi.where()
+os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
+
+EMAIL_BACKEND = 'core.email_backend.SSLEmailBackend'
 EMAIL_HOST = 'smtp-relay.brevo.com'
-
 EMAIL_PORT = 587
-
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = 'aa9420001@smtp-brevo.com'
-
 EMAIL_HOST_PASSWORD = 'CcHkS6yZ21UIJWw7'
-
 DEFAULT_FROM_EMAIL = 'chichabarber39@gmail.com'
-
+EMAIL_TIMEOUT = 30
 
 # ======================================================
 # DEFAULT AUTO FIELD
