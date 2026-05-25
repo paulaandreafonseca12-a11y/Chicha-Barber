@@ -52,3 +52,14 @@ def editar_carrusel(request, pk):
     
     # Se recomienda pasar 'carrusel' al contexto para mostrar datos en el template (como la imagen actual)
     return render(request, 'editar_carrusel.html', {'form': form, 'carrusel': carrusel})
+
+def toggle_carrusel(request, pk):
+    try:
+        carrusel = Carrusel.objects.get(pk=pk)
+        carrusel.estado = not carrusel.estado
+        carrusel.save()
+        estado_str = "activado" if carrusel.estado else "inactivado"
+        messages.success(request, f'Carrusel {estado_str} exitosamente.')
+    except Carrusel.DoesNotExist:
+        messages.error(request, 'La imagen de carrusel no existe.')
+    return redirect('carrusel')

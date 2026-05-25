@@ -33,20 +33,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="{{ form.texto.id_for_label }}" class="form-label">Texto descriptivo (opcional)</label>
+                            <label for="{{ form.texto.id_for_label }}" class="form-label">Texto alternativo (Alt) *</label>
                             {{ form.texto }}
                             {% if form.texto.errors %}
                                 <div class="text-danger small">{{ form.texto.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-3 form-check">
-                            {{ form.estado }}
-                            <label class="form-check-label" for="{{ form.estado.id_for_label }}">
-                                Activo (Mostrar en el carrusel público)
-                            </label>
-                            {% if form.estado.errors %}
-                                <div class="text-danger small">{{ form.estado.errors }}</div>
                             {% endif %}
                         </div>
 
