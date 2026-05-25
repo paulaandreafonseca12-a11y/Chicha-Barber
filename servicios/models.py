@@ -72,3 +72,23 @@ class Promocion(models.Model):
             super().save(*args, **kwargs)
             self.imagen = imagen_temp
         super().save(*args, **kwargs)
+
+class Calificacion(models.Model):
+    servicio = models.ForeignKey(
+        Servicios,
+        on_delete=models.CASCADE,
+        related_name='calificaciones',
+        verbose_name='Servicio'
+    )
+    cliente = models.CharField(max_length=150, verbose_name='Cliente')
+    puntuacion = models.IntegerField(verbose_name='Puntuación')
+    comentario = models.TextField(verbose_name='Comentario')
+    fecha_calificacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de calificación')
+
+    class Meta:
+        verbose_name = 'Calificación'
+        verbose_name_plural = 'Calificaciones'
+        ordering = ['-fecha_calificacion']
+
+    def __str__(self):
+        return f"{self.cliente} - {self.servicio.nombre} ({self.puntuacion} estrellas)"

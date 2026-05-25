@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.urls import reverse
 from django.contrib import messages # type: ignore
 
-from reservas.models import Calificacion
+from servicios.models import Calificacion
 from usuarios.forms import RegistroForm
 # Eliminados imports redundantes y corregido el import de modelos
 from .models import Servicios, Promocion 
@@ -21,6 +21,11 @@ def servicios(request):
 
 def registro(request, servicio_pk):
     servicio = get_object_or_404(Servicios, pk=servicio_pk)
+
+    # Si el usuario ya está autenticado, lo enviamos directo a la reserva
+    if request.user.is_authenticated:
+        return redirect('crear_reserva', servicio_id=servicio.pk)
+
     # Capturamos la URL de destino original (si existe)
     next_url = request.GET.get('next') or request.POST.get('next') or ''
 
@@ -181,3 +186,20 @@ def listado_calificacion(request):
         'calificacion': calificacion
     }
     return render(request, 'servicios/listado_calificacion.html', context)
+
+def calificacion_view(request):
+    calificaciones = Calificacion.objects.all()
+    context = {
+        'titulo': 'Califica nuestros servicios',
+        'calificaciones': calificaciones
+    }
+    return render(request, 'servicios/calificacion.html', context)
+
+
+def listado_calificacion(request):
+    calificaciones = Calificacion.objects.all()
+    context = {
+        'titulo': 'Listado de Calificaciones',
+        'calificaciones': calificaciones
+    }
+    return render(request, 'servicios/listado-calificacion.html', context)

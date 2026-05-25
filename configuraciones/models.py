@@ -17,7 +17,7 @@ class Carrusel(models.Model):
     fecha_modificacion = models.DateTimeField(auto_now=True, verbose_name='Fecha de modificación')
     nombre = models.CharField(max_length=150, verbose_name='Nombre')
     imagen = models.ImageField(upload_to=carrusel_view, null=True, blank=True, verbose_name='Imagen del carrusel')
-    texto = models.TextField(null=True, blank=True, verbose_name='Texto del carrusel')
+    texto = models.TextField(verbose_name='Texto alternativo (Alt)', default='Imagen de carrusel', help_text='Descripción obligatoria para accesibilidad y SEO')
     estado = models.BooleanField(default=True, verbose_name='Estado')
     
     
@@ -37,27 +37,34 @@ class Carrusel(models.Model):
             self.imagen = imagen_temp
             super().save(update_fields=['imagen']) # Save the image with the new pk
         else:
-            super().save(*args, **kwargs),
+            super().save(*args, **kwargs)
+            
+        # Lógica para mantener máximo 4 carruseles activos
+        if self.estado:
+            active_carruseles = Carrusel.objects.filter(estado=True).order_by('fecha_modificacion')
+            count = active_carruseles.count()
+            if count > 4:
+                # Desactivar los más antiguos (excluyendo el actual)
+                to_deactivate_ids = list(active_carruseles.exclude(pk=self.pk).values_list('pk', flat=True)[:count - 4])
+                if to_deactivate_ids:
+                    Carrusel.objects.filter(pk__in=to_deactivate_ids).update(estado=False)
             
         if self.imagen:
             try:
                 img = Image.open(self.imagen.path)
-                # Tamaño por defecto recomendado para carrusel
                 target_size = (1200, 500)
                 
-                # Solo redimensionar si no es exactamente del tamaño
                 if img.size != target_size:
-                    # Usar Image.Resampling.LANCZOS si está disponible, sino Image.ANTIALIAS (versiones más antiguas de PIL)
+                    from PIL import ImageOps
+                    
                     resample_filter = getattr(Image, 'Resampling', Image).LANCZOS if hasattr(Image, 'Resampling') else Image.ANTIALIAS
                     
-                    # Para evitar distorsión severa podemos hacer un resize con crop (cover)
-                    # o simplemente forzar el resize. Ya que es un carrusel, a veces forzar el resize
-                    # es lo que pide el usuario, pero lo ideal es un thumbnail que recorte.
-                    from PIL import ImageOps
-                    import PIL
+                    # ImageOps.fit recorta y centra la imagen al tamaño especificado sin distorsionar
+                    img = ImageOps.fit(img, target_size, method=resample_filter)
                     
-                    # Método simple: forzar dimensiones
-                    img = img.resize(target_size, resample_filter)
+                    if img.mode in ('RGBA', 'P') and self.imagen.path.lower().endswith(('.jpg', '.jpeg')):
+                        img = img.convert('RGB')
+                        
                     img.save(self.imagen.path)
             except Exception as e:
                 print(f"Error al redimensionar la imagen: {e}")

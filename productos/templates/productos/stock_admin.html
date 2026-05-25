@@ -1,54 +1,57 @@
 {% extends 'base-admin.html' %}
 
 {% block content %}
-<div class="container-fluid py-4">
+<div class="container py-4">
 
     <div class="card border-0 shadow">
-        <div class="card-header d-flex align-items-center" style="background-color: #07d2ff;">
+        <div class="card-header py-3" style="background-color: #07d2ff;">
             <h5 class="mb-0 text-white fw-bold">
+                <i class="bi bi-boxes me-2 text-white"></i>Gestión de Inventario
             </h5>
         </div>
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Código</th>
-                        <th>Producto</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Stock actual</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s in stocks %}
-                    <tr class="align-middle">
-                        <td class="fw-bold">{{ s.producto.codigo }}</td>
-                        <td>{{ s.producto.nombre }}</td>
-                        <td class="text-muted">{{ s.producto.descripcion|truncatechars:40 }}</td>
-                        <td>${{ s.producto.precio_venta }}</td>
-                        <td>
-                            <span class="badge {% if s.cantidad <= 5 %}bg-danger{% elif s.cantidad <= 10 %}bg-warning text-dark{% else %}bg-success{% endif %}">
-                                {{ s.cantidad }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="{% url 'editar_stock' s.producto.codigo_producto %}"
-                               class="btn btn-sm btn-outline-info">
-                                <i class="bi bi-pencil me-1"></i>Editar
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
-                            <i class="bi bi-boxes fs-1 d-block mb-3"></i>
-                            No hay stock registrado
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Código</th>
+                            <th>Producto</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Stock actual</th>
+                            <th class="text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in stocks %}
+                        <tr class="align-middle">
+                            <td class="ps-4 fw-bold">{{ s.producto.codigo }}</td>
+                            <td>{{ s.producto.nombre }}</td>
+                            <td class="text-muted">{{ s.producto.descripcion|truncatechars:40 }}</td>
+                            <td>${{ s.producto.precio_venta }}</td>
+                            <td>
+                                <span class="badge {% if s.cantidad <= 5 %}bg-danger{% elif s.cantidad <= 10 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                    {{ s.cantidad }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'editar_stock' s.producto.codigo_producto %}"
+                                   class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-boxes fs-1 d-block mb-3"></i>
+                                No hay stock registrado
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

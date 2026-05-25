@@ -1,7 +1,7 @@
 {% extends 'base-admin.html' %}
 
 {% block content %}
-<div class="container-fluid py-5 min-vh-100 d-flex flex-column justify-content-center">
+<div class="container-fluid py-4 min-vh-100">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             
@@ -55,23 +55,37 @@
                             <div class="mt-4">
                                 <h6 class="fw-bold text-dark mb-3"><i class="bi bi-truck me-2 text-primary"></i>Gestión de Entrega</h6>
                                 
-                                <!-- Selector de método -->
-                                <select id="metodo_final" class="form-select form-select-sm mb-2">
-                                    <option value="Pago en Local">Pago en Local</option>
-                                    <option value="Contraentrega">Contraentrega</option>
-                                </select>
+                                <div id="form-entrega" class="{% if compra.fecha_entrega %}d-none{% endif %}">
+                                    <!-- Selector de método -->
+                                    <label class="text-muted small">Método de entrega final</label>
+                                    <select id="metodo_final" class="form-select form-select-sm mb-2">
+                                        <option value="Pago en Local">Pago en Local</option>
+                                        <option value="Contraentrega">Contraentrega</option>
+                                    </select>
 
-                                <button type="button" onclick="registrarEntrega()" class="btn color-azul text-dark fw-bold btn-sm w-100 mb-3 border-0">
-                                    MARCAR COMO ENTREGADO
-                                </button>
+                                    <label class="text-muted small">Observaciones</label>
+                                    <textarea id="observaciones_entrega" class="form-control form-control-sm mb-2" rows="2" placeholder="Notas sobre la entrega..."></textarea>
 
-                                <!-- Historial de hora (Invisible hasta que se marque) -->
-                                <div id="log-entrega" class="p-2 border rounded bg-light {% if not compra.fecha_entrega %}d-none{% endif %}">
+                                    <button type="button" onclick="registrarEntrega()" class="btn color-azul text-dark fw-bold btn-sm w-100 mb-3 border-0">
+                                        MARCAR COMO ENTREGADO
+                                    </button>
+                                </div>
+
+                                <!-- Historial de entrega -->
+                                <div id="log-entrega" class="p-3 border rounded bg-light {% if not compra.fecha_entrega %}d-none{% endif %}">
                                     <p class="mb-1 small"><strong>Estado:</strong> <span class="text-success">Entregado</span></p>
                                     <p class="mb-1 small"><strong>Vía:</strong> <span id="historial-metodo">{{ compra.metodo_logistica|default:"" }}</span></p>
-                                    <p class="mb-0 small"><strong>Hora entrega:</strong> <br>
-                                        <span id="historial-hora" class="text-primary fw-bold">{{ compra.fecha_entrega|date:"d/m/Y H:i:s" }}</span>
-                                    </p>
+                                    <p class="mb-1 small"><strong>Hora entrega:</strong> <br><span id="historial-hora" class="text-primary fw-bold">{{ compra.fecha_entrega|date:"d/m/Y H:i:s" }}</span></p>
+                                    <p class="mb-2 small"><strong>Observaciones:</strong> <br><span id="historial-obs" class="text-muted small italic">{{ compra.observaciones|default:"Sin observaciones" }}</span></p>
+                                    
+                                    <div class="d-flex gap-2 mt-2">
+                                        <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="editarEntrega()">
+                                            <i class="bi bi-pencil me-1"></i>Editar
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm flex-fill" onclick="eliminarEntrega()">
+                                            <i class="bi bi-trash me-1"></i>Eliminar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -136,20 +150,44 @@
 <script>
 function registrarEntrega() {
     const ahora = new Date();
-    // Formato: DD/MM/YYYY HH:MM:SS
-    const fechaStr = ahora.toLocaleDateString();
-    const horaStr = ahora.toLocaleTimeString();
+    const fechaCompleta = ahora.toLocaleString();
     const metodo = document.getElementById('metodo_final').value;
+    const obs = document.getElementById('observaciones_entrega').value || "Sin observaciones";
 
     // Mostrar el recuadro de historial
-    const log = document.getElementById('log-entrega');
-    log.classList.remove('d-none');
+    document.getElementById('log-entrega').classList.remove('d-none');
+    document.getElementById('form-entrega').classList.add('d-none');
     
     // Actualizar los datos en pantalla
     document.getElementById('historial-metodo').innerText = metodo;
-    document.getElementById('historial-hora').innerText = fechaStr + ' ' + horaStr;
+    document.getElementById('historial-hora').innerText = fechaCompleta;
+    document.getElementById('historial-obs').innerText = obs;
 
     alert("Entrega registrada correctamente.");
+}
+
+function editarEntrega() {
+    // Regresar al modo formulario
+    document.getElementById('log-entrega').classList.add('d-none');
+    document.getElementById('form-entrega').classList.remove('d-none');
+    
+    // Pre-cargar valores actuales
+    const metodoActual = document.getElementById('historial-metodo').innerText;
+    const obsActual = document.getElementById('historial-obs').innerText;
+    
+    document.getElementById('metodo_final').value = metodoActual;
+    document.getElementById('observaciones_entrega').value = obsActual === "Sin observaciones" ? "" : obsActual;
+}
+
+function eliminarEntrega() {
+    if(confirm("¿Estás seguro de eliminar el registro de entrega?")) {
+        document.getElementById('log-entrega').classList.add('d-none');
+        document.getElementById('form-entrega').classList.remove('d-none');
+        
+        // Limpiar campos
+        document.getElementById('metodo_final').selectedIndex = 0;
+        document.getElementById('observaciones_entrega').value = "";
+    }
 }
 </script>
 {% endblock %}
