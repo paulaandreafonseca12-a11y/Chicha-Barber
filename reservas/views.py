@@ -64,8 +64,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     promo = None
 
     if not request.user.is_authenticated:
-        # Redirigimos al registro usando el nombre de la URL y capturando la ruta actual completa
-        login_url = reverse('registro')
+        # Redirigimos al login para que usuarios con cuenta puedan iniciar sesión
+        login_url = reverse('login')
         return redirect(f'{login_url}?next={request.get_full_path()}')
 
     if promocion_id is not None:
