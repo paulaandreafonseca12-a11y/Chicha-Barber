@@ -8,42 +8,37 @@
     <div class="ring ring-2"></div>
 </div>
 
-<div class="main-wrapper">
+<div class="main-wrapper mx-auto">
 
     <!-- HEADER -->
-    <header class="header-brand">
-
-        <div class="logo-wrap">
-            <img src="{% static 'img/logo.png' %}" alt="Logo">
+    <header class="text-center mb-4">
+        <div class="logo-wrap rounded-circle overflow-hidden mx-auto mb-2">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-100 h-100 object-fit-cover">
         </div>
-
-        <h1 class="brand-name">CHICHA BARBER</h1>
-        <span class="brand-sub">Studio · Nobsa</span>
-
+        <h1 class="brand-name text-white">CHICHA BARBER</h1>
+        <span class="brand-sub small text-uppercase">Studio · Nobsa</span>
     </header>
 
     <!-- MENSAJE -->
-    <main class="form-box">
+    <main class="form-box p-4 rounded-3 text-center">
 
         <!-- ICONO -->
-        <div class="success-icon">
+        <div class="success-icon rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3">
             ✔
         </div>
 
         <!-- TÍTULO -->
-        <h2 class="form-heading">
-            ¡Correo Enviado!
-        </h2>
+        <h2 class="form-heading text-white mb-2">¡Correo Enviado!</h2>
 
         <!-- TEXTO -->
-        <p class="form-sub">
+        <p class="small text-white opacity-50 mb-4">
             Si el correo existe en nuestra base de datos,
             recibirás un enlace para restablecer tu contraseña
             en unos minutos.
         </p>
 
         <!-- BOTÓN -->
-        <a href="{% url 'login' %}" class="btn-auth">
+        <a href="{% url 'login' %}" class="btn btn-auth w-100 d-block no-link-style">
             VOLVER AL LOGIN
         </a>
 

@@ -1,7 +1,6 @@
-from django.core.mail import EmailMultiAlternatives
+import ssl
+from django.core.mail import EmailMultiAlternatives, send_mail, get_connection
 from django.conf import settings
-
-from django.core.mail import send_mail
 from django.utils import timezone
 import pytz #es la calculadora que hace el cambio de moneda exacto entre la hora global del servidor y la hora de tu barbería.
 import locale
@@ -41,13 +40,16 @@ def enviar_correo_cancelacion_admin(correo_cliente, nombre, servicio, fecha):
     Atentamente,
     El equipo de Chicha Barber Studio ✂️💈
     """
-    
+
+    connection = get_connection(ssl_context=ssl._create_unverified_context())
+
     send_mail(
         subject,
         message,
         settings.DEFAULT_FROM_EMAIL,
         [correo_cliente],
         fail_silently=False,
+        connection=connection
     )
 
 
@@ -188,11 +190,14 @@ def enviar_correo_compra(correo_cliente, nombre, carrito, total):
     </div>
     """
 
+    connection = get_connection(ssl_context=ssl._create_unverified_context())
+
     email = EmailMultiAlternatives(
         asunto,
         '',
         settings.DEFAULT_FROM_EMAIL,
-        [correo_cliente]
+        [correo_cliente],
+        connection=connection
     )
 
     email.attach_alternative(html_content, "text/html")
@@ -284,11 +289,14 @@ def enviar_correo_reserva(correo_cliente, nombre, servicio, fecha):
     </div>
     """
 
+    connection = get_connection(ssl_context=ssl._create_unverified_context())
+
     email = EmailMultiAlternatives(
         asunto,
         '',
         settings.DEFAULT_FROM_EMAIL,
-        [correo_cliente]
+        [correo_cliente],
+        connection=connection
     )
 
     email.attach_alternative(html_content, "text/html")

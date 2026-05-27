@@ -9,8 +9,9 @@
 
             <div class="card shadow-lg border-0 rounded-4 p-4 bg-dark text-white">
 
-                <h4 class="text-center mb-4 text-warning fw-bold">
-                    🧾 Datos del Cliente
+                <h4 class="text-center mb-4 text-warning fw-bold  ">
+                    <i class="bi bi-credit-card me-2 "></i>
+                   Datos del Cliente
                 </h4>
 
                 <!-- 🔥 FORMULARIO -->
@@ -64,7 +65,7 @@
                     <div id="infoPago" class="alert alert-info mt-3 d-none"></div>
 
                     <!-- BOTÓN -->
-                    <button type="submit" class="btn btn-success w-100 mt-4 rounded-pill">
+                    <button type="submit" class="btn btn-success w-100 mt-4 rounded-pill color-azul">
                         ✅ Confirmar Compra
                     </button>
 
@@ -104,6 +105,21 @@ function mostrarInfoPago(tipo) {
     }
 }
 
+// Temporizador de fondo
+function revisarExpiracion() {
+    let expiracion = localStorage.getItem("carrito_expiracion");
+    if (expiracion && Date.now() > expiracion) {
+        localStorage.removeItem("carrito");
+        localStorage.removeItem("carrito_expiracion");
+        alert("⏰ El tiempo de tu carrito ha expirado.");
+        window.location.replace("{% url 'productos_galeria' %}");
+    }
+}
+
+// Revisar cada 2 segundos mientras está en esta página
+setInterval(revisarExpiracion, 2000);
+revisarExpiracion();
+
 </script>
 
 <!-- =======================
@@ -115,7 +131,7 @@ function mostrarInfoPago(tipo) {
 
             // 💥 borrar carrito
             localStorage.removeItem("carrito");
-            localStorage.removeItem("tiempo_carrito");
+            localStorage.removeItem("carrito_expiracion");
 
             // 🚀 redirigir al inicio
             setTimeout(function(){

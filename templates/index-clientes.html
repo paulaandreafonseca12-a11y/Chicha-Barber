@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<section class="hero-section d-flex align-items-start pt-3">
+<section class="d-flex align-items-start pt-3">
         <div class="container">
             <!-- Branding Central Superior -->
             <div class="row justify-content-center mb-1">
@@ -158,48 +158,19 @@
     </div>
 </section>
 
-<section>
-    <div class="review-card w-75 mx-auto my-5 p-4 bg-light rounded shadow-lg position-relative">
-        <div class="review header d-flex justify-content-between align-items-center mb-3">
-            <div class="user-info d-flex align-items-center gap-3">
-                <div>
-                    <h4 class="user-name mb-0">Valeria Gómez</h4>
-                    <span class="review-date text-muted">Hace 2 días</span>
-                </div>
-            </div>
-            <!-- Calificación en Estrellas -->
-            <div class="review-stars text-warning fs-5">
-                &#9733;&#9733;&#9733;&#9733;&#9733;
-            </div>
-        </div>
-        <div class="review-body">
-            <p class="review-text fs-6">
-                "Excelente servicio y atención al cliente. El producto superó por completo mis expectativas y llegó mucho antes de lo esperado. ¡Totalmente recomendados!"
-            </p>
-        </div>
-    </div>
-</section>
+<script>
+    // Verificación de expiración periódica
+    function verificarExpiracionCarrito() {
+        let expiracion = localStorage.getItem("carrito_expiracion");
+        if (expiracion && Date.now() > expiracion) {
+            localStorage.removeItem("carrito");
+            localStorage.removeItem("carrito_expiracion");
+            console.log("Carrito expirado y limpiado automáticamente.");
+        }
+    }
 
-<div class="review-card w-75 mx-auto p-4 bg-light rounded shadow-lg">
-  <div class="review-header">
-    <div class="user-info">
-      
-      <div>
-        <h4 class="user-name">Valeria Gómez</h4>
-        <span class="review-date">Hace 2 días</span>
-      </div>
-    </div>
-    <!-- Calificación en Estrellas -->
-    <div class="review-stars">
-      &#9733;&#9733;&#9733;&#9733;&#9733;
-    </div>
-  </div>
-  
-  <div class="review-body">
-    <p class="review-text">
-      "Excelente servicio y atención al cliente. El producto superó por completo mis expectativas y llegó mucho antes de lo esperado.
-       ¡Totalmente recomendados!"
-    </p>
-  </div>
-</div>
+    // Revisar cada 5 segundos
+    setInterval(verificarExpiracionCarrito, 5000);
+    verificarExpiracionCarrito();
+</script>
 {% endblock %}
