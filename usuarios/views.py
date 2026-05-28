@@ -79,3 +79,22 @@ def crear_usuario_admin(request):
         form = CrearUsuarioAdminForm()
 
     return render(request, 'usuarios/crear_usuario.html', {'form': form})
+
+def perfil(request):
+    if request.method == 'POST':
+        form = RegistroForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Perfil actualizado con éxito.")
+            return redirect('perfil')
+    else:
+        form = RegistroForm(instance=request.user)
+        
+    return render(request, 'private/perfil.html')
+
+
+def cambiar_tema(request):
+    user = request.user
+    user.tema = 'dark' if getattr(user, 'tema', 'light') == 'light' else 'light'
+    user.save()
+    return redirect(request.META.get('HTTP_REFERER', 'inicio'))

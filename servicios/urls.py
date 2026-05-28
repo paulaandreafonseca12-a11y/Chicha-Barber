@@ -28,6 +28,7 @@ urlpatterns = [
     path('calificacion/', views.calificacion_view, name='calificacion'),
     path('calificacion/listado/', views.listado_calificacion, name='listado-calificacion'),
     path('calificacion/responder/<int:pk>/', views.responder_calificacion, name='responder-calificacion'),
+    path('calificacion/guardar/', views.guardar_calificacion_view, name='guardar-calificacion'),
     
    
     
