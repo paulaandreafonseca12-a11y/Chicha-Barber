@@ -353,3 +353,49 @@ def enviar_correo_recuperacion(correo_cliente, nombre, reset_url):
     )
     email.attach_alternative(html_content, "text/html")
     email.send()
+    
+def enviar_correo_calificacion(correo_cliente, nombre, servicio, link_calificacion):
+    asunto = '¿Cómo fue tu experiencia? Califica tu servicio 💈'
+
+    html_content = f"""
+    <div style="background:#f4f4f4; padding:40px; font-family:Arial;">
+        <div style="max-width:700px; margin:auto; background:white; border-radius:15px; overflow:hidden; box-shadow:0 0 15px rgba(0,0,0,.1);">
+
+            <div style="background:black; color:white; padding:35px; text-align:center;">
+                <h1 style="margin-top:15px;">Chicha Barber 💈</h1>
+                <p>Tu opinión nos importa</p>
+            </div>
+
+            <div style="padding:35px;">
+                <h2>Hola {nombre} 👋</h2>
+                <p style="color:#555;">
+                    Gracias por visitarnos. Esperamos que tu experiencia con el servicio de
+                    <strong>{servicio}</strong> haya sido excelente.
+                </p>
+                <p style="color:#555;">
+                    Te invitamos a calificar tu servicio. Solo toma un momento y nos ayuda mucho a mejorar.
+                </p>
+
+                <div style="text-align:center; margin:35px 0;">
+                    <a href="{link_calificacion}"
+                       style="background:#c9a84c; color:#1a1a1a; padding:16px 40px; border-radius:8px;
+                              text-decoration:none; font-weight:bold; font-size:16px;">
+                        ⭐ Calificar mi servicio
+                    </a>
+                </div>
+
+                <p style="color:#aaa; font-size:12px; text-align:center;">
+                    Este enlace es de un solo uso y expira una vez que envíes tu calificación.
+                </p>
+            </div>
+
+            <div style="background:#111; color:#bbb; text-align:center; padding:20px; font-size:14px;">
+                © 2026 Chicha Barber
+            </div>
+        </div>
+    </div>
+    """
+
+    email = EmailMultiAlternatives(asunto, '', settings.DEFAULT_FROM_EMAIL, [correo_cliente])
+    email.attach_alternative(html_content, "text/html")
+    email.send()
