@@ -5,7 +5,6 @@
 
 <div class="main-wrapper mx-auto">
 
-    <!-- HEADER -->
     <header class="header-brand">
         <div class="logo-wrap">
             <img src="{% static 'img/logo.png' %}" alt="Logo">
@@ -15,13 +14,11 @@
         <span class="brand-sub">Studio · Nobsa</span>
     </header>
 
-    <!-- FORMULARIO -->
     <main class="form-box">
 
         <h2 class="form-heading text-white">Crear Cuenta</h2>
         <p class="form-sub text-white">Únete a nuestra comunidad</p>
 
-        <!-- ✔️ ERRORES REALES -->
         {% if form.errors %}
         <div class="auth-alert">
 
@@ -40,8 +37,9 @@
 
         <form method="post">
             {% csrf_token %}
+            
+            <input type="hidden" name="next" value="{{ next }}">
 
-            <!-- Nombre y apellido -->
             <div class="row g-3">
 
                 <div class="col-6">
@@ -62,7 +60,6 @@
 
             </div>
 
-            <!-- Documento y teléfono -->
             <div class="row g-3">
 
                 <div class="col-6 ">
@@ -83,7 +80,6 @@
 
             </div>
 
-            <!-- Email -->
             <div class="row g-3">
 
                 <div class="col-12 ">
@@ -96,7 +92,6 @@
 
             </div>
 
-            <!-- ✔️ ROL FIJO (NO SE PUEDE ELEGIR) -->
             <div class="row g-3">
 
                 <div class="col-12 ">
@@ -105,7 +100,6 @@
                     <div class="input-wrap">
                         <span class="input-icon">👤</span>
 
-                        <!-- solo visual -->
                         <input type="text"
                                class="cb-input"
                                value="Cliente"
@@ -116,7 +110,6 @@
 
             </div>
 
-            <!-- Contraseñas -->
             <div class="row g-3">
 
                 <div class="col-6 ">
@@ -137,14 +130,12 @@
 
             </div>
 
-            <!-- BOTÓN -->
             <button type="submit" class="btn-auth color-azul">
                 REGISTRARSE
             </button>
 
         </form>
 
-        <!-- LOGIN -->
         <div class="aux-text">
             ¿Ya tienes cuenta?
             <a href="{% url 'login' %}" class="aux-link">Inicia sesión</a>
@@ -154,7 +145,6 @@
 
 </div>
 
-<!-- JS -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("input").forEach(el => {
