@@ -31,6 +31,9 @@ urlpatterns = [
     path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='registration/recuperar_enviado.html'), name='password_reset_done'),
     path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/recuperar_confirmar.html'), name='password_reset_confirm'),
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/recuperar_completo.html'), name='password_reset_complete'),
+    
+    #----facturas----#
+    path('facturas/', include('facturas.urls')),
 ]
 
 # 🔥 ESTO HACE QUE LAS IMÁGENES FUNCIONEN
