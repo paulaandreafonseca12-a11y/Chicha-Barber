@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
 from core.views import inicio, inicio_admin, CustomLoginView
-
+from usuarios import views as views_usuarios
 
 # 🔥 IMPORTANTE para imágenes
 from django.conf import settings
@@ -11,32 +11,27 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),
-    
-    
-    
+
     # --- APPS DEL PROYECTO ---
     path('servicios/', include('servicios.urls')),
-    path('reservas/', include('reservas.urls')),  # Solo el include aquí
+    path('reservas/', include('reservas.urls')),
     path('usuarios/', include('usuarios.urls')),
     path('productos/', include('productos.urls')),
     path('configuracion/', include('configuraciones.urls')),
-    
+
     path('panel/', inicio_admin, name='inicio_admin'),
-    # ... resto de tus urls
 
     # --- AUTENTICACIÓN Y PASSWORD RESET ---
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='inicio'), name='logout'),
-    path('recuperar-password/', auth_views.PasswordResetView.as_view(
-        template_name='registration/recuperar.html',
-        email_template_name='registration/password_reset_email.html',
-        subject_template_name='registration/password_reset_subject.txt'
-    ), name='password_reset'),
+
+    # 🔥 VISTA PERSONALIZADA - usa core/utils.py para el correo
+    path('recuperar-password/', views_usuarios.recuperar_password_view, name='password_reset'),
+
     path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='registration/recuperar_enviado.html'), name='password_reset_done'),
     path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/recuperar_confirmar.html'), name='password_reset_confirm'),
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/recuperar_completo.html'), name='password_reset_complete'),
 ]
-
 
 # 🔥 ESTO HACE QUE LAS IMÁGENES FUNCIONEN
 if settings.DEBUG:

@@ -32,4 +32,5 @@ urlpatterns = [
     # LISTA UNIFICADA: Esta reemplaza a 'clientes' y 'barberos'
     path('lista/', views.lista_usuarios, name='lista_usuarios'),
     path('crear/', views.crear_usuario_admin, name='crear_usuario'),
+    path('editar/<int:pk>/', views.editar_usuario, name='editar_usuario'),
 ]

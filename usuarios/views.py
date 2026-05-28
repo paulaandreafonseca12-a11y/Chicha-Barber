@@ -3,6 +3,13 @@ from django.contrib import messages
 from .forms import RegistroForm
 from .models import Usuario
 from .forms import RegistroForm, CrearUsuarioAdminForm
+from .forms import RegistroForm, CrearUsuarioAdminForm, EditarUsuarioForm
+from django.shortcuts import get_object_or_404
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from core.utils import enviar_correo_recuperacion
 
 def inicio(request):
     return render(request, 'index.html')
@@ -79,3 +86,47 @@ def crear_usuario_admin(request):
         form = CrearUsuarioAdminForm()
 
     return render(request, 'usuarios/crear_usuario.html', {'form': form})
+
+
+def editar_usuario(request, pk):
+    usuario = get_object_or_404(Usuario, pk=pk)
+
+    if request.method == 'POST':
+        form = EditarUsuarioForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"✅ Usuario {usuario.get_full_name()} actualizado con éxito.")
+            return redirect('lista_usuarios')
+    else:
+        form = EditarUsuarioForm(instance=usuario)
+
+    return render(request, 'usuarios/editar_usuario.html', {
+        'form': form,
+        'usuario': usuario
+    })
+    
+
+
+def recuperar_password_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            usuario = Usuario.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(usuario.pk))
+            token = default_token_generator.make_token(usuario)
+            reset_url = request.build_absolute_uri(
+                f'/recuperar/{uid}/{token}/'
+            )
+            enviar_correo_recuperacion(
+                correo_cliente=usuario.email,
+                nombre=usuario.first_name,
+                reset_url=reset_url
+            )
+        except Usuario.DoesNotExist:
+            pass
+        except Exception:
+            pass  # No revelar si el correo existe o no
+
+        return redirect('password_reset_done')
+
+    return render(request, 'registration/recuperar.html')

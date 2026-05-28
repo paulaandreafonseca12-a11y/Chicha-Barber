@@ -25,19 +25,20 @@
         <h2 class="form-heading text-white mb-1">Recuperar</h2>
         <p class="small text-white opacity-50 mb-3">Ingresa tu correo para recibir las instrucciones.</p>
 
-        {% if form.errors %}
-        <div class="alert auth-alert mb-3">
-            {{ form.email.errors.0 }}
-        </div>
-        {% endif %}
-
         <form method="post">
             {% csrf_token %}
 
             <label class="form-label cb-label">Correo Electrónico</label>
             <div class="position-relative mb-3">
                 <span class="input-icon">✉️</span>
-                {{ form.email }}
+                <input
+                    type="email"
+                    name="email"
+                    class="cb-input"
+                    placeholder="correo@ejemplo.com"
+                    autocomplete="email"
+                    required
+                >
             </div>
 
             <button type="submit" class="btn btn-auth w-100 mt-2">
@@ -53,15 +54,3 @@
 </div>
 
 {% endblock content %}
-
-{% block scripts %}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const emailInput = document.querySelector('input[name="email"]');
-        if (emailInput) {
-            emailInput.classList.add('cb-input');
-            emailInput.setAttribute('placeholder', 'correo@ejemplo.com');
-        }
-    });
-</script>
-{% endblock %}

@@ -285,7 +285,7 @@ def enviar_correo_reserva(correo_cliente, nombre, servicio, fecha):
 
         </div>
 
-    </div>
+    </div>  
     """
 
     email = EmailMultiAlternatives(
@@ -295,5 +295,61 @@ def enviar_correo_reserva(correo_cliente, nombre, servicio, fecha):
         [correo_cliente]
     )
 
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+    
+def enviar_correo_recuperacion(correo_cliente, nombre, reset_url):
+
+    asunto = 'Restablece tu contraseña - Chicha Barber Studio'
+
+    html_content = f"""
+    <div style="background:#f4f4f4; padding:40px; font-family:Arial;">
+        <div style="max-width:700px; margin:auto; background:white; border-radius:15px; overflow:hidden; box-shadow:0 0 15px rgba(0,0,0,.1);">
+
+            <!-- HEADER -->
+            <div style="background:black; color:white; padding:35px; text-align:center;">
+                <h1 style="margin-top:15px;">Chicha Barber 💈</h1>
+                <p>Restablecimiento de contraseña</p>
+            </div>
+
+            <!-- BODY -->
+            <div style="padding:35px;">
+                <h2>Hola {nombre} 👋</h2>
+                <p style="color:#555;">
+                    Recibimos una solicitud para restablecer la contraseña de tu cuenta en
+                    <strong>Chicha Barber Studio</strong>.
+                </p>
+                <p style="color:#555;">Haz clic en el botón para crear una nueva contraseña:</p>
+
+                <div style="text-align:center; margin:30px 0;">
+                    <a href="{reset_url}"
+                       style="background:#c9a84c; color:#1a1a1a; padding:14px 36px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:15px;">
+                        RESTABLECER CONTRASEÑA
+                    </a>
+                </div>
+
+                <p style="color:#888; font-size:13px; text-align:center;">
+                    Este enlace expira en <strong style="color:#c9a84c;">24 horas</strong>.
+                </p>
+                <p style="color:#aaa; font-size:12px; text-align:center; margin-top:20px;">
+                    Si no solicitaste este cambio, puedes ignorar este correo.
+                </p>
+            </div>
+
+            <!-- FOOTER -->
+            <div style="background:#111; color:#bbb; text-align:center; padding:20px; font-size:14px;">
+                © 2026 Chicha Barber
+            </div>
+
+        </div>
+    </div>
+    """
+
+    email = EmailMultiAlternatives(
+        asunto,
+        '',
+        settings.DEFAULT_FROM_EMAIL,
+        [correo_cliente]
+    )
     email.attach_alternative(html_content, "text/html")
     email.send()
