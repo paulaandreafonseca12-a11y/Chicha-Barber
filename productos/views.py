@@ -149,7 +149,7 @@ def procesar_pago_cliente(request):
             "✅ Compra realizada con éxito"
         )
 
-        return redirect('pago')
+        return redirect('facturas')
 
     return redirect('carrito')
 

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from django.utils import timezone
-from servicios.models import Servicios
+from servicios.models import Servicios, Promocion
 from usuarios.models import Usuario
 
 
@@ -117,6 +117,14 @@ class Reserva(models.Model):
         verbose_name="Servicio"
     )
 
+    promocion = models.ForeignKey(
+        Promocion,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Promoción Aplicada"
+    )
+
     ESTADO_CHOICES = [
         ('reservada', 'Reservada'),
         ('confirmada', 'Confirmada'),
@@ -150,5 +158,3 @@ class Reserva(models.Model):
         fecha = self.fecha_reserva or (self.turno.fecha if self.turno else 'Sin fecha')
         return f"{cliente_nombre} - {self.servicio.nombre} ({fecha})"
     
-
-

@@ -1,0 +1,224 @@
+{% extends "base-clientes.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- TITULO -->
+    <div class="text-center mb-5">
+
+        <h1 class="display-4 fw-bold text-white text-uppercase">
+            Mis Facturas
+        </h1>
+
+        <hr class="w-25 mx-auto text-light" />
+
+    </div>
+
+    <!-- CARD -->
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+        <!-- HEADER -->
+        <div class="card-header bg-dark py-3">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <!-- TITULO -->
+                <h5 class="text-white mb-0 fw-bold">
+                    <i class="bi bi-receipt-cutoff me-2"></i>
+                    Historial de Facturación
+                </h5>
+
+                <!-- BOTONES -->
+                <div class="d-flex gap-2">
+
+                    <!-- INICIO -->
+                    <a
+                        href="{% url 'home' %}"
+                        class="btn btn-light btn-sm rounded-pill px-4 shadow-sm"
+                    >
+                        <i class="bi bi-house-door me-1"></i>
+                        Inicio
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TABLA -->
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0 bg-white">
+
+                <thead class="bg-dark text-white">
+
+                    <tr>
+
+                        <th class="ps-4 py-3"># Factura</th>
+                        <th>Servicios</th>
+                        <th>Productos</th>
+                        <th>Promociones</th>
+                        <th>Fecha</th>
+                        <th>Método de Pago</th>
+                        <th>Total</th>
+                        <th class="text-center">Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for factura in facturas %}
+
+                    <tr>
+
+                        <!-- ID -->
+                        <td class="ps-4 fw-bold text-primary">
+                            #{{ factura.id }}
+                        </td>
+
+                        <!-- SERVICIOS -->
+                        <td>
+                            {% for detalle in factura.detalles.all %}
+                                {% if detalle.reserva %}
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary-subtle text-primary border border-primary px-3 py-2">
+                                            <i class="bi bi-scissors me-1"></i>
+                                            {{ detalle.reserva.servicio.nombre }}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <span class="text-muted">0</span>
+                            {% endfor %}
+                        </td>
+
+                        <!-- PRODUCTOS -->
+                        <td>
+                            {% for detalle in factura.detalles.all %}
+                                {% if detalle.producto %}
+                                    <div class="mb-2">
+                                        <span class="badge bg-info-subtle text-info border border-info px-3 py-2">
+                                            <i class="bi bi-box-seam me-1"></i>
+                                            {{ detalle.producto.nombre }}
+                                            <small class="fw-normal">(x{{ detalle.cantidad }})</small>
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <span class="text-muted">0</span>
+                            {% endfor %}
+                        </td>
+
+                        <!-- PROMOCIONES -->
+                        <td>
+                            {% for detalle in factura.detalles.all %}
+                                {% if detalle.reserva.promocion %}
+                                    <div class="mb-2">
+                                        <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2">
+                                            <i class="bi bi-tag-fill me-1"></i>
+                                            {{ detalle.reserva.promocion.nombre }}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <span class="text-muted">0</span>
+                            {% endfor %}
+                        </td>
+
+                        <!-- FECHA -->
+                        <td>
+                            {{ factura.fecha_emision|date:"d/m/Y H:i" }}
+                        </td>
+
+                        <!-- METODO -->
+                        <td>
+                            <span class="badge bg-light text-dark border px-3 py-2">
+                                {{ factura.get_metodo_pago_display }}
+                            </span>
+                        </td>
+
+                        <!-- TOTAL -->
+                        <td class="fw-bold text-success">
+                            ${{ factura.total_pagado|floatformat:0 }}
+                        </td>
+
+                        <!-- ACCIONES -->
+                        <td class="text-center">
+
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <!-- VER DETALLE -->
+                                <a
+                                    href="{% url 'detalle_factura' factura.id %}"
+                                    class="btn btn-sm btn-outline-info"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <!-- IMPRIMIR FACTURA -->
+                                <button
+                                    class="btn btn-sm btn-outline-dark"
+                                    onclick="printFactura({{ factura.id }})"
+                                >
+                                    <i class="bi bi-printer"></i>
+                                </button>
+
+                                <!-- CORREO -->
+                                {% if factura.cliente.email %}
+                                <a
+                                    href="mailto:{{ factura.cliente.email }}?subject=Factura%20%23{{ factura.id }}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                                {% else %}
+                                <button class="btn btn-sm btn-outline-secondary" disabled>
+                                    <i class="bi bi-envelope-x"></i>
+                                </button>
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-secondary">
+                            <i class="bi bi-receipt display-1 d-block mb-3 opacity-25"></i>
+                            <p class="fs-5">Aún no tienes facturas registradas.</p>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PRINT SOLO FACTURA -->
+<script>
+function printFactura(id) {
+    let url = "/factura/print/" + id + "/";
+    let ventana = window.open(url, "_blank");
+
+    ventana.onload = function () {
+        ventana.print();
+    };
+}
+</script>
+
+{% endblock content %}
