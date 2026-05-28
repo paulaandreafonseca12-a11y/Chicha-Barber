@@ -387,55 +387,6 @@ def activar_dia_agenda(request, fecha_str):
 
 
 def desactivar_dia_agenda(request, fecha_str):
-    """
-    Cancela profesionalmente la agenda de un día:
-    1. Notifica y cancela las reservas existentes.
-    2. Elimina los turnos sobrantes para limpiar la vista.
-    """
-    fecha = date.fromisoformat(fecha_str)
-    
-    # 1. Identificar las reservas que se van a ver afectadas
-    reservas_afectadas = Reserva.objects.filter(
-        turno__fecha=fecha, 
-        estado__in=['reservada', 'confirmada']
-    )
-    
-    cantidad_notificada = 0
-    for reserva in reservas_afectadas:
-        # Cambiamos el estado de la reserva
-        reserva.estado = 'cancelada'
-        reserva.save()
-        
-        # Opcional: Enviar correo de notificación
-        try:
-            # Reutilizamos tu función de core.utils si permite mensajes personalizados,
-            # o puedes crear una nueva específica para cancelaciones.
-            enviar_correo_reserva(
-                correo_cliente=reserva.correo_cliente,
-                nombre=reserva.nombre_cliente,
-                servicio=reserva.servicio,
-                fecha=reserva.fecha_reserva,
-                # Podrías pasar un parámetro extra aquí para indicar que es CANCELACIÓN
-            )
-            cantidad_notificada += 1
-        except Exception as e:
-            print(f"Error enviando correo a {reserva.correo_cliente}: {e}")
-
-    # 2. Ahora tratamos los turnos
-    # Los turnos que tenían reserva ahora están ligados a una reserva 'cancelada'
-    # Los turnos 'disponibles' simplemente los borramos para que el día aparezca como CERRADO
-    eliminados, _ = Turno.objects.filter(fecha=fecha, estado='disponible').delete()
-    
-    # 3. Informar al administrador del resultado
-    if cantidad_notificada > 0:
-        messages.success(request, f"Se han cancelado {cantidad_notificada} citas y se notificó a los clientes.")
-    
-    messages.warning(request, f"Día {fecha_str} desactivado. Se limpiaron {eliminados} turnos disponibles.")
-    
-    return redirect('gestionar_dias')
-
-
-def desactivar_dia_agenda(request, fecha_str):
     fecha = date.fromisoformat(fecha_str)
     
     # 1. Buscamos reservas activas

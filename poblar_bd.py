@@ -4,6 +4,7 @@ import random
 import requests
 from io import BytesIO
 from django.core.files.base import ContentFile 
+from django.utils import timezone
 from datetime import datetime, date, time, timedelta
 
 # 1. Configurar el entorno de Django para poder usar sus modelos desde este script externo
@@ -12,7 +13,7 @@ django.setup()
 
 # 2. Importar los modelos
 from usuarios.models import Usuario
-from servicios.models import Servicios, Promocion,calificacion
+from servicios.models import Servicios, Promocion, Calificacion
 from reservas.models import Reserva, Turno
 from productos.models import Producto, Stock, Compra, DetalleCompra
 
@@ -109,7 +110,7 @@ def poblar_servicios():
         Servicios.objects.get_or_create(
             nombre=nombre,
             defaults={
-                'precio': random.randint(15, 60) * 1000, # Precios entre 15.000 y 60.000
+                'precio': random.randint(20, 50) * 1000, # Ajustado: 20k - 50k
                 'duracion': random.choice([30, 45, 60, 90]),
                 'descripcion': f'Descripción detallada y profesional para el servicio de {nombre}.'
             }
@@ -220,13 +221,13 @@ def poblar_productos_y_stock():
     
     try:
         for nombre in nombres_productos:
-            precio_c = random.randint(10, 30) * 1000
+            precio_c = random.randint(2, 10) * 1000 # Precio compra pequeño
             producto, created = Producto.objects.get_or_create(
                 nombre=nombre,
                 defaults={
                     'descripcion': f'Producto de alta calidad para barbería: {nombre}.',
                     'precio_compra': precio_c,
-                    'precio_venta': precio_c + (random.randint(10, 20) * 1000),
+                    'precio_venta': precio_c + (random.randint(2, 8) * 1000), # Precio venta pequeño
                 }
             )
             
@@ -270,9 +271,9 @@ def poblar_compras():
 if __name__ == '__main__':
     print("Iniciando la inserción de datos de prueba...")
     limpiar_datos()
-    poblar_turnos_disponibles() # Primero creamos muchos turnos disponibles
     poblar_usuarios()
     poblar_servicios()
+    poblar_turnos_disponibles() # Ahora sí hay barberos para los turnos
     poblar_promociones()
     poblar_reservas()
     poblar_calificaciones()

@@ -6,7 +6,7 @@ from servicios.models import Calificacion
 from usuarios.forms import RegistroForm
 # Eliminados imports redundantes y corregido el import de modelos
 from .models import Servicios, Promocion 
-from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm
+from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm, calificacionForm, ResponderCalificacionForm
 
 
 
@@ -149,7 +149,7 @@ def crear_promocion(request):
             # ERROR CORREGIDO: No uses "Promocion = ..." porque borras la clase del Modelo
             nueva_promo = form.save() 
             messages.success(request, "Promoción creada exitosamente.")
-            return redirect('listado_promocion')
+            return redirect('listado-promocion')
         else:
             messages.error(request, "Error al crear la promoción.")
     else:
@@ -176,16 +176,8 @@ def eliminar_promocion(request, pk):
     if request.method == 'POST':
         promocion.delete()
         messages.success(request, 'Promoción eliminada.')
-        return redirect('listado_promocion') # Verifica que este name sea correcto en urls.py
+        return redirect('listado-promocion')
     return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
-
-def listado_calificacion(request):
-    calificacion = Calificacion.objects.all()
-    context = {
-        'titulo': 'Listado de Calificaciones',
-        'calificacion': calificacion
-    }
-    return render(request, 'servicios/listado_calificacion.html', context)
 
 def calificacion_view(request):
     calificaciones = Calificacion.objects.all()
@@ -195,7 +187,6 @@ def calificacion_view(request):
     }
     return render(request, 'servicios/calificacion.html', context)
 
-
 def listado_calificacion(request):
     calificaciones = Calificacion.objects.all()
     context = {
@@ -203,3 +194,22 @@ def listado_calificacion(request):
         'calificaciones': calificaciones
     }
     return render(request, 'servicios/listado-calificacion.html', context)
+
+def responder_calificacion(request, pk):
+    calificacion = get_object_or_404(Calificacion, pk=pk)
+    if request.method == 'POST':
+        form = ResponderCalificacionForm(request.POST)
+        if form.is_valid():
+            respuesta = form.cleaned_data['respuesta']
+            # Aquí puedes implementar la lógica para guardar la respuesta o enviarla por correo
+            messages.success(request, f'Respuesta enviada con éxito a {calificacion.cliente}.')
+            return redirect('listado-calificacion')
+    else:
+        form = ResponderCalificacionForm()
+    
+    context = {
+        'form': form,
+        'calificacion': calificacion,
+        'titulo': 'Responder a Calificación'
+    }
+    return render(request, 'servicios/responder-calificacion.html', context)
