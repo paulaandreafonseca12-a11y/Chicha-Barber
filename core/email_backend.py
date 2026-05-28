@@ -16,10 +16,12 @@ class SSLEmailBackend(EmailBackend):
             self.host, self.port,
             timeout=self.timeout,
         )
-        self.connection.ehlo()
+
         if self.use_tls:
+            self.connection.ehlo()
             self.connection.starttls(context=context)
             self.connection.ehlo()
+            
         if self.username and self.password:
             self.connection.login(self.username, self.password)
         return True
