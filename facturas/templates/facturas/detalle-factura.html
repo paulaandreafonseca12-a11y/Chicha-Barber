@@ -1,0 +1,141 @@
+{% extends 'base-admin.html' %} {% load static %} {% block content %}
+
+<div class="container py-4">
+  <div class="card border-0 shadow">
+    <!-- HEADER -->
+    <div
+      class="card-header d-flex justify-content-between align-items-center py-3"
+      style="background-color: #07d2ff"
+    >
+      <div>
+        <h5 class="mb-0 text-white fw-bold">
+          <i class="bi bi-receipt-cutoff me-2"></i>
+          Detalle de Factura #{{ factura.id }}
+        </h5>
+
+        <small class="text-white">
+          Fecha de Emisión: {{ factura.fecha_emision|date:"d/m/Y H:i" }}
+        </small>
+      </div>
+
+      <div class="d-flex gap-2">
+        <a
+          href="{% url 'factura_adm' %}"
+          class="btn fw-bold text-white border border-white"
+        >
+          <i class="bi bi-arrow-left me-2"></i>
+          Volver a Facturas
+        </a>
+        <button
+          class="btn fw-bold text-white border border-white"
+          onclick="window.print()"
+        >
+          <i class="bi bi-printer me-2"></i>
+          Imprimir
+        </button>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <h6 class="fw-bold">Información del Cliente:</h6>
+          <p class="mb-1">
+            <strong>Nombre:</strong>
+            {% if factura.cliente %} {{ factura.cliente.get_full_name }} {% elif
+            factura.nombre_cliente %} {{ factura.nombre_cliente }} {% else %}
+            Cliente General {% endif %}
+          </p>
+          <p class="mb-1">
+            <strong>Correo:</strong>
+            {% if factura.cliente and factura.cliente.email %} {{
+            factura.cliente.email }} {% elif factura.correo_cliente %} {{
+            factura.correo_cliente }} {% else %} Sin correo {% endif %}
+          </p>
+          <p class="mb-1">
+            <strong>Teléfono:</strong>
+            {% if factura.cliente and factura.cliente.telefono %} {{
+            factura.cliente.telefono }} {% elif factura.telefono_cliente %} {{
+            factura.telefono_cliente }} {% else %} Sin teléfono {% endif %}
+          </p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <h6 class="fw-bold">Detalles de Pago:</h6>
+          <p class="mb-1">
+            <strong>Método:</strong> {{ factura.get_metodo_pago_display }}
+          </p>
+          <p class="mb-1">
+            <strong>Estado:</strong>
+            <span
+              class="badge {% if factura.estado == 'pagada' %}bg-success{% elif factura.estado == 'pendiente' %}bg-warning text-dark{% else %}bg-danger{% endif %}"
+            >
+              {{ factura.get_estado_display }}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <h6 class="fw-bold mt-4 mb-3">Items Facturados:</h6>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Descripción</th>
+              <th class="text-center">Cantidad</th>
+              <th class="text-end">Precio Unitario</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detalle in factura.detalles.all %}
+            <tr>
+              <td>
+                {% if detalle.producto %}
+                <i class="bi bi-box-seam me-1 text-info"></i>
+                {{ detalle.producto.nombre }} {% elif detalle.reserva %}
+                <i class="bi bi-scissors me-1 text-primary"></i>
+                {{ detalle.reserva.servicio.nombre }} {% if
+                detalle.reserva.promocion %}
+                <span class="badge bg-danger-subtle text-danger ms-2">
+                  {{ detalle.reserva.promocion.nombre }}
+                </span>
+                {% endif %} {% else %}
+                <span class="text-muted">Item General</span>
+                {% endif %}
+              </td>
+              <td class="text-center">{{ detalle.cantidad }}</td>
+              <td class="text-end">
+                ${{ detalle.precio_unitario|floatformat:0 }}
+              </td>
+              <td class="text-end">${{ detalle.subtotal|floatformat:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted py-3">
+                No hay detalles para esta factura.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="text-end">Total Pagado:</th>
+              <th class="text-end text-success fs-5">
+                ${{ factura.total_pagado|floatformat:0 }}
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="mt-4 text-center">
+        <p class="text-muted small">
+          Gracias por tu preferencia en Chicha Barber Studio.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

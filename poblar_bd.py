@@ -17,10 +17,13 @@ import servicios.models
 from servicios.models import Servicios, Promocion, Calificacion
 from reservas.models import Reserva, Turno
 from productos.models import Producto, Stock, Compra, DetalleCompra
+from facturas.models import Factura, DetalleFactura
 
 def limpiar_datos():
     print("Limpiando datos anteriores...")
     # Ahora el script limpia todo automáticamente para garantizar datos frescos
+    DetalleFactura.objects.all().delete()
+    Factura.objects.all().delete()
     DetalleCompra.objects.all().delete()
     Compra.objects.all().delete()
     Stock.objects.all().delete()
@@ -210,6 +213,74 @@ def poblar_reservas():
             estado=random.choice(estados_reserva)
         )
 
+def poblar_calificaciones():
+    print("Poblando Calificaciones...")
+    servicios = list(Servicios.objects.all())
+    clientes = ["Andrés Pérez", "Marina Soler", "Kevin Duarte", "Lucía Rivas"]
+    comentarios = [
+        "Excelente servicio, muy profesional.",
+        "Me gustó mucho el corte, volveré.",
+        "Un poco demorado pero el resultado fue genial.",
+        "La mejor barbería de la ciudad.",
+        "Muy buena atención al cliente."
+    ]
+
+    for servicio in servicios:
+        for _ in range(random.randint(1, 3)):
+            Calificacion.objects.create(
+                servicio=servicio,
+                cliente=random.choice(clientes),
+                puntuacion=random.randint(3, 5),
+                comentario=random.choice(comentarios)
+            )
+
+def poblar_facturas():
+    print("Poblando Facturas...")
+    reservas = Reserva.objects.all()
+    productos = list(Producto.objects.all())
+    clientes = list(Usuario.objects.filter(rol='cliente'))
+    metodos = ['efectivo', 'nequi', 'daviplata', 'tarjeta']
+
+    if not reservas and not productos:
+        print("  ⚠️ No hay datos suficientes para generar facturas.")
+        return
+
+    # 1. Facturas para las Reservas (Citas)
+    for reserva in reservas:
+        factura = Factura.objects.create(
+            cliente=reserva.cliente if reserva.cliente else random.choice(clientes),
+            total_pagado=float(reserva.precio_historico),
+            metodo_pago=random.choice(metodos),
+            estado='pagada' if reserva.estado == 'confirmada' else 'pendiente',
+            nombre_cliente=reserva.nombre_cliente,
+            correo_cliente=reserva.correo_cliente
+        )
+        DetalleFactura.objects.create(
+            factura=factura,
+            reserva=reserva,
+            cantidad=1,
+            precio_unitario=reserva.precio_historico,
+            subtotal=reserva.precio_historico
+        )
+
+    # 2. Facturas de Venta Directa (Productos)
+    for i in range(5):
+        cliente = random.choice(clientes)
+        factura = Factura.objects.create(
+            cliente=cliente,
+            total_pagado=0,
+            metodo_pago=random.choice(metodos),
+            estado='pagada'
+        )
+        total_acumulado = 0
+        for _ in range(random.randint(1, 3)):
+            prod = random.choice(productos)
+            cant = random.randint(1, 2)
+            sub = float(prod.precio_venta) * cant
+            DetalleFactura.objects.create(factura=factura, producto=prod, cantidad=cant, precio_unitario=prod.precio_venta, subtotal=sub)
+            total_acumulado += sub
+        factura.total_pagado = total_acumulado
+        factura.save()
 
 
 def poblar_productos_y_stock():
@@ -319,4 +390,5 @@ if __name__ == '__main__':
     
     poblar_productos_y_stock()
     poblar_compras()
+    poblar_facturas()
     print("✅ ¡Base de datos poblada con éxito!")

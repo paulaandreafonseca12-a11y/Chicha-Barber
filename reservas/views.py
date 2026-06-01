@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
+from facturas.models import Factura, DetalleFactura
 from reservas.models import Reserva, Turno
 from reservas.forms import ReservaEditarForm
 from servicios.models import Promocion, Servicios
@@ -144,9 +145,27 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                     telefono_cliente=telefono,
                     servicio=servicio,
                     precio_historico=precio,
+                    promocion=promo,
                 )
                 turno.estado = 'reservado'
                 turno.save()
+
+                # Generar Factura automática al realizar la reserva
+                factura = Factura.objects.create(
+                    cliente=request.user,
+                    total_pagado=float(precio),
+                    metodo_pago='efectivo',  # Se establece efectivo como método inicial
+                    estado='pendiente'
+                )
+
+                # Crear el detalle de la factura vinculándolo a la reserva
+                DetalleFactura.objects.create(
+                    factura=factura,
+                    reserva=reserva,
+                    cantidad=1,
+                    precio_unitario=precio,
+                    subtotal=precio
+                )
 
             try:
                 enviar_correo_reserva(
@@ -159,13 +178,13 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 # Logueamos el error en consola pero no bloqueamos al usuario
                 print(f"Error al enviar correo de reserva: {mail_error}")
 
-            return redirect('reserva_confirmada', pk=reserva.pk)
+            return redirect('facturas')
         except Turno.DoesNotExist:
             # Caso de doble clic: Si el turno ya no está disponible, verificamos si ya existe la reserva
             # para este turno. Si existe, asumimos que la petición anterior tuvo éxito.
             reserva_existente = Reserva.objects.filter(turno_id=turno_id).first()
             if reserva_existente:
-                return redirect('reserva_confirmada', pk=reserva_existente.pk)
+                return redirect('facturas')
             
             messages.error(request, '¡Ups! El turno seleccionado ya no está disponible. Por favor elige otro.')
         except Exception as e:
