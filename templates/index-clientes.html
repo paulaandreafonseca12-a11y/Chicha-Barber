@@ -73,7 +73,7 @@
           class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden"
           data-bs-ride="carousel"
           data-bs-interval="4500"
-          style="border: 2px solid rgba(255, 193, 7, 0.3)"
+          style="border: 2px solid rgba(255, 193, 7, 0.3); height: 420px; max-height: 420px;"
         >
           <!-- Indicadores (Puntos de navegación) -->
           <div class="carousel-indicators mb-2" style="z-index: 3">
@@ -121,14 +121,13 @@
             <div
               class="carousel-item {% if forloop.first %}active{% endif %} h-100"
             >
-              {% if carrusel.imagen %}
               <img
-                src="{{ carrusel.imagen.url }}"
+                src="{% if carrusel.imagen %}{{ carrusel.imagen.url }}{% else %}{% static 'img/Fondo.png' %}{% endif %}"
                 class="d-block w-100 h-100"
-                alt="{{ carrusel.texto }}"
+                alt="{{ carrusel.texto|default:'Chicha Barber' }}"
                 style="object-fit: cover"
+                onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';"
               />
-              {% endif %}
             </div>
             {% endfor %} {% else %}
             <div class="carousel-item active h-100">
@@ -137,6 +136,7 @@
                 class="d-block w-100 h-100"
                 style="object-fit: cover"
                 alt="Corte 1"
+                onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';"
               />
             </div>
             <div class="carousel-item h-100">
@@ -145,6 +145,7 @@
                 class="d-block w-100 h-100"
                 style="object-fit: cover"
                 alt="Corte 2"
+                onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';"
               />
             </div>
             <div class="carousel-item h-100">
@@ -153,6 +154,7 @@
                 class="d-block w-100 h-100"
                 style="object-fit: cover"
                 alt="Corte 3"
+                onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';"
               />
             </div>
             <div class="carousel-item h-100">
@@ -161,6 +163,7 @@
                 class="d-block w-100 h-100"
                 style="object-fit: cover"
                 alt="Corte 4"
+                onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';"
               />
             </div>
             {% endif %}

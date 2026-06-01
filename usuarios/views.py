@@ -101,6 +101,8 @@ def perfil(request):
 
 
 def cambiar_tema(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     user = request.user
     user.tema = 'dark' if getattr(user, 'tema', 'light') == 'light' else 'light'
     user.save()

@@ -31,10 +31,7 @@
               <span class="small fw-semibold text-dark">{{ user.get_rol_display|default:"Cliente" }}</span>
             </li>
             <li><a class="dropdown-item py-2 fw-bold text-success" href="{% url 'perfil' %}"><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a></li>
-
-            
             <li><a class="dropdown-item py-2" href="{% url 'crear_reserva_directa' %}"><i class="bi bi-calendar-check me-2"></i>Gestión Reservas</a></li>
-            {% endif %}
             <li>
               <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
                 {% if user.tema == 'dark' %}
@@ -53,12 +50,19 @@
             </li>
           </ul>
         </div>
-       
-        
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-light rounded-pill px-3 py-1">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+        </a>
+        <a href="{% url 'registro' %}" class="btn btn-warning rounded-pill px-3 py-1 text-dark fw-semibold">
+          <i class="bi bi-person-plus me-1"></i> Registrarse
+        </a>
+        {% endif %}
+
         <a class="nav-link text-white" href="#">
           <i class="bi bi-cart3 fs-5"></i>
         </a>
       </div>
     </div>
   </div>
-</header>
+</header>
