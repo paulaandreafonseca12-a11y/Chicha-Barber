@@ -5,305 +5,135 @@
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-9">
-            <!-- CARD -->
             <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
 
-                <!-- HEADER -->
                 <div class="card-header bg-white py-3 border-bottom color-azul">
                     <h5 class="mb-0 fw-bold text-dark text-center">
                         <i class="bi bi-receipt-cutoff me-2 text-primary"></i>
-                        Nueva Factura
+                        {{ titulo }}
                     </h5>
                 </div>
 
-                <!-- BODY -->
                 <div class="card-body p-4">
 
                     <form method="POST">
-
                         {% csrf_token %}
 
                         <div class="row g-4">
 
-            </div>
-
-        </div>
-
-        <!-- BODY -->
-        <div class="card-body p-4">
-
-            <form method="POST">
-
-                {% csrf_token %}
-
-                <div class="row g-4">
-
-                    <!-- CLIENTE -->
-                    <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-
-                            Cliente
-
-                        </label>
-
-                        <select
-                            class="form-select shadow-sm"
-                            name="cliente"
-                            required
-                        >
-
-                            <option value="">
-                                Seleccionar cliente
-                            </option>
-
-                            {% for cliente in clientes %}
-
-                            <option value="{{ cliente.id }}">
-
-                                {{ cliente.get_full_name }}
-
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- METODO -->
-                    <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-
-                            Método de Pago
-
-                        </label>
-
-                        <select
-                            class="form-select shadow-sm"
-                            name="metodo_pago"
-                            required
-                        >
-
-                            <option value="efectivo">
-                                Efectivo
-                            </option>
-
-                            <option value="tarjeta">
-                                Tarjeta
-                            </option>
-
-                            <option value="transferencia">
-                                Transferencia
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <!-- SERVICIO -->
-                    <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-
-                            Servicio
-
-                        </label>
-
-                        <select
-                            class="form-select shadow-sm"
-                            name="servicio"
-                        >
-
-                            <option value="">
-                                Sin servicio
-                            </option>
-
-                            {% for servicio in servicios %}
-
-                            <option value="{{ servicio.id }}">
-
-                                {{ servicio.nombre }}
-
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- PRODUCTO -->
-                    <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-
-                            Producto
-
-                        </label>
-
-                        <select
-                            class="form-select shadow-sm"
-                            name="producto"
-                        >
-
-                            <option value="">
-                                Sin producto
-                            </option>
-
-                            {% for producto in productos %}
-
-                            <option value="{{ producto.id }}">
-
-                                {{ producto.nombre }}
-
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- PROMOCION -->
-                    <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-
-                            Promoción
-
-                        </label>
-
-                        <select
-                            class="form-select shadow-sm"
-                            name="promocion"
-                        >
-
-                            <option value="">
-                                Sin promoción
-                            </option>
-
-                            {% for promo in promociones %}
-
-                            <option value="{{ promo.id }}">
-
-                                {{ promo.nombre }}
-
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- TOTAL -->
-                    <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-
-                            Total Pagado
-
-                        </label>
-
-                        <input
-                            type="number"
-                            step="0.01"
-                            class="form-control shadow-sm"
-                            name="total_pagado"
-                            placeholder="Ingrese el total"
-                            required
-                        />
-
-                    </div>
-
-                    <!-- ESTADO -->
-                    <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-
-                            Estado
-
-                        </label>
-
-                        <select
-                            class="form-select shadow-sm"
-                            name="estado"
-                        >
-
-                            <option value="pagada">
-                                Pagada
-                            </option>
-
-                            <option value="pendiente">
-                                Pendiente
-                            </option>
-
-                            <option value="cancelada">
-                                Cancelada
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <!-- OBSERVACIONES -->
-                    <div class="col-12">
-
-                        <label class="form-label fw-semibold">
-
-                            Observaciones
-
-                        </label>
-
-                        <textarea
-                            class="form-control shadow-sm"
-                            rows="4"
-                            name="observaciones"
-                            placeholder="Notas adicionales..."
-                        ></textarea>
-
-                    </div>
-
-                </div>
-
-                <!-- BOTONES -->
-                <div class="d-flex justify-content-end gap-3 mt-5">
-
-                    <a
-                        href="{% url 'factura_adm' %}"
-                        class="btn btn-light border rounded-pill px-4 fw-semibold shadow-sm"
-                    >
-                        <i class="bi bi-arrow-left me-2"></i>
-                        Cancelar
-
-                    </a>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary color-azul text-dark fw-bold rounded-pill px-5 shadow border-0"
-                    >
-
-                        <i class="bi bi-save2 me-2"></i>
-
-                        Guardar Factura
-
-                    </button>
-
-                </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Cliente</label>
+                                <select class="form-select shadow-sm" name="cliente" required>
+                                    <option value="">Seleccionar cliente</option>
+                                    {% for cliente in clientes %}
+                                    <option value="{{ cliente.id }}">
+                                        {{ cliente.get_full_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Método de Pago</label>
+                                <select class="form-select shadow-sm" name="metodo_pago" required>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="nequi">Nequi</option>
+                                    <option value="daviplata">Daviplata</option>
+                                    <option value="tarjeta">Tarjeta</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Servicio</label>
+                                <select class="form-select shadow-sm" name="servicio">
+                                    <option value="">Sin servicio</option>
+                                    {% for servicio in servicios %}
+                                    <option value="{{ servicio.id }}">
+                                        {{ servicio.nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Producto</label>
+                                <select class="form-select shadow-sm" name="producto">
+                                    <option value="">Sin producto</option>
+                                    {% for producto in productos %}
+                                    <option value="{{ producto.id }}">
+                                        {{ producto.nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Promoción</label>
+                                <select class="form-select shadow-sm" name="promocion">
+                                    <option value="">Sin promoción</option>
+                                    {% for promo in promociones %}
+                                    <option value="{{ promo.id }}">
+                                        {{ promo.nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Total Pagado</label>
+                                <input 
+                                    type="number" 
+                                    step="0.01" 
+                                    class="form-control shadow-sm" 
+                                    name="total_pagado" 
+                                    placeholder="Ingrese el total" 
+                                    required
+                                />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Estado</label>
+                                <select class="form-select shadow-sm" name="estado">
+                                    <option value="pagada">Pagada</option>
+                                    <option value="pendiente" selected>Pendiente</option>
+                                    <option value="cancelada">Cancelada</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Observaciones</label>
+                                <textarea 
+                                    class="form-control shadow-sm" 
+                                    rows="4" 
+                                    name="observaciones" 
+                                    placeholder="Notas adicionales..."
+                                ></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 mt-5">
+                            <a 
+                                href="{% url 'factura_adm' %}" 
+                                class="btn btn-light border rounded-pill px-4 fw-semibold shadow-sm"
+                            >
+                                <i class="bi bi-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button 
+                                type="submit" 
+                                class="btn btn-primary color-azul text-dark fw-bold rounded-pill px-5 shadow border-0"
+                            >
+                                <i class="bi bi-save2 me-2"></i>Guardar Factura
+                            </button>
+                        </div>
 
                     </form>
-
                 </div>
 
-                <!-- FOOTER -->
                 <div class="card-footer bg-primary border-0 py-2 color-azul mt-auto rounded-bottom"></div>
             </div>
         </div>
-
     </div>
-
 </div>
 
-{% endblock %}
+{% endblock content %}
