@@ -196,6 +196,11 @@ def listado_calificacion(request):
     return render(request, 'servicios/listado-calificacion.html', context)
 
 def responder_calificacion(request, pk):
+    # Seguridad: Solo administradores pueden responder
+    if not request.user.is_authenticated or not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
+        messages.error(request, "Acceso denegado. Solo los administradores pueden responder calificaciones.")
+        return redirect('calificacion')
+
     calificacion = get_object_or_404(Calificacion, pk=pk)
     if request.method == 'POST':
         form = ResponderCalificacionForm(request.POST)
@@ -213,3 +218,9 @@ def responder_calificacion(request, pk):
         'titulo': 'Responder a Calificación'
     }
     return render(request, 'servicios/responder-calificacion.html', context)
+
+def guardar_calificacion_view(request):
+    if request.method == 'POST':
+        form = CalificacionForm(request.POST)
+        if form.is_valid():
+            form.save()

@@ -13,6 +13,7 @@ django.setup()
 
 # 2. Importar los modelos
 from usuarios.models import Usuario
+import servicios.models
 from servicios.models import Servicios, Promocion, Calificacion
 from reservas.models import Reserva, Turno
 from productos.models import Producto, Stock, Compra, DetalleCompra
@@ -27,11 +28,11 @@ def limpiar_datos():
     Compra.objects.all().delete()
     Stock.objects.all().delete()
     Producto.objects.all().delete()
-    Calificacion.objects.all().delete()
+    servicios.models.Calificacion.objects.all().delete()
     Reserva.objects.all().delete()
     Turno.objects.all().delete()
-    Promocion.objects.all().delete()
-    Servicios.objects.all().delete()
+    servicios.models.Promocion.objects.all().delete()
+    servicios.models.Servicios.objects.all().delete()
     Usuario.objects.exclude(is_superuser=True).delete()
 
 def descargar_avatar(nombre_completo, email):
@@ -110,7 +111,7 @@ def poblar_servicios():
     ]
     
     for nombre in nombres_servicios:
-        Servicios.objects.get_or_create(
+        servicios.models.Servicios.objects.get_or_create(
             nombre=nombre,
             defaults={
                 'precio': random.randint(20, 50) * 1000, # Ajustado: 20k - 50k
@@ -121,16 +122,16 @@ def poblar_servicios():
 
 def poblar_promociones():
     print("Poblando Promociones...")
-    servicios = list(Servicios.objects.all())
-    if not servicios:
+    lista_servicios = list(servicios.models.Servicios.objects.all())
+    if not lista_servicios:
         print("  ⚠️ No se pueden crear promociones porque no hay servicios en la base de datos.")
         return
 
     for i in range(1, 11):
-        Promocion.objects.get_or_create(
+        servicios.models.Promocion.objects.get_or_create(
             nombre=f"Promo Especial {i}",
             defaults={
-                'servicio': random.choice(servicios),
+                'servicio': random.choice(lista_servicios),
                 'porcentaje_descuento': random.choice([10, 15, 20, 25, 50]),
                 'duracion': f"{random.choice([1, 2, 3])} Semanas",
                 'descripcion': f"Aprovecha esta increíble promoción número {i} por tiempo limitado."
@@ -176,7 +177,7 @@ def poblar_reservas():
     estados_reserva = ['reservada', 'confirmada', 'cancelada']
     estados_turno = ['disponible', 'reservado', 'cancelado']
     
-    servicios_disponibles = list(Servicios.objects.all())
+    servicios_disponibles = list(servicios.models.Servicios.objects.all())
     if not servicios_disponibles:
         print("  ⚠️ No se pueden crear reservas porque no hay servicios en la base de datos.")
         return
@@ -339,6 +340,44 @@ def poblar_compras():
     except Exception as e:
         print(f"  ⚠️ Error al poblar compras: {e}")
 
+def poblar_calificaciones():
+    print("Poblando Calificaciones...")
+    servicios_disponibles = list(servicios.models.Servicios.objects.all())
+    clientes_disponibles = list(Usuario.objects.filter(rol='cliente'))
+
+    if not servicios_disponibles:
+        print("  ⚠️ No se pueden crear calificaciones porque no hay servicios en la base de datos.")
+        return
+    if not clientes_disponibles:
+        print("  ⚠️ No se pueden crear calificaciones porque no hay clientes en la base de datos.")
+        return
+
+    comentarios_ejemplo = [
+        "Excelente servicio, muy profesional.",
+        "Me encantó el resultado, volveré pronto.",
+        "Buen trabajo, pero la espera fue un poco larga.",
+        "Muy amable el personal, pero el corte no fue exactamente lo que esperaba.",
+        "Increíble experiencia, 5 estrellas!",
+        "Rápido y eficiente, justo lo que necesitaba.",
+        "El lugar es muy agradable y el servicio impecable.",
+        "Podría mejorar la atención al cliente.",
+        "Relación calidad-precio muy buena.",
+        "No estoy del todo satisfecho con el corte."
+    ]
+
+    for _ in range(15): # Crear 15 calificaciones
+        servicio = random.choice(servicios_disponibles)
+        cliente_usuario = random.choice(clientes_disponibles)
+        puntuacion = random.randint(1, 5)
+        comentario = random.choice(comentarios_ejemplo)
+
+        servicios.models.Calificacion.objects.create(
+            servicio=servicio,
+            cliente=cliente_usuario.get_full_name() or cliente_usuario.username, # Usa el nombre completo si está disponible, sino el username
+            puntuacion=puntuacion,
+            comentario=comentario
+        )
+
 if __name__ == '__main__':
     print("Iniciando la inserción de datos de prueba...")
     limpiar_datos()
@@ -347,7 +386,8 @@ if __name__ == '__main__':
     poblar_turnos_disponibles() # Ahora sí hay barberos para los turnos
     poblar_promociones()
     poblar_reservas()
-    poblar_calificaciones()
+    poblar_calificaciones() 
+    
     poblar_productos_y_stock()
     poblar_compras()
     poblar_facturas()

@@ -18,26 +18,37 @@
             {% for item in calificaciones %}
             <div class="col-md-6 col-lg-4 d-flex justify-content-center">
                 <div class="card h-100 shadow-lg border-0 bg-white rounded-4 overflow-hidden" style="width: 18rem;">
-                    <img src="{% if item.servicio.imagen %}{{ item.servicio.imagen.url }}{% else %}{% static 'img/corte/corte_1.jpg' %}{% endif %}" class="card-img-top" alt="{{ item.servicio.nombre }}" style="height: 300px; object-fit: cover;">
+                    <img src="{% if item.servicio.imagen %}{{ item.servicio.imagen.url }}{% else %}{% static 'img/corte/corte_1.jpg' %}{% endif %}" class="card-img-top" alt="{{ item.servicio.nombre }}" style="height: 180px; object-fit: cover;">
                     <div class="card-body d-flex flex-column text-center p-4">
-                        <h4 class="card-title fw-bold text-dark mb-3">{{ item.servicio.nombre }}</h4>
-                        <p class="card-text text-secondary mb-4 flex-grow-1">{{ item.servicio.descripcion }}</p>
-                        
+                        <h5 class="card-title fw-bold text-dark mb-1">{{ item.cliente }}</h5>
+                        <div class="text-warning mb-2 small">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= item.puntuacion %}
+                                    <i class="bi bi-star-fill"></i>
+                                {% else %}
+                                    <i class="bi bi-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="card-text text-secondary mb-3 flex-grow-1 fst-italic small">"{{ item.comentario }}"</p>
+
                         <h3 class="fw-bold mb-3 color-azul">${{ item.servicio.precio }}</h3>
                         
                         <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
                             <span class="text-muted small fw-semibold">
                                 <i class="bi bi-clock me-1"></i>{{ item.servicio.duracion }} min
                             </span>
-                            <a href="{% url 'registro' item.servicio.pk %}" class="btn btn-primary color-azul rounded-pill ">
-                                <i class="bi bi-calendar-check me-2 color-azul w-10"></i> calificar servicio 
+                            <a href="{% url 'registro' item.servicio.pk %}" class="btn btn-primary color-azul btn-sm rounded-pill">
+                                <i class="bi bi-calendar-check me-1"></i> Reservar
                             </a>
-                           
                         </div>
-                    </div>
-                </div>
-            </div>
-           
+                        {% if user.is_authenticated and user.is_staff %}
+                        <div class="mt-3">
+                            <a href="{% url 'responder-calificacion' item.pk %}" class="btn btn-sm btn-outline-success w-100 rounded-pill">
+                                <i class="bi bi-chat-dots me-1"></i> Responder
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
