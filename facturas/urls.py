@@ -31,4 +31,18 @@ urlpatterns = [
         name='detalle_factura'
     ),
 
+    # ACTUALIZAR (AJAX)
+    path(
+        'actualizar-factura-adm/<int:id>/',
+        views.actualizar_factura_adm,
+        name='actualizar_factura_adm'
+    ),
+
+    # IMPRIMIR
+    path(
+        'factura/imprimir/<int:id>/',
+        views.imprimir_factura,
+        name='imprimir_factura'
+    ),
+
 ]

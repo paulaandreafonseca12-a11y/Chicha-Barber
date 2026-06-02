@@ -34,5 +34,5 @@ urlpatterns = [
     path('crear/', views.crear_usuario_admin, name='crear_usuario'),
     path('editar/<int:pk>/', views.editar_usuario, name='editar_usuario'),
     path('perfil/', views.perfil, name='perfil'),
-    path('cambiar-tema/', views.cambiar_tema, name='cambiar_tema'),
+    path('cambiar_tema/', views.cambiar_tema, name='cambiar_tema'),
 ]

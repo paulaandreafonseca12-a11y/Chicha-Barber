@@ -1,209 +1,313 @@
-{% extends 'base-admin.html' %} {% load static %} {% block content %}
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block content %}
 
 <div class="container py-4">
   <div class="card border-0 shadow">
-    <!-- HEADER -->
-    <div
-      class="card-header d-flex justify-content-between align-items-center py-3"
-      style="background-color: #07d2ff"
-    >
-      <div>
-        <h5 class="mb-0 text-white fw-bold">
-          <i class="bi bi-receipt-cutoff me-2"></i>
-          Gestión de Facturas
-        </h5>
 
-        <small class="text-white">
-          Total registradas: {{ facturas.count }}
-        </small>
+<!-- HEADER -->
+<div
+  class="card-header d-flex justify-content-between align-items-center py-3"
+  style="background-color: #07d2ff"
+>
+  <div>
+    <h5 class="mb-0 text-white fw-bold">
+      <i class="bi bi-receipt-cutoff me-2"></i>
+      Gestión de Facturas
+    </h5>
+
+    <small class="text-white">
+      Total registradas: {{ facturas.count }}
+    </small>
+  </div>
+
+  <a
+    href="{% url 'crear-factura' %}"
+    class="btn fw-bold text-white border border-white"
+  >
+    <i class="bi bi-plus-lg me-2"></i>
+    Nueva Factura
+  </a>
+</div>
+
+<!-- BODY -->
+<div class="card-body">
+
+  <!-- BUSCADOR -->
+  <div class="row mb-4">
+    <div class="col-md-4 ms-auto">
+      {% csrf_token %}
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar factura..."
+        >
+
+        <button class="btn btn-dark">
+          <i class="bi bi-search"></i>
+        </button>
       </div>
-
-      <a
-        href="{% url 'crear-factura' %}"
-        class="btn fw-bold text-white border border-white"
-      >
-        <i class="bi bi-plus-lg me-2"></i>
-        Nueva Factura
-      </a>
     </div>
+  </div>
 
-    <!-- BODY -->
-    <div class="card-body">
-      <!-- BUSCADOR -->
-      <div class="row mb-4">
-        <div class="col-md-4 ms-auto">
-          <div class="input-group">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Buscar factura..."
-            />
+  <!-- TABLA -->
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
 
-            <button class="btn btn-dark">
-              <i class="bi bi-search"></i>
-            </button>
-          </div>
-        </div>
-      </div>
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4">Factura</th>
+          <th>Cliente</th>
+          <th>Detalles</th>
+          <th>Fecha</th>
+          <th>Método de Pago</th>
+          <th>Estado</th>
+          <th>Total</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
 
-      <!-- TABLA -->
-      <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-          <thead class="table-light">
-            <tr>
-              <th class="ps-4">Factura</th>
-              <th>Cliente</th>
-              <th>Detalles</th>
-              <th>Fecha</th>
+      <tbody>
 
-              <!-- NUEVO -->
-              <th>Método de Pago</th>
-              <th>Estado</th>
+        {% for factura in facturas %}
 
-              <th>Total</th>
-              <th class="text-center">Acciones</th>
-            </tr>
-          </thead>
+        <tr>
 
-          <tbody>
-            {% for factura in facturas %}
+          <!-- ID -->
+          <td class="ps-4 fw-bold text-primary">
+            #{{ factura.id }}
+          </td>
 
-            <tr>
-              <!-- ID -->
-              <td class="ps-4 fw-bold text-primary">#{{ factura.id }}</td>
+          <!-- CLIENTE -->
+          <td>
 
-              <!-- CLIENTE -->
-              <td>
-                <div class="fw-bold">
-                  {% if factura.cliente %} {{ factura.cliente.get_full_name }}
-                  {% elif factura.nombre_cliente %} {{ factura.nombre_cliente }}
-                  {% else %} Cliente General {% endif %}
-                </div>
+            <div class="fw-bold">
+              {% if factura.cliente %}
+                {{ factura.cliente.get_full_name }}
+              {% else %}
+                {% if factura.nombre_cliente %}
+                  {{ factura.nombre_cliente }}
+                {% else %}
+                  Cliente General
+                {% endif %}
+              {% endif %}
+            </div>
 
-                <small class="text-muted">
-                  {% if factura.cliente and factura.cliente.email %} {{
-                  factura.cliente.email }} {% elif factura.correo_cliente %} {{
-                  factura.correo_cliente }} {% else %} Sin correo {% endif %}
-                </small>
-              </td>
+            <small class="text-muted">
+              {% if factura.cliente %}
+                {% if factura.cliente.email %}
+                  {{ factura.cliente.email }}
+                {% else %}
+                  Sin correo
+                {% endif %}
+              {% else %}
+                {% if factura.correo_cliente %}
+                  {{ factura.correo_cliente }}
+                {% else %}
+                  Sin correo
+                {% endif %}
+              {% endif %}
+            </small>
 
-              <!-- DETALLES -->
-              <td>
-                {% for detalle in factura.detalles.all %} {% if detalle.producto
-                %}
+          </td>
+
+          <!-- DETALLES -->
+          <td>
+
+            {% for detalle in factura.detalles.all %}
+
+              {% if detalle.producto %}
                 <div class="small mb-1">
                   <span class="text-info fw-semibold">
                     <i class="bi bi-box-seam me-1"></i>
                     {{ detalle.producto.nombre }}
                   </span>
-                  <span class="text-muted"> (x{{ detalle.cantidad }}) </span>
+
+                  <span class="text-muted">
+                    (x{{ detalle.cantidad }})
+                  </span>
                 </div>
-                {% elif detalle.reserva %}
+              {% endif %}
+
+              {% if detalle.reserva %}
                 <div class="small mb-1">
                   <span class="text-primary fw-semibold">
                     <i class="bi bi-scissors me-1"></i>
                     {{ detalle.reserva.servicio.nombre }}
                   </span>
                 </div>
-                {% endif %} {% empty %}
-                <span class="text-muted">Sin detalles</span>
-                {% endfor %}
-              </td>
-
-              <!-- FECHA -->
-              <td>
-                <small>{{ factura.fecha_emision|date:"d/m/Y H:i" }}</small>
-              </td>
-
-              <!-- MÉTODO DE PAGO (DROPDOWN) -->
-              <td>
-                <select class="form-select form-select-sm">
-                  <option selected>
-                    {{ factura.get_metodo_pago_display }}
-                  </option>
-
-                  <option value="efectivo">Efectivo</option>
-                  <option value="nequi">Nequi</option>
-                  <option value="daviplata">Daviplata</option>
-                  <option value="tarjeta">Tarjeta</option>
-                </select>
-              </td>
-
-              <!-- ESTADO (DROPDOWN) -->
-              <td>
-                <select class="form-select form-select-sm">
-                  <option selected>{{ factura.get_estado_display }}</option>
-
-                  <option value="pendiente">Pendiente</option>
-                  <option value="pagada">Pagada</option>
-                  <option value="cancelada">Cancelada</option>
-                </select>
-              </td>
-
-              <!-- TOTAL -->
-              <td class="fw-bold text-success">
-                ${{ factura.total_pagado|floatformat:0 }}
-              </td>
-
-              <!-- ACCIONES -->
-              <td class="text-center">
-                <div class="d-flex justify-content-center gap-2 flex-wrap">
-                  <!-- DETALLE -->
-                  <a
-                    href="{% url 'detalle_factura' factura.id %}"
-                    class="btn btn-sm btn-outline-info"
-                    title="Ver Detalle"
-                  >
-                    <i class="bi bi-eye"></i>
-                  </a>
-
-                  <!-- IMPRIMIR -->
-                  <a
-                    href="{% url 'detalle_factura' id=factura.id %}"
-                    class="btn btn-sm btn-outline-secondary"
-                    target="_blank"
-                    title="Imprimir"
-                  >
-                    <i class="bi bi-printer"></i>
-                  </a>
-
-                  <!-- CORREO -->
-                  {% if factura.cliente.email %}
-
-                  <a
-                    href="mailto:{{ factura.cliente.email }}?subject=Factura%20Chicha%20Barber%20%23{{ factura.id }}"
-                    class="btn btn-sm btn-outline-primary"
-                  >
-                    <i class="bi bi-envelope-fill"></i>
-                  </a>
-
-                  {% else %}
-
-                  <button class="btn btn-sm btn-outline-secondary" disabled>
-                    <i class="bi bi-envelope-x"></i>
-                  </button>
-
-                  {% endif %}
-                </div>
-              </td>
-            </tr>
+              {% endif %}
 
             {% empty %}
 
-            <tr>
-              <td colspan="8" class="text-center py-5 text-muted">
-                <i class="bi bi-receipt fs-1 d-block mb-3"></i>
-
-                No hay facturas registradas.
-              </td>
-            </tr>
+              <span class="text-muted">
+                Sin detalles
+              </span>
 
             {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
+
+          </td>
+
+          <!-- FECHA -->
+          <td>
+            <small>
+              {{ factura.fecha_emision|date:"d/m/Y H:i" }}
+            </small>
+          </td>
+
+          <!-- MÉTODO DE PAGO -->
+          <td>
+            <select class="form-select form-select-sm field-update" data-field="metodo_pago" data-id="{{ factura.id }}">
+              <option value="efectivo" {% if factura.metodo_pago == 'efectivo' %}selected{% endif %}>Efectivo</option>
+              <option value="nequi" {% if factura.metodo_pago == 'nequi' %}selected{% endif %}>Nequi</option>
+              <option value="daviplata" {% if factura.metodo_pago == 'daviplata' %}selected{% endif %}>Daviplata</option>
+              <option value="tarjeta" {% if factura.metodo_pago == 'tarjeta' %}selected{% endif %}>Tarjeta</option>
+            </select>
+          </td>
+
+          <!-- ESTADO -->
+          <td>
+            <select class="form-select form-select-sm field-update" data-field="estado" data-id="{{ factura.id }}">
+              <option value="pendiente" {% if factura.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+              <option value="pagada" {% if factura.estado == 'pagada' %}selected{% endif %}>Pagada</option>
+              <option value="cancelada" {% if factura.estado == 'cancelada' %}selected{% endif %}>Cancelada</option>
+            </select>
+          </td>
+
+          <!-- TOTAL -->
+          <td class="fw-bold text-success">
+            ${{ factura.total_pagado|floatformat:0 }}
+          </td>
+
+          <!-- ACCIONES -->
+          <td class="text-center">
+
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+              <!-- DETALLE -->
+              <a
+                href="{% url 'detalle_factura' factura.id %}"
+                class="btn btn-sm btn-outline-info"
+                title="Ver detalle"
+              >
+                <i class="bi bi-eye"></i>
+              </a>
+
+              <!-- IMPRIMIR -->
+              <a
+                href="{% url 'imprimir_factura' factura.id %}"
+                class="btn btn-sm btn-outline-success"
+                title="Imprimir factura"
+              >
+                <i class="bi bi-printer"></i>
+              </a>
+
+              <!-- CORREO -->
+              {% if factura.cliente %}
+
+                {% if factura.cliente.email %}
+                  <a
+                    href="mailto:{{ factura.cliente.email }}?subject=Factura%20Chicha%20Barber%20%23{{ factura.id }}"
+                    class="btn btn-sm btn-outline-primary"
+                    title="Enviar correo"
+                  >
+                    <i class="bi bi-envelope-fill"></i>
+                  </a>
+                {% else %}
+                  <button
+                    class="btn btn-sm btn-outline-secondary"
+                    disabled
+                  >
+                    <i class="bi bi-envelope-x"></i>
+                  </button>
+                {% endif %}
+
+              {% else %}
+
+                {% if factura.correo_cliente %}
+                  <a
+                    href="mailto:{{ factura.correo_cliente }}?subject=Factura%20Chicha%20Barber%20%23{{ factura.id }}"
+                    class="btn btn-sm btn-outline-primary"
+                    title="Enviar correo"
+                  >
+                    <i class="bi bi-envelope-fill"></i>
+                  </a>
+                {% else %}
+                  <button
+                    class="btn btn-sm btn-outline-secondary"
+                    disabled
+                  >
+                    <i class="bi bi-envelope-x"></i>
+                  </button>
+                {% endif %}
+
+              {% endif %}
+
+            </div>
+
+          </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+          <td colspan="8" class="text-center py-5 text-muted">
+            <i class="bi bi-receipt fs-1 d-block mb-3"></i>
+            No hay facturas registradas.
+          </td>
+        </tr>
+
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+```
+
   </div>
 </div>
 
-{% endblock %}
+<script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+<script>
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('field-update')) {
+        const select = e.target;
+        const facturaId = select.dataset.id;
+        const field = select.dataset.field;
+        const value = select.value;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        let bodyData = {};
+        bodyData[field] = value;
+
+        fetch(`/facturas/actualizar-factura-adm/${facturaId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(bodyData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Actualizado!',
+                    timer: 1000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            }
+        });
+    }
+});
+</script>
+{% endblock content %}
