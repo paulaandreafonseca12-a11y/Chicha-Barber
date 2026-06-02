@@ -1,250 +1,329 @@
-{% extends "base-clientes.html" %} {% load static %} {% block content %}
+{% extends "base-clientes.html" %}
+{% load static %}
+
+{% block content %}
 
 <div class="container py-5">
-  <div class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-white text-uppercase">Mis Facturas</h1>
-    <hr class="w-25 mx-auto text-light" />
-  </div>
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-white text-uppercase">
+            Mis Facturas
+        </h1>
+        <hr class="w-25 mx-auto text-light">
+    </div>
 
-  <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+```
+<div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
     <div class="card-header color-azul py-3">
-      <div
-        class="d-flex justify-content-between align-items-center flex-wrap gap-3"
-      >
-        <h5 class="text-dark mb-0 fw-bold">
-          <i class="bi bi-receipt-cutoff me-2"></i>
-          Historial de Facturación
-        </h5>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-        <div class="d-flex gap-2">
-          <a
-            href="{% url 'inicio' %}"
-            class="btn color-azul text-dark btn-sm rounded-pill px-4 shadow-sm"
-          >
-            <i class="bi me-1"></i>
-            Inicio
-          </a>
+            <h5 class="text-dark mb-0 fw-bold">
+                <i class="bi bi-receipt-cutoff me-2"></i>
+                Historial de Facturación
+            </h5>
+
+            <div class="d-flex gap-2">
+                <a href="{% url 'inicio' %}"
+                   class="btn color-azul text-dark btn-sm rounded-pill px-4 shadow-sm">
+                    Inicio
+                </a>
+            </div>
+
         </div>
-      </div>
     </div>
 
     <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0 bg-white">
-        <thead class="color-azul text-dark">
-          <tr>
-            <th class="ps-4 py-3"># Factura</th>
-            <th>Reserva (Servicio)</th>
-            <th>Productos</th>
-            <th>Promoción</th>
-            <th>Fecha</th>
-            <th>Método de Pago</th>
-            <th>Total</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          {% for factura in facturas %}
-          <tr>
-            <td class="ps-4 fw-bold text-primary">#{{ factura.id }}</td>
+        <table class="table table-hover align-middle mb-0 bg-white">
 
-            <!-- COLUMNA RESERVA -->
-            <td>
-              {% for detalle in factura.detalles.all %} {% if detalle.reserva %}
-              <div class="mb-1">
-                <span class="text-primary fw-bold">
-                  <i class="bi bi-scissors me-1"></i>
-                  {{ detalle.reserva.servicio.nombre }}
-                </span>
-              </div>
-              {% endif %} {% endfor %}
-            </td>
+            <thead class="color-azul text-dark">
+                <tr>
+                    <th class="ps-4 py-3"># Factura</th>
+                    <th>Reserva (Servicio)</th>
+                    <th>Productos</th>
+                    <th>Promoción</th>
+                    <th>Fecha</th>
+                    <th>Método de Pago</th>
+                    <th>Total</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
 
-            <!-- COLUMNA PRODUCTOS -->
-            <td>
-              {% for detalle in factura.detalles.all %} {% if detalle.producto
-              %}
-              <div class="mb-1">
-                <span class="text-info fw-semibold">
-                  <i class="bi bi-box-seam me-1"></i>
-                  {{ detalle.producto.nombre }}
-                </span>
-                <small class="text-muted">(x{{ detalle.cantidad }})</small>
-              </div>
-              {% endif %} {% endfor %}
-            </td>
+            <tbody>
 
-            <!-- COLUMNA PROMOCIÓN -->
-            <td>
-              {% for detalle in factura.detalles.all %} {% if detalle.reserva
-              and detalle.reserva.promocion %}
-              <span class="badge bg-danger mb-1">
-                <i class="bi bi-tag-fill me-1"></i>
-                {{ detalle.reserva.promocion.nombre }}
-              </span>
-              {% endif %} {% endfor %}
-            </td>
+                {% for factura in facturas %}
 
-            <td>{{ factura.fecha_emision|date:"d/m/Y H:i" }}</td>
+                <tr>
 
-            <td>
-              <span class="badge bg-secondary">
-                {{ factura.get_metodo_pago_display }}
-              </span>
-            </td>
+                    <td class="ps-4 fw-bold text-primary">
+                        #{{ factura.id }}
+                    </td>
 
-            <td class="fw-bold text-success">
-              ${{ factura.total_pagado|floatformat:0 }}
-            </td>
+                    <!-- RESERVAS -->
+                    <td>
+                        {% for detalle in factura.detalles.all %}
+                            {% if detalle.reserva %}
+                                <div class="mb-1">
+                                    <span class="text-primary fw-bold">
+                                        <i class="bi bi-scissors me-1"></i>
+                                        {{ detalle.reserva.servicio.nombre }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
 
-            <td class="text-center">
-              <div class="d-flex justify-content-center gap-2">
-                <button
-                  type="button"
-                  class="btn btn-sm color-azul text-dark rounded-pill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalFactura{{ factura.id }}"
-                  title="Ver detalle"
-                >
-                  <i class="bi bi-eye"></i>
-                </button>
-                <a
-                  href="{% url 'imprimir_factura' factura.id %}"
-                  target="_blank"
-                  class="btn btn-sm color-azul text-dark rounded-pill"
-                  title="Imprimir"
-                >
-                  <i class="bi bi-printer"></i>
-                </a>
-                {% if factura.cliente and factura.cliente.email %}
-                <a
-                  href="mailto:{{ factura.cliente.email }}?subject=Factura%20%23{{ factura.id }}"
-                  class="btn btn-sm color-naranja text-dark rounded-pill"
-                  title="Enviar correo"
-                >
-                  <i class="bi bi-envelope-fill"></i>
-                </a>
-                {% else %}
-                <button
-                  class="btn btn-sm color-gris text-white rounded-pill"
-                  disabled
-                >
-                  <i class="bi bi-envelope-x"></i>
-                </button>
-                {% endif %}
-              </div>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="8" class="text-center py-5 text-secondary">
-              <i class="bi bi-receipt display-1 d-block mb-3 opacity-25"></i>
-              <p class="fs-5 mb-0">No tienes facturas registradas.</p>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                    <!-- PRODUCTOS -->
+                    <td>
+                        {% for detalle in factura.detalles.all %}
+                            {% if detalle.producto %}
+                                <div class="mb-1">
+                                    <span class="text-info fw-semibold">
+                                        <i class="bi bi-box-seam me-1"></i>
+                                        {{ detalle.producto.nombre }}
+                                    </span>
+                                    <small class="text-muted">
+                                        (x{{ detalle.cantidad }})
+                                    </small>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+
+                    <!-- PROMOCIONES -->
+                    <td>
+                        {% for detalle in factura.detalles.all %}
+                            {% if detalle.reserva and detalle.reserva.promocion %}
+                                <span class="badge bg-danger mb-1">
+                                    <i class="bi bi-tag-fill me-1"></i>
+                                    {{ detalle.reserva.promocion.nombre }}
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        {{ factura.fecha_emision|date:"d/m/Y H:i" }}
+                    </td>
+
+                    <td>
+                        <span class="badge bg-secondary">
+                            {{ factura.get_metodo_pago_display }}
+                        </span>
+                    </td>
+
+                    <td class="fw-bold text-success">
+                        ${{ factura.total_pagado|floatformat:0 }}
+                    </td>
+
+                    <td class="text-center">
+
+                        <div class="d-flex justify-content-center gap-2">
+
+                            <button
+                                type="button"
+                                class="btn btn-sm color-azul text-dark rounded-pill"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalFactura{{ factura.id }}"
+                                title="Ver detalle">
+                                <i class="bi bi-eye"></i>
+                            </button>
+
+                            <a href="{% url 'imprimir_factura' factura.id %}"
+                               target="_blank"
+                               class="btn btn-sm color-azul text-dark rounded-pill"
+                               title="Imprimir">
+                                <i class="bi bi-printer"></i>
+                            </a>
+
+                            {% if factura.cliente and factura.cliente.email %}
+                                <a href="mailto:{{ factura.cliente.email }}?subject=Factura%20%23{{ factura.id }}"
+                                   class="btn btn-sm color-naranja text-dark rounded-pill"
+                                   title="Enviar correo">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            {% else %}
+                                <button class="btn btn-sm color-gris text-white rounded-pill" disabled>
+                                    <i class="bi bi-envelope-x"></i>
+                                </button>
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-secondary">
+                        <i class="bi bi-receipt display-1 d-block mb-3 opacity-25"></i>
+                        <p class="fs-5 mb-0">
+                            No tienes facturas registradas.
+                        </p>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
     </div>
-  </div>
+
+</div>
+```
+
 </div>
 
-<!-- MODALES DE DETALLE -->
+<!-- MODALES -->
+
 {% for factura in facturas %}
-<div
-  class="modal fade"
-  id="modalFactura{{ factura.id }}"
-  tabindex="-1"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+
+<div class="modal fade"
+     id="modalFactura{{ factura.id }}"
+     tabindex="-1"
+     aria-hidden="true">
+
+```
+<div class="modal-dialog modal-lg modal-dialog-centered">
+
     <div class="modal-content">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title fw-bold">
-          Detalle de Factura #{{ factura.id }}
-        </h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="modal"
-        ></button>
-      </div>
-      <div class="modal-body text-dark">
-        <div class="row mb-4">
-          <div class="col-6">
-            <strong>Fecha:</strong><br />
-            {{ factura.fecha_emision|date:"d/m/Y H:i" }}
-          </div>
-          <div class="col-6 text-end">
-            <strong>Estado:</strong><br />
-            {% if factura.estado == 'pagada' %}
-            <span class="badge color-azul text-dark">Pagada</span>
-            {% elif factura.estado == 'pendiente' %}
-            <span class="badge color-naranja text-dark">Pendiente</span>
-            {% else %}
-            <span class="badge color-gris text-white">Cancelada</span>
-            {% endif %}
-          </div>
+
+        <div class="modal-header bg-dark text-white">
+
+            <h5 class="modal-title fw-bold">
+                Detalle de Factura #{{ factura.id }}
+            </h5>
+
+            <button type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+            </button>
+
         </div>
 
-        <table class="table table-bordered align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>Descripción</th>
-              <th class="text-center">Cant.</th>
-              <th class="text-end">Precio</th>
-              <th class="text-end">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for detalle in factura.detalles.all %}
-            <tr>
-              <td>
-                {% if detalle.producto %}
-                <i class="bi bi-box-seam color-azul text-dark me-2"></i>{{
-                detalle.producto.nombre }} {% elif detalle.reserva %}
-                <i class="bi bi-scissors color-naranja text-dark me-2"></i>{{
-                detalle.reserva.servicio.nombre }} {% if
-                detalle.reserva.promocion %} <br /><small
-                  class="color-naranja ms-4"
-                  >Promoción: {{ detalle.reserva.promocion.nombre }}</small
-                >
-                {% endif %} {% endif %}
-              </td>
-              <td class="text-center">{{ detalle.cantidad }}</td>
-              <td class="text-end">
-                ${{ detalle.precio_unitario|floatformat:0 }}
-              </td>
-              <td class="text-end fw-bold">
-                ${{ detalle.subtotal|floatformat:0 }}
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <h4 class="text-end fw-bold">
-          <span class="badge color-azul text-dark"
-            >Total: ${{ factura.total_pagado|floatformat:0 }}</span
-          >
-        </h4>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary rounded-pill px-4"
-          data-bs-dismiss="modal"
-        >
-          Cerrar
-        </button>
-        <a
-          href="{% url 'detalle_factura' factura.id %}"
-          target="_blank"
-          class="btn color-azul text-dark rounded-pill px-4"
-        >
-          <i class="bi bi-printer me-2"></i>Imprimir Recibo
-        </a>
-      </div>
+        <div class="modal-body text-dark">
+
+            <div class="row mb-4">
+
+                <div class="col-6">
+                    <strong>Fecha:</strong><br>
+                    {{ factura.fecha_emision|date:"d/m/Y H:i" }}
+                </div>
+
+                <div class="col-6 text-end">
+                    <strong>Estado:</strong><br>
+
+                    {% if factura.estado == 'pagada' %}
+                        <span class="badge color-azul text-dark">Pagada</span>
+
+                    {% elif factura.estado == 'pendiente' %}
+                        <span class="badge color-naranja text-dark">Pendiente</span>
+
+                    {% else %}
+                        <span class="badge color-gris text-white">Cancelada</span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <table class="table table-bordered align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Descripción</th>
+                        <th class="text-center">Cant.</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for detalle in factura.detalles.all %}
+
+                    <tr>
+
+                        <td>
+
+                            {% if detalle.producto %}
+
+                                <i class="bi bi-box-seam color-azul text-dark me-2"></i>
+                                {{ detalle.producto.nombre }}
+
+                            {% elif detalle.reserva %}
+
+                                <i class="bi bi-scissors color-naranja text-dark me-2"></i>
+                                {{ detalle.reserva.servicio.nombre }}
+
+                                {% if detalle.reserva.promocion %}
+                                    <br>
+                                    <small class="color-naranja ms-4">
+                                        Promoción:
+                                        {{ detalle.reserva.promocion.nombre }}
+                                    </small>
+                                {% endif %}
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-center">
+                            {{ detalle.cantidad }}
+                        </td>
+
+                        <td class="text-end">
+                            ${{ detalle.precio_unitario|floatformat:0 }}
+                        </td>
+
+                        <td class="text-end fw-bold">
+                            ${{ detalle.subtotal|floatformat:0 }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <h4 class="text-end fw-bold">
+                <span class="badge color-azul text-dark">
+                    Total: ${{ factura.total_pagado|floatformat:0 }}
+                </span>
+            </h4>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button"
+                    class="btn btn-secondary rounded-pill px-4"
+                    data-bs-dismiss="modal">
+                Cerrar
+            </button>
+
+            <a href="{% url 'detalle_factura' factura.id %}"
+               target="_blank"
+               class="btn color-azul text-dark rounded-pill px-4">
+                <i class="bi bi-printer me-2"></i>
+                Imprimir Recibo
+            </a>
+
+        </div>
+
     </div>
-  </div>
+
 </div>
-{% endfor %} {% endblock content %}
+```
+
+</div>
+
+{% endfor %}
+
+{% endblock content %}

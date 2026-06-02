@@ -2,7 +2,6 @@
 {% load static %}
 {% block content %}
 
-<!-- CONTENEDOR -->
 <div class="position-relative d-flex align-items-center justify-content-center"
      style="min-height:100vh; padding:80px 16px 40px;">
 
@@ -68,6 +67,26 @@
                     </div>
                     <div class="col-md-12">
                         <input name="telefono_cliente" type="tel" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Número de celular (ej. 3001234567)" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label text-white fw-bold"><i class="bi bi-credit-card me-2"></i> 4. SELECCIONA EL MEDIO DE PAGO</label>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="medio_pago" id="pago-persona" value="presencial" checked required>
+                        <label class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-persona">
+                            <i class="bi bi-cash-coin fs-3 mb-2"></i>
+                            <span class="fw-bold" style="font-size: 0.9rem;">Pago en Persona</span>
+                        </label>
+                    </div>
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="medio_pago" id="pago-transferencia" value="transferencia" required>
+                        <label class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-transferencia">
+                            <i class="bi bi-bank fs-3 mb-2"></i>
+                            <span class="fw-bold" style="font-size: 0.9rem;">Transferencia</span>
+                        </label>
                     </div>
                 </div>
             </div>
