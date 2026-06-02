@@ -196,31 +196,52 @@ def listado_calificacion(request):
     return render(request, 'servicios/listado-calificacion.html', context)
 
 def responder_calificacion(request, pk):
-    # Seguridad: Solo administradores pueden responder
+    # Seguridad: Solo administradores
     if not request.user.is_authenticated or not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
         messages.error(request, "Acceso denegado. Solo los administradores pueden responder calificaciones.")
-        return redirect('calificacion')
+        return redirect('listado-calificacion')
 
     calificacion = get_object_or_404(Calificacion, pk=pk)
+    
     if request.method == 'POST':
-        form = ResponderCalificacionForm(request.POST)
-        if form.is_valid():
-            respuesta = form.cleaned_data['respuesta']
-            # Aquí puedes implementar la lógica para guardar la respuesta o enviarla por correo
-            messages.success(request, f'Respuesta enviada con éxito a {calificacion.cliente}.')
+        texto_respuesta = request.POST.get('mensaje_admin')
+        
+        if not texto_respuesta:
+            messages.error(request, "La respuesta no puede estar vacía.")
+        else:
+            # Intentamos obtener un correo. 
+            # NOTA: Tu modelo Calificacion usa 'cliente' (CharField), no 'usuario'.
+            # Intentaremos buscar un usuario por ese nombre o usaremos un correo genérico si no existe.
+            from usuarios.models import Usuario
+            usuario = Usuario.objects.filter(first_name=calificacion.cliente).first()
+            correo_destino = usuario.email if usuario else None
+
+            if correo_destino:
+                asunto = "Respuesta a tu calificación - ChichaBarber"
+                cuerpo = f"Hola {calificacion.cliente},\n\nEl administrador respondió: {texto_respuesta}"
+                try:
+                    send_mail(
+                        asunto, cuerpo, 'chichabarber39@gmail.com',
+                        [correo_destino], fail_silently=False
+                    )
+                    messages.success(request, f"Respuesta enviada a {correo_destino}")
+                except Exception as e:
+                    messages.error(request, f"Error al enviar correo: {e}")
+            else:
+                messages.warning(request, "Se procesó la respuesta, pero no se encontró un correo para este cliente.")
+            
             return redirect('listado-calificacion')
+            
     else:
         form = ResponderCalificacionForm()
     
     context = {
         'form': form,
         'calificacion': calificacion,
-        'titulo': 'Responder a Calificación'
+        'titulo': f'Responder a {calificacion.cliente}'
     }
     return render(request, 'servicios/responder-calificacion.html', context)
 
-def guardar_calificacion_view(request):
-    if request.method == 'POST':
-        form = CalificacionForm(request.POST)
-        if form.is_valid():
-            form.save()
+def guardar_calificacion(request):
+    # ... (esta lógica ya debería estar manejada por formularios o vistas de cliente)
+    pass

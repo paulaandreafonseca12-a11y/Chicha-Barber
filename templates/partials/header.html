@@ -6,12 +6,12 @@
         <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
       </a>
 
-      <ul class=" nav col-12 col-lg-auto me-lg-autocol-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 text-light text-white ">
-        <li><a href="/" class="nav-link px-2 text-body-secondary">Inicio</a></li>
-        <li><a href="{% url 'servicios' %}" class="nav-link px-2 text-body text-light">Servicios</a></li>
-        <li><a href="{% url 'productos_galeria' %}" class="nav-link px-2 text-body text-light">Productos</a></li>
-        <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-body text-light">Promociones</a></li>
-      </ul>
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+  <li><a href="/" class="nav-link px-2 text-white">Inicio</a></li>
+  <li><a href="{% url 'servicios' %}" class="nav-link px-2 text-white">Servicios</a></li>
+  <li><a href="{% url 'productos_galeria' %}" class="nav-link px-2 text-white">Productos</a></li>
+  <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-white">Promociones</a></li>
+</ul>
       <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-light text-white">
       {% if user.is_authenticated %}
         <!-- Caso: Usuario Logueado (Dropdown en Navbar Principal) -->

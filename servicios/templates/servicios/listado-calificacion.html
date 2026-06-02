@@ -35,19 +35,18 @@
                               {% endif %}
                           </td>
                           <td><strong>{{ calificacion.servicio.nombre }}</strong></td>
-                          <td>{{ calificacion.cliente }}
+                          <td>{{ calificacion.cliente }}</td>
                           <td>{{ calificacion.puntuacion }}</td>
                           <td>{{ calificacion.comentario }}</td>
                           <td>{{ calificacion.fecha_calificacion }}</td>
-
-                          </td>
                           <td>
-                                <a href="{% url 'responder-calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-primary color-azul">Responder</a>
-                          
-                              
+                                <a href="{% url 'responder-calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-primary color-azul">
+                                    <i class="bi bi-reply"></i> Responder
+                                </a>
+                          </td>
                       </tr>
                       {% empty %} <tr>
-                          <td colspan="5" class="text-center">No hay calificaciones registradas.</td>
+                          <td colspan="8" class="text-center">No hay calificaciones registradas.</td>
                       </tr>
                       {% endfor %} </tbody>
               </table>
