@@ -10,6 +10,7 @@ urlpatterns = [
     path('reprogramar/<int:pk>/', views.reprogramar_cita, name='reprogramar_cita'),
     path('cancelar/<int:pk>/', views.cancelar_cita, name='cancelar_cita'),
     path('estado/<int:pk>/<str:nuevo_estado>/', views.cambiar_estado_reserva, name='cambiar_estado'),
+    path('confirmacion/<int:pk>/', views.reserva_confirmada, name='reserva_confirmada'),
     
     # --- GESTIÓN DE DISPONIBILIDAD (ADMIN) ---
     path('gestion-dias/', views.gestionar_disponibilidad_dias, name='gestionar_dias'),

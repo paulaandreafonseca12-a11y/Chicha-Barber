@@ -1,48 +1,62 @@
-{%extends "base-admin.html"%}
+{% extends "base-admin.html" %}
 {% load static %}
 
 {% block content %}
 
-    <div class="container mt-5">
+    
+    <div class="container mt-5 ">
       <div class="card shadow">
           <div  class="card-header bg-primary text-white d-flex justify-content-between color-azul">
-              <h5 class="mb-0">Gestión de Calificaciones</h5>
-                <button class="btn btn-outline-light" onclick="window.location.href='{% url 'calificacion' %}'">+ Nueva Calificación</button>     
-            </div>
-            <div class="card-body">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Servicio</th>
-                            <th>Cliente</th>
-                            <th>Calificación</th>
-                            <th>Comentario</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for calificacion in calificacion %} 
-                        <tr>
-                            <td>#{{ calificacion.pk }}</td> 
-                            <td><strong>{{ calificacion.servicio.nombre }}</strong></td> 
-                            <td>{{ calificacion.cliente.username }}</td> 
-                            <td>{{ calificacion.calificacion }}</td> 
-                            <td>{{ calificacion.comentario }}</td> 
-                            <td>
-                                <button class="btn btn-sm btn-outline-info" onclick="window.location.href='{% url 'editar_calificacion' calificacion.pk %}'">Editar</button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='{% url 'eliminar_calificacion' calificacion.pk %}'">Eliminar</button>
-                            </td>
-                        </tr>
-                        {% empty %} 
-                        <tr>
-                            <td colspan="6" class="text-center">No hay calificaciones registradas.</td>
-                        </tr>
-                        {% endfor %} 
-                    </tbody>
-                </table>
-            </div>
-        </div>
+              <h5 class="mb-0 ">Gestión de calificaciones</h5>
+             
+          </div>
+          <div class="card-body">
+              <table class="table table-hover">
+                  <thead class="table-light">
+                      <tr>
+                          <th>ID</th>
+                          <th>Imagen</th>
+                          <th>Servicio</th>
+                          <th>Cliente</th>
+                          <th>Puntuación</th>
+                          <th>Comentario</th>
+                          <th>Fecha de calificación</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    
+                    {% for calificacion in calificaciones %} <tr>
+                          <td>#{{ calificacion.pk }}</td> 
+                          <td>
+                              {% if calificacion.servicio.imagen %}
+                                  <img src="{{ calificacion.servicio.imagen.url }}" alt="{{ calificacion.servicio.nombre }}" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                              {% else %}
+                                  <img src="{% static 'img/Fondo.png' %}" alt="Sin imagen" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                              {% endif %}
+                          </td>
+                          <td><strong>{{ calificacion.servicio.nombre }}</strong></td>
+                          <td>{{ calificacion.cliente }}
+                          <td>{{ calificacion.puntuacion }}</td>
+                          <td>{{ calificacion.comentario }}</td>
+                          <td>{{ calificacion.fecha_calificacion }}</td>
+
+                          </td>
+                          <td>
+                                <a href="{% url 'responder-calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-primary color-azul">Responder</a>
+                          
+                              
+                      </tr>
+                      {% empty %} <tr>
+                          <td colspan="5" class="text-center">No hay calificaciones registradas.</td>
+                      </tr>
+                      {% endfor %} </tbody>
+              </table>
+          </div>
+      </div>
     </div>
-    </main>
+  </main>
 {% endblock %}
+
+  
+                      
+  

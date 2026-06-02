@@ -1,13 +1,13 @@
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
-
+from django.db import transaction
 from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
-import reservas.models
+from facturas.models import Factura, DetalleFactura
 from reservas.models import Reserva, Turno
 from reservas.forms import ReservaEditarForm
 from servicios.models import Promocion, Servicios
@@ -64,6 +64,11 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     promo = None
 
     # 1. ELIMINAMOS el bloqueo inicial. Ahora permitimos que cualquiera vea la página.
+    if not request.user.is_authenticated:
+        # Redirigimos al login para que usuarios con cuenta puedan iniciar sesión
+        login_url = reverse('login')
+        return redirect(f'{login_url}?next={request.get_full_path()}')
+
     if promocion_id is not None:
         promo = get_object_or_404(Promocion, pk=promocion_id)
         servicio = promo.servicio
@@ -176,34 +181,65 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             return render(request, 'reservas/reservas.html', context_error)
 
         try:
-            turno = Turno.objects.get(pk=turno_id, estado='disponible')
-            precio = servicio.precio
-            if promo:
-                descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
-                precio = round(precio * (Decimal('1') - descuento), 2)
+            with transaction.atomic():
+                # select_for_update bloquea la fila en la DB para que nadie más la toque hasta terminar
+                turno = Turno.objects.select_for_update().get(pk=turno_id, estado='disponible')
+                
+                precio = servicio.precio
+                if promo:
+                    descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
+                    precio = round(precio * (Decimal('1') - descuento), 2)
 
-            Reserva.objects.create(
-                turno=turno,
-                cliente=request.user,
-                nombre_cliente=nombre,
-                correo_cliente=correo,
-                telefono_cliente=telefono,
-                servicio=servicio,
-                precio_historico=precio,
-            )
-            turno.estado = 'reservado'
-            turno.save()
+                reserva = Reserva.objects.create(
+                    turno=turno,
+                    cliente=request.user if request.user.is_authenticated else None,
+                    nombre_cliente=nombre,
+                    correo_cliente=correo,
+                    telefono_cliente=telefono,
+                    servicio=servicio,
+                    precio_historico=precio,
+                    promocion=promo,
+                )
+                turno.estado = 'reservado'
+                turno.save()
 
-            enviar_correo_reserva(
-                correo_cliente=correo,
-                nombre=nombre,
-                servicio=servicio,
-                fecha=datetime.combine(turno.fecha, turno.hora_inicio),
-            )
-            messages.success(request, '¡Reserva creada con éxito!')
-            return redirect('inicio')
+                # Generar Factura automática al realizar la reserva
+                factura = Factura.objects.create(
+                    cliente=request.user,
+                    total_pagado=float(precio),
+                    metodo_pago='efectivo',  # Se establece efectivo como método inicial
+                    estado='pendiente'
+                )
+
+                # Crear el detalle de la factura vinculándolo a la reserva
+                DetalleFactura.objects.create(
+                    factura=factura,
+                    reserva=reserva,
+                    cantidad=1,
+                    precio_unitario=precio,
+                    subtotal=precio
+                )
+
+            try:
+                enviar_correo_reserva(
+                    correo_cliente=correo,
+                    nombre=nombre,
+                    servicio=servicio,
+                    fecha=datetime.combine(turno.fecha, turno.hora_inicio),
+                )
+            except Exception as mail_error:
+                # Logueamos el error en consola pero no bloqueamos al usuario
+                print(f"Error al enviar correo de reserva: {mail_error}")
+
+            return redirect('facturas')
         except Turno.DoesNotExist:
-            messages.error(request, 'El turno seleccionado ya no está disponible. Por favor elige otro.')
+            # Caso de doble clic: Si el turno ya no está disponible, verificamos si ya existe la reserva
+            # para este turno. Si existe, asumimos que la petición anterior tuvo éxito.
+            reserva_existente = Reserva.objects.filter(turno_id=turno_id).first()
+            if reserva_existente:
+                return redirect('facturas')
+            
+            messages.error(request, '¡Ups! El turno seleccionado ya no está disponible. Por favor elige otro.')
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
 
@@ -214,6 +250,11 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         'turnos_disponibles': turnos_disponibles,
         'action_url': action_url,
     })
+
+
+def reserva_confirmada(request, pk):
+    reserva = get_object_or_404(Reserva, pk=pk)
+    return render(request, 'reservas/reserva_confirmada.html', {'reserva': reserva})
 
 
 def cancelar_cita(request, pk):
@@ -280,6 +321,8 @@ def crear_reserva_admin(request):
         telefono = request.POST.get('telefono_cliente', '').strip()
         fecha_reserva_raw = request.POST.get('fecha_reserva', '').strip()
         servicio_id = request.POST.get('servicio')
+        # El admin debería elegir barbero para poder bloquear el turno
+        barbero_id = request.POST.get('barbero') 
 
         if not (nombre and correo and telefono and fecha_reserva_raw and servicio_id):
             messages.error(request, 'Todos los campos son obligatorios.')
@@ -290,14 +333,30 @@ def crear_reserva_admin(request):
             messages.error(request, 'Fecha de cita inválida.')
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
         try:
-            servicio = Servicios.objects.get(id=servicio_id)
-            Reserva.objects.create(
-                nombre_cliente=nombre,
-                correo_cliente=correo,
-                telefono_cliente=telefono,
-                fecha_reserva=fecha_reserva,
-                servicio=servicio,
-            )
+            with transaction.atomic():
+                servicio = Servicios.objects.get(id=servicio_id)
+                
+                # Intentamos buscar un turno que coincida para marcarlo como reservado
+                # y que no aparezca disponible para los clientes
+                turno_coincidente = Turno.objects.filter(
+                    fecha=fecha_reserva.date(),
+                    hora_inicio=fecha_reserva.time(),
+                    profesional_id=barbero_id,
+                    estado='disponible'
+                ).first()
+
+                Reserva.objects.create(
+                    turno=turno_coincidente,
+                    nombre_cliente=nombre,
+                    correo_cliente=correo,
+                    telefono_cliente=telefono,
+                    fecha_reserva=fecha_reserva,
+                    servicio=servicio,
+                )
+                if turno_coincidente:
+                    turno_coincidente.estado = 'reservado'
+                    turno_coincidente.save()
+
             messages.success(request, '¡Cita registrada!')
             return redirect('ver_agenda')
         except Servicios.DoesNotExist:
@@ -397,55 +456,6 @@ def activar_dia_agenda(request, fecha_str):
         messages.success(request, f"Día {fecha_str} configurado. Se crearon {turnos_creados} turnos.")
     return redirect('gestionar_dias')
 
-
-
-def desactivar_dia_agenda(request, fecha_str):
-    """
-    Cancela profesionalmente la agenda de un día:
-    1. Notifica y cancela las reservas existentes.
-    2. Elimina los turnos sobrantes para limpiar la vista.
-    """
-    fecha = date.fromisoformat(fecha_str)
-    
-    # 1. Identificar las reservas que se van a ver afectadas
-    reservas_afectadas = Reserva.objects.filter(
-        turno__fecha=fecha, 
-        estado__in=['reservada', 'confirmada']
-    )
-    
-    cantidad_notificada = 0
-    for reserva in reservas_afectadas:
-        # Cambiamos el estado de la reserva
-        reserva.estado = 'cancelada'
-        reserva.save()
-        
-        # Opcional: Enviar correo de notificación
-        try:
-            # Reutilizamos tu función de core.utils si permite mensajes personalizados,
-            # o puedes crear una nueva específica para cancelaciones.
-            enviar_correo_reserva(
-                correo_cliente=reserva.correo_cliente,
-                nombre=reserva.nombre_cliente,
-                servicio=reserva.servicio,
-                fecha=reserva.fecha_reserva,
-                # Podrías pasar un parámetro extra aquí para indicar que es CANCELACIÓN
-            )
-            cantidad_notificada += 1
-        except Exception as e:
-            print(f"Error enviando correo a {reserva.correo_cliente}: {e}")
-
-    # 2. Ahora tratamos los turnos
-    # Los turnos que tenían reserva ahora están ligados a una reserva 'cancelada'
-    # Los turnos 'disponibles' simplemente los borramos para que el día aparezca como CERRADO
-    eliminados, _ = Turno.objects.filter(fecha=fecha, estado='disponible').delete()
-    
-    # 3. Informar al administrador del resultado
-    if cantidad_notificada > 0:
-        messages.success(request, f"Se han cancelado {cantidad_notificada} citas y se notificó a los clientes.")
-    
-    messages.warning(request, f"Día {fecha_str} desactivado. Se limpiaron {eliminados} turnos disponibles.")
-    
-    return redirect('gestionar_dias')
 
 
 def desactivar_dia_agenda(request, fecha_str):

@@ -4,6 +4,7 @@ import random
 import requests
 from io import BytesIO
 from django.core.files.base import ContentFile 
+from django.utils import timezone
 from datetime import datetime, date, time, timedelta
 
 # 1. Configurar el entorno de Django para poder usar sus modelos desde este script externo
@@ -12,22 +13,26 @@ django.setup()
 
 # 2. Importar los modelos
 from usuarios.models import Usuario
-from servicios.models import Servicios, Promocion,calificacion
+import servicios.models
+from servicios.models import Servicios, Promocion, Calificacion
 from reservas.models import Reserva, Turno
 from productos.models import Producto, Stock, Compra, DetalleCompra
+from facturas.models import Factura, DetalleFactura
 
 def limpiar_datos():
     print("Limpiando datos anteriores...")
     # Ahora el script limpia todo automáticamente para garantizar datos frescos
+    DetalleFactura.objects.all().delete()
+    Factura.objects.all().delete()
     DetalleCompra.objects.all().delete()
     Compra.objects.all().delete()
     Stock.objects.all().delete()
     Producto.objects.all().delete()
-    Calificacion.objects.all().delete()
+    servicios.models.Calificacion.objects.all().delete()
     Reserva.objects.all().delete()
     Turno.objects.all().delete()
-    Promocion.objects.all().delete()
-    Servicios.objects.all().delete()
+    servicios.models.Promocion.objects.all().delete()
+    servicios.models.Servicios.objects.all().delete()
     Usuario.objects.exclude(is_superuser=True).delete()
 
 def descargar_avatar(nombre_completo, email):
@@ -106,10 +111,10 @@ def poblar_servicios():
     ]
     
     for nombre in nombres_servicios:
-        Servicios.objects.get_or_create(
+        servicios.models.Servicios.objects.get_or_create(
             nombre=nombre,
             defaults={
-                'precio': random.randint(15, 60) * 1000, # Precios entre 15.000 y 60.000
+                'precio': random.randint(20, 50) * 1000, # Ajustado: 20k - 50k
                 'duracion': random.choice([30, 45, 60, 90]),
                 'descripcion': f'Descripción detallada y profesional para el servicio de {nombre}.'
             }
@@ -117,16 +122,16 @@ def poblar_servicios():
 
 def poblar_promociones():
     print("Poblando Promociones...")
-    servicios = list(Servicios.objects.all())
-    if not servicios:
+    lista_servicios = list(servicios.models.Servicios.objects.all())
+    if not lista_servicios:
         print("  ⚠️ No se pueden crear promociones porque no hay servicios en la base de datos.")
         return
 
     for i in range(1, 11):
-        Promocion.objects.get_or_create(
+        servicios.models.Promocion.objects.get_or_create(
             nombre=f"Promo Especial {i}",
             defaults={
-                'servicio': random.choice(servicios),
+                'servicio': random.choice(lista_servicios),
                 'porcentaje_descuento': random.choice([10, 15, 20, 25, 50]),
                 'duracion': f"{random.choice([1, 2, 3])} Semanas",
                 'descripcion': f"Aprovecha esta increíble promoción número {i} por tiempo limitado."
@@ -172,7 +177,7 @@ def poblar_reservas():
     estados_reserva = ['reservada', 'confirmada', 'cancelada']
     estados_turno = ['disponible', 'reservado', 'cancelado']
     
-    servicios_disponibles = list(Servicios.objects.all())
+    servicios_disponibles = list(servicios.models.Servicios.objects.all())
     if not servicios_disponibles:
         print("  ⚠️ No se pueden crear reservas porque no hay servicios en la base de datos.")
         return
@@ -208,6 +213,74 @@ def poblar_reservas():
             estado=random.choice(estados_reserva)
         )
 
+def poblar_calificaciones():
+    print("Poblando Calificaciones...")
+    servicios = list(Servicios.objects.all())
+    clientes = ["Andrés Pérez", "Marina Soler", "Kevin Duarte", "Lucía Rivas"]
+    comentarios = [
+        "Excelente servicio, muy profesional.",
+        "Me gustó mucho el corte, volveré.",
+        "Un poco demorado pero el resultado fue genial.",
+        "La mejor barbería de la ciudad.",
+        "Muy buena atención al cliente."
+    ]
+
+    for servicio in servicios:
+        for _ in range(random.randint(1, 3)):
+            Calificacion.objects.create(
+                servicio=servicio,
+                cliente=random.choice(clientes),
+                puntuacion=random.randint(3, 5),
+                comentario=random.choice(comentarios)
+            )
+
+def poblar_facturas():
+    print("Poblando Facturas...")
+    reservas = Reserva.objects.all()
+    productos = list(Producto.objects.all())
+    clientes = list(Usuario.objects.filter(rol='cliente'))
+    metodos = ['efectivo', 'nequi', 'daviplata', 'tarjeta']
+
+    if not reservas and not productos:
+        print("  ⚠️ No hay datos suficientes para generar facturas.")
+        return
+
+    # 1. Facturas para las Reservas (Citas)
+    for reserva in reservas:
+        factura = Factura.objects.create(
+            cliente=reserva.cliente if reserva.cliente else random.choice(clientes),
+            total_pagado=float(reserva.precio_historico),
+            metodo_pago=random.choice(metodos),
+            estado='pagada' if reserva.estado == 'confirmada' else 'pendiente',
+            nombre_cliente=reserva.nombre_cliente,
+            correo_cliente=reserva.correo_cliente
+        )
+        DetalleFactura.objects.create(
+            factura=factura,
+            reserva=reserva,
+            cantidad=1,
+            precio_unitario=reserva.precio_historico,
+            subtotal=reserva.precio_historico
+        )
+
+    # 2. Facturas de Venta Directa (Productos)
+    for i in range(5):
+        cliente = random.choice(clientes)
+        factura = Factura.objects.create(
+            cliente=cliente,
+            total_pagado=0,
+            metodo_pago=random.choice(metodos),
+            estado='pagada'
+        )
+        total_acumulado = 0
+        for _ in range(random.randint(1, 3)):
+            prod = random.choice(productos)
+            cant = random.randint(1, 2)
+            sub = float(prod.precio_venta) * cant
+            DetalleFactura.objects.create(factura=factura, producto=prod, cantidad=cant, precio_unitario=prod.precio_venta, subtotal=sub)
+            total_acumulado += sub
+        factura.total_pagado = total_acumulado
+        factura.save()
 
 
 def poblar_productos_y_stock():
@@ -220,13 +293,13 @@ def poblar_productos_y_stock():
     
     try:
         for nombre in nombres_productos:
-            precio_c = random.randint(10, 30) * 1000
+            precio_c = random.randint(2, 10) * 1000 # Precio compra pequeño
             producto, created = Producto.objects.get_or_create(
                 nombre=nombre,
                 defaults={
                     'descripcion': f'Producto de alta calidad para barbería: {nombre}.',
                     'precio_compra': precio_c,
-                    'precio_venta': precio_c + (random.randint(10, 20) * 1000),
+                    'precio_venta': precio_c + (random.randint(2, 8) * 1000), # Precio venta pequeño
                 }
             )
             
@@ -267,15 +340,55 @@ def poblar_compras():
     except Exception as e:
         print(f"  ⚠️ Error al poblar compras: {e}")
 
+def poblar_calificaciones():
+    print("Poblando Calificaciones...")
+    servicios_disponibles = list(servicios.models.Servicios.objects.all())
+    clientes_disponibles = list(Usuario.objects.filter(rol='cliente'))
+
+    if not servicios_disponibles:
+        print("  ⚠️ No se pueden crear calificaciones porque no hay servicios en la base de datos.")
+        return
+    if not clientes_disponibles:
+        print("  ⚠️ No se pueden crear calificaciones porque no hay clientes en la base de datos.")
+        return
+
+    comentarios_ejemplo = [
+        "Excelente servicio, muy profesional.",
+        "Me encantó el resultado, volveré pronto.",
+        "Buen trabajo, pero la espera fue un poco larga.",
+        "Muy amable el personal, pero el corte no fue exactamente lo que esperaba.",
+        "Increíble experiencia, 5 estrellas!",
+        "Rápido y eficiente, justo lo que necesitaba.",
+        "El lugar es muy agradable y el servicio impecable.",
+        "Podría mejorar la atención al cliente.",
+        "Relación calidad-precio muy buena.",
+        "No estoy del todo satisfecho con el corte."
+    ]
+
+    for _ in range(15): # Crear 15 calificaciones
+        servicio = random.choice(servicios_disponibles)
+        cliente_usuario = random.choice(clientes_disponibles)
+        puntuacion = random.randint(1, 5)
+        comentario = random.choice(comentarios_ejemplo)
+
+        servicios.models.Calificacion.objects.create(
+            servicio=servicio,
+            cliente=cliente_usuario.get_full_name() or cliente_usuario.username, # Usa el nombre completo si está disponible, sino el username
+            puntuacion=puntuacion,
+            comentario=comentario
+        )
+
 if __name__ == '__main__':
     print("Iniciando la inserción de datos de prueba...")
     limpiar_datos()
-    poblar_turnos_disponibles() # Primero creamos muchos turnos disponibles
     poblar_usuarios()
     poblar_servicios()
+    poblar_turnos_disponibles() # Ahora sí hay barberos para los turnos
     poblar_promociones()
     poblar_reservas()
-    poblar_calificaciones()
+    poblar_calificaciones() 
+    
     poblar_productos_y_stock()
     poblar_compras()
+    poblar_facturas()
     print("✅ ¡Base de datos poblada con éxito!")

@@ -90,6 +90,11 @@ function agregarCarrito(event, id, nombre, precio) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
     actualizarContador();
 
+    // Iniciar temporizador de 5 minutos si es el primer producto
+    if (carrito.length > 0 && !localStorage.getItem("carrito_expiracion")) {
+        localStorage.setItem("carrito_expiracion", Date.now() + (5 * 60 * 1000));
+    }
+
     const btn = event.target;
     const originalText = btn.innerText;
     btn.innerHTML = "<i class='bi bi-check-circle me-1'></i> Agregado";

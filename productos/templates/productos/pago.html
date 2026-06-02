@@ -1,128 +1,181 @@
-{% extends "base-clientes.html" %}
-{% load static %}
-
-{% block content %}
+{% extends "base-clientes.html" %} {% load static %} {% block content %}
 
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div
+        class="card shadow-lg border-0 rounded-4 bg-dark text-white overflow-hidden"
+      >
+        <!-- Encabezado con azul de la paleta -->
+        <div
+          class="card-header py-3 border-0"
+          style="background-color: #4bc0d9"
+        >
+          <h4 class="text-center mb-0 fw-bold text-white">
+            <i class="bi bi-person-fill me-2"></i>
+            Datos del Cliente
+          </h4>
+        </div>
 
-            <div class="card shadow-lg border-0 rounded-4 p-4 bg-dark text-white">
+        <div class="card-body p-4">
+          <!-- 🔥 FORMULARIO -->
+          <form method="POST" action="{% url 'procesar_compra' %}">
+            {% csrf_token %}
 
-                <h4 class="text-center mb-4 text-warning fw-bold">
-                    🧾 Datos del Cliente
-                </h4>
-
-                <!-- 🔥 FORMULARIO -->
-                <form method="POST" action="{% url 'procesar_compra' %}">
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <label class="form-label">Nombre completo</label>
-                        <input type="text" name="nombre" class="form-control form-control-lg" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Correo electrónico</label>
-                        <input type="email" name="correo" class="form-control form-control-lg" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Teléfono</label>
-                        <input type="text" name="telefono" class="form-control form-control-lg" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Dirección de entrega</label>
-                        <input type="text" name="direccion" class="form-control form-control-lg" required>
-                    </div>
-
-                    <hr class="border-secondary">
-
-                    <h5 class="mt-3 text-warning">💳 Método de Pago</h5>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="pago" value="persona"
-                               onclick="mostrarInfoPago('persona')" required>
-                        <label class="form-check-label">
-                            Pago en persona (en el local)
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="pago" value="contraentrega"
-                               onclick="mostrarInfoPago('contraentrega')">
-                        <label class="form-check-label">
-                            Pago contraentrega
-                        </label>
-                    </div>
-
-                    <!-- 🔥 ENVÍO DEL CARRITO -->
-                    <input type="hidden" name="carrito" id="carritoInput">
-
-                    <!-- INFO DINÁMICA -->
-                    <div id="infoPago" class="alert alert-info mt-3 d-none"></div>
-
-                    <!-- BOTÓN -->
-                    <button type="submit" class="btn btn-success w-100 mt-4 rounded-pill">
-                        ✅ Confirmar Compra
-                    </button>
-
-                </form>
-
+            <div class="mb-3">
+              <label class="form-label">Nombre completo</label>
+              <input
+                type="text"
+                name="nombre"
+                class="form-control form-control-lg"
+                value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}"
+                required
+              />
             </div>
 
+            <div class="mb-3">
+              <label class="form-label">Correo electrónico</label>
+              <input
+                type="email"
+                name="correo"
+                class="form-control form-control-lg"
+                value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Teléfono</label>
+              <input
+                type="text"
+                name="telefono"
+                class="form-control form-control-lg"
+                value="{% if request.user.is_authenticated %}{{ request.user.telefono }}{% endif %}"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Dirección de entrega</label>
+              <input
+                type="text"
+                name="direccion"
+                class="form-control form-control-lg"
+                required
+              />
+            </div>
+
+            <hr class="border-secondary" />
+
+            <h5 class="mt-3 fw-bold" style="color: #4bc0d9">
+              💳 Método de Pago
+            </h5>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="pago"
+                value="persona"
+                onclick="mostrarInfoPago('persona')"
+                required
+              />
+              <label class="form-check-label">
+                Pago en persona (en el local)
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="pago"
+                value="contraentrega"
+                onclick="mostrarInfoPago('contraentrega')"
+              />
+              <label class="form-check-label"> Pago contraentrega </label>
+            </div>
+
+            <!-- 🔥 ENVÍO DEL CARRITO -->
+            <input type="hidden" name="carrito" id="carritoInput" />
+
+            <!-- INFO DINÁMICA -->
+            <div id="infoPago" class="alert alert-info mt-3 d-none"></div>
+
+            <!-- BOTÓN -->
+            <button
+              type="submit"
+              class="btn btn-success w-100 mt-4 rounded-pill color-azul"
+            >
+              ✅ Confirmar Compra
+            </button>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
-
 <script>
+  // =======================
+  // 🛒 CARRITO
+  // =======================
 
-// =======================
-// 🛒 CARRITO
-// =======================
+  // Obtener carrito
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Obtener carrito
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  // Enviarlo al backend
+  document.getElementById("carritoInput").value = JSON.stringify(carrito);
 
-// Enviarlo al backend
-document.getElementById("carritoInput").value = JSON.stringify(carrito);
+  // =======================
+  // 💳 INFO DE PAGO
+  // =======================
 
-// =======================
-// 💳 INFO DE PAGO
-// =======================
-
-function mostrarInfoPago(tipo) {
+  function mostrarInfoPago(tipo) {
     let info = document.getElementById("infoPago");
     info.classList.remove("d-none");
 
     if (tipo === "persona") {
-        info.innerHTML = "💡 Puedes pagar directamente en nuestro local.";
+      info.innerHTML = "💡 Puedes pagar directamente en nuestro local.";
     } else {
-        info.innerHTML = "🚚 Pagarás cuando recibas el producto.";
+      info.innerHTML = "🚚 Pagarás cuando recibas el producto.";
     }
-}
+  }
 
+  // Temporizador de fondo
+  function revisarExpiracion() {
+    let expiracion = localStorage.getItem("carrito_expiracion");
+    if (expiracion && Date.now() > expiracion) {
+      localStorage.removeItem("carrito");
+      localStorage.removeItem("carrito_expiracion");
+      alert("⏰ El tiempo de tu carrito ha expirado.");
+      window.location.replace("{% url 'productos_galeria' %}");
+    }
+  }
+
+  // Revisar cada 2 segundos mientras está en esta página
+  setInterval(revisarExpiracion, 2000);
+  revisarExpiracion();
 </script>
 
 <!-- =======================
 🔥 BORRAR + REDIRIGIR
 ======================= -->
 <script>
-{% if messages %}
-    {% for message in messages %}
+  {% if messages %}
+      {% for message in messages %}
+          {% if message.tags == 'error' or 'Producto' in message.message %}
+              // 💥 Borrar carrito si hay error de coincidencia de productos
+              localStorage.removeItem("carrito");
+              localStorage.removeItem("carrito_expiracion");
+          {% endif %}
 
-            // 💥 borrar carrito
-            localStorage.removeItem("carrito");
-            localStorage.removeItem("tiempo_carrito");
-
-            // 🚀 redirigir al inicio
-            setTimeout(function(){
-                window.location.href = "{% url 'inicio' %}";
-            }, 2000);
-    {% endfor %}
-{% endif %}
+              // 🚀 Redirigir al inicio después de mostrar el mensaje
+              setTimeout(function(){
+                  window.location.href = "{% url 'inicio' %}";
+              }, 2000);
+      {% endfor %}
+  {% endif %}
 </script>
 
 {% endblock content %}

@@ -5,33 +5,30 @@
 
 <div class="main-wrapper mx-auto">
 
-    <header class="header-brand">
-        <div class="logo-wrap">
-            <img src="{% static 'img/logo.png' %}" alt="Logo">
+    <!-- HEADER -->
+    <header class="text-center mb-4">
+        <div class="logo-wrap rounded-circle overflow-hidden mx-auto mb-2">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-100 h-100 object-fit-cover">
         </div>
-
         <h1 class="brand-name text-white">CHICHA BARBER</h1>
-        <span class="brand-sub">Studio · Nobsa</span>
+        <span class="brand-sub small text-uppercase">Studio · Nobsa</span>
     </header>
 
-    <main class="form-box">
+    <!-- FORMULARIO -->
+    <main class="form-box p-4 rounded-3">
 
-        <h2 class="form-heading text-white">Crear Cuenta</h2>
-        <p class="form-sub text-white">Únete a nuestra comunidad</p>
+        <h2 class="form-heading text-white mb-1">Crear Cuenta</h2>
+        <p class="small text-white opacity-50 mb-3">Únete a nuestra comunidad</p>
 
         {% if form.errors %}
-        <div class="auth-alert">
-
+        <div class="alert auth-alert mb-3">
             <p><strong>Errores encontrados:</strong></p>
-
             {{ form.non_field_errors }}
-
             {% for field in form %}
                 {% for error in field.errors %}
                     <p><strong>{{ field.label }}:</strong> {{ error }}</p>
                 {% endfor %}
             {% endfor %}
-
         </div>
         {% endif %}
 
@@ -41,106 +38,83 @@
             <input type="hidden" name="next" value="{{ next }}">
 
             <div class="row g-3">
-
                 <div class="col-6">
-                    <label class="cb-label ">Nombre(s)</label>
-                    <div class="input-wrap">
+                    <label class="form-label cb-label">Nombre(s)</label>
+                    <div class="position-relative">
                         <span class="input-icon">👤</span>
                         {{ form.first_name }}
                     </div>
                 </div>
-
-                <div class="col-6 ">
-                    <label class="cb-label">Apellido(s)</label>
-                    <div class="input-wrap">
+                <div class="col-6">
+                    <label class="form-label cb-label">Apellido(s)</label>
+                    <div class="position-relative">
                         <span class="input-icon">👤</span>
                         {{ form.last_name }}
                     </div>
                 </div>
-
             </div>
 
             <div class="row g-3">
-
-                <div class="col-6 ">
-                    <label class="cb-label">N° Documento</label>
-                    <div class="input-wrap">
+                <div class="col-6">
+                    <label class="form-label cb-label">N° Documento</label>
+                    <div class="position-relative">
                         <span class="input-icon">🪪</span>
                         {{ form.username }}
                     </div>
                 </div>
-
-                <div class="col-6 ">
-                    <label class="cb-label">Teléfono</label>
-                    <div class="input-wrap">
+                <div class="col-6">
+                    <label class="form-label cb-label">Teléfono</label>
+                    <div class="position-relative">
                         <span class="input-icon">📞</span>
                         {{ form.telefono }}
                     </div>
                 </div>
-
             </div>
 
             <div class="row g-3">
-
-                <div class="col-12 ">
-                    <label class="cb-label">Correo electrónico</label>
-                    <div class="input-wrap">
+                <div class="col-12">
+                    <label class="form-label cb-label">Correo electrónico</label>
+                    <div class="position-relative">
                         <span class="input-icon">✉️</span>
                         {{ form.email }}
                     </div>
                 </div>
-
             </div>
 
+            <!-- Rol fijo -->
             <div class="row g-3">
-
-                <div class="col-12 ">
-                    <label class="cb-label">Rol</label>
-
-                    <div class="input-wrap">
+                <div class="col-12">
+                    <label class="form-label cb-label">Rol</label>
+                    <div class="position-relative">
                         <span class="input-icon">👤</span>
-
-                        <input type="text"
-                               class="cb-input"
-                               value="Cliente"
-                               readonly>
-
+                        <input type="text" class="cb-input" value="Cliente" readonly>
                     </div>
                 </div>
-
             </div>
 
             <div class="row g-3">
-
-                <div class="col-6 ">
-                    <label class="cb-label">Contraseña</label>
-                    <div class="input-wrap">
+                <div class="col-6">
+                    <label class="form-label cb-label">Contraseña</label>
+                    <div class="position-relative">
                         <span class="input-icon">🔒</span>
                         {{ form.password1 }}
                     </div>
                 </div>
-
-                <div class="col-6 ">
-                    <label class="cb-label">Confirmar</label>
-                    <div class="input-wrap">
+                <div class="col-6">
+                    <label class="form-label cb-label">Confirmar</label>
+                    <div class="position-relative">
                         <span class="input-icon">🔒</span>
                         {{ form.password2 }}
                     </div>
                 </div>
-
             </div>
 
-            <button type="submit" class="btn-auth color-azul">
+            <!-- BOTÓN -->
+            <button type="submit" class="btn btn-auth w-100 mt-3">
                 REGISTRARSE
             </button>
 
         </form>
-
-        <div class="aux-text">
-            ¿Ya tienes cuenta?
-            <a href="{% url 'login' %}" class="aux-link">Inicia sesión</a>
-        </div>
-
     </main>
 
 </div>
@@ -152,10 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
             el.classList.add("cb-input");
         }
     });
-
     document.querySelectorAll("select").forEach(el => {
         el.classList.add("cb-input");
-       
     });
 });
 </script>

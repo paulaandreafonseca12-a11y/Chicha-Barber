@@ -12,7 +12,7 @@
                 <i class="bi bi-people-fill me-2"></i>Lista de Usuarios
             </h5>
 
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 align-items-center">
 
                 <a href="{% url 'lista_usuarios' %}"
                    class="btn btn-sm fw-bold {% if not request.GET.rol %}text-white color-azul border-0{% else %}btn-outline-light{% endif %}">
@@ -29,8 +29,11 @@
                     Barberos
                 </a>
 
-            </div>
+                <a href="{% url 'crear_usuario' %}" class="btn btn-sm btn-light fw-bold ms-2">
+                    <i class="bi bi-person-plus-fill me-1"></i>Agregar Usuario
+                </a>
 
+            </div>
         </div>
 
         <div class="card-body p-0">
@@ -43,6 +46,7 @@
                         <th>Rol</th>
                         <th>Acceso Admin</th>
                         <th>Fecha Registro</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,9 +59,9 @@
                                     {% elif usuario.rol == 'admin' %}bg-danger text-white
                                     {% else %}bg-warning text-dark{% endif %}"
                                      style="width:36px; height:36px; font-size:14px;">
-                                    {{ usuario.nombre_completo|first|upper }}
+                                    {{ usuario.get_full_name|first|upper }}
                                 </div>
-                                {{ usuario.nombre_completo }}
+                                {{ usuario.get_full_name }}
                             </div>
                         </td>
                         <td>{{ usuario.email }}</td>
@@ -80,10 +84,17 @@
                             {% endif %}
                         </td>
                         <td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'editar_usuario' usuario.pk %}"
+                               class="btn btn-sm color-azul text-white"
+                               title="Editar usuario">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
+                        <td colspan="7" class="text-center py-5 text-muted">
                             <i class="bi bi-people fs-1 d-block mb-3"></i>
                             No hay usuarios registrados.
                         </td>

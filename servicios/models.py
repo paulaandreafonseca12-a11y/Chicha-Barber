@@ -78,7 +78,7 @@ class Calificacion(models.Model):
         Servicios,
         on_delete=models.CASCADE,
         related_name='calificaciones',
-        verbose_name='Servicio'
+        verbose_name='Servicios'
     )
     cliente = models.CharField(max_length=150, verbose_name='Cliente')
     puntuacion = models.IntegerField(verbose_name='Puntuación')
@@ -92,3 +92,5 @@ class Calificacion(models.Model):
 
     def __str__(self):
         return f"{self.cliente} - {self.servicio.nombre} ({self.puntuacion} estrellas)"
+    
+    
