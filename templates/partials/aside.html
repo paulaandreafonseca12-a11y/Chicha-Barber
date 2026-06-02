@@ -170,7 +170,7 @@
               <i class="bi bi-box-seam me-2"></i> Inventario
             </a>
             <a
-              href="{% url 'factura_adm' %}"
+              href="{% url 'historial_compras' %}"
               class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'historial_compras' %}text-white fw-bold{% else %}text-white-50{% endif %} border-0 ps-4"
             >
               <i class="bi bi-search me-2"></i> Historial
@@ -234,6 +234,12 @@
               class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'carrusel' %}text-white fw-bold{% else %}text-white-50{% endif %} border-0 ps-4"
             >
               <i class="bi bi-images me-2"></i> Carrusel
+            </a>
+            <a
+              href="{% url 'ver_datos_banco' %}"
+              class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'ver_datos_banco' %}text-white fw-bold{% else %}text-white-50{% endif %} border-0 ps-4"
+            >
+              <i class="bi bi-bank me-2"></i> Datos Banco
             </a>
           </div>
         </div>

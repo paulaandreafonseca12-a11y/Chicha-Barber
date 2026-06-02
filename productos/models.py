@@ -15,10 +15,7 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Guardar primero para obtener ID
         super().save(*args, **kwargs)
-
-        # Generar código automático
         if not self.codigo:
             self.codigo = f"PROD-{self.codigo_producto:05d}"
             super().save(update_fields=['codigo'])
@@ -48,6 +45,7 @@ class Stock(models.Model):
         return f"{self.producto.nombre if self.producto else 'Sin producto'} - Stock: {self.cantidad}"
 
 
+# 🔹 MOVIMIENTO INVENTARIO
 class MovimientoInventario(models.Model):
     TIPO_CHOICES = [
         ('entrada', 'Entrada'),
@@ -76,19 +74,35 @@ def crear_stock(sender, instance, created, **kwargs):
         Stock.objects.get_or_create(producto=instance, defaults={'cantidad': 0})
 
 
-# 🔹 COMPRA
+# 🔹 COMPRA (Modificado para soportar estados de Transferencia)
 class Compra(models.Model):
+    METODO_PAGO_CHOICES = [
+        ('persona', 'Pago en persona'),
+        ('contraentrega', 'Pago contraentrega'),
+        ('transferencia', 'Transferencia Bancaria'),
+    ]
+
+    ESTADO_PAGO_CHOICES = [
+        ('pendiente_verificacion', 'Pendiente de Verificación'),
+        ('completado', 'Completado'),
+        ('cancelado', 'Cancelado'),
+    ]
+
     codigo_compra = models.AutoField(primary_key=True)
     nombre_cliente = models.CharField(max_length=100)
     correo = models.EmailField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     direccion = models.CharField(max_length=200, blank=True, null=True)
-    metodo_pago = models.CharField(max_length=50, blank=True, null=True)
+    
+    # Vinculado a las opciones del formulario
+    metodo_pago = models.CharField(max_length=50, choices=METODO_PAGO_CHOICES, blank=True, null=True)
+    estado_pago = models.CharField(max_length=30, choices=ESTADO_PAGO_CHOICES, default='completado')
+    
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     fecha_compra = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Venta #{self.codigo_compra} - {self.nombre_cliente}"
+        return f"Venta #{self.codigo_compra} - {self.nombre_cliente} ({self.get_metodo_pago_display()})"
 
 
 # 🔹 DETALLE DE COMPRA
@@ -100,25 +114,50 @@ class DetalleCompra(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
     def save(self, *args, **kwargs):
-        # Calcular subtotal
         self.subtotal = self.cantidad * self.producto.precio_venta
 
-        # 🔥 Validar stock antes de guardar
+        # Validar stock antes de guardar
         stock = self.producto.stock
-
         if self.cantidad > stock.cantidad:
             raise ValueError(f"Stock insuficiente. Disponible: {stock.cantidad}")
 
-        # Guardar detalle
         super().save(*args, **kwargs)
 
-        # 🔥 Descontar stock
+        # Descontar stock
         stock.cantidad -= self.cantidad
         stock.save()
 
-        # 🔥 Actualizar total de compra
+        # Registrar el movimiento de salida en el inventario de forma automática
+        MovimientoInventario.objects.create(
+            producto=self.producto,
+            tipo='salida',
+            cantidad=self.cantidad,
+            motivo=f"Venta Online #{self.compra.codigo_compra}"
+        )
+
+        # Actualizar total de compra
         self.compra.total = sum(d.subtotal for d in self.compra.detalles.all())
         self.compra.save()
 
     def __str__(self):
         return f"{self.producto.codigo} x {self.cantidad}"
+
+class DatosTransferencia(models.Model):
+    banco = models.CharField(max_length=100)
+    tipo_cuenta = models.CharField(max_length=100)
+    numero_cuenta = models.CharField(max_length=100)
+    titular = models.CharField(max_length=100)
+    instrucciones = models.TextField(help_text="Nota o advertencia para el cliente")
+
+    class Meta:
+        verbose_name = "Datos de Transferencia"
+        verbose_name_plural = "Datos de Transferencia"
+
+    @classmethod
+    def get_solo(cls):
+        """Retorna la única instancia de configuración o crea una nueva."""
+        obj, created = cls.objects.get_or_create(id=1)
+        return obj
+
+    def __str__(self):
+        return f"Configuración: {self.banco}"

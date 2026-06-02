@@ -29,7 +29,7 @@ class StockForm(forms.ModelForm):
         }
 
 
-# 🔹 FORMULARIO DE COMPRA
+# 🔹 FORMULARIO DE COMPRA (Actualizado con Transferencia)
 class CompraForm(forms.ModelForm):
     class Meta:
         model = Compra
@@ -42,7 +42,8 @@ class CompraForm(forms.ModelForm):
             'metodo_pago': forms.Select(
                 choices=[
                     ('persona', 'Pago en persona'),
-                    ('contraentrega', 'Pago contraentrega')
+                    ('contraentrega', 'Pago contraentrega'),
+                    ('transferencia', 'Transferencia Bancaria')  # 🏦 Agregado
                 ],
                 attrs={'class': 'form-select'}
             ),
@@ -81,7 +82,7 @@ class DetalleCompraForm(forms.ModelForm):
         return cleaned_data
 
 
-# 🔹 FORMULARIO DE PAGO
+# 🔹 FORMULARIO DE PAGO (Actualizado con Transferencia)
 class PagoForm(forms.Form):
     nombre = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'})
@@ -98,7 +99,8 @@ class PagoForm(forms.Form):
     metodo_pago = forms.ChoiceField(
         choices=[
             ('persona', 'Pago en persona'),
-            ('contraentrega', 'Pago contraentrega')
+            ('contraentrega', 'Pago contraentrega'),
+            ('transferencia', 'Transferencia Bancaria')  # 🏦 Agregado
         ],
         widget=forms.Select(attrs={'class': 'form-select'})
     )
