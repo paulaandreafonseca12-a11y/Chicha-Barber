@@ -6,7 +6,6 @@
       <div
         class="card shadow-lg border-0 rounded-4 bg-dark text-white overflow-hidden"
       >
-        <!-- Encabezado con azul de la paleta -->
         <div
           class="card-header py-3 border-0"
           style="background-color: #4bc0d9"
@@ -18,7 +17,6 @@
         </div>
 
         <div class="card-body p-4">
-          <!-- 🔥 FORMULARIO -->
           <form method="POST" action="{% url 'procesar_compra' %}">
             {% csrf_token %}
 
@@ -96,13 +94,21 @@
               <label class="form-check-label"> Pago contraentrega </label>
             </div>
 
-            <!-- 🔥 ENVÍO DEL CARRITO -->
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="pago"
+                value="transferencia"
+                onclick="mostrarInfoPago('transferencia')"
+              />
+              <label class="form-check-label"> Transferencia Bancaria </label>
+            </div>
+
             <input type="hidden" name="carrito" id="carritoInput" />
 
-            <!-- INFO DINÁMICA -->
             <div id="infoPago" class="alert alert-info mt-3 d-none"></div>
 
-            <!-- BOTÓN -->
             <button
               type="submit"
               class="btn btn-success w-100 mt-4 rounded-pill color-azul"
@@ -136,9 +142,22 @@
     info.classList.remove("d-none");
 
     if (tipo === "persona") {
+      info.className = "alert alert-info mt-3"; // Reset clase por si venía de otra
       info.innerHTML = "💡 Puedes pagar directamente en nuestro local.";
-    } else {
+    } else if (tipo === "contraentrega") {
+      info.className = "alert alert-info mt-3";
       info.innerHTML = "🚚 Pagarás cuando recibas el producto.";
+    } else if (tipo === "transferencia") {
+      // Estilo de advertencia/instrucción detallada para transferencia
+      info.className = "alert alert-warning mt-3 text-dark";
+      info.innerHTML = `
+        <h5>🏦 Datos para la Transferencia:</h5>
+        <p class="mb-1"><strong>Banco:</strong> {{ datos_banco.banco|default:"No configurado" }}</p>
+        <p class="mb-1"><strong>Tipo de Cuenta:</strong> {{ datos_banco.tipo_cuenta }}</p>
+        <p class="mb-1"><strong>Número de Cuenta:</strong> {{ datos_banco.numero_cuenta }}</p>
+        <p class="mb-1"><strong>Titular:</strong> {{ datos_banco.titular }}</p>
+        <p class="mb-0 mt-2 text-danger"><strong>⚠️ Nota:</strong> {{ datos_banco.instrucciones }}</p>
+      `;
     }
   }
 
@@ -158,9 +177,6 @@
   revisarExpiracion();
 </script>
 
-<!-- =======================
-🔥 BORRAR + REDIRIGIR
-======================= -->
 <script>
   {% if messages %}
       {% for message in messages %}

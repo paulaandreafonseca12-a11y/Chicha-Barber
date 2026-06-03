@@ -17,6 +17,8 @@ urlpatterns = [
     path('producto/crear/', views.crear_producto, name='crear_producto'),  # 👈 NUEVO
     path('producto/editar/<int:pk>/', views.editar_producto, name='editar_producto'),
     path('producto/eliminar/<int:pk>/', views.eliminar_producto, name='eliminar_producto'),
+    path('configuracion/datos-banco/', views.ver_datos_banco, name='ver_datos_banco'), # Para ver los datos
+    path('configuracion/datos-banco/editar/', views.editar_datos_banco, name='editar_datos_banco'), # Para editar los datos
 
     # =========================
     # 🔥 STOCK
