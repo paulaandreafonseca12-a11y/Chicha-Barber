@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
+from django.contrib.auth import login as auth_login  # 🔥 IMPORTANTE: Para loguear automáticamente
 from .forms import RegistroForm
 from .models import Usuario
 from .forms import RegistroForm, CrearUsuarioAdminForm
@@ -34,16 +35,19 @@ def registro_view(request):
 
             user.save()
 
+            # 🔥 NUEVO: Iniciamos sesión automáticamente para evitar que pase por el login manual
+            auth_login(request, user)
+
             messages.success(
                 request,
-                "✅ Usuario registrado como cliente con éxito."
+                "✅ ¡Usuario registrado con éxito! Tu sesión ha sido iniciada."
             )
 
-            # Si existe una URL de destino, la pasamos al login
+            # 🔥 MEJORA: Si venía de una reserva, va directo a procesarla en reservas/views.py
             if next_url:
-                return redirect(f"{reverse('login')}?next={next_url}")
+                return redirect(next_url)
             
-            return redirect('login') 
+            return redirect('inicio') 
 
     else:
         form = RegistroForm()

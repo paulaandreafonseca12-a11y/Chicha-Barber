@@ -34,8 +34,9 @@
 
         <form method="post">
             {% csrf_token %}
+            
+            <input type="hidden" name="next" value="{{ next }}">
 
-            <!-- Nombre y apellido -->
             <div class="row g-3">
                 <div class="col-6">
                     <label class="form-label cb-label">Nombre(s)</label>
@@ -53,7 +54,6 @@
                 </div>
             </div>
 
-            <!-- Documento y teléfono -->
             <div class="row g-3">
                 <div class="col-6">
                     <label class="form-label cb-label">N° Documento</label>
@@ -71,7 +71,6 @@
                 </div>
             </div>
 
-            <!-- Email -->
             <div class="row g-3">
                 <div class="col-12">
                     <label class="form-label cb-label">Correo electrónico</label>
@@ -93,7 +92,6 @@
                 </div>
             </div>
 
-            <!-- Contraseñas -->
             <div class="row g-3">
                 <div class="col-6">
                     <label class="form-label cb-label">Contraseña</label>

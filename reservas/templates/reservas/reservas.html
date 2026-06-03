@@ -26,16 +26,46 @@
         <form method="POST" action="{{ action_url }}">
             {% csrf_token %}
             
+            <!-- 1. SELECCIONA TU BARBERO (ACTUALIZADO CON FOTO_PERFIL) -->
             <div class="mb-4">
                 <label class="form-label text-white fw-bold"><i class="bi bi-person-vcard me-2"></i> 1. SELECCIONA TU BARBERO</label>
-                <select class="form-select form-select-lg bg-dark text-white border-secondary" id="barbero-select" onchange="filterTurnos()">
-                    <option value="any">Cualquier barbero disponible</option>
+                
+                <div class="row g-2" id="barberos-container">
+                    <!-- Opción: Cualquier barbero -->
+                    <div class="col-6 col-sm-4 col-md-3">
+                        <input type="radio" class="btn-check" name="barbero_id" id="barbero-any" value="any" checked onchange="filterTurnos()">
+                        <label class="btn btn-outline-info w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-any">
+                            <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px;">
+                                <i class="bi bi-people fs-3 text-white-50"></i>
+                            </div>
+                            <span class="fw-bold lh-sm text-white" style="font-size: 0.85rem;">Cualquiera disponible</span>
+                        </label>
+                    </div>
+
+                    <!-- Bucle de barberos de la base de datos -->
                     {% for barbero in barberos %}
-                    <option value="{{ barbero.id }}">{{ barbero.get_full_name }}</option>
+                    <div class="col-6 col-sm-4 col-md-3">
+                        <input type="radio" class="btn-check" name="barbero_id" id="barbero-{{ barbero.id }}" value="{{ barbero.id }}" onchange="filterTurnos()">
+                        <label class="btn btn-outline-info w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-{{ barbero.id }}">
+                            
+                            <!-- CORREGIDO: apuntando a foto_perfil -->
+                            {% if barbero.foto_perfil %}
+                                <img src="{{ barbero.foto_perfil.url }}" class="rounded-circle mb-2 object-fit-cover" style="width: 65px; height: 65px; border: 2px solid rgba(255,255,255,0.1);" alt="{{ barbero.get_full_name }}">
+                            {% else %}
+                                <!-- Avatar por defecto si no tiene foto subida -->
+                                <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px;">
+                                    <i class="bi bi-person fs-3 text-white-50"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <span class="fw-bold lh-sm text-white text-truncate w-100" style="font-size: 0.85rem;">{{ barbero.get_full_name }}</span>
+                        </label>
+                    </div>
                     {% endfor %}
-                </select>
+                </div>
             </div>
 
+            <!-- 2. SELECCIONA UN TURNO DISPONIBLE -->
             <div class="mb-4">
                 <label class="form-label text-white fw-bold"><i class="bi bi-clock me-2"></i> 2. SELECCIONA UN TURNO DISPONIBLE</label>
                 
@@ -57,6 +87,7 @@
                 {% endif %}
             </div>
 
+            <!-- 3. TUS DATOS DE CONTACTO -->
             <div class="mb-4">
                 <label class="form-label text-white fw-bold"><i class="bi bi-card-text me-2"></i> 3. TUS DATOS DE CONTACTO</label>
                 <div class="row g-3">
@@ -68,6 +99,27 @@
                     </div>
                     <div class="col-md-12">
                         <input name="telefono_cliente" type="tel" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Número de celular (ej. 3001234567)" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. MEDIO DE PAGO -->
+            <div class="mb-4">
+                <label class="form-label text-white fw-bold"><i class="bi bi-credit-card me-2"></i> 4. SELECCIONA EL MEDIO DE PAGO</label>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="medio_pago" id="pago-persona" value="presencial" checked required>
+                        <label class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-persona">
+                            <i class="bi bi-cash-coin fs-3 mb-2"></i>
+                            <span class="fw-bold text-white" style="font-size: 0.9rem;">Pago en Persona</span>
+                        </label>
+                    </div>
+                    <div class="col-6">
+                        <input type="radio" class="btn-check" name="medio_pago" id="pago-transferencia" value="transferencia" required>
+                        <label class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-transferencia">
+                            <i class="bi bi-bank fs-3 mb-2"></i>
+                            <span class="fw-bold text-white" style="font-size: 0.9rem;">Transferencia</span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -87,7 +139,9 @@
 document.addEventListener('DOMContentLoaded', filterTurnos);
 
 function filterTurnos() {
-    const selectedBarbero = document.getElementById('barbero-select').value;
+    const selectedBarberoInput = document.querySelector('input[name="barbero_id"]:checked');
+    const selectedBarbero = selectedBarberoInput ? selectedBarberoInput.value : 'any';
+    
     const turnos = document.querySelectorAll('.turno-item');
     let turnosVisibles = 0;
 
@@ -98,7 +152,6 @@ function filterTurnos() {
             turnosVisibles++;
         } else {
             turno.style.display = 'none';
-            // Si el turno oculto estaba seleccionado, quitar la selección
             const radio = turno.querySelector('input[type="radio"]');
             if (radio.checked) {
                 radio.checked = false;
