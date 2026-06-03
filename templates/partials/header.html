@@ -6,17 +6,17 @@
         <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
       </a>
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ">
   <li><a href="/" class="nav-link px-2 text-white">Inicio</a></li>
   <li><a href="{% url 'servicios' %}" class="nav-link px-2 text-white">Servicios</a></li>
   <li><a href="{% url 'productos_galeria' %}" class="nav-link px-2 text-white">Productos</a></li>
   <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-white">Promociones</a></li>
 </ul>
-      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-light text-white">
+      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-light text-white ">
       {% if user.is_authenticated %}
         <!-- Caso: Usuario Logueado (Dropdown en Navbar Principal) -->
-        <div class="dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-success rounded-pill px-3 py-1" 
+        <div class="dropdown ">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-success rounded-pill px-3 py-1 color-azul" 
              href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {% if user.imagen_perfil %}
               <img src="{{ user.imagen_perfil.url }}" alt="{{ user.username }}" width="28" height="28" class="rounded-circle object-fit-cover">
@@ -32,6 +32,7 @@
             </li>
             <li><a class="dropdown-item py-2 fw-bold text-success" href="{% url 'perfil' %}"><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a></li>
             <li><a class="dropdown-item py-2" href="{% url 'crear_reserva_directa' %}"><i class="bi bi-calendar-check me-2"></i>Mis Reservas</a></li>
+            <li><a class="dropdown-item py-2" href="{% url 'crear_producto' %}"><i class="bi bi-receipt me-2"></i>Historial de productos</a></li>
             <li>
               <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
                 <i class="bi {% if user.tema == 'dark' %}bi-sun-fill text-warning{% else %}bi-moon-fill text-primary{% endif %} me-2"></i>

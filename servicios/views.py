@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.urls import reverse
 from django.contrib import messages # type: ignore
+from django.core.mail import send_mail
 
 from servicios.models import Calificacion
 from usuarios.forms import RegistroForm
@@ -92,7 +93,10 @@ def crear_servicios(request):
     else:
         form = ServiciosForm()
     
-    return render(request, 'servicios/agregar_servicios.html', {'form': form, 'titulo': 'Crear nuevo servicio'})
+    return render(request, 'servicios/agregar_servicios.html', {
+        'form': form, 
+        'titulo': 'Crear Nuevo Servicio'
+    })
 def promocion(request):
     promociones = Promocion.objects.all()
     context = {
@@ -113,7 +117,7 @@ def listado_promocion(request):
     promociones = Promocion.objects.all()
     context = {
         'titulo': 'Listado de Promociones',
-        'promocion': promociones
+        'promociones': promociones
     }
     return render(request, 'servicios/listado-promocion.html', context)
 def editar_servicios(request, pk):
@@ -155,7 +159,10 @@ def crear_promocion(request):
     else:
         form = PromocionForm()
     
-    return render(request, 'servicios/agregar_promocion.html', {'form': form, 'titulo': 'Crear nueva promoción'})
+    return render(request, 'servicios/agregar_promocion.html', {
+        'form': form, 
+        'titulo': 'Crear Nueva Promoción'
+    })
 
 def editar_promocion(request, pk):
     promocion = get_object_or_404(Promocion, pk=pk)
@@ -182,7 +189,7 @@ def eliminar_promocion(request, pk):
 def calificacion_view(request):
     calificaciones = Calificacion.objects.all()
     context = {
-        'titulo': 'Califica nuestros servicios',
+        'titulo': 'Califica Nuestros Servicios',
         'calificaciones': calificaciones
     }
     return render(request, 'servicios/calificacion.html', context)
