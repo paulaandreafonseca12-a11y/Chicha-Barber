@@ -5,7 +5,16 @@ from django.utils import timezone
 from servicios.models import Servicios, Promocion
 from usuarios.models import Usuario
 
+from django.contrib.auth.models import User # O tu modelo personalizado
 
+class Barbero(models.Model):
+    # ... tus campos actuales (usuario, especialidad, etc.) ...
+    # Agregamos el campo de la foto:
+    foto = models.ImageField(upload_to='barberos/', null=True, blank=True)
+
+    def get_full_name(self):
+        # Tu método actual para el nombre completo
+        return f"{self.nombre} {self.apellido}"
 
 # TURNOS
 # =========================

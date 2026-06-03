@@ -4,7 +4,7 @@ from pathlib import Path
 # ======================================================
 # BASE DIR
 # ======================================================
-
+# Primero definimos la ruta base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
