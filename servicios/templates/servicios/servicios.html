@@ -9,24 +9,24 @@
         <!-- Título de la página -->
         <div class="text-center mb-5">
             <h1 class="display-4 fw-bold text-white text-uppercase">Nuestros Servicios</h1>
-            <p class="fs-4 text-white">Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.</p>
-            <hr class="w-25 mx-auto text-light opacity-50">
+            <p class="fs-4 text-light ">Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.</p>
+            <hr class="w-25 mx-auto text-light opacity-50 ">
         </div>
 
         <div class="row g-4 justify-content-center">
             
             {% for servicio in servicios %}
             <div class="col-md-6 col-lg-4 d-flex justify-content-center">
-                <div class="card h-100 shadow-lg border-0 bg-white rounded-4 overflow-hidden" style="width: 18rem;">
+                <div class="card h-100 shadow-lg border-0 bg-body-tertiary rounded-4 overflow-hidden" style="width: 18rem;">
                     <img src="{% static 'img/corte/corte_1.jpg' %}" class="card-img-top" alt="{{ servicio.nombre }}" style="height: 300px; object-fit: cover;">
                     <div class="card-body d-flex flex-column text-center p-4">
-                        <h4 class="card-title fw-bold text-dark mb-3">{{ servicio.nombre }}</h4>
-                        <p class="card-text text-secondary mb-4 flex-grow-1">{{ servicio.descripcion }}</p>
+                        <h4 class="card-title fw-bold text-body mb-3">{{ servicio.nombre }}</h4>
+                        <p class="card-text text-body-secondary mb-4 flex-grow-1">{{ servicio.descripcion }}</p>
                         
                         <h3 class="fw-bold mb-3 color-azul">${{ servicio.precio }}</h3>
                         
                         <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
-                            <span class="text-muted small fw-semibold">
+                            <span class="text-body-secondary small fw-semibold">
                                 <i class="bi bi-clock me-1"></i>{{ servicio.duracion }} min
                             </span>
                             <a href="{% url 'crear_reserva' servicio.pk %}" class="btn btn-primary color-azul rounded-pill ">
@@ -40,11 +40,11 @@
             {% empty %}
             <!-- Mensaje cuando no hay servicios (Fondo blanco asegurado) -->
             <div class="col-md-8 col-lg-6">
-                <div class="card bg-white shadow-lg border-0 rounded-4 text-center p-5">
+                <div class="card bg-body-tertiary shadow-lg border-0 rounded-4 text-center p-5">
                     <div class="card-body">
-                        <i class="bi bi-inboxes display-1 text-secondary mb-4 d-block"></i>
-                        <h3 class="fw-bold text-dark mb-3">¡Próximamente nuevos servicios!</h3>
-                        <p class="text-secondary fs-5 mb-4">
+                        <i class="bi bi-inboxes display-1 text-body-secondary mb-4 d-block"></i>
+                        <h3 class="fw-bold text-body mb-3">¡Próximamente nuevos servicios!</h3>
+                        <p class="text-body-secondary fs-5 mb-4">
                             En este momento no tenemos servicios disponibles para mostrar en nuestro catálogo. 
                             Estamos trabajando para ofrecerte las mejores opciones. ¡Vuelve pronto!
                         </p>

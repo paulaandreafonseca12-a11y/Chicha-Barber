@@ -6,9 +6,9 @@
  <div class="container">
         
         <div class="text-center mb-5">
-            <h1 class="display-4 fw-bold text-white text-uppercase">Nuestras Promociones</h1>
-            <p class="fs-4 text-white">Descubre nuestras ofertas especiales y ahorra en tus servicios preferidos.</p>
-            <hr class="w-25 mx-auto text-light opacity-50">
+            <h1 class="display-4 fw-bold text-body text-uppercase text-ligth">Nuestras Promociones</h1>
+            <p class="fs-4 text-body-secondary text-light">Descubre nuestras ofertas especiales y ahorra en tus servicios preferidos.</p>
+            <hr class="w-25 mx-auto text-body opacity-50">
         </div>
 
 </div>
@@ -29,10 +29,10 @@
                     {% endif %}
 
 
-                    <div class="card-body rounded-4 d-flex flex-column bg-white">
-                        <h5 class="card-title text-center fw-bold">{{ promocion.nombre }}</h5>
+                    <div class="card-body rounded-4 d-flex flex-column bg-body-tertiary">
+                        <h5 class="card-title text-center fw-bold text-body">{{ promocion.nombre }}</h5>
                         <hr>
-                        <p class="card-text text-muted small">{{ promocion.descripcion }}</p>
+                        <p class="card-text text-body-secondary small">{{ promocion.descripcion }}</p>
                         
                         <div class="mt-auto">
                             <p class="mb-1"><strong> Duración:</strong> {{ promocion.duracion }}</p>
