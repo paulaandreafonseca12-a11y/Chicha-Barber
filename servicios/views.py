@@ -251,6 +251,9 @@ def responder_calificacion(request, pk):
 
 def guardar_calificacion_view(request):
     if request.method == 'POST':
-        form = CalificacionForm(request.POST)
+        form = calificacionForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "✅ ¡Gracias por tu calificación!")
+            return redirect('calificacion')
+    return redirect('calificacion')

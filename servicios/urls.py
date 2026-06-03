@@ -28,19 +28,17 @@ urlpatterns = [
     path('calificacion/', views.calificacion_view, name='calificacion'),
     path('calificacion/listado/', views.listado_calificacion, name='listado-calificacion'),
     path('calificacion/responder/<int:pk>/', views.responder_calificacion, name='responder-calificacion'),
-    path('calificacion/enviar/', views.guardar_calificacion, name='enviar_calificacion'),
-    path('responder-calificacion/',views.responder_calificacion, name='responder_calificacion'),
+    path('calificacion/enviar/', views.guardar_calificacion_view, name='enviar_calificacion'),
+    
+   
+    
+    
+
+
+
+   
+
+    
+
+    
 ]
-    
-   
-    
-    
-
-
-
-   
-
-    
-
-    
-
