@@ -2,51 +2,52 @@
 
 <div class="container py-4">
   <div class="card border-0 shadow">
-    <!-- HEADER -->
     <div
       class="card-header d-flex justify-content-between align-items-center py-3"
       style="background-color: #07d2ff"
     >
       <div>
-        <h5 class="mb-0 text-white fw-bold">
-          <i class="bi bi-receipt-cutoff me-2"></i>
-          Gestión de Facturas
-        </h5>
-
-        <small class="text-white">
-          Total registradas: {{ facturas.count }}
-        </small>
+        <small class="text-white"
+          >Total registradas: {{ facturas.count }}</small
+        >
       </div>
-
       <a
         href="{% url 'crear-factura' %}"
-        class="btn fw-bold text-white border border-white"
+        class="btn fw-bold text-white border border-white hover-opacity"
       >
-        <i class="bi bi-plus-lg me-2"></i>
-        Nueva Factura
+        <i class="bi bi-plus-lg me-2"></i> Nueva Factura
       </a>
     </div>
 
-    <!-- BODY -->
     <div class="card-body">
-      <!-- BUSCADOR -->
       <div class="row mb-4">
         <div class="col-md-4 ms-auto">
-          <div class="input-group">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Buscar factura..."
-            />
-
-            <button class="btn btn-dark">
-              <i class="bi bi-search"></i>
-            </button>
-          </div>
+          <form method="GET" action="">
+            <div class="input-group">
+              <input
+                type="text"
+                name="q"
+                class="form-control"
+                placeholder="Buscar por cliente o fecha (dd/mm/aaaa)..."
+                value="{{ request.GET.q|default:'' }}"
+              />
+              <button type="submit" class="btn btn-dark">
+                <i class="bi bi-search"></i>
+              </button>
+              {% if request.GET.q %}
+              <a
+                href="?"
+                class="btn btn-outline-secondary"
+                title="Limpiar búsqueda"
+              >
+                <i class="bi bi-x-circle"></i>
+              </a>
+              {% endif %}
+            </div>
+          </form>
         </div>
       </div>
 
-      <!-- TABLA -->
       <div class="table-responsive">
         <table class="table table-hover mb-0 align-middle">
           <thead class="table-light">
@@ -55,149 +56,190 @@
               <th>Cliente</th>
               <th>Detalles</th>
               <th>Fecha</th>
-
-              <!-- NUEVO -->
               <th>Método de Pago</th>
               <th>Estado</th>
-
+              <th class="text-center">Comprobante</th>
               <th>Total</th>
-              <th class="text-center">Acciones</th>
+              <th class="text-center" style="min-width: 180px">Acciones</th>
             </tr>
           </thead>
 
           <tbody>
             {% for factura in facturas %}
-
             <tr>
-              <!-- ID -->
               <td class="ps-4 fw-bold text-primary">#{{ factura.id }}</td>
 
-              <!-- CLIENTE -->
               <td>
                 <div class="fw-bold">
-                  {% if factura.cliente %} {{ factura.cliente.get_full_name }}
-                  {% elif factura.nombre_cliente %} {{ factura.nombre_cliente }}
-                  {% else %} Cliente General {% endif %}
+                  {% if factura.cliente %}
+                    {{ factura.cliente.get_full_name }}
+                  {% else %}
+                    {{ factura.nombre_cliente|default:"Cliente General" }}
+                  {% endif %}
                 </div>
-
                 <small class="text-muted">
-                  {% if factura.cliente and factura.cliente.email %} {{
-                  factura.cliente.email }} {% elif factura.correo_cliente %} {{
-                  factura.correo_cliente }} {% else %} Sin correo {% endif %}
+                  {% if factura.cliente %}
+                    {{ factura.cliente.email|default:"Sin correo" }}
+                  {% else %}
+                    {{ factura.correo_cliente|default:"Sin correo" }}
+                  {% endif %}
                 </small>
               </td>
 
-              <!-- DETALLES -->
               <td>
-                {% for detalle in factura.detalles.all %} {% if detalle.producto
-                %}
-                <div class="small mb-1">
-                  <span class="text-info fw-semibold">
-                    <i class="bi bi-box-seam me-1"></i>
-                    {{ detalle.producto.nombre }}
-                  </span>
-                  <span class="text-muted"> (x{{ detalle.cantidad }}) </span>
+                <div id="detalles-factura-{{ factura.id }}">
+                  {% for detalle in factura.detalles.all %}
+                    {% if detalle.producto %}
+                      <div class="small mb-1">
+                        <span class="text-info fw-semibold"><i class="bi bi-box-seam me-1"></i>{{ detalle.producto.nombre }}</span>
+                        <span class="text-muted">(x{{ detalle.cantidad }})</span>
+                      </div>
+                    {% endif %}
+                    {% if detalle.reserva %}
+                      <div class="small mb-1">
+                        <span class="text-primary fw-semibold"><i class="bi bi-scissors me-1"></i>{{ detalle.reserva.servicio.nombre }}</span>
+                      </div>
+                    {% endif %}
+                  {% empty %}
+                    <span class="text-muted small text-sin-detalles">Sin detalles</span>
+                  {% endfor %}
                 </div>
-                {% elif detalle.reserva %}
-                <div class="small mb-1">
-                  <span class="text-primary fw-semibold">
-                    <i class="bi bi-scissors me-1"></i>
-                    {{ detalle.reserva.servicio.nombre }}
-                  </span>
-                </div>
-                {% endif %} {% empty %}
-                <span class="text-muted">Sin detalles</span>
-                {% endfor %}
               </td>
 
-              <!-- FECHA -->
               <td>
                 <small>{{ factura.fecha_emision|date:"d/m/Y H:i" }}</small>
               </td>
 
-              <!-- MÉTODO DE PAGO (DROPDOWN) -->
               <td>
-                <select class="form-select form-select-sm">
-                  <option selected>
-                    {{ factura.get_metodo_pago_display }}
-                  </option>
-
-                  <option value="efectivo">Efectivo</option>
-                  <option value="nequi">Nequi</option>
-                  <option value="daviplata">Daviplata</option>
-                  <option value="tarjeta">Tarjeta</option>
+                <select
+                  class="form-select form-select-sm field-update"
+                  data-field="metodo_pago"
+                  data-id="{{ factura.id }}"
+                >
+                  <option value="efectivo" {% if factura.metodo_pago == "efectivo" %}selected{% endif %}>Efectivo</option>
+                  <option value="nequi" {% if factura.metodo_pago == "nequi" %}selected{% endif %}>Nequi</option>
+                  <option value="daviplata" {% if factura.metodo_pago == "daviplata" %}selected{% endif %}>Daviplata</option>
+                  <option value="yape" {% if factura.metodo_pago == "yape" %}selected{% endif %}>Yape</option>
+                  <option value="tarjeta" {% if factura.metodo_pago == "tarjeta" %}selected{% endif %}>Tarjeta</option>
                 </select>
               </td>
 
-              <!-- ESTADO (DROPDOWN) -->
               <td>
-                <select class="form-select form-select-sm">
-                  <option selected>{{ factura.get_estado_display }}</option>
-
-                  <option value="pendiente">Pendiente</option>
-                  <option value="pagada">Pagada</option>
-                  <option value="cancelada">Cancelada</option>
+                <select
+                  class="form-select form-select-sm field-update"
+                  data-field="estado"
+                  data-id="{{ factura.id }}"
+                >
+                  <option value="pendiente" {% if factura.estado == "pendiente" %}selected{% endif %}>Pendiente</option>
+                  <option value="pagada" {% if factura.estado == "pagada" %}selected{% endif %}>Pagada</option>
+                  <option value="cancelada" {% if factura.estado == "cancelada" %}selected{% endif %}>Cancelada</option>
                 </select>
               </td>
 
-              <!-- TOTAL -->
-              <td class="fw-bold text-success">
+              <td class="text-center">
+                <div class="d-flex flex-column align-items-center gap-1">
+                  {% if factura.imagen_transaccion %}
+                  <a
+                    href="{{ factura.imagen_transaccion.url }}"
+                    target="_blank"
+                  >
+                    <img
+                      src="{{ factura.imagen_transaccion.url }}"
+                      alt="Comprobante"
+                      class="img-thumbnail"
+                      style="width: 45px; height: 45px; object-fit: cover"
+                    />
+                  </a>
+                  {% else %}
+                  <span class="text-muted small"
+                    ><i class="bi bi-image text-secondary fs-4 d-block"></i>Sin
+                    foto</span
+                  >
+                  {% endif %}
+                  <label
+                    class="btn btn-link p-0 m-0 text-decoration-none"
+                    style="font-size: 0.75rem"
+                  >
+                    <input
+                      type="file"
+                      class="image-update d-none"
+                      data-id="{{ factura.id }}"
+                      accept="image/*"
+                    />
+                    <span class="text-primary" style="cursor: pointer"
+                      >Cambiar</span
+                    >
+                  </label>
+                </div>
+              </td>
+
+              <td
+                class="fw-bold text-success"
+                id="total-factura-{{ factura.id }}"
+              >
                 ${{ factura.total_pagado|floatformat:0 }}
               </td>
 
-              <!-- ACCIONES -->
               <td class="text-center">
-                <div class="d-flex justify-content-center gap-2 flex-wrap">
-                  <!-- DETALLE -->
+                <div
+                  class="d-flex justify-content-center align-items-center gap-1"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary btn-add-item d-inline-flex align-items-center justify-content-center"
+                    data-id="{{ factura.id }}"
+                    title="Añadir Producto/Servicio"
+                    style="width: 32px; height: 32px"
+                  >
+                    <i class="bi bi-plus-circle-fill"></i>
+                  </button>
+
                   <a
                     href="{% url 'detalle_factura' factura.id %}"
-                    class="btn btn-sm btn-outline-info"
-                    title="Ver Detalle"
+                    class="btn btn-sm btn-outline-info d-inline-flex align-items-center justify-content-center"
+                    title="Ver detalle"
+                    style="width: 32px; height: 32px"
                   >
                     <i class="bi bi-eye"></i>
                   </a>
 
-                  <!-- IMPRIMIR -->
                   <a
-                    href="{% url 'detalle_factura' id=factura.id %}"
-                    class="btn btn-sm btn-outline-secondary"
-                    target="_blank"
-                    title="Imprimir"
+                    href="{% url 'imprimir_factura' factura.id %}"
+                    class="btn btn-sm btn-outline-success d-inline-flex align-items-center justify-content-center"
+                    title="Imprimir factura"
+                    style="width: 32px; height: 32px"
                   >
                     <i class="bi bi-printer"></i>
                   </a>
 
-                  <!-- CORREO -->
-                  {% if factura.cliente.email %}
-
+                  {% if factura.cliente and factura.cliente.email %}
                   <a
-                    href="mailto:{{ factura.cliente.email }}?subject=Factura%20Chicha%20Barber%20%23{{ factura.id }}"
-                    class="btn btn-sm btn-outline-primary"
+                    href="mailto:{{ factura.cliente.email }}?subject=Factura%20%23{{ factura.id }}"
+                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center"
+                    title="Enviar correo"
+                    style="width: 32px; height: 32px"
                   >
                     <i class="bi bi-envelope-fill"></i>
                   </a>
-
                   {% else %}
-
-                  <button class="btn btn-sm btn-outline-secondary" disabled>
+                  <button
+                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center justify-content-center"
+                    disabled
+                    style="width: 32px; height: 32px"
+                  >
                     <i class="bi bi-envelope-x"></i>
                   </button>
-
                   {% endif %}
                 </div>
               </td>
             </tr>
-
             {% empty %}
-
             <tr>
-              <td colspan="8" class="text-center py-5 text-muted">
-                <i class="bi bi-receipt fs-1 d-block mb-3"></i>
-
-                No hay facturas registradas.
+              <td colspan="9" class="text-center py-5 text-muted">
+                <i class="bi bi-receipt fs-1 d-block mb-3"></i> No se
+                encontraron facturas.
               </td>
             </tr>
-
             {% endfor %}
           </tbody>
         </table>
@@ -206,4 +248,309 @@
   </div>
 </div>
 
-{% endblock %}
+{% csrf_token %}
+
+<div
+  class="modal fade"
+  id="modalAddItem"
+  tabindex="-1"
+  aria-labelledby="modalAddItemLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title fw-bold" id="modalAddItemLabel">
+          Añadir Ítem a Factura #<span id="modal-factura-id-title"></span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form id="form-add-item">
+        <div class="modal-body text-dark">
+          <input type="hidden" id="input-factura-id" name="factura_id" />
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Tipo de Elemento</label>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input radio-type"
+                  type="radio"
+                  name="tipo_item"
+                  id="typeProducto"
+                  value="producto"
+                  checked
+                />
+                <label class="form-check-label" for="typeProducto"
+                  ><i class="bi bi-box-seam me-1 text-info"></i> Producto</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input radio-type"
+                  type="radio"
+                  name="tipo_item"
+                  id="typeServicio"
+                  value="servicio"
+                />
+                <label class="form-check-label" for="typeServicio"
+                  ><i class="bi bi-scissors me-1 text-primary"></i>
+                  Servicio/Reserva</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3" id="wrapper-select-producto">
+            <label for="select-producto" class="form-label fw-bold"
+              >Seleccionar Producto</label
+            >
+            <select class="form-select" id="select-producto" name="producto_id">
+              <option value="" selected disabled>-- Elegir Producto --</option>
+              {% for p in productos %}
+              <option value="{{ p.id }}">
+                {{ p.nombre }} - (${{ p.precio_venta|floatformat:0 }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3 d-none" id="wrapper-select-servicio">
+            <label for="select-servicio" class="form-label fw-bold"
+              >Seleccionar Servicio</label
+            >
+            <select class="form-select" id="select-servicio" name="servicio_id">
+              <option value="" selected disabled>-- Elegir Servicio --</option>
+              {% for s in servicios %}
+              <option value="{{ s.id }}">
+                {{ s.nombre }} - (${{ s.precio|floatformat:0 }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="input-cantidad" class="form-label fw-bold"
+                >Cantidad</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="input-cantidad"
+                name="cantidad"
+                value="1"
+                min="1"
+                required
+              />
+            </div>
+            <div class="col-6 mb-3">
+              <label for="input-precio" class="form-label fw-bold"
+                >Precio Unitario ($)</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="input-precio"
+                name="precio_unitario"
+                placeholder="Opcional"
+              />
+              <small class="text-muted" style="font-size: 0.75rem"
+                >Dejar vacío para usar precio base</small
+              >
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-success fw-bold">
+            <i class="bi bi-check-circle me-1"></i> Guardar Ítem
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Si el servidor envía un mensaje de éxito, limpiamos el carrito local
+      {% if messages %}
+          {% for message in messages %}
+              {% if "success" in message.tags %}
+                  localStorage.removeItem("carrito");
+                  localStorage.removeItem("carrito_expiracion");
+              {% endif %}
+          {% endfor %}
+      {% endif %}
+
+      const modalElement = new bootstrap.Modal(document.getElementById('modalAddItem'));
+      const form = document.getElementById('form-add-item');
+
+      document.querySelectorAll('.btn-add-item').forEach(button => {
+          button.addEventListener('click', function() {
+              const facturaId = this.dataset.id;
+              document.getElementById('input-factura-id').value = facturaId;
+              document.getElementById('modal-factura-id-title').innerText = facturaId;
+              form.reset();
+              toggleFormFields('producto');
+              modalElement.show();
+          });
+      });
+
+      document.querySelectorAll('.radio-type').forEach(radio => {
+          radio.addEventListener('change', function() {
+              toggleFormFields(this.value);
+          });
+      });
+
+      function toggleFormFields(type) {
+          if (type === 'producto') {
+              document.getElementById('wrapper-select-producto').classList.remove('d-none');
+              document.getElementById('wrapper-select-servicio').classList.add('d-none');
+              document.getElementById('select-servicio').value = "";
+          } else {
+              document.getElementById('wrapper-select-producto').classList.add('d-none');
+              document.getElementById('wrapper-select-servicio').classList.remove('d-none');
+              document.getElementById('select-producto').value = "";
+          }
+      }
+
+      form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+          const facturaId = document.getElementById('input-factura-id').value;
+
+          const formData = new FormData(form);
+          let object = {};
+          formData.forEach((value, key) => object[key] = value);
+          object['accion'] = 'agregar_item';
+
+          fetch(`/facturas/actualizar-factura-adm/${facturaId}/`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': csrfToken
+              },
+              body: JSON.stringify(object)
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  modalElement.hide();
+                  Swal.fire({
+                      icon: 'success',
+                      title: '¡Ítem Agregado!',
+                      text: 'Se refrescará la lista de cobros.',
+                      timer: 1500,
+                      showConfirmButton: false
+                  }).then(() => {
+                      location.reload();
+                  });
+              } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: data.message || 'No se pudo vincular el ítem.'
+                  });
+              }
+          });
+      });
+  });
+
+  // Lógica para actualizar campos por AJAX (Método de Pago y Estado)
+  document.addEventListener('change', function(e) {
+      if (e.target.classList.contains('field-update')) {
+          const select = e.target;
+          const facturaId = select.dataset.id;
+          const field = select.dataset.field;
+          const value = select.value;
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+          let bodyData = {};
+          bodyData[field] = value;
+
+          fetch(`/facturas/actualizar-factura-adm/${facturaId}/`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': csrfToken
+              },
+              body: JSON.stringify(bodyData)
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  Swal.fire({
+                      icon: 'success',
+                      title: '¡Actualizado!',
+                      timer: 1000,
+                      showConfirmButton: false,
+                      toast: true,
+                      position: 'top-end'
+                  });
+
+                  if (field === 'estado' && value === 'pagada') {
+                      select.disabled = true;
+                  }
+              } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: data.message || 'No se pudo actualizar el campo.'
+                  });
+              }
+          });
+      }
+  });
+
+  // Lógica para actualizar la imagen del comprobante por AJAX
+  document.addEventListener('change', function(e) {
+      if (e.target.classList.contains('image-update')) {
+          const fileInput = e.target;
+          const facturaId = fileInput.dataset.id;
+          const file = fileInput.files[0];
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+          if (!file) return;
+
+          const formData = new FormData();
+          formData.append('imagen_transaccion', file);
+
+          fetch(`/facturas/actualizar-factura-adm/${facturaId}/`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': csrfToken
+              },
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  Swal.fire({
+                      icon: 'success',
+                      title: '¡Imagen actualizada!',
+                      text: 'El comprobante se ha guardado correctamente.',
+                      timer: 1500,
+                      showConfirmButton: false
+                  }).then(() => location.reload());
+              } else {
+                  Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'No se pudo subir la imagen.' });
+              }
+          });
+      }
+  });
+</script>
+{% endblock content %}

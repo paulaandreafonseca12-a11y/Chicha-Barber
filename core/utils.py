@@ -1,3 +1,4 @@
+import os
 from django.core.mail import EmailMultiAlternatives, send_mail
 from django.conf import settings
 from django.utils import timezone
@@ -11,6 +12,11 @@ except:
         locale.setlocale(locale.LC_TIME, 'es_ES') # Para Windows
     except:
         pass # Fallback al locale por defecto si no están instalados
+
+def renombrar_comprobante_factura(instance, filename):
+    ext = filename.split('.')[-1]
+    # Genera una ruta como: comprobantes/factura_5.png
+    return os.path.join('comprobantes/', f"factura_{instance.pk}.{ext}")
 
 def enviar_correo_cancelacion_admin(correo_cliente, nombre, servicio, fecha):
     subject = f"IMPORTANTE: Cambio en tu cita - Chicha Barber Studio"
