@@ -21,7 +21,7 @@
             {% if user.foto_perfil %}
               <img src="{{ user.foto_perfil.url }}" alt="{{ user.username }}" width="28" height="28" class="rounded-circle object-fit-cover">
             {% else %}
-              <i class="bi bi-person-circle fs-5"></i>
+            <i class="bi bi-person-circle fs-5"></i>
             {% endif %}
             <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
           </a>
@@ -43,15 +43,18 @@
             </li>
             <li>
               <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
-                <i class="bi {% if user.tema == 'dark' %}bi-sun-fill text-warning{% else %}bi-moon-fill text-primary{% endif %} me-2"></i>
-                Modo {% if user.tema == 'dark' %}Claro{% else %}Oscuro{% endif %}
+                {% if user.tema == 'dark' %}
+                <i class="bi bi-sun-fill me-2 text-warning"></i> Modo Claro
+                {% else %}
+                <i class="bi bi-moon-fill me-2 text-primary"></i> Modo Oscuro
+                {% endif %}
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="dropdown-item text-danger py-2 w-100 text-start">Cerrar Sesión</button>
+                <button type="submit" class="dropdown-item text-danger py-2">Cerrar Sesión</button>
               </form>
             </li>
           </ul>

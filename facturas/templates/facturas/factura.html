@@ -1,13 +1,15 @@
-{% extends "base-clientes.html" %} 
-{% load static %} 
+{% extends "base-clientes.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container py-5">
+  <!-- TÍTULO DE LA PÁGINA -->
   <div class="text-center mb-5">
     <h1 class="display-4 fw-bold text-white text-uppercase">Mis Facturas</h1>
     <hr class="w-25 mx-auto text-light" />
   </div>
 
+  <!-- TARJETA PRINCIPAL -->
   <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
     <div class="card-header color-azul py-3">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -18,6 +20,7 @@
       </div>
     </div>
 
+    <!-- TABLA DE HISTORIAL -->
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0 bg-white">
         <thead class="color-azul text-dark">
@@ -97,36 +100,18 @@
             <td class="text-center">
               <div class="d-flex justify-content-center align-items-center gap-2">
                 <!-- 👁️ Ver Desglose -->
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-dark rounded-pill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalFactura{{ factura.id }}"
-                  title="Ver desglose completo"
-                >
+                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill" data-bs-toggle="modal" data-bs-target="#modalFactura{{ factura.id }}" title="Ver desglose completo">
                   <i class="bi bi-eye"></i>
                 </button>
 
                 <!-- 🖨️ Imprimir -->
-                <a
-                  href="{% url 'imprimir_factura' factura.id %}"
-                  target="_blank"
-                  class="btn btn-sm btn-outline-success rounded-pill"
-                  title="Imprimir"
-                >
+                <a href="{% url 'imprimir_factura' factura.id %}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill" title="Imprimir">
                   <i class="bi bi-printer"></i>
                 </a>
 
                 <!-- ➕ Menú Desplegable: Agregar a esta factura -->
                 <div class="dropdown d-inline-block">
-                  <button 
-                    class="btn btn-sm btn-outline-primary rounded-pill dropdown-toggle" 
-                    type="button" 
-                    id="dropdownAgregar{{ factura.id }}" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false"
-                    title="Agregar ítem a esta factura"
-                  >
+                  <button class="btn btn-sm btn-outline-primary rounded-pill dropdown-toggle" type="button" id="dropdownAgregar{{ factura.id }}" data-bs-toggle="dropdown" aria-expanded="false" title="Agregar ítem a esta factura">
                     <i class="bi bi-plus-circle-fill me-1"></i>Agregar
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="dropdownAgregar{{ factura.id }}">
@@ -139,8 +124,7 @@
                       </a>
                     </li>
                     <li>
-                      <!-- Ajusta 'inicio' por tu url de servicios/reservas si tiene un nombre específico -->
-                      <a class="dropdown-item py-2" href="{% url 'servicios' %}?factura_id={{ factura.id }}">
+                      <a class="dropdown-item py-2" href="{% url 'inicio' %}?factura_id={{ factura.id }}">
                         <i class="bi bi-scissors text-primary me-2"></i> Reservar Servicio
                       </a>
                     </li>
@@ -164,15 +148,17 @@
   </div>
 </div>
 
-<!-- MODAL DESGLOSE -->
+<!-- COMPONENTE MODAL DE DESGLOSE -->
 {% for factura in facturas %}
 <div class="modal fade" id="modalFactura{{ factura.id }}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
+      
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title fw-bold">Desglose de Factura #{{ factura.id }}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
+      
       <div class="modal-body text-dark">
         <div class="row mb-4">
           <div class="col-6">
@@ -232,28 +218,16 @@
           </div>
         </div>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
         <a href="{% url 'detalle_factura' factura.id %}" target="_blank" class="btn btn-primary rounded-pill px-4">
           <i class="bi bi-printer me-2"></i>Ver PDF / Recibo
         </a>
       </div>
+
     </div>
   </div>
 </div>
 {% endfor %}
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Al detectar un mensaje de éxito tras la emisión de la factura, vaciamos el carrito
-    {% if messages %}
-      {% for message in messages %}
-        {% if "success" in message.tags %}
-          localStorage.removeItem("carrito");
-          localStorage.removeItem("carrito_expiracion");
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  });
-</script>
 {% endblock content %}

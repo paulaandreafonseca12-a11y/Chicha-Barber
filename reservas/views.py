@@ -64,6 +64,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     factura_id = request.GET.get('factura_id') or request.POST.get('factura_id')
     promo = None
 
+    # 1. ELIMINAMOS el bloqueo inicial. Ahora permitimos que cualquiera vea la página.
     if not request.user.is_authenticated:
         # Redirigimos al login para que usuarios con cuenta puedan iniciar sesión
         login_url = reverse('login')
@@ -78,19 +79,58 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         messages.warning(request, 'Debe seleccionar un servicio o promoción.')
         return redirect('inicio')
 
+    # 2. AUTO-PROCESAR RESERVA: Si el usuario se acaba de registrar/loguear y tiene algo pendiente
+    if request.user.is_authenticated and 'reserva_pendiente' in request.session:
+        reserva_data = request.session.pop('reserva_pendiente')  # Extraemos y limpiamos la sesión
+        turno_id = reserva_data.get('turno_id')
+        nombre = reserva_data.get('nombre_cliente') or request.user.get_full_name()
+        correo = reserva_data.get('correo_cliente') or request.user.email
+        telefono = reserva_data.get('telefono_cliente')
+
+        try:
+            turno = Turno.objects.get(pk=turno_id, estado='disponible')
+            precio = servicio.precio
+            if promo:
+                descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
+                precio = round(precio * (Decimal('1') - descuento), 2)
+
+            # Creamos la reserva vinculada a su cuenta recién creada
+            Reserva.objects.create(
+                turno=turno,
+                cliente=request.user,
+                nombre_cliente=nombre,
+                correo_cliente=correo,
+                telefono_cliente=telefono,
+                servicio=servicio,
+                precio_historico=precio,
+            )
+            turno.estado = 'reservado'
+            turno.save()
+
+            enviar_correo_reserva(
+                correo_cliente=correo,
+                nombre=nombre,
+                servicio=servicio,
+                fecha=datetime.combine(turno.fecha, turno.hora_inicio),
+            )
+            messages.success(request, '¡Te has registrado con éxito y tu reserva ha sido confirmada!')
+            return redirect('inicio')
+        except Turno.DoesNotExist:
+            messages.error(request, 'El turno que habías seleccionado ya no está disponible.')
+        except Exception as e:
+            messages.error(request, f'Error al procesar tu reserva pendiente: {e}')
+
+    # --- Configuración normal de barberos y turnos para el template ---
     barberos = Usuario.objects.filter(rol='barbero', estado=True)
-    
     ahora = datetime.now()
     hoy = ahora.date()
     fin = hoy + timedelta(days=6)
     
-    # Obtenemos los turnos disponibles en el rango de 7 días
     turnos_qs = Turno.objects.filter(
         fecha__range=(hoy, fin),
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
 
-    # FILTRO CLAVE: Solo mostrar turnos que no hayan pasado (si son de hoy)
     turnos_disponibles = [
         t for t in turnos_qs 
         if t.fecha > hoy or (t.fecha == hoy and t.hora_inicio > ahora.time())
@@ -102,16 +142,29 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         reverse('crear_reserva', args=[servicio.id])
     )
 
+    # 3. CONTROL DE RECEPCIÓN DEL FORMULARIO (POST)
     if request.method == 'POST':
         turno_id = request.POST.get('turno_id')
         nombre = request.POST.get('nombre_cliente', '').strip()
         correo = request.POST.get('correo_cliente', '').strip()
         telefono = request.POST.get('telefono_cliente', '').strip()
 
-        if request.user.is_authenticated and not nombre:
+        # SI NO ESTÁ AUTENTICADO: Guardamos todo en la sesión y mandamos a registro
+        if not request.user.is_authenticated:
+            request.session['reserva_pendiente'] = {
+                'turno_id': turno_id,
+                'nombre_cliente': nombre,
+                'correo_cliente': correo,
+                'telefono_cliente': telefono,
+            }
+            messages.info(request, 'Por favor, regístrate o inicia sesión para confirmar tu reserva.')
+            login_url = reverse('registro')
+            return redirect(f'{login_url}?next={request.get_full_path()}')
+
+        # SI YA ESTÁ AUTENTICADO: Sigue el flujo normal tuyo
+        if not nombre:
             nombre = request.user.get_full_name()
 
-        # Guardamos el contexto para re-enviarlo si hay errores de validación
         context_error = {
             'servicio': servicio,
             'promo': promo,
