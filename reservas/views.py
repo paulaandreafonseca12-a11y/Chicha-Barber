@@ -61,6 +61,7 @@ def obtener_turnos_disponibles_json(request):
 
 def crear_reserva(request, servicio_id=None, promocion_id=None):
     servicio = None
+    factura_id = request.GET.get('factura_id') or request.POST.get('factura_id')
     promo = None
 
     if not request.user.is_authenticated:
@@ -150,13 +151,16 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 turno.estado = 'reservado'
                 turno.save()
 
-                # Generar Factura automática al realizar la reserva
-                factura = Factura.objects.create(
-                    cliente=request.user,
-                    total_pagado=float(precio),
-                    metodo_pago='efectivo',  # Se establece efectivo como método inicial
-                    estado='pendiente'
-                )
+                # Usar factura existente o crear nueva
+                if factura_id:
+                    factura = get_object_or_404(Factura, id=factura_id)
+                else:
+                    factura = Factura.objects.create(
+                        cliente=request.user,
+                        total_pagado=0,
+                        metodo_pago='efectivo',
+                        estado='pendiente'
+                    )
 
                 # Crear el detalle de la factura vinculándolo a la reserva
                 DetalleFactura.objects.create(
