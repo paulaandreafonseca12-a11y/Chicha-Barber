@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from usuarios.models import Usuario
 
 
 # 🔹 PRODUCTO
@@ -15,10 +16,7 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Guardar primero para obtener ID
         super().save(*args, **kwargs)
-
-        # Generar código automático
         if not self.codigo:
             self.codigo = f"PROD-{self.codigo_producto:05d}"
             super().save(update_fields=['codigo'])
@@ -48,12 +46,12 @@ class Stock(models.Model):
         return f"{self.producto.nombre if self.producto else 'Sin producto'} - Stock: {self.cantidad}"
 
 
+# 🔹 MOVIMIENTO DE INVENTARIO
 class MovimientoInventario(models.Model):
     TIPO_CHOICES = [
         ('entrada', 'Entrada'),
         ('salida', 'Salida'),
     ]
-
     producto = models.ForeignKey(
         Producto,
         on_delete=models.CASCADE,
@@ -76,9 +74,17 @@ def crear_stock(sender, instance, created, **kwargs):
         Stock.objects.get_or_create(producto=instance, defaults={'cantidad': 0})
 
 
-# 🔹 COMPRA
+# 🔹 COMPRA (una sola clase con el campo usuario)
 class Compra(models.Model):
     codigo_compra = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='compras',
+        verbose_name='Usuario'
+    )
     nombre_cliente = models.CharField(max_length=100)
     correo = models.EmailField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
@@ -100,23 +106,17 @@ class DetalleCompra(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
     def save(self, *args, **kwargs):
-        # Calcular subtotal
         self.subtotal = self.cantidad * self.producto.precio_venta
 
-        # 🔥 Validar stock antes de guardar
         stock = self.producto.stock
-
         if self.cantidad > stock.cantidad:
             raise ValueError(f"Stock insuficiente. Disponible: {stock.cantidad}")
 
-        # Guardar detalle
         super().save(*args, **kwargs)
 
-        # 🔥 Descontar stock
         stock.cantidad -= self.cantidad
         stock.save()
 
-        # 🔥 Actualizar total de compra
         self.compra.total = sum(d.subtotal for d in self.compra.detalles.all())
         self.compra.save()
 
