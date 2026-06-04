@@ -1,5 +1,284 @@
 {% extends "base-admin.html" %}
 {% load static %}
 {% block content %}
+<div class="container-fluid px-4 py-4 text-white">
 
+  <!-- BIENVENIDA -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="p-4 rounded-4 shadow-sm border border-secondary" style="background: rgba(20, 24, 32, 0.85); backdrop-filter: blur(10px);">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div>
+            <span class="text-warning text-uppercase fw-bold fs-7" style="letter-spacing: 1.5px;">Panel de Administración</span>
+            <h1 class="h2 fw-bold text-white mb-1">¡Bienvenido, {{ nombre }}!</h1>
+            <p class="text-light mb-0 opacity-75">Aquí tienes el resumen general de las actividades y estadísticas de hoy.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light rounded-pill px-3 py-2 fw-semibold">
+              <i class="bi bi-calendar-event me-2 text-warning"></i>Ver Agenda
+            </a>
+            <a href="{% url 'crear_reserva_directa' %}" class="btn btn-warning rounded-pill px-3 py-2 text-dark fw-bold" style="background-color: #f5a623; border: none;">
+              <i class="bi bi-plus-circle me-2"></i>Nueva Reserva
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- TARJETAS DE ESTADÍSTICAS -->
+  <div class="row g-4 mb-4">
+    <!-- Ingresos -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100 border-0 rounded-4 shadow-sm text-white" style="background: rgba(25, 135, 84, 0.2); border-left: 5px solid #198754 !important;">
+        <div class="card-body p-4 d-flex align-items-center gap-3">
+          <div class="bg-success bg-opacity-25 text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 65px; height: 65px; flex-shrink: 0;">
+            <i class="bi bi-currency-dollar fs-2"></i>
+          </div>
+          <div>
+            <h6 class="text-white-50 text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">Ingresos Cobrados</h6>
+            <h3 class="fw-bold mb-0 text-success">${{ total_ingresos|floatformat:2 }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reservas Activas -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100 border-0 rounded-4 shadow-sm text-white" style="background: rgba(13, 110, 253, 0.2); border-left: 5px solid #0d6efd !important;">
+        <div class="card-body p-4 d-flex align-items-center gap-3">
+          <div class="bg-primary bg-opacity-25 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 65px; height: 65px; flex-shrink: 0;">
+            <i class="bi bi-calendar-check fs-2"></i>
+          </div>
+          <div>
+            <h6 class="text-white-50 text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">Reservas Activas</h6>
+            <h3 class="fw-bold mb-0 text-primary">{{ total_reservas }}</h3>
+            {% if reservas_pendientes > 0 %}
+              <span class="badge bg-warning text-dark mt-1">{{ reservas_pendientes }} pendientes</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clientes -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100 border-0 rounded-4 shadow-sm text-white" style="background: rgba(13, 202, 240, 0.2); border-left: 5px solid #0dcaf0 !important;">
+        <div class="card-body p-4 d-flex align-items-center gap-3">
+          <div class="bg-info bg-opacity-25 text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 65px; height: 65px; flex-shrink: 0;">
+            <i class="bi bi-people fs-2"></i>
+          </div>
+          <div>
+            <h6 class="text-white-50 text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">Clientes Totales</h6>
+            <h3 class="fw-bold mb-0 text-info">{{ total_clientes }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card h-100 border-0 rounded-4 shadow-sm text-white" style="background: rgba(255, 193, 7, 0.2); border-left: 5px solid #ffc107 !important;">
+        <div class="card-body p-4 d-flex align-items-center gap-3">
+          <div class="bg-warning bg-opacity-25 text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 65px; height: 65px; flex-shrink: 0;">
+            <i class="bi bi-box-seam fs-2"></i>
+          </div>
+          <div>
+            <h6 class="text-white-50 text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">Tipos de Producto</h6>
+            <h3 class="fw-bold mb-0 text-warning">{{ total_productos }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN INTERMEDIA: TABLAS Y ALERTAS -->
+  <div class="row g-4 mb-4">
+    
+    <!-- Reservas Recientes -->
+    <div class="col-lg-8">
+      <div class="card border-0 rounded-4 h-100 shadow-sm" style="background: rgba(20, 24, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+        <div class="card-header bg-transparent border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0 text-white"><i class="bi bi-clock-history me-2 text-warning"></i>Reservas Recientes</h5>
+          <a href="{% url 'ver_agenda' %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">Ver todas</a>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-dark table-borderless align-middle mb-0" style="background: transparent;">
+              <thead>
+                <tr class="text-muted border-bottom border-secondary" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                  <th class="ps-4 py-3">Cliente</th>
+                  <th class="py-3">Servicio</th>
+                  <th class="py-3">Fecha y Hora</th>
+                  <th class="py-3">Estado</th>
+                  <th class="py-3 text-end pe-4">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if reservas_recientes %}
+                  {% for reserva in reservas_recientes %}
+                    <tr class="border-bottom border-secondary border-opacity-25">
+                      <td class="ps-4 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                            {{ reserva.nombre_cliente|default:reserva.cliente.first_name|slice:":2"|upper }}
+                          </div>
+                          <div>
+                            <div class="fw-semibold text-white">{{ reserva.nombre_cliente|default:reserva.cliente.get_full_name|default:reserva.cliente.username }}</div>
+                            <small class="text-white-50" style="font-size: 0.75rem;">{{ reserva.telefono_cliente|default:reserva.cliente.telefono|default:"Sin teléfono" }}</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-3">
+                        <span class="badge bg-secondary py-2 px-3 rounded-pill fw-semibold" style="font-size: 0.8rem;">
+                          {{ reserva.servicio.nombre }}
+                        </span>
+                      </td>
+                      <td class="py-3">
+                        <div class="text-white">{{ reserva.fecha_reserva|date:"d M Y, h:i A"|default:"Sin asignar" }}</div>
+                      </td>
+                      <td class="py-3">
+                        {% if reserva.estado == 'confirmada' %}
+                          <span class="badge bg-success rounded-pill px-2.5 py-1.5"><i class="bi bi-check-circle me-1"></i>Confirmada</span>
+                        {% elif reserva.estado == 'reservada' %}
+                          <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1.5"><i class="bi bi-clock me-1"></i>Reservada</span>
+                        {% else %}
+                          <span class="badge bg-danger rounded-pill px-2.5 py-1.5"><i class="bi bi-x-circle me-1"></i>Cancelada</span>
+                        {% endif %}
+                      </td>
+                      <td class="py-3 text-end pe-4">
+                        <a href="{% url 'ver_agenda' %}" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1">Detalle</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No hay reservas recientes registradas.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alertas de Stock e Inventario -->
+    <div class="col-lg-4">
+      <div class="card border-0 rounded-4 h-100 shadow-sm" style="background: rgba(20, 24, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+        <div class="card-header bg-transparent border-bottom border-secondary p-4">
+          <h5 class="fw-bold mb-0 text-white"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Alertas de Inventario</h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="d-flex flex-column gap-3">
+            {% if productos_bajo_stock %}
+              {% for stock in productos_bajo_stock %}
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background: rgba(255, 193, 7, 0.07); border: 1px solid rgba(255, 193, 7, 0.15);">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="bg-warning bg-opacity-25 text-warning rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                      <i class="bi bi-box-seam fs-5"></i>
+                    </div>
+                    <div>
+                      <div class="fw-semibold text-white">{{ stock.producto.nombre }}</div>
+                      <small class="text-white-50" style="font-size: 0.75rem;">Categoría: {{ stock.producto.get_categoria_display|default:"General" }}</small>
+                    </div>
+                  </div>
+                  <div class="text-end">
+                    <span class="badge bg-danger rounded-pill fw-bold" style="font-size: 0.85rem;">{{ stock.cantidad }} unids.</span>
+                    <div class="text-white-50" style="font-size: 0.7rem; margin-top: 2px;">Stock Crítico</div>
+                  </div>
+                </div>
+              {% endfor %}
+              <div class="text-center mt-2">
+                <a href="{% url 'lista_stock' %}" class="btn btn-sm btn-outline-warning w-100 rounded-pill py-2 fw-semibold">
+                  <i class="bi bi-plus-circle me-1"></i>Reabastecer Inventario
+                </a>
+              </div>
+            {% else %}
+              <div class="text-center py-5">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                  <i class="bi bi-shield-check fs-1"></i>
+                </div>
+                <h6 class="fw-semibold text-white mb-1">Inventario Seguro</h6>
+                <p class="text-muted small mb-0 px-3">Todos los productos cuentan con niveles de stock adecuados (mayor a 15 unidades).</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN DE FACTURAS RECIENTES -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 rounded-4 shadow-sm" style="background: rgba(20, 24, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+        <div class="card-header bg-transparent border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0 text-white"><i class="bi bi-receipt me-2 text-warning"></i>Facturas y Ventas Recientes</h5>
+          <a href="{% url 'factura_adm' %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">Ver todas</a>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-dark table-borderless align-middle mb-0" style="background: transparent;">
+              <thead>
+                <tr class="text-muted border-bottom border-secondary" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                  <th class="ps-4 py-3">N° Factura</th>
+                  <th class="py-3">Cliente</th>
+                  <th class="py-3">Fecha Emisión</th>
+                  <th class="py-3">Método Pago</th>
+                  <th class="py-3">Monto Total</th>
+                  <th class="py-3">Estado</th>
+                  <th class="py-3 text-end pe-4">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if facturas_recientes %}
+                  {% for factura in facturas_recientes %}
+                    <tr class="border-bottom border-secondary border-opacity-25">
+                      <td class="ps-4 py-3 fw-bold text-warning">
+                        #{{ factura.id }}
+                      </td>
+                      <td class="py-3">
+                        <div class="fw-semibold text-white">
+                          {{ factura.nombre_cliente|default:factura.cliente.get_full_name|default:factura.cliente.username|default:"General" }}
+                        </div>
+                        <small class="text-white-50" style="font-size: 0.75rem;">{{ factura.correo_cliente|default:factura.cliente.email|default:"Sin correo" }}</small>
+                      </td>
+                      <td class="py-3">
+                        {{ factura.fecha_emision|date:"d M Y, h:i A" }}
+                      </td>
+                      <td class="py-3">
+                        <span class="text-uppercase small fw-bold px-2 py-1 bg-secondary bg-opacity-25 text-white rounded">
+                          {{ factura.get_metodo_pago_display|default:factura.metodo_pago }}
+                        </span>
+                      </td>
+                      <td class="py-3 fw-bold text-success">
+                        ${{ factura.total_pagado|floatformat:2 }}
+                      </td>
+                      <td class="py-3">
+                        {% if factura.estado == 'pagada' %}
+                          <span class="badge bg-success rounded-pill px-2.5 py-1.5"><i class="bi bi-check-circle me-1"></i>Pagada</span>
+                        {% elif factura.estado == 'pendiente' %}
+                          <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1.5"><i class="bi bi-hourglass-split me-1"></i>Pendiente</span>
+                        {% else %}
+                          <span class="badge bg-danger rounded-pill px-2.5 py-1.5"><i class="bi bi-x-circle me-1"></i>Cancelada</span>
+                        {% endif %}
+                      </td>
+                      <td class="py-3 text-end pe-4">
+                        <a href="{% url 'factura_adm' %}" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1">Ver detalles</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">No hay transacciones registradas.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
 {% endblock %}

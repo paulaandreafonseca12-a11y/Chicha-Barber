@@ -101,6 +101,22 @@ def poblar_usuarios():
                 is_staff=(rol_asignado == 'admin'),
                 is_superuser=(rol_asignado == 'admin')
             )
+            
+    # Crear usuario específico solicitado por el usuario
+    email_custom = "a@b.com"
+    username_custom = "0000000000"
+    if not Usuario.objects.filter(email=email_custom).exists() and not Usuario.objects.filter(username=username_custom).exists():
+        Usuario.objects.create_user(
+            username=username_custom,
+            email=email_custom,
+            password="@dmin123",
+            first_name="Admin",
+            last_name="Chicha",
+            telefono="3000000000",
+            rol="admin",
+            is_staff=True,
+            is_superuser=True
+        )
 
 def poblar_servicios():
     print("Poblando Servicios...")

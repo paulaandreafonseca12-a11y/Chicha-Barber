@@ -36,9 +36,45 @@ def inicio(request):
     return render(request, 'index-clientes.html', context)
 
 def inicio_admin(request):
-    nombre = "Santiago"
+    if not request.user.is_authenticated or request.user.rol not in ['admin', 'barbero']:
+        return redirect('login')
+        
+    from usuarios.models import Usuario
+    from servicios.models import Servicios
+    from reservas.models import Reserva
+    from productos.models import Producto
+    from facturas.models import Factura
+    from django.db.models import Sum
+    from productos.models import Stock
+
+    # Estadísticas
+    total_clientes = Usuario.objects.filter(rol='cliente').count()
+    total_barberos = Usuario.objects.filter(rol='barbero').count()
+    total_servicios = Servicios.objects.count()
+    total_productos = Producto.objects.count()
+    total_reservas = Reserva.objects.exclude(estado='cancelada').count()
+    reservas_pendientes = Reserva.objects.filter(estado='reservada').count()
+    total_ingresos = Factura.objects.filter(estado='pagada').aggregate(total=Sum('total_pagado'))['total'] or 0
+    total_facturas = Factura.objects.count()
+
+    # Listas
+    reservas_recientes = Reserva.objects.all().order_by('-id')[:5]
+    facturas_recientes = Factura.objects.all().order_by('-fecha_emision')[:5]
+    productos_bajo_stock = Stock.objects.filter(cantidad__lt=15).select_related('producto')[:5]
+
     context = {
-        'nombre': nombre
+        'nombre': request.user.first_name or request.user.username,
+        'total_clientes': total_clientes,
+        'total_barberos': total_barberos,
+        'total_servicios': total_servicios,
+        'total_productos': total_productos,
+        'total_reservas': total_reservas,
+        'reservas_pendientes': reservas_pendientes,
+        'total_ingresos': total_ingresos,
+        'total_facturas': total_facturas,
+        'reservas_recientes': reservas_recientes,
+        'facturas_recientes': facturas_recientes,
+        'productos_bajo_stock': productos_bajo_stock,
     }
     return render(request, 'index-admin.html', context)
 

@@ -37,7 +37,32 @@ main {
 .carousel-item img { height: 450px; object-fit: cover; }
 
 /* ── HEADER ── */
+header, .navbar {
+  position: relative;
+  z-index: 1030;
+}
 header a { transition: .3s; }
+
+/* ── DROPDOWNS PREMIUM ── */
+.dropdown-menu-custom {
+  background: rgba(20, 24, 32, 0.97) !important;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.dropdown-menu-custom .dropdown-item {
+  color: rgba(255, 255, 255, 0.85) !important;
+  transition: all 0.2s;
+}
+
+.dropdown-menu-custom .dropdown-item:hover {
+  background-color: rgba(75, 192, 217, 0.15) !important;
+  color: #4bc0d9 !important;
+}
+
+.dropdown-menu-custom .dropdown-divider {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
 
 /* ── PRODUCTOS ── */
 .color-negro-bg { background: #111; }

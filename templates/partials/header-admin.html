@@ -18,15 +18,15 @@
             {% endif %}
             <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
-            <li class="px-3 py-2 border-bottom mb-2 bg-light rounded-top-4 d-flex flex-column">
-              <span class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Rol de administrador</span>
-              <span class="small fw-semibold text-dark">{{ user.get_rol_display|default:"Admin" }}</span>
+          <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
+            <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column" style="background: rgba(255, 255, 255, 0.03);">
+              <span class="text-white-50 fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Rol de administrador</span>
+              <span class="small fw-semibold text-white">{{ user.get_rol_display|default:"Admin" }}</span>
             </li>
-            <li><a class="dropdown-item py-2 fw-bold text-success" href="{% url 'perfil' %}"><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a></li>
+            <li><a class="dropdown-item py-2 fw-bold" style="color: #4bc0d9 !important;" href="{% url 'perfil' %}"><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a></li>
            {% if user.rol == 'admin' or user.rol == 'barbero' %}
-              <li><a class="dropdown-item py-2 fw-bold text-primary" href="{% url 'inicio_admin' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin</a></li>
-              <li><a class="dropdown-item py-2 fw-bold text-primary" href="{% url 'inicio' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Ver pagina web</a></li>
+              <li><a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio_admin' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin</a></li>
+              <li><a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Ver pagina web</a></li>
               <li><a class="dropdown-item py-2" href="{% url 'crear_reserva_directa' %}"><i class="bi bi-calendar-check me-2"></i> Reservas de clientes</a></li>
               <li><a class="dropdown-item py-2" href="/guardados/"><i class="bi bi-bookmark me-2"></i>Guardados</a></li>
             {% endif %}

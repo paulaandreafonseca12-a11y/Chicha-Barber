@@ -25,28 +25,30 @@
             {% endif %}
             <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
-            <li class="px-3 py-2 border-bottom mb-2 bg-light rounded-top-4 d-flex flex-column">
-              <span class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Tu Cuenta</span>
-              <span class="small fw-semibold text-dark">{{ user.get_rol_display|default:"Cliente" }}</span>
+          <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
+            <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column" style="background: rgba(255, 255, 255, 0.03);">
+              <span class="text-white-50 fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Tu Cuenta</span>
+              <span class="small fw-semibold text-white">{{ user.get_rol_display|default:"Cliente" }}</span>
             </li>
            {% if user.rol == 'admin' or user.rol == 'barbero' %}
-<li>
-  <a class="dropdown-item py-2 fw-bold" style="color: #f0a500;" href="{% url 'inicio_admin' %}">
-    <i class="bi bi-speedometer2 me-2"></i>Panel de Administración
-  </a>
-</li>
-<li><hr class="dropdown-divider"></li>
-{% endif %}
-            <li><a class="dropdown-item py-2 fw-bold text-success" href="{% url 'perfil' %}">
-              <i class="bi bi-person-vcard me-2"></i>Mi Perfil</a>
+            <li>
+              <a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio_admin' %}">
+                <i class="bi bi-speedometer2 me-2"></i>Panel de Administración
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+           {% endif %}
+            <li>
+              <a class="dropdown-item py-2 fw-bold" style="color: #4bc0d9 !important;" href="{% url 'perfil' %}">
+                <i class="bi bi-person-vcard me-2"></i>Mi Perfil
+              </a>
             </li>
             <li>
               <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
                 {% if user.tema == 'dark' %}
-                <i class="bi bi-sun-fill me-2 text-warning"></i> Modo Claro
+                  <i class="bi bi-sun-fill me-2 text-warning"></i> Modo Claro
                 {% else %}
-                <i class="bi bi-moon-fill me-2 text-primary"></i> Modo Oscuro
+                  <i class="bi bi-moon-fill me-2 text-primary"></i> Modo Oscuro
                 {% endif %}
               </a>
             </li>
@@ -60,7 +62,8 @@
           </ul>
         </div>
         {% else %}
-          <a class="nav-link btn btn-outline-success rounded-pill px-4 py-2" href="{% url 'registro' %}">Acceder</a>
+          <a class="btn btn-outline-light rounded-pill px-3 py-2" href="{% url 'login' %}">Iniciar Sesión</a>
+          <a class="btn rounded-pill px-3 py-2 color-azul text-dark fw-bold" href="{% url 'registro' %}">Registrarse</a>
         {% endif %}
         <a class="nav-link text-white" href="#">
           
