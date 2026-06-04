@@ -16,7 +16,7 @@
       <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 button-azul text-white">
         {% if user.is_authenticated %}
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-success rounded-pill px-3 py-1"
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-success rounded-pill px-3 py-1 color-azul"
             href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {% if user.foto_perfil %}
             <img src="{{ user.foto_perfil.url }}" alt="{{ user.username }}" width="28" height="28" class="rounded-circle object-fit-cover">
@@ -60,7 +60,7 @@
         {% endif %}
 
         <a class="nav-link text-white" href="#">
-          <i class="bi bi-cart3 fs-5"></i>
+          
         </a>
       </div>
     </div>
