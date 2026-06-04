@@ -10,7 +10,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+</head>
 
+<body class="back {% if user.is_authenticated and user.tema == 'light' %}theme-light{% else %}theme-dark{% endif %}">
+    <div class="d-flex min-vh-100">
         {% include "partials/aside.html" %}
         <div class="d-flex flex-column flex-grow-1 w-100">
             <main class="container-fluid p-0 overflow-auto">

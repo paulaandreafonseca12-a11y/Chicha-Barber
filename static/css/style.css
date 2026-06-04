@@ -486,3 +486,163 @@ select.cb-input {
 .forgot-link:hover {
     color: #f7b640;
 }
+
+/* ==========================================================================
+   TEMA CLARO (PALETA DE COLORES RESTRINGIDA)
+   ========================================================================== */
+
+/* Fondo general de la página en claro (#f5f8de) */
+body.theme-light {
+  background-image:
+    linear-gradient(rgba(245, 248, 222, 0.96), rgba(245, 248, 222, 0.94)),
+    url('../img/Fondo.png') !important;
+  color: #030301 !important; /* Texto negro */
+}
+
+/* Sobrescribir textos de color claro a negro de la paleta */
+body.theme-light .text-light,
+body.theme-light .text-white,
+body.theme-light .text-white-50,
+body.theme-light h1,
+body.theme-light h2,
+body.theme-light h3,
+body.theme-light h4,
+body.theme-light h5,
+body.theme-light h6,
+body.theme-light p,
+body.theme-light span,
+body.theme-light label {
+  color: #030301 !important;
+}
+
+/* Cajas, Tarjetas, Formularios, Acordeones en color blanco/claro */
+body.theme-light .card,
+body.theme-light .form-box,
+body.theme-light .p-4.rounded-4.shadow-sm,
+body.theme-light aside,
+body.theme-light .booking-card,
+body.theme-light .step-item .step-circle {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border-color: rgba(141, 129, 140, 0.3) !important; /* Borde gris de la paleta #8d818c */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Sobrescribir subtextos en light mode */
+body.theme-light .text-muted,
+body.theme-light .text-white-50,
+body.theme-light .opacity-50 {
+  color: #8d818c !important; /* Gris de la paleta */
+  opacity: 1 !important;
+}
+
+/* Modos de tabla en claro */
+body.theme-light .table {
+  color: #030301 !important;
+}
+
+body.theme-light .table-dark {
+  --bs-table-bg: #ffffff !important;
+  --bs-table-color: #030301 !important;
+  --bs-table-hover-bg: rgba(75, 192, 217, 0.08) !important; /* Azul de la paleta en hover */
+}
+
+/* Botones y Links en light mode */
+body.theme-light header,
+body.theme-light .navbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgba(141, 129, 140, 0.2) !important;
+}
+
+body.theme-light header a,
+body.theme-light .navbar-brand {
+  color: #030301 !important;
+}
+
+body.theme-light .btn-outline-light {
+  border-color: #030301 !important;
+  color: #030301 !important;
+}
+
+body.theme-light .btn-outline-light:hover {
+  background-color: #030301 !important;
+  color: #ffffff !important;
+}
+
+/* Acordeones laterales (Aside) */
+body.theme-light .accordion-item,
+body.theme-light .accordion-button {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+}
+
+body.theme-light .accordion-button:not(.collapsed) {
+  background-color: rgba(75, 192, 217, 0.1) !important; /* Azul paleta */
+  color: #c47a2c !important; /* Naranja paleta */
+}
+
+body.theme-light .list-group-item {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+}
+
+body.theme-light .list-group-item:hover,
+body.theme-light .list-group-item-action:hover {
+  background-color: rgba(75, 192, 217, 0.1) !important;
+  color: #4bc0d9 !important;
+}
+
+/* Dropdown del header en modo claro */
+body.theme-light .dropdown-menu-custom {
+  background-color: #ffffff !important;
+  border-color: rgba(141, 129, 140, 0.2) !important;
+}
+
+body.theme-light .dropdown-menu-custom .dropdown-item {
+  color: #030301 !important;
+}
+
+body.theme-light .dropdown-menu-custom .dropdown-item:hover {
+  background-color: rgba(75, 192, 217, 0.1) !important;
+  color: #4bc0d9 !important;
+}
+
+body.theme-light .dropdown-menu-custom .dropdown-divider {
+  border-color: rgba(141, 129, 140, 0.2) !important;
+}
+
+/* Footer en modo claro */
+body.theme-light footer.color-negro-bg {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border-top: 1px solid rgba(141, 129, 140, 0.2) !important;
+}
+body.theme-light footer h5.text-warning,
+body.theme-light footer i.text-warning,
+body.theme-light footer p i.text-warning {
+  color: #c47a2c !important;
+}
+
+/* Reducir grosor y color de líneas en el Aside (modo claro) */
+body.theme-light aside {
+  border-right: 1px solid rgba(141, 129, 140, 0.2) !important;
+}
+body.theme-light aside hr {
+  border-color: rgba(141, 129, 140, 0.3) !important;
+  opacity: 0.5;
+  border-width: 1px !important;
+}
+body.theme-light aside .accordion-button,
+body.theme-light aside .accordion-item,
+body.theme-light aside .list-group-item {
+  border: none !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid rgba(141, 129, 140, 0.1) !important;
+}
+body.theme-light aside .accordion-item:last-child,
+body.theme-light aside .list-group-item:last-child {
+  border-bottom: none !important;
+}
+body.theme-light aside a[href*="inicio_admin"] {
+  border: 1px solid rgba(141, 129, 140, 0.2) !important;
+}
