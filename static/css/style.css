@@ -37,7 +37,32 @@ main {
 .carousel-item img { height: 450px; object-fit: cover; }
 
 /* ── HEADER ── */
+header, .navbar {
+  position: relative;
+  z-index: 1030;
+}
 header a { transition: .3s; }
+
+/* ── DROPDOWNS PREMIUM ── */
+.dropdown-menu-custom {
+  background: rgba(20, 24, 32, 0.97) !important;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.dropdown-menu-custom .dropdown-item {
+  color: rgba(255, 255, 255, 0.85) !important;
+  transition: all 0.2s;
+}
+
+.dropdown-menu-custom .dropdown-item:hover {
+  background-color: rgba(75, 192, 217, 0.15) !important;
+  color: #4bc0d9 !important;
+}
+
+.dropdown-menu-custom .dropdown-divider {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
 
 /* ── PRODUCTOS ── */
 .color-negro-bg { background: #111; }
@@ -263,6 +288,9 @@ header a { transition: .3s; }
 /* =========================
    RESET
 ========================= */
+html {
+    scroll-behavior: smooth;
+}
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -460,4 +488,363 @@ select.cb-input {
 
 .forgot-link:hover {
     color: #f7b640;
+}
+
+/* ==========================================================================
+   TEMA CLARO (PALETA DE COLORES RESTRINGIDA)
+   ========================================================================== */
+
+/* Fondo general de la página en claro (#f5f8de) */
+body.theme-light {
+  background-image:
+    linear-gradient(rgba(245, 248, 222, 0.96), rgba(245, 248, 222, 0.94)),
+    url('../img/Fondo.png') !important;
+  color: #030301 !important; /* Texto negro */
+}
+
+/* Sobrescribir textos de color claro a negro de la paleta */
+body.theme-light .text-light,
+body.theme-light .text-white,
+body.theme-light .text-white-50,
+body.theme-light h1,
+body.theme-light h2,
+body.theme-light h3,
+body.theme-light h4,
+body.theme-light h5,
+body.theme-light h6,
+body.theme-light p,
+body.theme-light span,
+body.theme-light label {
+  color: #030301 !important;
+}
+
+/* Cajas, Tarjetas, Formularios, Acordeones en color blanco/claro */
+body.theme-light .card,
+body.theme-light .form-box,
+body.theme-light .p-4.rounded-4.shadow-sm,
+body.theme-light aside,
+body.theme-light .booking-card,
+body.theme-light .step-item .step-circle {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border-color: rgba(141, 129, 140, 0.3) !important; /* Borde gris de la paleta #8d818c */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Sobrescribir subtextos en light mode */
+body.theme-light .text-muted,
+body.theme-light .text-white-50,
+body.theme-light .opacity-50 {
+  color: #8d818c !important; /* Gris de la paleta */
+  opacity: 1 !important;
+}
+
+/* Modos de tabla en claro */
+body.theme-light .table {
+  color: #030301 !important;
+}
+
+body.theme-light .table-dark {
+  --bs-table-bg: #ffffff !important;
+  --bs-table-color: #030301 !important;
+  --bs-table-hover-bg: rgba(75, 192, 217, 0.08) !important; /* Azul de la paleta en hover */
+}
+
+/* Cabecera azul para ambos modos */
+.thead-azul {
+  --bs-table-bg: #4bc0d9 !important;
+  --bs-table-color: #ffffff !important;
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+}
+.thead-azul th {
+  color: #ffffff !important;
+}
+
+/* ── ESTILOS DATATABLES PERSONALIZADOS ── */
+
+/* 1. MODO OSCURO (Predeterminado o body.theme-dark) */
+body.theme-dark .dt-paging .pagination .page-link,
+body.theme-dark .dataTables_paginate .pagination .page-link,
+.dt-paging .pagination .page-link,
+.dataTables_paginate .pagination .page-link {
+  background-color: #1a1a1a !important;
+  color: #eef0f3 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.theme-dark .dt-paging .pagination .page-link:hover,
+body.theme-dark .dataTables_paginate .pagination .page-link:hover,
+.dt-paging .pagination .page-link:hover,
+.dataTables_paginate .pagination .page-link:hover {
+  background-color: #c47a2c !important; /* Naranja de la paleta */
+  color: #ffffff !important;
+  border-color: #c47a2c !important;
+}
+
+body.theme-dark .dt-paging .pagination .page-item.active .page-link,
+body.theme-dark .dt-paging .pagination .page-link.active,
+body.theme-dark .dt-paging .pagination .active > .page-link,
+body.theme-dark .dataTables_paginate .pagination .page-item.active .page-link,
+.dt-paging .pagination .page-item.active .page-link,
+.dt-paging .pagination .page-link.active,
+.dt-paging .pagination .active > .page-link,
+.dataTables_paginate .pagination .page-item.active .page-link {
+  background-color: #4bc0d9 !important; /* Azul de la paleta */
+  color: #030301 !important;
+  border-color: #4bc0d9 !important;
+}
+
+body.theme-dark .dt-paging .pagination .page-item.disabled .page-link,
+body.theme-dark .dataTables_paginate .pagination .page-item.disabled .page-link,
+.dt-paging .pagination .page-item.disabled .page-link,
+.dataTables_paginate .pagination .page-item.disabled .page-link {
+  background-color: #0e0f11 !important;
+  color: #6b7280 !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  opacity: 0.6;
+}
+
+body.theme-dark .dt-search input,
+body.theme-dark .dataTables_filter input,
+body.theme-dark .dt-length select,
+body.theme-dark .dataTables_length select,
+body.theme-dark select.form-select,
+body.theme-dark input.form-control,
+.dt-search input,
+.dataTables_filter input,
+.dt-length select,
+.dataTables_length select {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+/* Specific override for the form-select and form-control under dt-container in dark mode */
+body.theme-dark .dt-container select.form-select,
+body.theme-dark .dt-container input.form-control,
+body.theme-dark .dt-container .dt-length select,
+body.theme-dark .dt-container .dt-search input {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.theme-dark .dt-search input:focus,
+body.theme-dark .dataTables_filter input:focus,
+body.theme-dark .dt-length select:focus,
+body.theme-dark .dataTables_length select:focus,
+body.theme-dark .dt-container select.form-select:focus,
+body.theme-dark .dt-container input.form-control:focus,
+.dt-search input:focus,
+.dataTables_filter input:focus,
+.dt-length select:focus,
+.dataTables_length select:focus {
+  border-color: #4bc0d9 !important;
+  outline: none;
+  box-shadow: 0 0 8px rgba(75, 192, 217, 0.4) !important;
+}
+
+body.theme-dark .dt-info,
+body.theme-dark .dataTables_info,
+body.theme-dark .dt-search label,
+body.theme-dark .dataTables_filter label,
+body.theme-dark .dt-length label,
+body.theme-dark .dataTables_length label,
+.dt-info,
+.dataTables_info,
+.dt-search label,
+.dataTables_filter label,
+.dt-length label,
+.dataTables_length label {
+  color: #eef0f3 !important;
+}
+
+/* 2. MODO CLARO (body.theme-light) */
+body.theme-light .dt-paging .pagination .page-link,
+body.theme-light .dataTables_paginate .pagination .page-link {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border-color: rgba(141, 129, 140, 0.3) !important;
+}
+
+body.theme-light .dt-paging .pagination .page-link:hover,
+body.theme-light .dataTables_paginate .pagination .page-link:hover {
+  background-color: #c47a2c !important;
+  color: #ffffff !important;
+  border-color: #c47a2c !important;
+}
+
+body.theme-light .dt-paging .pagination .page-item.active .page-link,
+body.theme-light .dt-paging .pagination .page-link.active,
+body.theme-light .dt-paging .pagination .active > .page-link,
+body.theme-light .dataTables_paginate .pagination .page-item.active .page-link {
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+  border-color: #4bc0d9 !important;
+}
+
+body.theme-light .dt-paging .pagination .page-item.disabled .page-link,
+body.theme-light .dataTables_paginate .pagination .page-item.disabled .page-link {
+  background-color: #f8f9fa !important;
+  color: #8d818c !important;
+  border-color: rgba(141, 129, 140, 0.2) !important;
+  opacity: 0.6;
+}
+
+body.theme-light .dt-search input,
+body.theme-light .dataTables_filter input,
+body.theme-light .dt-length select,
+body.theme-light .dataTables_length select,
+body.theme-light .dt-container select.form-select,
+body.theme-light .dt-container input.form-control {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border: 1px solid rgba(141, 129, 140, 0.4) !important;
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+body.theme-light .dt-search input:focus,
+body.theme-light .dataTables_filter input:focus,
+body.theme-light .dt-length select:focus,
+body.theme-light .dataTables_length select:focus,
+body.theme-light .dt-container select.form-select:focus,
+body.theme-light .dt-container input.form-control:focus {
+  border-color: #4bc0d9 !important;
+  outline: none;
+  box-shadow: 0 0 8px rgba(75, 192, 217, 0.4) !important;
+}
+
+body.theme-light .dt-info,
+body.theme-light .dataTables_info,
+body.theme-light .dt-search label,
+body.theme-light .dataTables_filter label,
+body.theme-light .dt-length label,
+body.theme-light .dataTables_length label {
+  color: #030301 !important;
+}
+
+
+
+/* Botones Exportar DataTables */
+.dt-btn-excel {
+  background-color: #198754 !important;
+  color: white !important;
+  border: none;
+}
+.dt-btn-pdf {
+  background-color: #dc3545 !important;
+  color: white !important;
+  border: none;
+}
+.dt-btn-print {
+  background-color: #c47a2c !important;
+  color: white !important;
+  border: none;
+}
+.dt-btn-excel:hover { background-color: #146c43 !important; }
+.dt-btn-pdf:hover { background-color: #b02a37 !important; }
+.dt-btn-print:hover { background-color: #a8621f !important; }
+
+/* Botones y Links en light mode */
+body.theme-light header,
+body.theme-light .navbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgba(141, 129, 140, 0.2) !important;
+}
+
+body.theme-light header a,
+body.theme-light .navbar-brand {
+  color: #030301 !important;
+}
+
+body.theme-light .btn-outline-light {
+  border-color: #030301 !important;
+  color: #030301 !important;
+}
+
+body.theme-light .btn-outline-light:hover {
+  background-color: #030301 !important;
+  color: #ffffff !important;
+}
+
+/* Acordeones laterales (Aside) */
+body.theme-light .accordion-item,
+body.theme-light .accordion-button {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+}
+
+body.theme-light .accordion-button:not(.collapsed) {
+  background-color: rgba(75, 192, 217, 0.1) !important; /* Azul paleta */
+  color: #c47a2c !important; /* Naranja paleta */
+}
+
+body.theme-light .list-group-item {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+}
+
+body.theme-light .list-group-item:hover,
+body.theme-light .list-group-item-action:hover {
+  background-color: rgba(75, 192, 217, 0.1) !important;
+  color: #4bc0d9 !important;
+}
+
+/* Dropdown del header en modo claro */
+body.theme-light .dropdown-menu-custom {
+  background-color: #ffffff !important;
+  border-color: rgba(141, 129, 140, 0.2) !important;
+}
+
+body.theme-light .dropdown-menu-custom .dropdown-item {
+  color: #030301 !important;
+}
+
+body.theme-light .dropdown-menu-custom .dropdown-item:hover {
+  background-color: rgba(75, 192, 217, 0.1) !important;
+  color: #4bc0d9 !important;
+}
+
+body.theme-light .dropdown-menu-custom .dropdown-divider {
+  border-color: rgba(141, 129, 140, 0.2) !important;
+}
+
+/* Footer en modo claro */
+body.theme-light footer.color-negro-bg {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border-top: 1px solid rgba(141, 129, 140, 0.2) !important;
+}
+body.theme-light footer h5.text-warning,
+body.theme-light footer i.text-warning,
+body.theme-light footer p i.text-warning {
+  color: #c47a2c !important;
+}
+
+/* Reducir grosor y color de líneas en el Aside (modo claro) */
+body.theme-light aside {
+  border-right: 1px solid rgba(141, 129, 140, 0.2) !important;
+}
+body.theme-light aside hr {
+  border-color: rgba(141, 129, 140, 0.3) !important;
+  opacity: 0.5;
+  border-width: 1px !important;
+}
+body.theme-light aside .accordion-button,
+body.theme-light aside .accordion-item,
+body.theme-light aside .list-group-item {
+  border: none !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid rgba(141, 129, 140, 0.1) !important;
+}
+body.theme-light aside .accordion-item:last-child,
+body.theme-light aside .list-group-item:last-child {
+  border-bottom: none !important;
+}
+body.theme-light aside a[href*="inicio_admin"] {
+  border: 1px solid rgba(141, 129, 140, 0.2) !important;
 }

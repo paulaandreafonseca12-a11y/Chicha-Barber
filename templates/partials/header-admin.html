@@ -3,8 +3,8 @@
 <nav class="navbar color-azul">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
-      <img src="{% static 'img/logo.png' %}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-      {{titulo|default:"Chicha Barber Studio"}}
+      <div class="d-flex align-items-center gap-2"><img src="{% static 'img/logo.png' %}" alt="Logo" width="50"  style="min-height: 50px;" class="d-inline-block align-text-top">
+      <span class="fw-bold ">{{titulo|default:"Chicha Barber Studio"}}</span></div>
     </a>
   <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 button-azul text-white">
       {% if user.is_authenticated %}
@@ -18,18 +18,26 @@
             {% endif %}
             <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
-            <li class="px-3 py-2 border-bottom mb-2 bg-light rounded-top-4 d-flex flex-column">
-              <span class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Rol de administrador</span>
-              <span class="small fw-semibold text-dark">{{ user.get_rol_display|default:"Admin" }}</span>
+          <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
+            <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column" style="background: rgba(255, 255, 255, 0.03);">
+              <span class="text-white-50 fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Rol de administrador</span>
+              <span class="small fw-semibold text-white">{{ user.get_rol_display|default:"Admin" }}</span>
             </li>
-            <li><a class="dropdown-item py-2 fw-bold text-success" href="{% url 'perfil' %}"><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a></li>
+            <li><a class="dropdown-item py-2 fw-bold" style="color: #4bc0d9 !important;" href="{% url 'perfil' %}"><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a></li>
            {% if user.rol == 'admin' or user.rol == 'barbero' %}
-              <li><a class="dropdown-item py-2 fw-bold text-primary" href="{% url 'inicio_admin' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin</a></li>
-              <li><a class="dropdown-item py-2 fw-bold text-primary" href="{% url 'inicio' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Ver pagina web</a></li>
-              <li><a class="dropdown-item py-2" href="{% url 'crear_reserva_directa' %}"><i class="bi bi-calendar-check me-2"></i> Reservas de clientes</a></li>
+              <li><a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio_admin' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin</a></li>
+              <li><a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Ver pagina web</a></li>
               <li><a class="dropdown-item py-2" href="/guardados/"><i class="bi bi-bookmark me-2"></i>Guardados</a></li>
             {% endif %}
+            <li>
+              <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
+                {% if user.tema == 'dark' %}
+                  <i class="bi bi-sun-fill me-2 text-warning"></i> Modo Claro
+                {% else %}
+                  <i class="bi bi-moon-fill me-2 text-primary"></i> Modo Oscuro
+                {% endif %}
+              </a>
+            </li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <form action="{% url 'logout' %}" method="post">

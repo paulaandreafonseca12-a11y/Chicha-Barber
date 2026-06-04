@@ -84,6 +84,7 @@ class Calificacion(models.Model):
     puntuacion = models.IntegerField(verbose_name='Puntuación')
     comentario = models.TextField(verbose_name='Comentario')
     fecha_calificacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de calificación')
+    mostrar_en_inicio = models.BooleanField(default=False, verbose_name='Mostrar en inicio')
 
     class Meta:
         verbose_name = 'Calificación'
