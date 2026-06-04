@@ -17,7 +17,11 @@
         </div>
 
         <div class="card-body p-4">
-          <form method="POST" action="{% url 'procesar_compra' %}">
+          <form
+            method="POST"
+            action="{% url 'procesar_compra' %}"
+            enctype="multipart/form-data"
+          >
             {% csrf_token %}
 
             <div class="mb-3">
@@ -65,6 +69,48 @@
 
             <hr class="border-secondary" />
 
+            <!-- RESUMEN DEL PEDIDO -->
+            <div class="mb-4">
+              <h5 class="fw-bold mb-3" style="color: #4bc0d9">
+                <i class="bi bi-cart-check me-2"></i>Resumen del Pedido
+              </h5>
+              <div
+                class="table-responsive bg-secondary bg-opacity-10 rounded-3 p-2 border border-secondary border-opacity-25"
+              >
+                <table
+                  class="table table-dark table-borderless mb-0 align-middle small"
+                >
+                  <thead>
+                    <tr class="border-bottom border-secondary text-secondary">
+                      <th>Producto</th>
+                      <th class="text-center">Cant.</th>
+                      <th class="text-end">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody id="resumenProductos">
+                    <!-- Los items se cargarán dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- VISUALIZACIÓN DEL TOTAL A PAGAR -->
+            <div
+              class="mb-4 p-3 bg-secondary bg-opacity-10 rounded-3 border border-secondary border-opacity-25 text-center"
+            >
+              <span
+                class="d-block text-secondary small fw-bold text-uppercase mb-1"
+                >Monto Total de tu Compra</span
+              >
+              <h2
+                class="fw-bold mb-0"
+                style="color: #4bc0d9"
+                id="montoTotalDisplay"
+              >
+                $0
+              </h2>
+            </div>
+
             <h5 class="mt-3 fw-bold" style="color: #4bc0d9">
               💳 Método de Pago
             </h5>
@@ -91,10 +137,10 @@
                 value="contraentrega"
                 onclick="mostrarInfoPago('contraentrega')"
               />
-              <label class="form-check-label"> Pago contraentrega </label>
+              <label class="form-check-label"> Envio a domicilio</label>
             </div>
 
-            <div class="form-check">
+            <div class="form-check mb-3">
               <input
                 class="form-check-input"
                 type="radio"
@@ -105,9 +151,49 @@
               <label class="form-check-label"> Transferencia Bancaria </label>
             </div>
 
+            <div
+              id="contenedorTipoTransferencia"
+              class="mb-3 p-3 border border-secondary rounded bg-secondary bg-opacity-10 d-none"
+            >
+              <label class="form-label fw-bold text-info"
+                >📱 Selecciona la plataforma:</label
+              >
+              <select
+                name="tipo_transferencia"
+                id="tipoTransferenciaInput"
+                class="form-select form-select-lg bg-dark text-white border-secondary"
+              >
+                <option value="" selected disabled>-- Elegir opción --</option>
+                <option value="nequi">Nequi</option>
+                <option value="daviplata">Daviplata</option>
+                <option value="yape">Yape (Plin/Yape)</option>
+              </select>
+            </div>
+
             <input type="hidden" name="carrito" id="carritoInput" />
+            <input
+              type="hidden"
+              name="factura_id"
+              value="{{ factura_id|default:'' }}"
+            />
 
             <div id="infoPago" class="alert alert-info mt-3 d-none"></div>
+
+            <div id="contenedorComprobante" class="mb-3 d-none">
+              <label class="form-label fw-bold text-warning"
+                >📸 Subir Comprobante de Pago</label
+              >
+              <input
+                type="file"
+                name="comprobante"
+                id="comprobanteInput"
+                class="form-control form-control-lg"
+                accept="image/*, application/pdf"
+              />
+              <div class="form-text text-muted">
+                Formatos permitidos: Imágenes (PNG, JPG) o PDF.
+              </div>
+            </div>
 
             <button
               type="submit"
@@ -127,37 +213,101 @@
   // 🛒 CARRITO
   // =======================
 
-  // Obtener carrito
   let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-  // Enviarlo al backend
   document.getElementById("carritoInput").value = JSON.stringify(carrito);
 
+  // Función para calcular y mostrar el monto total acumulado del carrito
+  function calcularYMostrarTotal() {
+    let total = 0;
+    const resumenCuerpo = document.getElementById("resumenProductos");
+    if (resumenCuerpo) resumenCuerpo.innerHTML = "";
+
+    const items = Array.isArray(carrito) ? carrito : Object.values(carrito);
+
+    items.forEach((item) => {
+      let precioNumerico = parseFloat(item.precio || 0);
+      let cantidadNumerica = parseInt(item.cantidad || 0);
+      let subtotal = precioNumerico * cantidadNumerica;
+      total += subtotal;
+
+      if (resumenCuerpo) {
+        const fila = `
+          <tr class="border-bottom border-secondary border-opacity-10">
+            <td class="text-white py-3">
+              <div class="d-flex align-items-center gap-3">
+                ${item.imagen ? `<img src="${item.imagen}" alt="${item.nombre}" class="rounded-2 shadow-sm" style="width: 48px; height: 48px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">` : '<div class="bg-secondary bg-opacity-20 rounded-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;"><i class="bi bi-image text-white-50"></i></div>'}
+                <div>
+                  <div class="fw-bold mb-0">${item.nombre}</div>
+                  <small class="text-secondary">$${precioNumerico.toLocaleString("es-CO")} c/u</small>
+                </div>
+              </div>
+            </td>
+            <td class="text-center text-white">${cantidadNumerica}</td>
+            <td class="text-end text-white fw-bold">$${subtotal.toLocaleString("es-CO")}</td>
+          </tr>
+        `;
+        resumenCuerpo.innerHTML += fila;
+      }
+    });
+
+    document.getElementById("montoTotalDisplay").innerText =
+      "$" + total.toLocaleString("es-CO");
+  }
+  calcularYMostrarTotal();
+
   // =======================
-  // 💳 INFO DE PAGO
+  // 💳 INFO DE PAGO Y COMPROBANTE
   // =======================
 
   function mostrarInfoPago(tipo) {
     let info = document.getElementById("infoPago");
+    let contenedorComprobante = document.getElementById(
+      "contenedorComprobante",
+    );
+    let comprobanteInput = document.getElementById("comprobanteInput");
+
+    // Elementos nuevos para tipo de transferencia
+    let contenedorTipo = document.getElementById("contenedorTipoTransferencia");
+    let tipoTransferenciaInput = document.getElementById(
+      "tipoTransferenciaInput",
+    );
+
     info.classList.remove("d-none");
 
     if (tipo === "persona") {
-      info.className = "alert alert-info mt-3"; // Reset clase por si venía de otra
-      info.innerHTML = "💡 Puedes pagar directamente en nuestro local.";
-    } else if (tipo === "contraentrega") {
       info.className = "alert alert-info mt-3";
-      info.innerHTML = "🚚 Pagarás cuando recibas el producto.";
-    } else if (tipo === "transferencia") {
-      // Estilo de advertencia/instrucción detallada para transferencia
+      info.innerHTML = "💡 Puedes pagar directamente en nuestro local.";
+
+      // Ocultar comprobante y tipo transferencia
+      contenedorComprobante.classList.add("d-none");
+      comprobanteInput.removeAttribute("required");
+      contenedorTipo.classList.add("d-none");
+      tipoTransferenciaInput.removeAttribute("required");
+      tipoTransferenciaInput.value = ""; // Limpiar selección
+    } else if (tipo === "contraentrega" || tipo === "transferencia") {
       info.className = "alert alert-warning mt-3 text-dark";
+
+      const titulo =
+        tipo === "contraentrega"
+          ? "🚚 Envio a domicilio (Pago por Transferencia):"
+          : "🏦 Datos para la Transferencia:";
+
       info.innerHTML = `
-        <h5>🏦 Datos para la Transferencia:</h5>
+        <h5>${titulo}</h5>
         <p class="mb-1"><strong>Banco:</strong> {{ datos_banco.banco|default:"No configurado" }}</p>
         <p class="mb-1"><strong>Tipo de Cuenta:</strong> {{ datos_banco.tipo_cuenta }}</p>
         <p class="mb-1"><strong>Número de Cuenta:</strong> {{ datos_banco.numero_cuenta }}</p>
         <p class="mb-1"><strong>Titular:</strong> {{ datos_banco.titular }}</p>
         <p class="mb-0 mt-2 text-danger"><strong>⚠️ Nota:</strong> {{ datos_banco.instrucciones }}</p>
       `;
+
+      // Mostrar y volver obligatorio el campo de tipo de transferencia
+      contenedorTipo.classList.remove("d-none");
+      tipoTransferenciaInput.setAttribute("required", "required");
+
+      // Mostrar campo de comprobante y volverlo obligatorio
+      contenedorComprobante.classList.remove("d-none");
+      comprobanteInput.setAttribute("required", "required");
     }
   }
 
@@ -172,7 +322,6 @@
     }
   }
 
-  // Revisar cada 2 segundos mientras está en esta página
   setInterval(revisarExpiracion, 2000);
   revisarExpiracion();
 </script>
@@ -181,15 +330,13 @@
   {% if messages %}
       {% for message in messages %}
           {% if message.tags == 'error' or 'Producto' in message.message %}
-              // 💥 Borrar carrito si hay error de coincidencia de productos
               localStorage.removeItem("carrito");
               localStorage.removeItem("carrito_expiracion");
           {% endif %}
 
-              // 🚀 Redirigir al inicio después de mostrar el mensaje
-              setTimeout(function(){
-                  window.location.href = "{% url 'inicio' %}";
-              }, 2000);
+          setTimeout(function(){
+              window.location.href = "{% url 'inicio' %}";
+          }, 2000);
       {% endfor %}
   {% endif %}
 </script>

@@ -1,10 +1,12 @@
 # facturas/models.py
 
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from usuarios.models import Usuario
 from productos.models import Producto
 from reservas.models import Reserva
-
+from core.utils import renombrar_comprobante_factura
 
 # ==========================================
 # FACTURA
@@ -16,6 +18,7 @@ class Factura(models.Model):
         ('efectivo', 'Efectivo'),
         ('nequi', 'Nequi'),
         ('daviplata', 'Daviplata'),
+        ('yape', 'Yape'),
         ('tarjeta', 'Tarjeta'),
     )
 
@@ -28,7 +31,9 @@ class Factura(models.Model):
     cliente = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,
-        related_name='facturas'
+        related_name='facturas',
+        null=True,
+        blank=True
     )
 
     fecha_emision = models.DateTimeField(
@@ -50,7 +55,6 @@ class Factura(models.Model):
         default='pendiente'
     )
 
-    # Campos para clientes no registrados o para guardar el nombre/correo histórico
     nombre_cliente = models.CharField(
         max_length=100,
         blank=True,
@@ -69,8 +73,32 @@ class Factura(models.Model):
         verbose_name="Teléfono del Cliente (si no es usuario registrado)"
     )
 
+    comprobante_pago = models.ImageField(
+        upload_to=renombrar_comprobante_factura,
+        null=True,
+        blank=True,
+        verbose_name="Comprobante de Pago"
+    )
+
+    imagen_transaccion = models.ImageField(
+        upload_to='comprobantes_facturas/',
+        null=True,
+        blank=True,
+        verbose_name="Imagen del Comprobante"
+    )
+
+    def actualizar_total(self):
+        """Calcula de forma segura el total sumando todos sus detalles."""
+        self.total_pagado = sum(float(detalle.subtotal) for detalle in self.detalles.all())
+        self.save(update_fields=['total_pagado'])
+
     def __str__(self):
-        return f"Factura #{self.id} - {self.cliente}"
+        return f"Factura #{self.id} - {self.cliente or self.nombre_cliente or 'Sin Cliente'}"
+
+
+# ==========================================
+# DETALLE FACTURA
+# ==========================================
 
 class DetalleFactura(models.Model):
 
@@ -107,7 +135,8 @@ class DetalleFactura(models.Model):
 
     subtotal = models.DecimalField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        editable=False # Se vuelve automático
     )
     
     def clean(self):
@@ -117,5 +146,22 @@ class DetalleFactura(models.Model):
         if self.producto and self.reserva:
             raise ValidationError('Un detalle de factura no puede estar asociado a un producto y a una reserva simultáneamente.')
 
+    def save(self, *args, **kwargs):
+        # El subtotal se calcula de forma dinámica antes de ir a la BD
+        self.subtotal = self.cantidad * self.precio_unitario
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Detalle Factura #{self.factura.id}"
+
+
+# ==========================================
+# 🔥 SIGNALS PARA ACTUALIZAR FACTURA MÁSTER
+# ==========================================
+
+@receiver(post_save, sender=DetalleFactura)
+@receiver(post_delete, sender=DetalleFactura)
+def recalcular_factura_al_cambiar_detalles(sender, instance, **kwargs):
+    """Cada vez que agregues o borres un servicio/producto, el total se actualizará."""
+    if instance.factura:
+        instance.factura.actualizar_total()

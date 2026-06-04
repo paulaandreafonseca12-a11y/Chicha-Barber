@@ -1,206 +1,194 @@
-{% extends "base-clientes.html" %}
-
-{% block content %}
+{% extends "base-clientes.html" %} {% block content %}
 
 <div class="container py-5">
-
-    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-
-        <!-- ENCABEZADO -->
-        <div class="card-header d-flex justify-content-between align-items-center py-4"
-             style="background-color:#07d2ff; border: none;">
-
-            <div>
-                <h2 class="mb-0 text-white fw-bold factura-logo">
-                    CHICHA BARBER STUDIO 💈
-                </h2>
-            </h1>
-
-            </div>
-        </div>
-
-        <!-- DATOS -->
-        <div class="card-body">
-
-            <div class="row mb-5">
-
-                <div class="col-md-6">
-
-                    <h6 class="text-uppercase text-muted small fw-bold mb-3">Datos del Cliente</h6>
-                    <div class="ps-2 border-start border-4 border-info">
-                        {% if factura.cliente %}
-                            <h5 class="mb-1 fw-bold">{{ factura.cliente.get_full_name }}</h5>
-                            <p class="text-muted mb-0">{{ factura.cliente.email }}</p>
-                        {% else %}
-                            <h5 class="mb-1 fw-bold">{{ factura.nombre_cliente }}</h5>
-                            <p class="text-muted mb-0">{{ factura.correo_cliente }}</p>
-                        {% endif %}
-                    </div>
-
-                </div>
-
-                <div class="col-md-6 text-md-end">
-
-                    <h6 class="text-uppercase text-muted small fw-bold mb-3">Información de Pago</h6>
-                    <div class="ps-2">
-                        <p class="mb-1">
-                            <strong>Fecha:</strong>
-                            {{ factura.fecha_emision|date:"d/m/Y H:i" }}
-                        </p>
-
-                        <p class="mb-1">
-                            <strong>Método:</strong>
-                            {{ factura.get_metodo_pago_display }}
-                        </p>
-
-                        <p class="mb-0">
-                            <strong>Estado:</strong>
-                            {{ factura.get_estado_display }}
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <h5 class="fw-bold mb-4 text-dark border-bottom pb-2">
-                <i class="bi bi-list-ul me-2"></i>Resumen de Venta
-            </h5>
-
-            <div class="table-responsive">
-
-                <table class="table table-hover align-middle">
-
-                    <thead class="bg-light">
-                        <tr>
-                            <th>Descripción</th>
-                            <th class="text-center">Cantidad</th>
-                            <th class="text-end">Precio</th>
-                            <th class="text-end">Subtotal</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        {% for detalle in factura.detalles.all %}
-
-                        <tr class="text-dark">
-
-                            <td class="py-3">
-                                {% if detalle.producto %}
-                                    <i class="bi bi-box-seam text-info me-2 no-print"></i>
-                                    {{ detalle.producto.nombre }}
-                                {% endif %}
-
-                                {% if detalle.reserva %}
-                                    <i class="bi bi-scissors text-primary me-2 no-print"></i>
-                                    {{ detalle.reserva.servicio.nombre }}
-                                    {% if detalle.reserva.promocion %}
-                                        <br><small class="text-danger ms-4">
-                                            <i class="bi bi-tag-fill me-1"></i>
-                                            {{ detalle.reserva.promocion.nombre }}
-                                        </small>
-                                    {% endif %}
-                                {% endif %}
-
-                            </td>
-
-                            <td class="text-center">{{ detalle.cantidad }}</td>
-
-                            <td class="text-end text-dark">
-                                ${{ detalle.precio_unitario|floatformat:0 }}
-                            </td>
-
-                            <td class="text-end fw-bold text-dark">
-                                ${{ detalle.subtotal|floatformat:0 }}
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                <tfoot class="table-group-divider">
-                    <tr>
-                        <th colspan="3" class="text-end fs-5 py-3">Total Pagado:</th>
-                        <th class="text-end text-success fs-5 py-3">${{ factura.total_pagado|floatformat:0 }}</th>
-                    </tr>
-                </tfoot>
-                </table>
-
-            </div>
-
-            <!-- BOTONES -->
-            <div class="d-flex justify-content-center gap-3 mt-5 no-print">
-
-                <button onclick="window.print()" class="btn btn-dark px-4">
-                    <i class="bi bi-printer me-2"></i>
-                    Imprimir
-                </button>
-
-                <a href="{% url 'inicio' %}" class="btn btn-secondary px-4 no-print">
-                    Volver
-                </a>
-
-            </div>
-
-            <div class="mt-5 text-center d-none d-print-block">
-                <p class="mb-1 fw-bold">¡Gracias por preferir a Chicha Barber Studio!</p>
-                <small class="text-muted">Este documento es un comprobante de pago oficial.</small>
-            </div>
-
-        </div>
-
+  <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+    <!-- ENCABEZADO -->
+    <div
+      class="card-header d-flex justify-content-between align-items-center py-4 bg-dark text-white border-0"
+    >
+      <div>
+        <h2 class="mb-0 fw-bold">CHICHA BARBER STUDIO 💈</h2>
+      </div>
     </div>
 
+    <!-- DATOS -->
+    <div class="card-body">
+      <div class="row mb-5">
+        <div class="col-md-6">
+          <h6 class="text-uppercase text-muted small fw-bold mb-3">
+            Datos del Cliente
+          </h6>
+          <div class="ps-2 border-start border-4 border-info">
+            {% if factura.cliente %}
+            <h5 class="mb-1 fw-bold">{{ factura.cliente.get_full_name }}</h5>
+            <p class="text-muted mb-0">{{ factura.cliente.email }}</p>
+            {% else %}
+            <h5 class="mb-1 fw-bold">{{ factura.nombre_cliente }}</h5>
+            <p class="text-muted mb-0">{{ factura.correo_cliente }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-md-6 text-md-end">
+          <h6 class="text-uppercase text-muted small fw-bold mb-3">
+            Información de Pago
+          </h6>
+          <div class="ps-2">
+            <p class="mb-1">
+              <strong>Fecha:</strong>
+              {{ factura.fecha_emision|date:"d/m/Y H:i" }}
+            </p>
+
+            <p class="mb-1">
+              <strong>Método:</strong>
+              {{ factura.get_metodo_pago_display }}
+            </p>
+
+            <p class="mb-0">
+              <strong>Estado:</strong>
+              {{ factura.get_estado_display }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="fw-bold mb-4 text-dark border-bottom pb-2">
+        <i class="bi bi-list-ul me-2"></i>Resumen de Venta
+      </h5>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="bg-light">
+            <tr>
+              <th>Descripción</th>
+              <th class="text-center">Cantidad</th>
+              <th class="text-end">Precio</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for detalle in factura.detalles.all %}
+
+            <tr class="text-dark">
+              <td class="py-3">
+                {% if detalle.producto %}
+                <i class="bi bi-box-seam text-info me-2 no-print"></i>
+                {{ detalle.producto.nombre }} {% endif %} {% if detalle.reserva
+                %}
+                <i class="bi bi-scissors text-primary me-2 no-print"></i>
+                {{ detalle.reserva.servicio.nombre }} {% if
+                detalle.reserva.promocion %}
+                <br /><small class="text-danger ms-4">
+                  <i class="bi bi-tag-fill me-1"></i>
+                  {{ detalle.reserva.promocion.nombre }}
+                </small>
+                {% endif %} {% endif %}
+              </td>
+
+              <td class="text-center">{{ detalle.cantidad }}</td>
+
+              <td class="text-end text-dark">
+                ${{ detalle.precio_unitario|floatformat:0 }}
+              </td>
+
+              <td class="text-end fw-bold text-dark">
+                ${{ detalle.subtotal|floatformat:0 }}
+              </td>
+            </tr>
+
+            {% endfor %}
+          </tbody>
+
+          <tfoot class="table-group-divider">
+            <tr>
+              <th colspan="3" class="text-end fs-5 py-3">Total Pagado:</th>
+              <th class="text-end text-success fs-5 py-3">
+                ${{ factura.total_pagado|floatformat:0 }}
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- BOTONES -->
+      <div class="d-flex justify-content-center gap-3 mt-5 no-print">
+        <button onclick="window.print()" class="btn btn-dark px-4">
+          <i class="bi bi-printer me-2"></i>
+          Imprimir
+        </button>
+
+        {% if user.is_staff or user.rol == 'admin' %}
+        <a
+          href="{% url 'inicio_admin' %}"
+          class="btn btn-secondary px-4 no-print"
+        >
+          Volver al Panel
+        </a>
+        {% else %}
+        <a href="{% url 'inicio' %}" class="btn btn-secondary px-4 no-print">
+          Volver al Inicio
+        </a>
+        {% endif %}
+      </div>
+
+      <div class="mt-5 text-center d-none d-print-block">
+        <p class="mb-1 fw-bold">
+          ¡Gracias por preferir a Chicha Barber Studio!
+        </p>
+        <small class="text-muted"
+          >Este documento es un comprobante de pago oficial.</small
+        >
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 🔥 ESTILOS PARA IMPRESIÓN -->
 <style>
-@media print {
-
+  @media print {
     /* Ocultar elementos no deseados en la impresión */
     .navbar,
     .sidebar,
     .footer,
     .no-print {
-        display: none !important;
+      display: none !important;
     }
     /* Ajustar el contenedor para que ocupe toda la página */
     body {
-        background: white !important;
+      background: white !important;
     }
     .container {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
     .card {
-        border: none !important;
-        box-shadow: none !important;
+      border: none !important;
+      box-shadow: none !important;
     }
     /* Ocultar el header de navegación en la impresión */
     header.p-3.color-negro-bg,
     .p-3.color-negro-bg {
-        display: none !important;
+      display: none !important;
     }
-    /* Asegurar que el color azul de la marca se imprima */
+    /* Asegurar que el encabezado oscuro de Bootstrap se imprima correctamente */
     .card-header {
-        background-color: #07d2ff !important;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
+      background-color: #212529 !important;
+      color: white !important;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
     }
     .text-success {
-        color: #198754 !important; /* Bootstrap success green */
-        -webkit-print-color-adjust: exact;
+      color: #198754 !important; /* Bootstrap success green */
+      -webkit-print-color-adjust: exact;
     }
     .text-dark {
-        color: #212529 !important; /* Bootstrap dark color */
-        -webkit-print-color-adjust: exact;
+      color: #212529 !important; /* Bootstrap dark color */
+      -webkit-print-color-adjust: exact;
     }
-}
+  }
 </style>
 
 {% endblock content %}

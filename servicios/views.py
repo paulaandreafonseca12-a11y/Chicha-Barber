@@ -249,6 +249,11 @@ def responder_calificacion(request, pk):
     }
     return render(request, 'servicios/responder-calificacion.html', context)
 
-def guardar_calificacion(request):
-    # ... (esta lógica ya debería estar manejada por formularios o vistas de cliente)
-    pass
+def guardar_calificacion_view(request):
+    if request.method == 'POST':
+        form = calificacionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ ¡Gracias por tu calificación!")
+            return redirect('calificacion')
+    return redirect('calificacion')

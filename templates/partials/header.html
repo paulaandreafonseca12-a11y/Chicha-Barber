@@ -13,13 +13,13 @@
         <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-white">Promociones</a></li>
       </ul>
 
-      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 button-azul text-white">
+      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white">
         {% if user.is_authenticated %}
         <div class="dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-success rounded-pill px-3 py-1 color-azul"
             href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {% if user.foto_perfil %}
-            <img src="{{ user.foto_perfil.url }}" alt="{{ user.username }}" width="28" height="28" class="rounded-circle object-fit-cover">
+              <img src="{{ user.foto_perfil.url }}" alt="{{ user.username }}" width="28" height="28" class="rounded-circle object-fit-cover">
             {% else %}
             <i class="bi bi-person-circle fs-5"></i>
             {% endif %}
@@ -30,8 +30,17 @@
               <span class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Tu Cuenta</span>
               <span class="small fw-semibold text-dark">{{ user.get_rol_display|default:"Cliente" }}</span>
             </li>
-            <li><a class="dropdown-item py-2 fw-bold text-success" href="{% url 'perfil' %}"><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a></li>
-            <li><a class="dropdown-item py-2" href="{% url 'crear_reserva_directa' %}"><i class="bi bi-calendar-check me-2"></i>Gestión Reservas</a></li>
+           {% if user.rol == 'admin' or user.rol == 'barbero' %}
+<li>
+  <a class="dropdown-item py-2 fw-bold" style="color: #f0a500;" href="{% url 'inicio_admin' %}">
+    <i class="bi bi-speedometer2 me-2"></i>Panel de Administración
+  </a>
+</li>
+<li><hr class="dropdown-divider"></li>
+{% endif %}
+            <li><a class="dropdown-item py-2 fw-bold text-success" href="{% url 'perfil' %}">
+              <i class="bi bi-person-vcard me-2"></i>Mi Perfil</a>
+            </li>
             <li>
               <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
                 {% if user.tema == 'dark' %}
@@ -51,14 +60,8 @@
           </ul>
         </div>
         {% else %}
-        <a href="{% url 'login' %}" class="btn btn-outline-light rounded-pill px-3 py-1">
-          <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
-        </a>
-        <a href="{% url 'registro' %}" class="btn btn-warning rounded-pill px-3 py-1 text-dark fw-semibold">
-          <i class="bi bi-person-plus me-1"></i> Registrarse
-        </a>
+          <a class="nav-link btn btn-outline-success rounded-pill px-4 py-2" href="{% url 'registro' %}">Acceder</a>
         {% endif %}
-
         <a class="nav-link text-white" href="#">
           
         </a>

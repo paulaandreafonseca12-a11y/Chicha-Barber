@@ -34,7 +34,7 @@ urlpatterns = [
     
     #----facturas----#
     path('facturas/', include('facturas.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # 🔥 ESTO HACE QUE LAS IMÁGENES FUNCIONEN
 if settings.DEBUG:

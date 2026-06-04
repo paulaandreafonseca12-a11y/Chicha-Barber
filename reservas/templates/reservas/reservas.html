@@ -1,129 +1,224 @@
-{% extends "base-clientes.html" %}
-{% load static %}
+{% extends "base-clientes.html" %} 
+{% load static %} 
 {% block content %}
 
-<!-- CONTENEDOR -->
-<div class="position-relative d-flex align-items-center justify-content-center"
-     style="min-height:100vh; padding:80px 16px 40px;">
+<div class="position-relative d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 80px 16px 40px">
+  <div class="booking-card p-4 p-md-5 w-100" style="max-width: 800px; background-color: #1a1a1a; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);">
+    
+    <h2 class="text-white text-center fw-bold mb-5" style="font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 2px;">
+      Reserva tu Cita
+    </h2>
 
-    <div class="booking-card p-4 p-md-5 w-100" style="max-width: 800px; background-color: #1a1a1a; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <h2 class="text-white text-center fw-bold mb-5"
-            style="font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:2px;">
-            Reserva tu Cita
-        </h2>
+    {% if promo %}
+    <div class="d-flex justify-content-center mb-4">
+      <div class="alert shadow-sm border-0 d-inline-flex align-items-center" style="background-color: rgba(0, 212, 255, 0.1); color: #00d4ff; padding: 12px 25px; border-radius: 8px;">
+        <i class="bi bi-check2-circle me-2"></i>
+        <span>¡Excelente! Escogiste: <strong>{{ promo }}</strong></span>
+        <a href="{% url 'promocion' %}" class="ms-3 text-white-50 text-decoration-none" style="font-size: 0.75rem">(Cambiar)</a>
+      </div>
+    </div>
+    {% endif %}
 
-        {% if promo %}
-        <div class="d-flex justify-content-center mb-4">
-            <div class="alert shadow-sm border-0 d-inline-flex align-items-center"
-                 style="background-color:rgba(0,212,255,0.1); color:#00d4ff; padding:12px 25px; border-radius:8px;">
-                <i class="bi bi-check2-circle me-2"></i>
-                <span>¡Excelente! Escogiste: <strong>{{ promo }}</strong></span>
-                <a href="{% url 'promocion' %}" class="ms-3 text-white-50 text-decoration-none" style="font-size:0.75rem;">(Cambiar)</a>
-            </div>
+    <form method="POST" action="{{ action_url }}" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="mb-4">
+        <label class="form-label text-white fw-bold"><i class="bi bi-person-vcard me-2"></i> 1. SELECCIONA TU BARBERO</label>
+
+        <div class="row g-2" id="barberos-container">
+          <div class="col-6 col-sm-4 col-md-3">
+            <input type="radio" class="btn-check" name="barbero_id" id="barbero-any" value="any" checked onchange="filterTurnos()" />
+            <label class="btn btn-outline-info w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-any">
+              <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px">
+                <i class="bi bi-people fs-3 text-white-50"></i>
+              </div>
+              <span class="fw-bold lh-sm text-white" style="font-size: 0.85rem">Cualquiera disponible</span>
+            </label>
+          </div>
+
+          {% for barbero in barberos %}
+          <div class="col-6 col-sm-4 col-md-3">
+            <input type="radio" class="btn-check" name="barbero_id" id="barbero-{{ barbero.id }}" value="{{ barbero.id }}" onchange="filterTurnos()" />
+            <label class="btn btn-outline-info w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-{{ barbero.id }}">
+              {% if barbero.foto_perfil %}
+              <img src="{{ barbero.foto_perfil.url }}" class="rounded-circle mb-2 object-fit-cover" style="width: 65px; height: 65px; border: 2px solid rgba(255, 255, 255, 0.1);" alt="{{ barbero.get_full_name }}" />
+              {% else %}
+              <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px">
+                <i class="bi bi-person fs-3 text-white-50"></i>
+              </div>
+              {% endif %}
+              <span class="fw-bold lh-sm text-white text-truncate w-100" style="font-size: 0.85rem">{{ barbero.get_full_name }}</span>
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label text-white fw-bold"><i class="bi bi-clock me-2"></i> 2. SELECCIONA UN TURNO DISPONIBLE</label>
+
+        {% if not turnos_disponibles %}
+        <div class="alert alert-warning">
+          No hay turnos disponibles para los próximos días.
+        </div>
+        {% else %}
+        <div class="row g-2" id="turnos-container" style="max-height: 350px; overflow-y: auto; overflow-x: hidden; padding-right: 5px;">
+          {% for turno in turnos_disponibles %}
+          <div class="col-12 col-sm-6 col-md-4 turno-item" data-barbero="{{ turno.profesional.id }}">
+            <input type="radio" class="btn-check" name="turno_id" id="turno-{{ turno.id }}" value="{{ turno.id }}" required />
+            <label class="btn btn-outline-info w-100 h-100 text-start p-3 d-flex flex-column justify-content-center" for="turno-{{ turno.id }}">
+              <div class="fw-bold mb-1" style="font-size: 0.9rem">
+                {{ turno.fecha|date:"l, d M" }}
+              </div>
+              <div class="fs-4 mb-1" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">
+                {{ turno.hora_inicio|time:"H:i" }}
+              </div>
+              <small class="text-white-50 mt-auto" style="font-size: 0.8rem">{{ turno.profesional.get_full_name }}</small>
+            </label>
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
+      </div>
 
-        <form method="POST" action="{{ action_url }}">
-            {% csrf_token %}
-            
-            <div class="mb-4">
-                <label class="form-label text-white fw-bold"><i class="bi bi-person-vcard me-2"></i> 1. SELECCIONA TU BARBERO</label>
-                <select class="form-select form-select-lg bg-dark text-white border-secondary" id="barbero-select" onchange="filterTurnos()">
-                    <option value="any">Cualquier barbero disponible</option>
-                    {% for barbero in barberos %}
-                    <option value="{{ barbero.id }}">{{ barbero.get_full_name }}</option>
-                    {% endfor %}
-                </select>
+      <div class="mb-4">
+        <label class="form-label text-white fw-bold"><i class="bi bi-card-text me-2"></i> 3. TUS DATOS DE CONTACTO</label>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <input name="nombre_cliente" type="text" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Nombre completo" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" />
+          </div>
+          <div class="col-md-6">
+            <input name="correo_cliente" type="email" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Correo electrónico" required value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" />
+          </div>
+          <div class="col-md-12">
+            <input name="telefono_cliente" type="tel" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Número de celular (ej. 3001234567)" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label text-white fw-bold"><i class="bi bi-credit-card me-2"></i> 4. SELECCIONA EL MEDIO DE PAGO</label>
+        <div class="row g-3">
+          <div class="col-6">
+            <input type="radio" class="btn-check" name="medio_pago" id="pago-persona" value="presencial" checked required onchange="toggleTransferenciaDetails()" />
+            <label class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-persona">
+              <i class="bi bi-cash-coin fs-3 mb-2"></i>
+              <span class="fw-bold text-white" style="font-size: 0.9rem">Pago en Persona</span>
+            </label>
+          </div>
+          <div class="col-6">
+            <input type="radio" class="btn-check" name="medio_pago" id="pago-transferencia" value="transferencia" required onchange="toggleTransferenciaDetails()" />
+            <label class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-transferencia">
+              <i class="bi bi-bank fs-3 mb-2"></i>
+              <span class="fw-bold text-white" style="font-size: 0.9rem">Transferencia</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div id="detalles-transferencia" class="mb-4 p-3 rounded border border-secondary bg-dark d-none">
+        <h6 class="text-info fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Cuentas Disponibles para Transferencia</h6>
+        <div class="row g-3 text-white mb-3" style="font-size: 0.9rem;">
+          <div class="col-sm-6">
+            <div class="p-2 border border-secondary rounded bg-black">
+              <span class="fw-bold text-info d-block">Nequi:</span>
+              <span class="fs-5">300 123 4567</span>
             </div>
-
-            <div class="mb-4">
-                <label class="form-label text-white fw-bold"><i class="bi bi-clock me-2"></i> 2. SELECCIONA UN TURNO DISPONIBLE</label>
-                
-                {% if not turnos_disponibles %}
-                <div class="alert alert-warning">No hay turnos disponibles para los próximos días.</div>
-                {% else %}
-                <div class="row g-2" id="turnos-container" style="max-height: 350px; overflow-y: auto; overflow-x: hidden; padding-right: 5px;">
-                    {% for turno in turnos_disponibles %}
-                    <div class="col-12 col-sm-6 col-md-4 turno-item" data-barbero="{{ turno.profesional.id }}">
-                        <input type="radio" class="btn-check" name="turno_id" id="turno-{{ turno.id }}" value="{{ turno.id }}" required>
-                        <label class="btn btn-outline-info w-100 h-100 text-start p-3 d-flex flex-column justify-content-center" for="turno-{{ turno.id }}">
-                            <div class="fw-bold mb-1" style="font-size: 0.9rem;">{{ turno.fecha|date:"l, d M" }}</div>
-                            <div class="fs-4 mb-1" style="font-family:'Bebas Neue',sans-serif; letter-spacing:1px;">{{ turno.hora_inicio|time:"H:i" }}</div>
-                            <small class="text-white-50 mt-auto" style="font-size: 0.8rem;">{{ turno.profesional.get_full_name }}</small>
-                        </label>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
+          </div>
+          <div class="col-sm-6">
+            <div class="p-2 border border-secondary rounded bg-black">
+              <span class="fw-bold text-info d-block">Bancolombia (Ahorros):</span>
+              <span class="fs-5">123-456789-01</span>
             </div>
+          </div>
+        </div>
 
-            <div class="mb-4">
-                <label class="form-label text-white fw-bold"><i class="bi bi-card-text me-2"></i> 3. TUS DATOS DE CONTACTO</label>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <input name="nombre_cliente" type="text" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Nombre completo" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}">
-                    </div>
-                    <div class="col-md-6">
-                        <input name="correo_cliente" type="email" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Correo electrónico" required value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}">
-                    </div>
-                    <div class="col-md-12">
-                        <input name="telefono_cliente" type="tel" class="form-control form-control-lg bg-dark text-white border-secondary" placeholder="Número de celular (ej. 3001234567)" required>
-                    </div>
-                </div>
-            </div>
+        <div class="mb-3">
+          <label class="form-label text-white fw-bold"><i class="bi bi-hash me-2"></i>Número de Transacción / Referencia</label>
+          <input type="text" name="id_transaccion" id="id_transaccion" class="form-control bg-black text-white border-secondary" placeholder="Ej: 1234567890" />
+        </div>
 
-            <button type="submit" class="btn btn-lg w-100 py-3 fs-5 fw-bold mt-4" style="background-color: #00d4ff; color: #000; border: none; font-family:'Bebas Neue',sans-serif; letter-spacing:2px; border-radius: 8px;">
-                ✓ CONFIRMAR RESERVA
-            </button>
-        </form>
+        <div>
+          <label class="form-label text-white fw-bold"><i class="bi bi-cloud-arrow-up me-2"></i>Subir Comprobante de Pago</label>
+          <input type="file" name="comprobante" id="comprobante" class="form-control bg-black text-white border-secondary" accept="image/*,application/pdf" />
+        </div>
+      </div>
 
-    </div>
+      <button type="submit" class="btn btn-lg w-100 py-3 fs-5 fw-bold mt-4" style="background-color: #00d4ff; color: #000; border: none; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; border-radius: 8px;">
+        ✓ CONFIRMAR RESERVA
+      </button>
+    </form>
+  </div>
 </div>
-{% endblock %}
+
+{% endblock %} 
 
 {% block scripts %}
 <script>
-// Asegura que los turnos se filtren correctamente apenas cargue la página
-document.addEventListener('DOMContentLoaded', filterTurnos);
+  // Asegura el filtrado de turnos y estado inicial de los campos de pago al cargar la página
+  document.addEventListener("DOMContentLoaded", function() {
+    filterTurnos();
+    toggleTransferenciaDetails();
+  });
 
-function filterTurnos() {
-    const selectedBarbero = document.getElementById('barbero-select').value;
-    const turnos = document.querySelectorAll('.turno-item');
+  function filterTurnos() {
+    const selectedBarberoInput = document.querySelector('input[name="barbero_id"]:checked');
+    const selectedBarbero = selectedBarberoInput ? selectedBarberoInput.value : "any";
+    const turnos = document.querySelectorAll(".turno-item");
     let turnosVisibles = 0;
 
-    turnos.forEach(turno => {
-        const turnoBarbero = turno.getAttribute('data-barbero');
-        if (selectedBarbero === 'any' || turnoBarbero === selectedBarbero) {
-            turno.style.display = 'block';
-            turnosVisibles++;
-        } else {
-            turno.style.display = 'none';
-            // Si el turno oculto estaba seleccionado, quitar la selección
-            const radio = turno.querySelector('input[type="radio"]');
-            if (radio.checked) {
-                radio.checked = false;
-            }
+    turnos.forEach((turno) => {
+      const turnoBarbero = turno.getAttribute("data-barbero");
+      if (selectedBarbero === "any" || turnoBarbero === selectedBarbero) {
+        turno.style.display = "block";
+        turnosVisibles++;
+      } else {
+        turno.style.display = "none";
+        const radio = turno.querySelector('input[type="radio"]');
+        if (radio && radio.checked) {
+          radio.checked = false;
         }
+      }
     });
 
-    let container = document.getElementById('turnos-container');
-    let noResultsMsg = document.getElementById('no-turnos-msg');
-    
+    let container = document.getElementById("turnos-container");
+    let noResultsMsg = document.getElementById("no-turnos-msg");
+
     if (turnosVisibles === 0) {
-        if (!noResultsMsg) {
-            noResultsMsg = document.createElement('div');
-            noResultsMsg.id = 'no-turnos-msg';
-            noResultsMsg.className = 'col-12 alert alert-warning text-center mt-3';
-            noResultsMsg.innerText = 'No hay turnos disponibles para este barbero.';
-            container.appendChild(noResultsMsg);
-        } else {
-            noResultsMsg.style.display = 'block';
-        }
+      if (!noResultsMsg) {
+        noResultsMsg = document.createElement("div");
+        noResultsMsg.id = "no-turnos-msg";
+        noResultsMsg.className = "col-12 alert alert-warning text-center mt-3";
+        noResultsMsg.innerText = "No hay turnos disponibles para este barbero.";
+        container.appendChild(noResultsMsg);
+      } else {
+        noResultsMsg.style.display = "block";
+      }
     } else {
-        if (noResultsMsg) {
-            noResultsMsg.style.display = 'none';
-        }
+      if (noResultsMsg) {
+        noResultsMsg.style.display = "none";
+      }
     }
-}
+  }
+
+  // Muestra u oculta los campos de transferencia y maneja el atributo 'required'
+  function toggleTransferenciaDetails() {
+    const contenedorDetalles = document.getElementById("detalles-transferencia");
+    const radioTransferencia = document.getElementById("pago-transferencia");
+    const inputTransaccion = document.getElementById("id_transaccion");
+    const inputComprobante = document.getElementById("comprobante");
+
+    if (radioTransferencia && radioTransferencia.checked) {
+      contenedorDetalles.classList.remove("d-none");
+      inputTransaccion.setAttribute("required", "true");
+      inputComprobante.setAttribute("required", "true");
+    } else {
+      contenedorDetalles.classList.add("d-none");
+      inputTransaccion.removeAttribute("required");
+      inputComprobante.removeAttribute("required");
+      inputTransaccion.value = "";
+      inputComprobante.value = "";
+    }
+  }
 </script>
 {% endblock %}

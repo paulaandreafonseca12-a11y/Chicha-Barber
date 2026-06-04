@@ -164,3 +164,15 @@ class EditarUsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
         fields = ('first_name', 'last_name', 'email', 'telefono', 'rol', 'is_staff', 'estado')
+        
+class EditarPerfilForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['first_name', 'last_name', 'telefono', 'email', 'foto_perfil']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre(s)'}),
+            'last_name':  forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido(s)'}),
+            'telefono':   forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
+            'email':      forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'}),
+            'foto_perfil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }

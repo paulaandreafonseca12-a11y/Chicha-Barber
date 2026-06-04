@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
+from django.contrib.auth import login as auth_login  # 🔥 IMPORTANTE: Para loguear automáticamente
 from .forms import RegistroForm
 from .models import Usuario
 from .forms import RegistroForm, CrearUsuarioAdminForm
@@ -10,6 +11,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from core.utils import enviar_correo_recuperacion
+from django.contrib.auth.decorators import login_required
+from .forms import RegistroForm, CrearUsuarioAdminForm, EditarUsuarioForm, EditarPerfilForm
+from reservas.models import Reserva
 
 def inicio(request):
     return render(request, 'index.html')
@@ -34,16 +38,19 @@ def registro_view(request):
 
             user.save()
 
+            # 🔥 NUEVO: Iniciamos sesión automáticamente para evitar que pase por el login manual
+            auth_login(request, user)
+
             messages.success(
                 request,
-                "✅ Usuario registrado como cliente con éxito."
+                "✅ ¡Usuario registrado con éxito! Tu sesión ha sido iniciada."
             )
 
-            # Si existe una URL de destino, la pasamos al login
+            # 🔥 MEJORA: Si venía de una reserva, va directo a procesarla en reservas/views.py
             if next_url:
-                return redirect(f"{reverse('login')}?next={next_url}")
+                return redirect(next_url)
             
-            return redirect('login') 
+            return redirect('inicio') 
 
     else:
         form = RegistroForm()
@@ -150,3 +157,34 @@ def recuperar_password_view(request):
         return redirect('password_reset_done')
 
     return render(request, 'registration/recuperar.html')
+
+
+
+@login_required
+def perfil(request):
+    if request.method == 'POST':
+        if 'editar_perfil' in request.POST:
+            form = EditarPerfilForm(request.POST, request.FILES, instance=request.user)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "✅ Perfil actualizado con éxito.")
+                return redirect('perfil')
+        elif 'cambiar_password' in request.POST:
+            actual = request.POST.get('password_actual')
+            nueva = request.POST.get('password_nueva')
+            confirmar = request.POST.get('password_confirmar')
+            if not request.user.check_password(actual):
+                messages.error(request, "❌ La contraseña actual es incorrecta.")
+            elif nueva != confirmar:
+                messages.error(request, "❌ Las contraseñas nuevas no coinciden.")
+            elif len(nueva) < 8:
+                messages.error(request, "❌ La contraseña debe tener al menos 8 caracteres.")
+            else:
+                request.user.set_password(nueva)
+                request.user.save()
+                messages.success(request, "✅ Contraseña actualizada. Inicia sesión de nuevo.")
+                return redirect('login')
+
+    form = EditarPerfilForm(instance=request.user)
+    reservas = Reserva.objects.filter(cliente=request.user).order_by('-fecha_reserva')
+    return render(request, 'private/perfil.html', {'form': form, 'reservas': reservas})
