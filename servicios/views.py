@@ -107,9 +107,14 @@ def promocion(request):
 
 def listado_admin(request):
     servicios = Servicios.objects.all()
+    activos = Servicios.objects.filter(estado=True).count()
+    inactivos = Servicios.objects.filter(estado=False).count()
     context = {
-        'titulo': 'Listado de Servicios', # Título corregido para reflejar que es un listado
-        'servicios': servicios
+        'titulo': 'Listado de Servicios',
+        'servicios': servicios,
+        'total_servicios': servicios.count(),
+        'activos': activos,
+        'inactivos': inactivos,
     }
     return render(request, 'servicios/listado-admin.html', context)
 

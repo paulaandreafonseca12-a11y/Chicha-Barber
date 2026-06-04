@@ -288,6 +288,9 @@ header a { transition: .3s; }
 /* =========================
    RESET
 ========================= */
+html {
+    scroll-behavior: smooth;
+}
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -546,6 +549,205 @@ body.theme-light .table-dark {
   --bs-table-color: #030301 !important;
   --bs-table-hover-bg: rgba(75, 192, 217, 0.08) !important; /* Azul de la paleta en hover */
 }
+
+/* Cabecera azul para ambos modos */
+.thead-azul {
+  --bs-table-bg: #4bc0d9 !important;
+  --bs-table-color: #ffffff !important;
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+}
+.thead-azul th {
+  color: #ffffff !important;
+}
+
+/* ── ESTILOS DATATABLES PERSONALIZADOS ── */
+
+/* 1. MODO OSCURO (Predeterminado o body.theme-dark) */
+body.theme-dark .dt-paging .pagination .page-link,
+body.theme-dark .dataTables_paginate .pagination .page-link,
+.dt-paging .pagination .page-link,
+.dataTables_paginate .pagination .page-link {
+  background-color: #1a1a1a !important;
+  color: #eef0f3 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.theme-dark .dt-paging .pagination .page-link:hover,
+body.theme-dark .dataTables_paginate .pagination .page-link:hover,
+.dt-paging .pagination .page-link:hover,
+.dataTables_paginate .pagination .page-link:hover {
+  background-color: #c47a2c !important; /* Naranja de la paleta */
+  color: #ffffff !important;
+  border-color: #c47a2c !important;
+}
+
+body.theme-dark .dt-paging .pagination .page-item.active .page-link,
+body.theme-dark .dt-paging .pagination .page-link.active,
+body.theme-dark .dt-paging .pagination .active > .page-link,
+body.theme-dark .dataTables_paginate .pagination .page-item.active .page-link,
+.dt-paging .pagination .page-item.active .page-link,
+.dt-paging .pagination .page-link.active,
+.dt-paging .pagination .active > .page-link,
+.dataTables_paginate .pagination .page-item.active .page-link {
+  background-color: #4bc0d9 !important; /* Azul de la paleta */
+  color: #030301 !important;
+  border-color: #4bc0d9 !important;
+}
+
+body.theme-dark .dt-paging .pagination .page-item.disabled .page-link,
+body.theme-dark .dataTables_paginate .pagination .page-item.disabled .page-link,
+.dt-paging .pagination .page-item.disabled .page-link,
+.dataTables_paginate .pagination .page-item.disabled .page-link {
+  background-color: #0e0f11 !important;
+  color: #6b7280 !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  opacity: 0.6;
+}
+
+body.theme-dark .dt-search input,
+body.theme-dark .dataTables_filter input,
+body.theme-dark .dt-length select,
+body.theme-dark .dataTables_length select,
+body.theme-dark select.form-select,
+body.theme-dark input.form-control,
+.dt-search input,
+.dataTables_filter input,
+.dt-length select,
+.dataTables_length select {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+/* Specific override for the form-select and form-control under dt-container in dark mode */
+body.theme-dark .dt-container select.form-select,
+body.theme-dark .dt-container input.form-control,
+body.theme-dark .dt-container .dt-length select,
+body.theme-dark .dt-container .dt-search input {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.theme-dark .dt-search input:focus,
+body.theme-dark .dataTables_filter input:focus,
+body.theme-dark .dt-length select:focus,
+body.theme-dark .dataTables_length select:focus,
+body.theme-dark .dt-container select.form-select:focus,
+body.theme-dark .dt-container input.form-control:focus,
+.dt-search input:focus,
+.dataTables_filter input:focus,
+.dt-length select:focus,
+.dataTables_length select:focus {
+  border-color: #4bc0d9 !important;
+  outline: none;
+  box-shadow: 0 0 8px rgba(75, 192, 217, 0.4) !important;
+}
+
+body.theme-dark .dt-info,
+body.theme-dark .dataTables_info,
+body.theme-dark .dt-search label,
+body.theme-dark .dataTables_filter label,
+body.theme-dark .dt-length label,
+body.theme-dark .dataTables_length label,
+.dt-info,
+.dataTables_info,
+.dt-search label,
+.dataTables_filter label,
+.dt-length label,
+.dataTables_length label {
+  color: #eef0f3 !important;
+}
+
+/* 2. MODO CLARO (body.theme-light) */
+body.theme-light .dt-paging .pagination .page-link,
+body.theme-light .dataTables_paginate .pagination .page-link {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border-color: rgba(141, 129, 140, 0.3) !important;
+}
+
+body.theme-light .dt-paging .pagination .page-link:hover,
+body.theme-light .dataTables_paginate .pagination .page-link:hover {
+  background-color: #c47a2c !important;
+  color: #ffffff !important;
+  border-color: #c47a2c !important;
+}
+
+body.theme-light .dt-paging .pagination .page-item.active .page-link,
+body.theme-light .dt-paging .pagination .page-link.active,
+body.theme-light .dt-paging .pagination .active > .page-link,
+body.theme-light .dataTables_paginate .pagination .page-item.active .page-link {
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+  border-color: #4bc0d9 !important;
+}
+
+body.theme-light .dt-paging .pagination .page-item.disabled .page-link,
+body.theme-light .dataTables_paginate .pagination .page-item.disabled .page-link {
+  background-color: #f8f9fa !important;
+  color: #8d818c !important;
+  border-color: rgba(141, 129, 140, 0.2) !important;
+  opacity: 0.6;
+}
+
+body.theme-light .dt-search input,
+body.theme-light .dataTables_filter input,
+body.theme-light .dt-length select,
+body.theme-light .dataTables_length select,
+body.theme-light .dt-container select.form-select,
+body.theme-light .dt-container input.form-control {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border: 1px solid rgba(141, 129, 140, 0.4) !important;
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+body.theme-light .dt-search input:focus,
+body.theme-light .dataTables_filter input:focus,
+body.theme-light .dt-length select:focus,
+body.theme-light .dataTables_length select:focus,
+body.theme-light .dt-container select.form-select:focus,
+body.theme-light .dt-container input.form-control:focus {
+  border-color: #4bc0d9 !important;
+  outline: none;
+  box-shadow: 0 0 8px rgba(75, 192, 217, 0.4) !important;
+}
+
+body.theme-light .dt-info,
+body.theme-light .dataTables_info,
+body.theme-light .dt-search label,
+body.theme-light .dataTables_filter label,
+body.theme-light .dt-length label,
+body.theme-light .dataTables_length label {
+  color: #030301 !important;
+}
+
+
+
+/* Botones Exportar DataTables */
+.dt-btn-excel {
+  background-color: #198754 !important;
+  color: white !important;
+  border: none;
+}
+.dt-btn-pdf {
+  background-color: #dc3545 !important;
+  color: white !important;
+  border: none;
+}
+.dt-btn-print {
+  background-color: #c47a2c !important;
+  color: white !important;
+  border: none;
+}
+.dt-btn-excel:hover { background-color: #146c43 !important; }
+.dt-btn-pdf:hover { background-color: #b02a37 !important; }
+.dt-btn-print:hover { background-color: #a8621f !important; }
 
 /* Botones y Links en light mode */
 body.theme-light header,

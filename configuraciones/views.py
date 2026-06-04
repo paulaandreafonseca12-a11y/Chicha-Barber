@@ -63,3 +63,24 @@ def toggle_carrusel(request, pk):
     except Carrusel.DoesNotExist:
         messages.error(request, 'La imagen de carrusel no existe.')
     return redirect('carrusel')
+
+from servicios.models import Calificacion
+
+def testimonios_admin_view(request):
+    testimonios = Calificacion.objects.filter(puntuacion=5).order_by('-fecha_calificacion')
+    context = {
+        'titulo': 'Gestión de Testimonios (5 Estrellas)',
+        'testimonios': testimonios,
+    }
+    return render(request, 'testimonios.html', context)
+
+def toggle_testimonio(request, pk):
+    try:
+        testimonio = Calificacion.objects.get(pk=pk, puntuacion=5)
+        testimonio.mostrar_en_inicio = not testimonio.mostrar_en_inicio
+        testimonio.save()
+        estado_str = "aprobado para inicio" if testimonio.mostrar_en_inicio else "ocultado del inicio"
+        messages.success(request, f'Testimonio {estado_str} exitosamente.')
+    except Calificacion.DoesNotExist:
+        messages.error(request, 'El testimonio no existe o no tiene 5 estrellas.')
+    return redirect('testimonios_admin')

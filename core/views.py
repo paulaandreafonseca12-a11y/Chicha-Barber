@@ -26,12 +26,16 @@ class CustomLoginView(LoginView):
 
 from configuraciones.models import Carrusel
 
+from servicios.models import Calificacion
+
 def inicio(request):
     carruseles = Carrusel.objects.filter(estado=True).order_by('-fecha_modificacion')[:4]
+    testimonios = Calificacion.objects.filter(puntuacion=5, mostrar_en_inicio=True).order_by('-fecha_calificacion')[:6]
     nombre = "Santiago"
     context = {
         'nombre': nombre,
         'carruseles': carruseles,
+        'testimonios': testimonios,
     }
     return render(request, 'index-clientes.html', context)
 

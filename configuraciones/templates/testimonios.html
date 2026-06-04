@@ -1,0 +1,65 @@
+{% extends 'base-admin.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-warning fw-bold">{{ titulo }}</h2>
+    </div>
+
+    <div class="card bg-dark text-white border-secondary mb-4 shadow-sm">
+        <div class="card-body">
+            <p class="mb-0 text-white-50">Aquí puedes revisar las calificaciones de 5 estrellas recibidas. Marca aquellas que deseas que se muestren destacadas en la página principal (index).</p>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle border-secondary">
+            <thead>
+                <tr>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Comentario</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col" class="text-center">Mostrar en Inicio</th>
+                    <th scope="col" class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for testimonio in testimonios %}
+                <tr>
+                    <td><i class="bi bi-person-circle me-2 text-warning"></i>{{ testimonio.cliente }}</td>
+                    <td><span class="badge bg-secondary">{{ testimonio.servicio.nombre }}</span></td>
+                    <td style="max-width: 300px;" class="text-truncate" title="{{ testimonio.comentario }}">
+                        "{{ testimonio.comentario }}"
+                    </td>
+                    <td>{{ testimonio.fecha_calificacion|date:"d M Y" }}</td>
+                    <td class="text-center">
+                        {% if testimonio.mostrar_en_inicio %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Sí</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>No</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <form action="{% url 'toggle_testimonio' testimonio.pk %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if testimonio.mostrar_en_inicio %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                                {% if testimonio.mostrar_en_inicio %}
+                                    <i class="bi bi-eye-slash"></i> Ocultar
+                                {% else %}
+                                    <i class="bi bi-eye"></i> Aprobar
+                                {% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No hay testimonios de 5 estrellas por revisar aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -41,7 +41,7 @@
     </div>
 
     <!-- OFERTAS Y PROMOS -->
-    <div class="accordion-item bg-dark border-0 mt-2">
+    <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'promocion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'promocion' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromos">
@@ -60,7 +60,7 @@
     </div>
 
     <!-- CALIFICACIONES -->
-    <div class="accordion-item bg-dark border-0 mt-2">
+    <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'calificacion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'calificacion' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapseCalificaciones">
@@ -79,7 +79,7 @@
     </div>
 
     <!-- RESERVAS -->
-    <div class="accordion-item bg-dark border-0 mt-2">
+    <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'reservas' in request.path or 'agenda' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'reservas' in request.path or 'agenda' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapseReservas">
@@ -98,7 +98,7 @@
     </div>
 
     <!-- PRODUCTOS -->
-    <div class="accordion-item bg-dark border-0 mt-2">
+    <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapseProductos">
@@ -123,7 +123,7 @@
     </div>
 
     <!-- USUARIOS -->
-    <div class="accordion-item bg-dark border-0 mt-2">
+    <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'usuarios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'usuarios' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios">
@@ -142,14 +142,14 @@
     </div>
 
     <!-- CONFIGURACIÓN -->
-    <div class="accordion-item bg-dark border-0 mt-2">
+    <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
+        <button class="accordion-button {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion">
           <i class="bi bi-gear me-2"></i> Configuración
         </button>
       </h2>
-      <div id="collapseConfiguracion" class="accordion-collapse collapse {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
+      <div id="collapseConfiguracion" class="accordion-collapse collapse {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
         <div class="accordion-body p-0">
           <div class="list-group list-group-flush">
             <a href="{% url 'carrusel' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'carrusel' %}text-warning fw-bold{% else %}text-white-50{% endif %} border-0 ps-4">
@@ -158,13 +158,16 @@
             <a href="{% url 'ver_datos_banco' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'ver_datos_banco' or request.resolver_match.url_name == 'editar_datos_banco' %}text-warning fw-bold{% else %}text-white-50{% endif %} border-0 ps-4">
               <i class="bi bi-bank me-2"></i> Datos Banco
             </a>
+            <a href="{% url 'testimonios_admin' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'testimonios_admin' %}text-warning fw-bold{% else %}text-white-50{% endif %} border-0 ps-4">
+              <i class="bi bi-chat-quote me-2"></i> Testimonios
+            </a>
           </div>
         </div>
       </div>
     </div>
 
     <!-- FACTURAS -->
-    <div class="accordion-item bg-dark border-0 mt-2">
+    <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'factura' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'factura' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapseFacturas">
