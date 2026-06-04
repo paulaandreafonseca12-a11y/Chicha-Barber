@@ -4,225 +4,102 @@
 {% block content %}
 <div class="container py-5">
   <div class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-white text-uppercase">Mis Facturas</h1>
+    <h1 class="display-4 fw-bold text-white text-uppercase">Mi Factura Reciente</h1>
     <hr class="w-25 mx-auto text-light" />
   </div>
 
-  <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-    <div class="card-header color-azul py-3">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <h5 class="text-dark mb-0 fw-bold">
-          <i class="bi bi-receipt-cutoff me-2"></i>
-          Historial de Facturación
-        </h5>
-      </div>
-    </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      {% for factura in facturas %}
+      <div class="card shadow-lg border-0 rounded-4 overflow-hidden bg-white">
+        <div class="card-header color-azul py-4 text-center text-dark position-relative">
+          <div class="mb-2"><i class="bi bi-receipt-cutoff fs-1"></i></div>
+          <h4 class="mb-1 fw-bold">Factura #{{ factura.id }}</h4>
+          <p class="mb-0 small opacity-75">{{ factura.fecha_emision|date:"d/m/Y H:i" }}</p>
+        </div>
 
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0 bg-white">
-        <thead class="color-azul text-dark">
-          <tr>
-            <th class="ps-4 py-3"># Factura</th>
-            <th>Conceptos / Detalles (Múltiples ítems)</th>
-            <th>Fecha</th>
-            <th>Método de Pago</th>
-            <th>Estado</th>
-            <th>Total</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {% for factura in facturas %}
-          <tr>
-            <td class="ps-4 fw-bold text-dark">#{{ factura.id }}</td>
-
-            <td>
-              <div class="d-flex flex-column gap-1">
-                {% for detalle in factura.detalles.all %}
-                  
-                  {% if detalle.reserva %}
-                    <div class="d-flex align-items-center flex-wrap gap-1">
-                      <span class="text-dark fw-bold small">
-                        <i class="bi bi-scissors me-1"></i>
-                        {{ detalle.reserva.servicio.nombre }}
-                      </span>
-                      {% if detalle.reserva.promocion %}
-                        <span class="badge bg-light text-dark border border-danger-subtle" style="font-size: 0.7rem;">
-                          <i class="bi bi-tag-fill me-1 text-danger"></i>
-                          {{ detalle.reserva.promocion.nombre }}
-                        </span>
-                      {% endif %}
-                    </div>
-                  {% endif %}
-
-                  {% if detalle.producto %}
-                    <div>
-                      <span class="text-secondary fw-semibold small">
-                        <i class="bi bi-box-seam me-1"></i>
-                        {{ detalle.producto.nombre }}
-                      </span>
-                      <small class="text-muted fw-bold">(x{{ detalle.cantidad }})</small>
-                    </div>
-                  {% endif %}
-
-                {% empty %}
-                  <span class="text-muted small">Sin detalles registrados</span>
-                {% endfor %}
-              </div>
-            </td>
-
-            <td class="text-dark">{{ factura.fecha_emision|date:"d/m/Y H:i" }}</td>
-
-            <td>
-              <span class="badge bg-light text-dark border">
-                {{ factura.get_metodo_pago_display }}
-              </span>
-            </td>
-
-            <td>
+        <div class="card-body p-4 text-dark">
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <div>
+              <span class="text-muted d-block small text-uppercase">Método de pago</span>
+              <span class="badge bg-light text-dark border fw-semibold">{{ factura.get_metodo_pago_display }}</span>
+            </div>
+            <div class="text-end">
+              <span class="text-muted d-block small text-uppercase">Estado</span>
               {% if factura.estado == 'pagada' %}
-                <span class="badge bg-light text-success border border-success-subtle">Pagada</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">Pagada</span>
               {% elif factura.estado == 'pendiente' %}
-                <span class="badge bg-light text-warning border border-warning-subtle">Pendiente</span>
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle">Pendiente</span>
               {% else %}
-                <span class="badge bg-light text-secondary border border-secondary-subtle">Cancelada</span>
+                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Cancelada</span>
               {% endif %}
-            </td>
+            </div>
+          </div>
 
-            <td class="fw-bold text-dark">
-              ${{ factura.total_pagado|floatformat:0 }}
-            </td>
+          <h6 class="text-uppercase fw-bold text-muted small mb-3">Detalles del cobro</h6>
+          <div class="d-flex flex-column gap-3 mb-4">
+            {% for detalle in factura.detalles.all %}
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                {% if detalle.reserva %}
+                  <span class="fw-bold d-block"><i class="bi bi-scissors me-2 color-azul-text"></i>{{ detalle.reserva.servicio.nombre }}</span>
+                  {% if detalle.reserva.promocion %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-1" style="font-size: 0.65rem;">
+                      <i class="bi bi-tag-fill me-1"></i>{{ detalle.reserva.promocion.nombre }}
+                    </span>
+                  {% endif %}
+                {% endif %}
 
-            <td class="text-center">
-              <div class="d-flex justify-content-center align-items-center gap-2">
-                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill" data-bs-toggle="modal" data-bs-target="#modalFactura{{ factura.id }}" title="Ver desglose completo">
-                  <i class="bi bi-eye"></i>
-                </button>
-
-                <a href="{% url 'imprimir_factura' factura.id %}" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill" title="Imprimir">
-                  <i class="bi bi-printer"></i>
-                </a>
-
-                <div class="dropdown d-inline-block">
-                  <button class="btn btn-sm btn-outline-dark rounded-pill dropdown-toggle" type="button" id="dropdownAgregar{{ factura.id }}" data-bs-toggle="dropdown" aria-expanded="false" title="Agregar ítem a esta factura">
-                    <i class="bi bi-plus-circle-fill me-1"></i>Agregar
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="dropdownAgregar{{ factura.id }}">
-                    <li>
-                      <h6 class="dropdown-header text-uppercase small fw-bold text-dark">Añadir a la Factura #{{ factura.id }}</h6>
-                    </li>
-                    <li>
-                      <a class="dropdown-item py-2 text-dark" href="{% url 'productos_galeria' %}?factura_id={{ factura.id }}">
-                        <i class="bi bi-box-seam me-2"></i> Añadir Producto
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item py-2 text-dark" href="{% url 'inicio' %}?factura_id={{ factura.id }}">
-                        <i class="bi bi-scissors me-2"></i> Reservar Servicio
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-
+                {% if detalle.producto %}
+                  <span class="fw-semibold text-secondary d-block"><i class="bi bi-box-seam me-2"></i>{{ detalle.producto.nombre }}</span>
+                  <small class="text-muted">Cantidad: {{ detalle.cantidad }}</small>
+                {% endif %}
               </div>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="7" class="text-center py-5 text-secondary">
-              <i class="bi bi-receipt display-1 d-block mb-3 opacity-25"></i>
-              <p class="fs-5 mb-0">No tienes facturas registradas.</p>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+              <span class="fw-bold text-dark">${{ detalle.subtotal|floatformat:0 }}</span>
+            </div>
+            {% empty %}
+              <div class="text-center text-muted py-2">Sin detalles registrados</div>
+            {% endfor %}
+          </div>
+
+          <div class="bg-light p-3 rounded-3 d-flex justify-content-between align-items-center mb-4">
+            <span class="fw-bold text-muted text-uppercase mb-0">Total Pagado</span>
+            <h3 class="mb-0 fw-bold text-dark">${{ factura.total_pagado|floatformat:0 }}</h3>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <button type="button" class="btn btn-outline-dark rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalFactura{{ factura.id }}">
+              <i class="bi bi-eye me-2"></i>Ver Desglose
+            </button>
+            <a href="{% url 'imprimir_factura' factura.id %}" target="_blank" class="btn btn-outline-dark rounded-pill px-3">
+              <i class="bi bi-printer me-2"></i>Imprimir
+            </a>
+            
+            <div class="dropdown">
+              <button class="btn btn-dark rounded-pill px-3 dropdown-toggle" type="button" id="dropdownAgregar{{ factura.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-plus-circle me-1"></i> Agregar 
+              </button>
+              <ul class="dropdown-menu shadow border-0 rounded-3" aria-labelledby="dropdownAgregar{{ factura.id }}">
+                <li><a class="dropdown-item py-2" href="{% url 'productos_galeria' %}?factura_id={{ factura.id }}"><i class="bi bi-box-seam me-2"></i> Añadir Producto</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'inicio' %}?factura_id={{ factura.id }}"><i class="bi bi-scissors me-2"></i> Reservar Servicio</a></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      {% empty %}
+      <div class="card shadow-lg border-0 rounded-4 p-5 text-center bg-white text-secondary">
+        <i class="bi bi-receipt display-1 d-block mb-3 opacity-25"></i>
+        <p class="fs-5 mb-0">No tienes ninguna factura reciente registrada.</p>
+      </div>
+      {% endfor %}
     </div>
   </div>
 </div>
 
 {% for factura in facturas %}
 <div class="modal fade" id="modalFactura{{ factura.id }}" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-      
-      <div class="modal-header color-azul text-dark py-3">
-        <h5 class="modal-title fw-bold">
-          <i class="bi bi-receipt-cutoff me-2"></i>Desglose de Factura #{{ factura.id }}
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body text-dark bg-white">
-        <div class="row mb-4">
-          <div class="col-6">
-            <strong>Fecha de Emisión:</strong><br />
-            {{ factura.fecha_emision|date:"d/m/Y H:i" }}
-          </div>
-          <div class="col-6 text-end">
-            <strong>Estado del Pago:</strong><br />
-            {% if factura.estado == 'pagada' %}
-              <span class="badge bg-light text-success border border-success-subtle">Pagada</span>
-            {% elif factura.estado == 'pendiente' %}
-              <span class="badge bg-light text-warning border border-warning-subtle">Pendiente</span>
-            {% else %}
-              <span class="badge bg-light text-secondary border border-secondary-subtle">Cancelada</span>
-            {% endif %}
-          </div>
-        </div>
-
-        <table class="table table-bordered align-middle">
-          <thead class="table-light text-dark">
-            <tr>
-              <th>Descripción del Artículo / Servicio</th>
-              <th class="text-center">Cant.</th>
-              <th class="text-end">Precio Unitario</th>
-              <th class="text-end">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for detalle in factura.detalles.all %}
-            <tr>
-              <td class="text-dark">
-                {% if detalle.producto %}
-                  <i class="bi bi-box-seam me-2"></i>{{ detalle.producto.nombre }}
-                {% elif detalle.reserva %}
-                  <i class="bi bi-scissors me-2"></i>{{ detalle.reserva.servicio.nombre }}
-                  {% if detalle.reserva.promocion %}
-                    <br />
-                    <small class="text-danger ms-4">
-                      <i class="bi bi-tag-fill me-1"></i>Aplica: {{ detalle.reserva.promocion.nombre }}
-                    </small>
-                  {% endif %}
-                {% endif %}
-              </td>
-              <td class="text-center fw-bold text-dark">{{ detalle.cantidad }}</td>
-              <td class="text-end text-dark">${{ detalle.precio_unitario|floatformat:0 }}</td>
-              <td class="text-end fw-bold text-secondary">${{ detalle.subtotal|floatformat:0 }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-
-        <div class="d-flex justify-content-end mt-3">
-          <div class="card bg-light p-3 border-0 rounded-3">
-            <h4 class="mb-0 fw-bold text-dark">
-              Total: ${{ factura.total_pagado|floatformat:0 }}
-            </h4>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer bg-white border-top-0">
-        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
-        <a href="{% url 'detalle_factura' factura.id %}" target="_blank" class="btn color-azul text-dark btn-sm rounded-pill px-4 shadow-sm border border-dark-subtle">
-          <i class="bi bi-printer me-2"></i>Ver PDF / Recibo
-        </a>
-      </div>
-
-    </div>
   </div>
-</div>
 {% endfor %}
 {% endblock content %}

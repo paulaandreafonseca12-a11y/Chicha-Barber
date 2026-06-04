@@ -14,6 +14,8 @@ from core.utils import enviar_correo_recuperacion
 from django.contrib.auth.decorators import login_required
 from .forms import RegistroForm, CrearUsuarioAdminForm, EditarUsuarioForm, EditarPerfilForm
 from reservas.models import Reserva
+from productos.models import Compra
+from facturas.models import Factura
 
 def inicio(request):
     return render(request, 'index.html')
@@ -187,4 +189,13 @@ def perfil(request):
 
     form = EditarPerfilForm(instance=request.user)
     reservas = Reserva.objects.filter(cliente=request.user).order_by('-fecha_reserva')
-    return render(request, 'private/perfil.html', {'form': form, 'reservas': reservas})
+    compras = Compra.objects.filter(correo=request.user.email).order_by('-fecha_compra')
+    facturas = Factura.objects.filter(cliente=request.user).order_by('-fecha_emision')
+
+    context = {
+        'form': form,
+        'reservas': reservas,
+        'compras': compras,
+        'facturas': facturas,
+    }
+    return render(request, 'private/perfil.html', context)
