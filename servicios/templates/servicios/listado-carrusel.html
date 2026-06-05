@@ -4,22 +4,21 @@
 {% block content %}
 <div class="container mt-4 mb-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <a href="{% url 'crear_servicios' %}" class="btn custom-btn fw-bold">
-            <i class="bi bi-plus-circle me-1"></i> Nuevo Servicio
+        <a href="{% url 'crear_carrusel' %}" class="btn custom-btn fw-bold">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Elemento de Carrusel
         </a>
     </div>
 
-    <!-- Tarjetas de resumen -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
                 <div class="card-body d-flex align-items-center">
                     <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
-                        <i class="bi bi-scissors fs-3 text-primary"></i>
+                        <i class="bi bi-images fs-3 text-primary"></i>
                     </div>
                     <div>
-                        <h6 class="text-white-50 mb-0">Total de Servicios</h6>
-                        <h3 class="fw-bold mb-0">{{ total_servicios }}</h3>
+                        <h6 class="text-white-50 mb-0">Total de Elementos</h6>
+                        <h3 class="fw-bold mb-0">{{ total_carruseles }}</h3>
                     </div>
                 </div>
             </div>
@@ -31,7 +30,7 @@
                         <i class="bi bi-check-circle fs-3 text-success"></i>
                     </div>
                     <div>
-                        <h6 class="text-white-50 mb-0">Servicios Activos</h6>
+                        <h6 class="text-white-50 mb-0">Elementos Activos</h6>
                         <h3 class="fw-bold mb-0">{{ activos }}</h3>
                     </div>
                 </div>
@@ -44,7 +43,7 @@
                         <i class="bi bi-x-circle fs-3 text-danger"></i>
                     </div>
                     <div>
-                        <h6 class="text-white-50 mb-0">Servicios Inactivos</h6>
+                        <h6 class="text-white-50 mb-0">Elementos Inactivos</h6>
                         <h3 class="fw-bold mb-0">{{ inactivos }}</h3>
                     </div>
                 </div>
@@ -52,47 +51,46 @@
         </div>
     </div>
 
-    <!-- Tabla -->
     <div class="card bg-dark text-white shadow border-secondary mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tablaServicios" class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
+                <table id="tablaCarrusel" class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
                     <thead class="thead-azul">
                         <tr>
-                            <th scope="col" class="ps-4">Servicio</th>
+                            <th scope="col" class="ps-4">Elemento de Carrusel</th>
                             <th scope="col" class="text-center">Estado</th>
                             <th scope="col" class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for servicio in servicios %}
+                        {% for carrusel in carruseles %}
                         <tr>
                             <td class="ps-4">
                                 <div class="d-flex align-items-center">
-                                    {% if servicio.imagen %}
-                                        <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% if carrusel.imagen %}
+                                        <img src="{{ carrusel.imagen.url }}" alt="{{ carrusel.titulo }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                     {% else %}
                                         <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
                                             <i class="bi bi-image text-white-50 fs-4"></i>
                                         </div>
                                     {% endif %}
                                     <div>
-                                        <h6 class="mb-0 fw-bold">{{ servicio.nombre }}</h6>
+                                        <h6 class="mb-0 fw-bold">{{ carrusel.titulo }}</h6>
                                     </div>
                                 </div>
                             </td>
                             <td class="text-center">
-                                {% if servicio.estado %}
+                                {% if carrusel.estado %}
                                     <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
                                 {% else %}
                                     <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <a href="{% url 'editar-servicios' servicio.pk %}" class="btn btn-sm btn-outline-info me-1" title="Editar">
+                                <a href="{% url 'editar_carrusel' carrusel.pk %}" class="btn btn-sm btn-outline-info me-1" title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'eliminar-servicios' servicio.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                <a href="{% url 'eliminar_carrusel' carrusel.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>
@@ -107,15 +105,11 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 
-<!-- jQuery (requerido por DataTables) -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
-<!-- DataTables JS -->
 <script src="{% static 'js/datatables.js' %}"></script>
 
-<!-- Custom Configuración de DataTable -->
-<script src="{% static 'js/tconf/tconf-tablaServicios.js' %}"></script>
+<script src="{% static 'js/tconf/tconf-tablaCarrusel.js' %}"></script>
 {% endblock scripts %}
