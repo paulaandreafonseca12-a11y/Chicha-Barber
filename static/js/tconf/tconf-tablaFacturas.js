@@ -21,8 +21,8 @@ $(document).ready(function() {
             }
         },
         responsive: true,
-        pageLength: 10,
-        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+        pageLength: 5,
+        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
         dom: '<"row d-flex justify-content-between align-items-center mb-3"<"col-sm-12 col-md-4"l><"col-sm-12 col-md-4 d-flex justify-content-center"B><"col-sm-12 col-md-4 d-flex justify-content-end"f>>' +
              '<"row"<"col-sm-12"tr>>' +
              '<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 d-flex justify-content-end"p>>',

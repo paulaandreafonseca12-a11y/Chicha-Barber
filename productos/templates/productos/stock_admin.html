@@ -1,42 +1,110 @@
 {% extends 'base-admin.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container mt-4 mb-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-warning mb-0">{{ titulo|default:"Gestión de Inventario" }}</h2>
+        <a href="{% url 'crear_producto' %}" class="btn custom-btn fw-bold">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Producto
+        </a>
+    </div>
 
-    <div class="card border-0 shadow">
-        <div class="card-header py-3" style="background-color: #07d2ff;">
-            <h5 class="mb-0 text-white fw-bold">
-                <i class="bi bi-boxes me-2 text-white"></i>Gestión de Inventario
-            </h5>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+                        <i class="bi bi-boxes fs-3 text-primary"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white-50 mb-0">Total Productos</h6>
+                        <h3 class="fw-bold mb-0 text-white">{{ total_productos|default:stocks.count }}</h3>
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                        <i class="bi bi-shield-check fs-3 text-success"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white-50 mb-0">Stock Óptimo</h6>
+                        <h3 class="fw-bold mb-0 text-white">{{ stock_optimo|default:"0" }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-danger bg-opacity-25 p-3 rounded-circle me-3">
+                        <i class="bi bi-exclamation-triangle fs-3 text-danger"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white-50 mb-0">Bajo Stock / Alerta</h6>
+                        <h3 class="fw-bold mb-0 text-white">{{ stock_critico|default:"0" }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-white shadow border-secondary mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                <table id="tablaInventario" class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
+                    <thead class="thead-azul">
                         <tr>
-                            <th class="ps-4">Código</th>
-                            <th>Producto</th>
-                            <th>Descripción</th>
-                            <th>Precio</th>
-                            <th>Stock actual</th>
-                            <th class="text-center">Acción</th>
+                            <th scope="col" class="ps-4">Código</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Precio Venta</th>
+                            <th scope="col">Stock Actual</th>
+                            <th scope="col" class="text-center">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for s in stocks %}
-                        <tr class="align-middle">
-                            <td class="ps-4 fw-bold">{{ s.producto.codigo }}</td>
-                            <td>{{ s.producto.nombre }}</td>
-                            <td class="text-muted">{{ s.producto.descripcion|truncatechars:40 }}</td>
-                            <td>${{ s.producto.precio_venta }}</td>
+                        <tr>
+                            <td class="ps-4 fw-bold text-info">#{{ s.producto.codigo }}</td>
+                            
                             <td>
-                                <span class="badge {% if s.cantidad <= 5 %}bg-danger{% elif s.cantidad <= 10 %}bg-warning text-dark{% else %}bg-success{% endif %}">
-                                    {{ s.cantidad }}
-                                </span>
+                                <div class="d-flex align-items-center">
+                                    {% if s.producto.imagen %}
+                                        <img src="{{ s.producto.imagen.url }}" alt="{{ s.producto.nombre }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="bi bi-image text-white-50 fs-4"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">{{ s.producto.nombre }}</h6>
+                                    </div>
+                                </div>
                             </td>
+
+                            <td class="text-white-50">{{ s.producto.descripcion|truncatechars:40 }}</td>
+
+                            <td class="fw-semibold font-monospace">${{ s.producto.precio_venta|floatformat:0 }}</td>
+
+                            <td>
+                                {% if s.cantidad <= 5 %}
+                                    <span class="badge bg-danger px-2.5 py-1.5 fw-bold"><i class="bi bi-x-circle me-1"></i>Crítico ({{ s.cantidad }})</span>
+                                {% elif s.cantidad <= 10 %}
+                                    <span class="badge bg-warning text-dark px-2.5 py-1.5 fw-bold"><i class="bi bi-exclamation-circle me-1"></i>Bajo ({{ s.cantidad }})</span>
+                                {% else %}
+                                    <span class="badge bg-success px-2.5 py-1.5 fw-bold"><i class="bi bi-check-circle me-1"></i>{{ s.cantidad }} u.</span>
+                                {% endif %}
+                            </td>
+
                             <td class="text-center">
-                                <a href="{% url 'editar_stock' s.producto.codigo_producto %}"
-                                   class="btn btn-sm btn-outline-info">
+                                <a href="{% url 'editar_stock' s.producto.codigo_producto %}" class="btn btn-sm btn-outline-info" title="Editar Stock">
                                     <i class="bi bi-pencil me-1"></i>Editar
                                 </a>
                             </td>
@@ -44,8 +112,8 @@
                         {% empty %}
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">
-                                <i class="bi bi-boxes fs-1 d-block mb-3"></i>
-                                No hay stock registrado
+                                <i class="bi bi-boxes fs-1 d-block mb-3 text-secondary-subtle"></i>
+                                No hay stock registrado en el sistema.
                             </td>
                         </tr>
                         {% endfor %}
@@ -56,3 +124,13 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<link class="styles" rel="stylesheet" href="{% static 'css/datatables.css' %}">
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<script src="{% static 'js/datatables.js' %}"></script>
+
+<script src="{% static 'js/tconf/tconf-tablaInventario.js' %}"></script>
+{% endblock scripts %}
