@@ -1,5 +1,3 @@
-# productos/models.py
-
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -15,7 +13,7 @@ class Producto(models.Model):
     descripcion = models.TextField()
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.BooleanField(default=True)
+    estado = models.BooleanField(default=True)  # True = Activo, False = Inactivo
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -29,6 +27,19 @@ class Producto(models.Model):
         if hasattr(self, 'stock') and self.stock is not None:
             return self.stock.cantidad
         return 0
+
+    # 🔹 Métodos de clase optimizados para alimentar tus tarjetas de resumen
+    @classmethod
+    def total_productos(cls):
+        return cls.objects.count()
+
+    @classmethod
+    def total_activos(cls):
+        return cls.objects.filter(estado=True).count()
+
+    @classmethod
+    def total_inactivos(cls):
+        return cls.objects.filter(estado=False).count()
 
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"
@@ -120,8 +131,7 @@ class Compra(models.Model):
 
     def actualizar_total(self):
         """
-        Método seguro para recalcular el total de la compra desde la vista
-        una vez que todos los detalles se hayan guardado correctamente.
+        Recalcula el total de la compra sumando los subtotales de sus detalles.
         """
         self.total = sum(detalle.subtotal for detalle in self.detalles.all())
         self.save(update_fields=['total'])
@@ -176,7 +186,7 @@ class DatosTransferencia(models.Model):
     tipo_cuenta = models.CharField(max_length=50, blank=True, null=True)
     numero_cuenta = models.CharField(max_length=50, blank=True, null=True)
     titular = models.CharField(max_length=100, blank=True, null=True)
-    instrucciones = models.TextField(blank=True, null=True)
+    instructions = models.TextField(blank=True, null=True)
 
     @classmethod
     def get_solo(cls):

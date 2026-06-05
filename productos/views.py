@@ -1,4 +1,5 @@
-﻿from django.shortcuts import render, redirect, get_object_or_404
+﻿
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -202,7 +203,11 @@ def lista_productos_admin(request):
     productos = Producto.objects.all()
     return render(request, 'productos/productos_admin.html', {
         'productos': productos,
-        'titulo': "Nuestros Productos",
+        'titulo': "Gestión de Productos",
+        # 🔹 Inyección de los métodos dinámicos que creamos en el Modelo
+        'total_productos': Producto.total_productos(),
+        'activos': Producto.total_activos(),
+        'inactivos': Producto.total_inactivos(),
     })
 
 
@@ -210,8 +215,8 @@ def crear_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
-            producto = form.save()
-            Stock.objects.get_or_create(producto=producto)
+            # El Stock se genera de forma automática mediante la señal (Signal) de tu models.py
+            form.save()
             messages.success(request, "✅ Producto creado correctamente")
             return redirect('lista_productos_admin')
         else:
@@ -249,11 +254,27 @@ def eliminar_producto(request, pk):
 # 🔥 STOCK (Inventario)
 # ==========================================
 
+# ==========================================
+# 🔥 STOCK (Inventario)
+# ==========================================
+
 def lista_stock(request):
+    # Optimización de consulta SQL unificando la relación con producto
     stocks = Stock.objects.select_related('producto')
+    
+    # 📊 Cálculo detallado en el backend para las tarjetas informativas
+    total_productos = stocks.count()
+    stock_critico = stocks.filter(cantidad__lte=5).count()                    # Menor o igual a 5 u.
+    stock_bajo = stocks.filter(cantidad__gt=5, cantidad__lte=10).count()       # Entre 6 u. y 10 u.
+    stock_optimo = stocks.filter(cantidad__gt=10).count()                     # Mayor a 10 u.
+    
     return render(request, 'productos/stock_admin.html', {
         'stocks': stocks,
-        'titulo': "Stock de Productos"
+        'titulo': "Stock de Productos",
+        'total_productos': total_productos,
+        'stock_critico': stock_critico,
+        'stock_bajo': stock_bajo,
+        'stock_optimo': stock_optimo,
     })
 
 
@@ -313,9 +334,14 @@ def registrar_compra(request):
 
 def historial_compras(request):
     compras = Compra.objects.all().order_by('-fecha_compra')
+    
+    # 📊 Cálculo en el backend del total de compras registradas
+    total_compras = compras.count()
+    
     return render(request, 'productos/historial_compras.html', {
         'compras': compras,
-        'titulo': "Historial de Compras"
+        'titulo': "Historial de Compras",
+        'total_compras': total_compras,  # Enviamos el total a la plantilla
     })
 
 
