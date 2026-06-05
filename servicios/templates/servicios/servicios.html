@@ -23,14 +23,14 @@
                         <h4 class="card-title fw-bold text-body mb-3">{{ servicio.nombre }}</h4>
                         <p class="card-text text-body-secondary mb-4 flex-grow-1">{{ servicio.descripcion }}</p>
                         
-                        <h3 class="fw-bold mb-3 color-azul">${{ servicio.precio }}</h3>
+                        <h3 class="fw-bold mb-3 text-info">${{ servicio.precio }}</h3>
                         
                         <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
                             <span class="text-body-secondary small fw-semibold">
                                 <i class="bi bi-clock me-1"></i>{{ servicio.duracion }} min
                             </span>
-                            <a href="{% url 'crear_reserva' servicio.pk %}" class="btn btn-primary color-azul rounded-pill ">
-                                <i class="bi bi-calendar-check me-2 color-azul w-10"></i> RESERVAR CITA
+                            <a href="{% url 'crear_reserva' servicio.pk %}" class="btn btn-info rounded-pill ">
+                                <i class="bi bi-calendar-check me-2 text-info w-10"></i> RESERVAR CITA
                             </a>
                            
                         </div>

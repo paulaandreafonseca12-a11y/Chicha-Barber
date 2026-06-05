@@ -262,3 +262,11 @@ def guardar_calificacion_view(request):
             messages.success(request, "✅ ¡Gracias por tu calificación!")
             return redirect('calificacion')
     return redirect('calificacion')
+
+def eliminar_calificacion(request, pk):
+    calificacion = get_object_or_404(Calificacion, pk=pk)
+    if request.method == 'POST':
+        calificacion.delete()
+        messages.success(request, 'Calificación eliminada.')
+        return redirect('listado-calificacion')
+    return render(request, 'servicios/eliminar_calificacion.html', {'calificacion': calificacion})
