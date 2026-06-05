@@ -489,6 +489,11 @@ select.cb-input {
 .forgot-link:hover {
     color: #f7b640;
 }
+/* =========================
+   Botones lista de usuarios
+========================= */
+.filtro-rol { background: transparent; }
+.filtro-rol:hover { background: transparent; }
 
 /* ==========================================================================
    TEMA CLARO (PALETA DE COLORES RESTRINGIDA)

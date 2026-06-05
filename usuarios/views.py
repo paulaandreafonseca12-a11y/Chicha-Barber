@@ -75,10 +75,12 @@ def lista_usuarios(request):
 
     return render(request, 'usuarios/lista_usuarios.html', {
         'usuarios': usuarios,
-        'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios"
+        'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios",
+        'total_usuarios': Usuario.objects.count(),
+        'total_clientes': Usuario.objects.filter(rol='cliente').count(),
+        'total_barberos': Usuario.objects.filter(rol='barbero').count(),
+        'total_admins':   Usuario.objects.filter(rol='admin').count(),
     })
-
-
 
 def crear_usuario_admin(request):
     if request.method == 'POST':
