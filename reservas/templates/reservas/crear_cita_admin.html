@@ -2,6 +2,8 @@
 
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<!-- Se incluye el tema oscuro oficial de Flatpickr -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/dark.min.css">
 
 <div class="container py-5" style="max-width: 700px;">
     {% if messages %}
@@ -10,8 +12,9 @@
         {% endfor %}
     {% endif %}
 
-    <div class="card border-0 shadow-sm bg-white">
-        <div class="card-header fw-bold text-white py-3" style="background-color: #07d2ff;">
+    <!-- Cambio a Tarjeta Oscura con bordes sutiles -->
+    <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header fw-bold text-info py-3" style="background-color: #1a1e21; border-bottom: 1px solid #495057;">
             <i class="bi bi-person-fill me-2"></i>Datos de la Cita
         </div>
         <div class="card-body p-4">
@@ -20,45 +23,45 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark small text-uppercase">Nombre del Cliente</label>
-                        <input type="text" name="nombre_cliente" class="form-control" placeholder="Nombre completo" required>
+                        <label class="form-label fw-bold text-white-50 small text-uppercase">Nombre del Cliente</label>
+                        <input type="text" name="nombre_cliente" class="form-control custom-dark-input" placeholder="Nombre completo" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold text-dark small text-uppercase">Teléfono</label>
-                        <input type="text" name="telefono_cliente" class="form-control" placeholder="300 000 0000" required>
+                        <label class="form-label fw-bold text-white-50 small text-uppercase">Teléfono</label>
+                        <input type="text" name="telefono_cliente" class="form-control custom-dark-input" placeholder="300 000 0000" required>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark small text-uppercase">Correo Electrónico</label>
-                    <input type="email" name="correo_cliente" class="form-control" placeholder="correo@ejemplo.com" required>
+                    <label class="form-label fw-bold text-white-50 small text-uppercase">Correo Electrónico</label>
+                    <input type="email" name="correo_cliente" class="form-control custom-dark-input" placeholder="correo@ejemplo.com" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark small text-uppercase">Fecha y Hora</label>
+                    <label class="form-label fw-bold text-white-50 small text-uppercase">Fecha y Hora</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-light"><i class="bi bi-clock text-primary"></i></span>
-                        <input type="text" name="fecha_reserva" id="fecha_cita" class="form-control" placeholder="Selecciona fecha y hora" autocomplete="off" required>
+                        <span class="input-group-text custom-dark-input text-info border-end-0"><i class="bi bi-clock"></i></span>
+                        <input type="text" name="fecha_reserva" id="fecha_cita" class="form-control custom-dark-input" placeholder="Selecciona fecha y hora" autocomplete="off" required>
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold text-dark small text-uppercase">Servicio</label>
-                    <select name="servicio" class="form-select">
+                    <label class="form-label fw-bold text-white-50 small text-uppercase">Servicio</label>
+                    <select name="servicio" class="form-select custom-dark-input">
                         {% for servicio in servicios %}
                             <option value="{{ servicio.id }}">{{ servicio.nombre }}</option>
                         {% empty %}
-                            <option disabled>No hay servicios disponibles</option>
+                            <option disabled class="text-white-50">No hay servicios disponibles</option>
                         {% endfor %}
                     </select>
                 </div>
 
-                <!-- BOTONES ALINEADOS A LA DERECHA INFERIOR -->
-                <div class="d-flex justify-content-end gap-2 border-top pt-3">
-                    <a href="{% url 'ver_agenda' %}" class="btn btn-light border px-4">
+                <!-- BOTONES ALINEADOS EN MODO OSCURO -->
+                <div class="d-flex justify-content-end gap-2 border-top border-secondary pt-3">
+                    <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light px-4">
                         <i class="bi bi-arrow-left me-1"></i>Regresar
                     </a>
-                    <button type="submit" class="btn fw-bold text-white px-4" style="background-color: #07d2ff; border: none;">
+                    <button type="submit" class="btn custom-cyan-btn fw-bold px-4">
                         <i class="bi bi-calendar-check me-1"></i>Guardar Cita
                     </button>
                 </div>
@@ -80,4 +83,35 @@
         minuteIncrement: 15,
     });
 </script>
+
+<style>
+    /* Elementos de formulario oscuros uniformes */
+    .custom-dark-input {
+        background-color: #1a1e21 !important;
+        border: 1px solid #495057 !important;
+        color: #ffffff !important;
+    }
+    .custom-dark-input:focus {
+        border-color: #07d2ff !important;
+        box-shadow: 0 0 0 0.25rem rgba(7, 210, 255, 0.25) !important;
+    }
+    .custom-dark-input::placeholder {
+        color: #6c757d !important;
+    }
+    .custom-dark-input option {
+        background-color: #1a1e21;
+        color: #fff;
+    }
+    /* Botón cyan */
+    .custom-cyan-btn {
+        background-color: #07d2ff;
+        color: #1a1e21;
+        border: none;
+        transition: background-color 0.2s;
+    }
+    .custom-cyan-btn:hover {
+        background-color: #05b5dc;
+        color: #ffffff;
+    }
+</style>
 {% endblock %}

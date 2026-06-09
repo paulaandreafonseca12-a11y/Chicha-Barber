@@ -280,18 +280,50 @@ def editar_reserva(request, pk):
 
 
 def ver_agenda(request):
-    # Obtenemos las reservas y los turnos disponibles para tener una visión completa del negocio
-    # Usamos select_related para traer el profesional (barbero) y el servicio en una sola consulta
-    lista_reservas = Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-fecha_reserva')
+    # --- 1. CÁLCULO DE DATOS REALES PARA LAS TARJETAS (image_8bea83.jpg) ---
+    hoy_fecha = date.today()
+    mes_actual = hoy_fecha.month
+    anio_actual = hoy_fecha.year
+
+    # A. Total Citas (Mes): Cuenta reservas activas (reservadas y confirmadas) creadas o agendadas en el mes
+    # Usamos el campo correspondiente de tu modelo. Como en 'cancelar_cita' usas cita.save(), filtramos las vigentes.
+    total_citas_mes = Reserva.objects.filter(
+        turno__fecha__month=mes_actual,
+        turno__fecha__year=anio_actual
+    ).exclude(estado='cancelada').count()
+
+    # B. Turnos Disponibles (Hoy): Cuenta los turnos que están en estado 'disponible' para la fecha de hoy
+    turnos_disponibles_hoy = Turno.objects.filter(
+        fecha=hoy_fecha,
+        estado='disponible'
+    ).count()
+
+    # C. Citas Canceladas (Mes): Cuenta cuántas reservas pasaron al estado 'cancelada' en el mes actual
+    citas_canceladas_mes = Reserva.objects.filter(
+        turno__fecha__month=mes_actual,
+        turno__fecha__year=anio_actual,
+        estado='cancelada'
+    ).count()
+
+
+    # --- 2. TU LÓGICA ORIGINAL DE CONSULTAS ---
+    lista_reservas = Reserva.objects.select_related('turno__profesional', 'servicio', 'cliente').all().order_by('-turno__fecha', '-turno__hora_inicio')
     turnos_disponibles = Turno.objects.select_related('profesional').filter(
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
     servicios = Servicios.objects.all()
+
+
+    # --- 3. CONTEXTO ENRIQUECIDO ---
     return render(request, 'reservas/ver_agenda.html', {
         'reservas': lista_reservas,
         'turnos_disponibles': turnos_disponibles,
         'servicios': servicios,
         'titulo': 'Agenda de Citas',
+        # Nuevas variables añadidas para renderizar las tarjetas
+        'total_citas_mes': total_citas_mes,
+        'turnos_disponibles_hoy': turnos_disponibles_hoy,
+        'citas_canceladas_mes': citas_canceladas_mes,
     })
 
 

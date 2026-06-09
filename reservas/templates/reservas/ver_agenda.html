@@ -3,132 +3,202 @@
 {% block content %}
 <div class="container-fluid py-4">
 
-    <div class="card border-0 shadow">
-        <div class="card-header p-0" style="background-color: #07d2ff;">
+    <!-- TÍTULO DE LA VISTA (Estilo image_8bea83.jpg) -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-warning" style="color: #dfb34c !important;">
+            <i class="bi bi-calendar-week me-2"></i>{{ titulo }}
+        </h2>
+    </div>
+
+    <!-- SECCIÓN DE TARJETAS ESTADÍSTICAS CON DATOS REALES -->
+    <div class="row g-3 mb-4">
+        
+        <!-- Tarjeta 1: Total Citas (Mes) -->
+        <div class="col-md-4">
+            <div class="card text-white shadow-sm border-secondary" style="background-color: #212529;">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-white-50 small text-uppercase fw-bold mb-1">Total Citas (Mes)</p>
+                        <h2 class="display-5 fw-bold mb-0 text-white">{{ total_citas_mes }}</h2>
+                    </div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; background-color: rgba(13, 110, 253, 0.15);">
+                        <i class="bi bi-calendar-check text-primary fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2: Turnos Disponibles (Hoy) -->
+        <div class="col-md-4">
+            <div class="card text-white shadow-sm border-secondary" style="background-color: #212529;">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-white-50 small text-uppercase fw-bold mb-1">Turnos Disponibles (Hoy)</p>
+                        <h2 class="display-5 fw-bold mb-0 text-success" style="color: #198754 !important;">{{ turnos_disponibles_hoy }}</h2>
+                    </div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; background-color: rgba(25, 135, 84, 0.15);">
+                        <i class="bi bi-arrow-counterclockwise text-success fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 3: Citas Canceladas (Mes) -->
+        <div class="col-md-4">
+            <div class="card text-white shadow-sm border-secondary" style="background-color: #212529;">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-white-50 small text-uppercase fw-bold mb-1">Citas Canceladas (Mes)</p>
+                        <h2 class="display-5 fw-bold mb-0 text-danger" style="color: #dc3545 !important;">{{ citas_canceladas_mes }}</h2>
+                    </div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; background-color: rgba(220, 53, 69, 0.15);">
+                        <i class="bi bi-calendar-x text-danger fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CONTENEDOR DE LA TABLA Y TABS -->
+    <div class="card bg-dark text-white border-secondary shadow">
+        <div class="card-header p-0" style="background-color: #1a1e21; border-bottom: 1px solid #495057;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pe-3">
                 
                 <ul class="nav nav-tabs border-0" id="agendaTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active fw-bold text-white border-0 bg-transparent px-4 py-3" id="reservas-tab" data-bs-toggle="tab" data-bs-target="#tab-reservas" type="button" role="tab">
-                            <i class="bi bi-calendar-check me-2"></i>Citas Reservadas
+                            <i class="bi bi-calendar-check me-2 text-info"></i>Citas Reservadas
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link fw-bold text-white border-0 bg-transparent px-4 py-3" id="disponibilidad-tab" data-bs-toggle="tab" data-bs-target="#tab-disponibilidad" type="button" role="tab">
-                            <i class="bi bi-clock-history me-2"></i>Turnos Disponibles
+                            <i class="bi bi-clock-history me-2 text-warning"></i>Turnos Disponibles
                         </button>
                     </li>
                 </ul>
 
+                <!-- Botones Superiores de Acción -->
                 <div class="d-flex align-items-center gap-2 py-2 py-md-0">
-                    <a href="{% url 'gestionar_dias' %}" class="btn btn-outline-light fw-bold text-hover-cyan">
+                    <a href="{% url 'gestionar_dias' %}" class="btn btn-sm btn-outline-warning fw-bold px-3">
                         <i class="bi bi-calendar-range me-2"></i>Configurar Disponibilidad
                     </a>
-                    <a href="{% url 'crear_reserva_admin' %}" class="btn btn-light fw-bold" style="color: #07d2ff;">
+                    <a href="{% url 'crear_reserva_admin' %}" class="btn btn-sm btn-outline-info fw-bold px-3">
                         <i class="bi bi-calendar-plus me-2"></i>Registrar Cita
                     </a>
                 </div>
 
             </div>
         </div>
+        
         <div class="card-body p-4 tab-content" id="agendaTabContent">
             
+            <!-- TAB: CITAS RESERVADAS -->
             <div class="tab-pane fade show active" id="tab-reservas" role="tabpanel">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Barbero</th>
-                        <th>Servicio</th>
-                        <th>Fecha y Hora</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cita in reservas %}
-                    <tr class="align-middle">
-                        <td>{{ cita.nombre_cliente }}</td>
-                        <td><span class="fw-bold text-dark"><i class="bi bi-person-badge me-1"></i>{{ cita.turno.profesional.get_full_name }}</span></td>
-                        <td>{{ cita.servicio }}</td>
-                        <td>{{ cita.fecha_reserva }}</td>
-                        <td>
-                            <span class="badge {% if cita.estado == 'reservada' %}bg-warning text-dark{% elif cita.estado == 'confirmada' %}bg-success{% else %}bg-danger{% endif %}">
-                                {{ cita.get_estado_display }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="d-flex gap-2 flex-wrap">
-                                {% if cita.estado == 'reservada' %}
-                                    <a href="{% url 'cambiar_estado' cita.pk 'confirmada' %}"
-                                       class="btn btn-sm btn-success" title="Confirmar">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-danger"
-                                            title="Cancelar"
-                                            data-url="{% url 'cambiar_estado' cita.pk 'cancelada' %}"
-                                            data-nombre="{{ cita.nombre_cliente }}"
-                                            onclick="abrirModalCancelar(this)">
-                                        <i class="bi bi-x-circle-fill"></i>
-                                    </button>
-                                {% endif %}
-                                <a href="{% url 'reprogramar_cita' cita.pk %}"
-                                class="btn btn-sm btn-outline-info" title="Reprogramar">
-                                    <i class="bi bi-calendar2-event-fill"></i>
-                                </a>
-                                {% if cita.estado == 'confirmada' %}
-                                    <a href="https://wa.me/57{{ cita.telefono_cliente }}?text=Hola%20{{ cita.nombre_cliente|urlencode }}.%0A%0ATe%20recordamos%20tu%20cita%20en%20Chicha%20Barber.%0A%0AFecha:%20{{ cita.fecha_reserva|date:'d/m/Y' }}%0AHora:%20{{ cita.fecha_reserva|date:'H:i' }}%0AServicio:%20{{ cita.servicio|urlencode }}.%0A%0A¡Te%20esperamos!"
-                                       target="_blank"
-                                       class="btn btn-sm btn-success"
-                                       title="Enviar WhatsApp">
-                                        <i class="bi bi-whatsapp"></i>
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
-                            <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-                            No hay citas registradas.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle border-secondary mb-0">
+                        <thead class="thead-azul">
+                            <tr>
+                                <th class="ps-3">Cliente</th>
+                                <th>Barbero</th>
+                                <th>Servicio</th>
+                                <th>Fecha y Hora</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cita in reservas %}
+                            <tr class="align-middle">
+                                <td class="ps-3">{{ cita.nombre_cliente }}</td>
+                                <td><span class="fw-bold text-white"><i class="bi bi-person-badge me-2 text-info"></i>{{ cita.turno.profesional.get_full_name }}</span></td>
+                                <td>{{ cita.servicio.nombre }}</td>
+                                <td>{{ cita.fecha_reserva|date:"j \d\e F \d\e Y \a \l\a\s H:i" }}</td>
+                                <td>
+                                    <span class="badge {% if cita.estado == 'reservada' %}bg-warning text-dark{% elif cita.estado == 'confirmada' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ cita.get_estado_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        {% if cita.estado == 'reservada' %}
+                                            <a href="{% url 'cambiar_estado' cita.pk 'confirmada' %}"
+                                               class="btn btn-sm btn-success" title="Confirmar">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-danger"
+                                                    title="Cancelar"
+                                                    data-url="{% url 'cambiar_estado' cita.pk 'cancelada' %}"
+                                                    data-nombre="{{ cita.nombre_cliente }}"
+                                                    onclick="abrirModalCancelar(this)">
+                                                <i class="bi bi-x-circle-fill"></i>
+                                            </button>
+                                        {% endif %}
+                                        <a href="{% url 'reprogramar_cita' cita.pk %}"
+                                        class="btn btn-sm btn-outline-info" title="Reprogramar">
+                                            <i class="bi bi-calendar2-event-fill"></i>
+                                        </a>
+                                        {% if cita.estado == 'confirmada' %}
+                                            <a href="https://wa.me/57{{ cita.telefono_cliente }}?text=Hola%20{{ cita.nombre_cliente|urlencode }}.%0A%0ATe%20recordamos%20tu%20cita%20en%20Chicha%20Barber.%0A%0AFecha:%20{{ cita.fecha_reserva|date:'d/m/Y' }}%0AHora:%20{{ cita.fecha_reserva|date:'H:i' }}%0AServicio:%20{{ cita.servicio.nombre|urlencode }}.%0A%0A¡Te%20esperamos!"
+                                               target="_blank"
+                                               class="btn btn-sm btn-success"
+                                               title="Enviar WhatsApp" style="background-color: #25d366; border: none;">
+                                                <i class="bi bi-whatsapp"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-white-50">
+                                    <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+                                    No hay citas registradas.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
+            <!-- TAB: TURNOS DISPONIBLES -->
             <div class="tab-pane fade" id="tab-disponibilidad" role="tabpanel">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Barbero</th>
-                            <th>Fecha</th>
-                            <th>Horario</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for turno in turnos_disponibles %}
-                        <tr class="align-middle">
-                            <td>{{ turno.profesional.get_full_name }}</td>
-                            <td>{{ turno.fecha|date:"d/m/Y" }}</td>
-                            <td>{{ turno.hora_inicio|time:"H:i" }} - {{ turno.hora_fin|time:"H:i" }}</td>
-                            <td><span class="badge bg-info text-dark">Disponible</span></td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">No hay turnos libres registrados para los próximos días.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle border-secondary mb-0">
+                        <thead class="thead-azul">
+                            <tr>
+                                <th class="ps-3">Barbero</th>
+                                <th>Fecha</th>
+                                <th>Horario</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for turno in turnos_disponibles %}
+                            <tr class="align-middle">
+                                <td class="ps-3">{{ turno.profesional.get_full_name }}</td>
+                                <td>{{ turno.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ turno.hora_inicio|time:"H:i" }} - {{ turno.hora_fin|time:"H:i" }}</td>
+                                <td><span class="badge bg-info text-dark">Disponible</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-white-50">No hay turnos libres registrados para los próximos días.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal de cancelación -->
 <div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white border-danger">
@@ -164,11 +234,9 @@ function abrirModalCancelar(btn) {
 </script>
 
 <style>
+    /* Estilo de línea cyan para el Tab activo */
     .nav-tabs .nav-link.active { 
-        border-bottom: 3px solid white !important; 
-    }
-    /* Única regla necesaria para pintar el texto del hover con el color de tu marca */
-    .text-hover-cyan:hover {
+        border-bottom: 3px solid #07d2ff !important;
         color: #07d2ff !important;
     }
 </style>

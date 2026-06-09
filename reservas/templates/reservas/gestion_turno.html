@@ -3,31 +3,32 @@
 {% block content %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-white">
+        <h2 class="fw-bold text-warning">
             <i class="bi bi-calendar-week-fill me-2"></i>{{ titulo }}
         </h2>
-        <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light">
+        <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light fw-bold">
             <i class="bi bi-arrow-left me-2"></i>Volver a la Agenda
         </a>
     </div>
 
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
 
-    <div class="card border-0 shadow-lg">
-        <div class="card-header py-3 text-white" style="background-color: #07d2ff;">
-            <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2"></i>Gestión de Disponibilidad (Próximos 15 Días)</h5>
+    <!-- Contenedor Principal Adaptado a Modo Oscuro -->
+    <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header py-3 text-white" style="background-color: #1a1e21; border-bottom: 1px solid #495057;">
+            <h5 class="mb-0 fw-bold text-info"><i class="bi bi-clock-history me-2"></i>Gestión de Disponibilidad (Próximos 15 Días)</h5>
         </div>
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
+                    <thead class="thead-azul">
                         <tr>
                             <th class="ps-4">Día / Fecha</th>
                             <th>Estado</th>
@@ -38,11 +39,12 @@
                     </thead>
                     <tbody>
                         {% for dia in dias %}
-                        <tr class="{% if dia.es_hoy %}table-primary{% endif %}">
+                        <!-- Fila de HOY adaptada con opacidad oscura -->
+                        <tr class="{% if dia.es_hoy %}bg-primary bg-opacity-10{% endif %}">
                             <td class="ps-4">
-                                <div class="fw-bold text-dark">{{ dia.fecha|date:"l"|capfirst }}</div>
-                                <div class="text-muted small">{{ dia.fecha|date:"d M, Y" }}</div>
-                                {% if dia.es_hoy %}<span class="badge bg-primary">HOY</span>{% endif %}
+                                <div class="fw-bold text-white">{{ dia.fecha|date:"l"|capfirst }}</div>
+                                <div class="text-white-50 small">{{ dia.fecha|date:"d M, Y" }}</div>
+                                {% if dia.es_hoy %}<span class="badge bg-primary ms-1">HOY</span>{% endif %}
                             </td>
                             <td>
                                 {% if dia.disponible %}
@@ -56,12 +58,12 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <span class="fs-5 fw-bold {% if dia.cantidad > 0 %}text-info{% else %}text-muted{% endif %}">
+                                <span class="fs-5 fw-bold {% if dia.cantidad > 0 %}text-info{% else %}text-white-50{% endif %}">
                                     {{ dia.cantidad }}
                                 </span>
                             </td>
                             <td class="text-center">
-                                <span class="badge rounded-pill {% if dia.reservas > 0 %}bg-warning text-dark{% else %}bg-light text-muted border{% endif %}">
+                                <span class="badge rounded-pill {% if dia.reservas > 0 %}bg-warning text-dark{% else %}bg-secondary bg-opacity-25 text-white-50 border border-secondary{% endif %}">
                                     {{ dia.reservas }} citas
                                 </span>
                             </td>
@@ -87,22 +89,22 @@
     </div>
 </div>
 
-<!-- Modal Activar Agenda -->
+<!-- Modal Activar Agenda (Estilizado a Modo Oscuro) -->
 <div class="modal fade" id="modalActivar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content bg-dark text-white border-secondary">
             <form id="formActivar" method="POST">
                 {% csrf_token %}
-                <div class="modal-header text-white" style="background-color: #07d2ff;">
-                    <h5 class="modal-title">
+                <div class="modal-header text-white border-secondary" style="background-color: #1a1e21;">
+                    <h5 class="modal-title text-info">
                         <i class="bi bi-calendar-plus me-2"></i>Activar Agenda: <span id="fechaLegibleActivar"></span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Barbero(s)</label>
-                        <select name="barbero" class="form-select" required>
+                        <label class="form-label fw-bold text-white-50 small text-uppercase">Barbero(s)</label>
+                        <select name="barbero" class="form-select custom-dark-input" required>
                             <option value="todos">Todos los barberos activos</option>
                             {% for barbero in barberos %}
                                 <option value="{{ barbero.id }}">{{ barbero.get_full_name }}</option>
@@ -111,39 +113,42 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Hora Inicio (24h)</label>
-                            <input type="number" name="hora_inicio" class="form-control" value="8" min="0" max="23">
+                            <label class="form-label fw-bold text-white-50 small text-uppercase">Hora Inicio (24h)</label>
+                            <input type="number" name="hora_inicio" class="form-control custom-dark-input" value="8" min="0" max="23">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Hora Fin (24h)</label>
-                            <input type="number" name="hora_fin" class="form-control" value="18" min="0" max="23">
+                            <label class="form-label fw-bold text-white-50 small text-uppercase">Hora Fin (24h)</label>
+                            <input type="number" name="hora_fin" class="form-control custom-dark-input" value="18" min="0" max="23">
                         </div>
                     </div>
-                    <div class="row bg-light p-2 rounded mb-3 border">
-                        <div class="col-12"><label class="form-label fw-bold text-muted small uppercase">Excluir Hora de Almuerzo (Opcional)</label></div>
-                        <div class="col-md-6 mb-2">
-                            <label class="small">Inicio Almuerzo</label>
-                            <input type="number" name="h_almuerzo_inicio" class="form-control form-control-sm" placeholder="Ej: 13" min="0" max="23">
+                    <!-- Almuerzo estilizado sin fondo blanco brillante -->
+                    <div class="row bg-secondary bg-opacity-10 p-2 rounded mb-3 border border-secondary mx-0">
+                        <div class="col-12 px-1">
+                            <label class="form-label fw-bold text-info small text-uppercase mb-2">Excluir Hora de Almuerzo (Opcional)</label>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="small">Fin Almuerzo</label>
-                            <input type="number" name="h_almuerzo_fin" class="form-control form-control-sm" placeholder="Ej: 14" min="0" max="23">
+                        <div class="col-md-6 mb-2 px-1">
+                            <label class="small text-white-50">Inicio Almuerzo</label>
+                            <input type="number" name="h_almuerzo_inicio" class="form-control form-control-sm custom-dark-input" placeholder="Ej: 13" min="0" max="23">
+                        </div>
+                        <div class="col-md-6 mb-2 px-1">
+                            <label class="small text-white-50">Fin Almuerzo</label>
+                            <input type="number" name="h_almuerzo_fin" class="form-control form-control-sm custom-dark-input" placeholder="Ej: 14" min="0" max="23">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Duración de cada Turno</label>
-                        <select name="duracion" class="form-select">
+                        <label class="form-label fw-bold text-white-50 small text-uppercase">Duración de cada Turno</label>
+                        <select name="duracion" class="form-select custom-dark-input">
                             <option value="30">30 minutos</option>
                             <option value="45">45 minutos</option>
                             <option value="60" selected>1 hora</option>
                             <option value="90">1 hora 30 min</option>
                         </select>
                     </div>
-                    <p class="text-muted small"><i class="bi bi-info-circle me-1"></i> El sistema generará turnos consecutivos basándose en esta configuración.</p>
+                    <p class="text-white-50 small"><i class="bi bi-info-circle text-info me-1"></i> El sistema generará turnos consecutivos basándose en esta configuración.</p>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-secondary">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn text-white px-4" style="background-color: #07d2ff;">Generar Turnos</button>
+                    <button type="submit" class="btn custom-cyan-btn px-4 fw-bold">Generar Turnos</button>
                 </div>
             </form>
         </div>
@@ -170,4 +175,32 @@ function confirmarDesactivar(fechaIso, fechaLegible, reservas) {
     }
 }
 </script>
+
+<style>
+    /* Inputs oscuros consistentes */
+    .custom-dark-input {
+        background-color: #1a1e21 !important;
+        border: 1px solid #495057 !important;
+        color: #ffffff !important;
+    }
+    .custom-dark-input:focus {
+        border-color: #07d2ff !important;
+        box-shadow: 0 0 0 0.25rem rgba(7, 210, 255, 0.25) !important;
+    }
+    .custom-dark-input option {
+        background-color: #1a1e21;
+        color: #fff;
+    }
+    /* Botón cyan corporativo */
+    .custom-cyan-btn {
+        background-color: #07d2ff;
+        color: #1a1e21;
+        border: none;
+        transition: background-color 0.2s;
+    }
+    .custom-cyan-btn:hover {
+        background-color: #05b5dc;
+        color: #ffffff;
+    }
+</style>
 {% endblock %}
