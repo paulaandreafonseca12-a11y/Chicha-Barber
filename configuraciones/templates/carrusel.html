@@ -17,7 +17,7 @@
                         <i class="bi bi-scissors fs-3 text-primary"></i>
                     </div>
                     <div>
-                        <h6 class="text-white-50 mb-0">Total de Servicios</h6>
+                        <h6 class="text-white-50 mb-0">Total de imagenes</h6>
                         <h3 class="fw-bold mb-0">{{ total_servicios }}</h3>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                         <i class="bi bi-check-circle fs-3 text-success"></i>
                     </div>
                     <div>
-                        <h6 class="text-white-50 mb-0">Servicios Activos</h6>
+                        <h6 class="text-white-50 mb-0">imagenes Activas</h6>
                         <h3 class="fw-bold mb-0">{{ activos }}</h3>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                         <i class="bi bi-x-circle fs-3 text-danger"></i>
                     </div>
                     <div>
-                        <h6 class="text-white-50 mb-0">Servicios Inactivos</h6>
+                        <h6 class="text-white-50 mb-0">imagenes Inactivas</h6>
                         <h3 class="fw-bold mb-0">{{ inactivos }}</h3>
                     </div>
                 </div>
@@ -120,3 +120,18 @@
         });
     </script>
 {% endblock %}
+
+
+{% block scripts %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="{% static 'css/datatables.css' %}">
+
+<!-- jQuery (requerido por DataTables) -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="{% static 'js/datatables.js' %}"></script>
+
+<!-- Custom Configuración de DataTable -->
+<script src="{% static 'js/tconf/tconf-tablaCarrusel.js' %}"></script>
+{% endblock scripts %}

@@ -20,8 +20,8 @@
                         <i class="bi bi-scissors fs-3 text-primary"></i>
                     </div>
                     <div>
-                        <h6 class="text-white-50 mb-0">Total de promociones</h6>
-                        <h3 class="fw-bold mb-0">{{ total_promociones|default:0 }}</h3>
+                        <h6 class="text-white-50 mb-0">Total de Promociones</h6>
+                        <h3 class="fw-bold mb-0">{{ total_promociones }}</h3>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     </div>
                     <div>
                         <h6 class="text-white-50 mb-0">Promociones Activas</h6>
-                        <h3 class="fw-bold mb-0">{{ activas|default:0 }}</h3>
+                        <h3 class="fw-bold mb-0">{{ activas }}</h3>
                     </div>
                 </div>
             </div>
@@ -47,12 +47,13 @@
                     </div>
                     <div>
                         <h6 class="text-white-50 mb-0">Promociones Inactivas</h6>
-                        <h3 class="fw-bold mb-0">{{ inactivas|default:0 }}</h3>
+                        <h3 class="fw-bold mb-0">{{ inactivas }}</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
  
     <!-- Tabla -->
     <div class="card bg-dark text-white shadow border-secondary mb-4">

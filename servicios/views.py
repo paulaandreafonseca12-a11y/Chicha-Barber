@@ -122,7 +122,10 @@ def listado_promocion(request):
     promociones = Promocion.objects.all()
     context = {
         'titulo': 'Listado de Promociones',
-        'promociones': promociones
+        'promociones': promociones,
+        'total_promociones': promociones.count(),
+        'activas': promociones.filter(estado=True).count(),
+        'inactivas': promociones.filter(estado=False).count(),
     }
     return render(request, 'servicios/listado-promocion.html', context)
 def editar_servicios(request, pk):
@@ -203,7 +206,11 @@ def listado_calificacion(request):
     calificaciones = Calificacion.objects.all()
     context = {
         'titulo': 'Listado de Calificaciones',
-        'calificaciones': calificaciones
+        'calificaciones': calificaciones,
+        'total_calificaciones': calificaciones.count(),
+       
+        
+        
     }
     return render(request, 'servicios/listado-calificacion.html', context)
 
