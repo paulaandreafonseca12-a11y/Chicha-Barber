@@ -2,20 +2,18 @@
 <div class="container py-4">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <!-- Tarjeta Principal -->
-      <div class="card border-0 shadow rounded-4 overflow-hidden">
-        <!-- Encabezado con el color azul del sistema -->
-        <div class="card-header py-3" style="background-color: #07d2ff">
-          <h5 class="mb-0 fw-bold text-white">
+      <div class="card border-0 shadow rounded-4 overflow-hidden" style="background-color: #24272a;">
+        
+        <div class="card-header py-3 border-0" style="background-color: #07d2ff">
+          <h5 class="mb-0 fw-bold text-dark">
             <i class="bi bi-bank me-2"></i>Configurar Datos de Transferencia
           </h5>
         </div>
 
         <div class="card-body p-4">
-          <p class="text-muted mb-4">
+          <p class="text-secondary mb-4">
             <i class="bi bi-info-circle me-1"></i>
-            Esta información se mostrará a los clientes cuando elijan pagar
-            mediante transferencia bancaria al finalizar su pedido.
+            Esta información se mostrará a los clientes cuando elijan pagar mediante transferencia bancaria.
           </p>
 
           <form method="POST">
@@ -23,96 +21,42 @@
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="banco" class="form-label text-info fw-bold"
-                  >Nombre del Banco</label
-                >
-                <input
-                  type="text"
-                  class="form-control shadow-none"
-                  id="banco"
-                  name="banco"
-                  value="{{ datos.banco }}"
-                  required
-                  placeholder="Ej: Nequi, Bancolombia, etc."
-                />
+                <label for="banco" class="form-label text-secondary fw-bold">Nombre del Banco</label>
+                <input type="text" class="form-control bg-dark text-secondary border-secondary shadow-none" 
+                       id="banco" name="banco" value="{{ datos.banco }}" required placeholder="Ej: Nequi, Bancolombia, etc.">
               </div>
               <div class="col-md-6 mb-3">
-                <label for="tipo_cuenta" class="form-label text-info fw-bold"
-                  >Tipo de Cuenta</label
-                >
-                <input
-                  type="text"
-                  class="form-control shadow-none"
-                  id="tipo_cuenta"
-                  name="tipo_cuenta"
-                  value="{{ datos.tipo_cuenta }}"
-                  required
-                  placeholder="Ej: Ahorros, Corriente, Celular"
-                />
+                <label for="tipo_cuenta" class="form-label text-secondary fw-bold">Tipo de Cuenta</label>
+                <input type="text" class="form-control bg-dark text-secondary border-secondary shadow-none" 
+                       id="tipo_cuenta" name="tipo_cuenta" value="{{ datos.tipo_cuenta }}" required placeholder="Ej: Ahorros, Corriente, Celular">
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="numero_cuenta" class="form-label text-info fw-bold"
-                  >Número de Cuenta</label
-                >
-                <input
-                  type="text"
-                  class="form-control shadow-none"
-                  id="numero_cuenta"
-                  name="numero_cuenta"
-                  value="{{ datos.numero_cuenta }}"
-                  required
-                  placeholder="Ej: 123-456789-00"
-                />
+                <label for="numero_cuenta" class="form-label text-secondary fw-bold">Número de Cuenta</label>
+                <input type="text" class="form-control bg-dark text-secondary border-secondary shadow-none" 
+                       id="numero_cuenta" name="numero_cuenta" value="{{ datos.numero_cuenta }}" required placeholder="Ej: 123-456789-00">
               </div>
               <div class="col-md-6 mb-3">
-                <label for="titular" class="form-label text-info fw-bold"
-                  >Nombre del Titular</label
-                >
-                <input
-                  type="text"
-                  class="form-control shadow-none"
-                  id="titular"
-                  name="titular"
-                  value="{{ datos.titular }}"
-                  required
-                  placeholder="Nombre completo o Razón Social"
-                />
+                <label for="titular" class="form-label text-secondary fw-bold">Nombre del Titular</label>
+                <input type="text" class="form-control bg-dark text-secondary border-secondary shadow-none" 
+                       id="titular" name="titular" value="{{ datos.titular }}" required placeholder="Nombre completo o Razón Social">
               </div>
             </div>
 
             <div class="mb-4">
-              <label for="instrucciones" class="form-label text-info fw-bold"
-                >Instrucciones o Notas</label
-              >
-              <textarea
-                class="form-control shadow-none"
-                id="instrucciones"
-                name="instrucciones"
-                rows="3"
-                required
-                placeholder="Ej: Envía el comprobante por WhatsApp junto a tu número de orden."
-              >
-{{ datos.instrucciones }}</textarea
-              >
-              <div class="form-text text-muted small">
-                Aparecerá resaltado como una nota de advertencia para el
-                cliente.
+              <label for="instrucciones" class="form-label text-secondary fw-bold">Instrucciones o Notas</label>
+              <textarea class="form-control bg-dark text-secondary border-secondary shadow-none" id="instrucciones" 
+                        name="instrucciones" rows="3" required placeholder="Ej: Envía el comprobante por WhatsApp">{{ datos.instrucciones }}</textarea>
+              <div class="form-text text-secondary small">
+                Aparecerá resaltado como una nota de advertencia para el cliente.
               </div>
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">
-              <a
-                href="{% url 'ver_datos_banco' %}"
-                class="btn btn-outline-secondary rounded-pill px-4"
-                >Cancelar</a
-              >
-              <button
-                type="submit"
-                class="btn btn-info text-white fw-bold rounded-pill px-4"
-              >
+              <a href="{% url 'ver_datos_banco' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+              <button type="submit" class="btn fw-bold rounded-pill px-4 text-dark" style="background-color: #07d2ff;">
                 <i class="bi bi-save me-2"></i>Guardar Cambios
               </button>
             </div>

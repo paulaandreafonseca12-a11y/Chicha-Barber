@@ -15,17 +15,18 @@ from .models import Factura
 from django.contrib.auth import get_user_model
 Cliente = get_user_model() 
 
-from productos.models import Producto     
-from servicios.models import Servicios     
+from productos.models import Producto    
+from servicios.models import Servicios    
 from servicios.models import Promocion
-from reservas.models import Reserva  # 🌟 Modelo real de tus reservas
+from reservas.models import Reserva 
 
 
 # =========================
-# FACTURAS CLIENTE
+# FACTURAS CLIENTE (MODIFICADA: SOLO ÚLTIMA FACTURA)
 # =========================
 @login_required
 def facturas(request):
+    # Usamos [:1] para obtener solo el último registro
     facturas = (
         request.user.facturas
         .prefetch_related(
@@ -33,7 +34,7 @@ def facturas(request):
             'detalles__reserva__servicio'
         )
         .select_related('cliente')
-        .order_by('-fecha_emision')
+        .order_by('-fecha_emision')[:1] 
     )
     return render(request, 'facturas/factura.html', {'facturas': facturas})
 
@@ -42,7 +43,6 @@ def facturas(request):
 # FACTURAS ADMIN (CON BUSCADOR)
 # =========================
 def factura_adm(request):
-    # Consulta base optimizada
     facturas = (
         Factura.objects
         .all()
@@ -54,13 +54,10 @@ def factura_adm(request):
         .order_by('-fecha_emision')
     )
 
-    # Capturamos el parámetro 'q' enviado por el formulario GET
     query = request.GET.get('q')
 
     if query:
         query = query.strip()
-        
-        # Filtros base: búsqueda en clientes registrados y clientes genéricos (manuales)
         filtros = (
             Q(cliente__first_name__icontains=query) |
             Q(cliente__last_name__icontains=query) |
@@ -69,19 +66,16 @@ def factura_adm(request):
             Q(correo_cliente__icontains=query)
         )
         
-        # Intento de conversión de fecha seguro (no rompe si el usuario busca texto)
         for formato in ('%d/%m/%Y', '%d-%m-%Y', '%Y-%m-%d'):
             try:
                 fecha_objeto = datetime.strptime(query, formato).date()
                 filtros |= Q(fecha_emision__date=fecha_objeto)
-                break  # Si el parseo es correcto, dejamos de probar formatos
+                break
             except ValueError:
                 continue
 
-        # Aplicamos los filtros consolidados
         facturas = facturas.filter(filtros)
 
-    # Alimentamos los selectores del modal de inserción rápida
     productos = Producto.objects.all()
     servicios = Servicios.objects.all()
 
@@ -103,16 +97,10 @@ def crear_factura(request):
         metodo_pago = request.POST.get('metodo_pago')
         estado = request.POST.get('estado')
         
-        # Campos manuales de cliente
         nombre_c = request.POST.get('nombre_cliente')
         correo_c = request.POST.get('correo_cliente')
         telefono_c = request.POST.get('telefono_cliente')
-        observaciones = request.POST.get('observaciones')
-        
-        # Capturar el archivo del comprobante
         imagen = request.FILES.get('imagen_transaccion')
-
-        # Procesar el JSON de ítems de la tabla unificada
         items_json = request.POST.get('items_json', '[]')
         
         try:
@@ -127,7 +115,6 @@ def crear_factura(request):
                     imagen_transaccion=imagen,
                 )
                 
-                # Decodificar y guardar cada ítem de la tabla
                 detalles = json.loads(items_json)
                 for item in detalles:
                     if item['tipo'] == 'producto':
@@ -139,7 +126,6 @@ def crear_factura(request):
                         )
                     elif item['tipo'] == 'servicio':
                         servicio = get_object_or_404(Servicios, id=item['id'])
-                        # Crear la reserva técnica vinculada
                         reserva = Reserva.objects.create(
                             cliente=factura.cliente,
                             nombre_cliente=factura.nombre_cliente or (factura.cliente.get_full_name() if factura.cliente else "Cliente Genérico"),
@@ -149,7 +135,7 @@ def crear_factura(request):
                             precio_historico=item['precio'],
                             fecha_reserva=timezone.now(),
                             estado='confirmada',
-                            turno=None # Las facturas manuales no requieren bloquear turno
+                            turno=None
                         )
                         factura.detalles.create(
                             reserva=reserva,
@@ -177,7 +163,7 @@ def crear_factura(request):
 
 
 # =========================
-# DETALLE FACTURA
+# DETALLE / IMPRIMIR
 # =========================
 def detalle_factura(request, id):
     factura = get_object_or_404(
@@ -193,9 +179,6 @@ def detalle_factura(request, id):
     })
 
 
-# =========================
-# IMPRIMIR FACTURA
-# =========================
 def imprimir_factura(request, id):
     factura = get_object_or_404(
         Factura.objects.prefetch_related(
@@ -216,17 +199,14 @@ def actualizar_factura_adm(request, id):
         try:
             factura = get_object_or_404(Factura, id=id)
 
-            # CASO 1: Se subió una imagen (A través de FormData / request.FILES)
             if 'imagen_transaccion' in request.FILES:
                 factura.imagen_transaccion = request.FILES['imagen_transaccion']
                 factura.save()
                 return JsonResponse({'status': 'success'})
 
-            # CASO 2: Procesamiento de payloads estructurados en JSON (Campos y Nuevos ítems)
             else:
                 data = json.loads(request.body)
                 
-                # ACCIÓN EXCLUSIVA: Añadir un nuevo ítem de producto o servicio
                 if data.get('accion') == 'agregar_item':
                     tipo = data.get('tipo_item')
                     cantidad = int(data.get('cantidad', 1))
@@ -234,31 +214,22 @@ def actualizar_factura_adm(request, id):
 
                     if tipo == 'producto':
                         prod_id = data.get('producto_id')
-                        if not prod_id:
-                            return JsonResponse({'status': 'error', 'message': 'No seleccionaste ningún producto'}, status=400)
-                        
                         producto = get_object_or_404(Producto, id=prod_id)
-                        precio_final = float(precio_u) if precio_u else float(producto.precio_venta)
-                        
                         factura.detalles.create(
                             producto=producto,
                             cantidad=cantidad,
-                            precio_unitario=precio_final
+                            precio_unitario=float(precio_u) if precio_u else float(producto.precio_venta)
                         )
                     
                     elif tipo == 'servicio':
                         serv_id = data.get('servicio_id')
                         prom_id = data.get('promocion_id')
-                        
-                        if not serv_id:
-                            return JsonResponse({'status': 'error', 'message': 'No seleccionaste ningún servicio'}, status=400)
-                        
                         servicio = get_object_or_404(Servicios, id=serv_id)
                         precio_final = float(precio_u) if precio_u else float(servicio.precio)
+                        
                         if prom_id:
                             promocion = get_object_or_404(Promocion, id=prom_id)
-                            descuento = (precio_final * float(promocion.porcentaje_descuento)) / 100
-                            precio_final -= descuento
+                            precio_final -= (precio_final * float(promocion.porcentaje_descuento)) / 100
 
                         reserva_nueva = Reserva.objects.create(
                             cliente=factura.cliente,
@@ -271,23 +242,13 @@ def actualizar_factura_adm(request, id):
                             estado='confirmada',
                             turno=None
                         )
-                        
-                        factura.detalles.create(
-                            reserva=reserva_nueva,
-                            producto=None,
-                            cantidad=cantidad,
-                            precio_unitario=precio_final
-                        )
+                        factura.detalles.create(reserva=reserva_nueva, cantidad=cantidad, precio_unitario=precio_final)
 
-                    # RE-CALCULO DEL TOTAL AUTOMÁTICO
                     factura.actualizar_total()
                     return JsonResponse({'status': 'success'})
 
-                # Actualizaciones clásicas inline (Selectores de estado y método)
-                if 'estado' in data: 
-                    factura.estado = data['estado']
-                if 'metodo_pago' in data: 
-                    factura.metodo_pago = data['metodo_pago']
+                if 'estado' in data: factura.estado = data['estado']
+                if 'metodo_pago' in data: factura.metodo_pago = data['metodo_pago']
                     
                 factura.save()
                 return JsonResponse({'status': 'success'})
