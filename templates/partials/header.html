@@ -1,74 +1,124 @@
 {% load static %}
+
 <header class="p-3 color-negro-bg">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+
+      <!-- LOGO -->
       <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+        <img src="{% static 'img/logo.png' %}"
+             alt="Chicha Barber"
+             height="55"
+             class="me-2">
       </a>
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+      <!-- MENÚ -->
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-4">
         <li><a href="/" class="nav-link px-2 text-secondary">Inicio</a></li>
         <li><a href="{% url 'servicios' %}" class="nav-link px-2 text-white">Servicios</a></li>
         <li><a href="{% url 'productos_galeria' %}" class="nav-link px-2 text-white">Productos</a></li>
         <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-white">Promociones</a></li>
       </ul>
 
+      <!-- USUARIO -->
       <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white">
         {% if user.is_authenticated %}
         <div class="dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-info rounded-pill px-3 py-1"
             href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
             {% if user.foto_perfil %}
-              <img src="{{ user.foto_perfil.url }}" alt="{{ user.username }}" width="28" height="28" class="rounded-circle object-fit-cover">
+              <img src="{{ user.foto_perfil.url }}"
+                   alt="{{ user.username }}"
+                   width="28"
+                   height="28"
+                   class="rounded-circle object-fit-cover">
             {% else %}
-            <i class="bi bi-person-circle fs-5"></i>
+              <i class="bi bi-person-circle fs-5"></i>
             {% endif %}
-            <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
+
+            <span class="d-none d-md-inline">
+              Hola, {{ user.first_name|default:user.username }}
+            </span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
-            <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column" style="background: rgba(255, 255, 255, 0.03);">
-              <span class="text-white-50 fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Tu Cuenta</span>
-              <span class="small fw-semibold text-white">{{ user.get_rol_display|default:"Cliente" }}</span>
+
+          <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4"
+              aria-labelledby="navbarDropdown">
+
+            <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column"
+                style="background: rgba(255,255,255,0.03);">
+              <span class="text-white-50 fw-bold text-uppercase"
+                    style="font-size:0.65rem; letter-spacing:0.5px;">
+                Tu Cuenta
+              </span>
+              <span class="small fw-semibold text-white">
+                {{ user.get_rol_display|default:"Cliente" }}
+              </span>
             </li>
-           {% if user.rol == 'admin' or user.rol == 'barbero' %}
+
+            {% if user.rol == 'admin' or user.rol == 'barbero' %}
             <li>
-              <a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio_admin' %}">
-                <i class="bi bi-speedometer2 me-2"></i>Panel de Administración
+              <a class="dropdown-item py-2 fw-bold"
+                 style="color:#c47a2c !important;"
+                 href="{% url 'inicio_admin' %}">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Panel de Administración
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
-           {% endif %}
+            {% endif %}
+
             <li>
-              <a class="dropdown-item py-2 fw-bold" style="color: rgba(var(--bs-info-rgb), 1) !important;" href="{% url 'perfil' %}">
-                <i class="bi bi-person-vcard me-2"></i>Mi Perfil
+              <a class="dropdown-item py-2 fw-bold"
+                 style="color:rgba(var(--bs-info-rgb),1)!important;"
+                 href="{% url 'perfil' %}">
+                <i class="bi bi-person-vcard me-2"></i>
+                Mi Perfil
               </a>
             </li>
+
             <li>
-              <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
+              <a class="dropdown-item py-2"
+                 href="{% url 'cambiar_tema' %}">
                 {% if user.tema == 'dark' %}
-                  <i class="bi bi-sun-fill me-2 text-warning"></i> Modo Claro
+                  <i class="bi bi-sun-fill me-2 text-warning"></i>
+                  Modo Claro
                 {% else %}
-                  <i class="bi bi-moon-fill me-2 text-info"></i> Modo Oscuro
+                  <i class="bi bi-moon-fill me-2 text-info"></i>
+                  Modo Oscuro
                 {% endif %}
               </a>
             </li>
+
             <li><hr class="dropdown-divider"></li>
+
             <li>
               <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="dropdown-item text-danger py-2">Cerrar Sesión</button>
+                <button type="submit" class="dropdown-item text-danger py-2">
+                  Cerrar Sesión
+                </button>
               </form>
             </li>
+
           </ul>
         </div>
+
         {% else %}
-          <a class="btn btn-outline-light rounded-pill px-3 py-2" href="{% url 'login' %}">Iniciar Sesión</a>
-          <a class="btn btn-info rounded-pill px-3 py-2 text-dark fw-bold" href="{% url 'registro' %}">Registrarse</a>
-        {% endif %}
-        <a class="nav-link text-white" href="#">
-          
+
+        <a class="btn btn-outline-light rounded-pill px-3 py-2"
+           href="{% url 'login' %}">
+          Iniciar Sesión
         </a>
+
+        <a class="btn btn-info rounded-pill px-3 py-2 text-dark fw-bold"
+           href="{% url 'registro' %}">
+          Registrarse
+        </a>
+
+        {% endif %}
       </div>
+
     </div>
   </div>
 </header>
