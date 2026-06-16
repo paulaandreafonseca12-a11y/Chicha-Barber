@@ -1,10 +1,11 @@
 
 /* ── COLORES ── */
-.color-blanco  { background-color: #f5f8de !important; }
-.color-negro   { background-color: #030301 !important; }
-.color-gris    { background-color: #8d818c !important; }
-.color-naranja { background-color: #c47a2c !important; }
-.color-azul    { background-color: #4bc0d9 !important; }
+.color-champaña { background-color: #eee0cb !important; }
+.color-azul  { background-color: #22aed1 !important; }
+.color-azuloscuro   { background-color: #2b50aa !important; }
+.color-negro{ background-color: #170212!important; }
+.color-blanco { background-color: #ffffff !important; }
+
 
 /* ── FONDO GENERAL ── */
 .back {
@@ -499,12 +500,21 @@ select.cb-input {
    TEMA CLARO (PALETA DE COLORES RESTRINGIDA)
    ========================================================================== */
 
-/* Fondo general de la página en claro (#f5f8de) */
+/* Fondo general de la página en claro (Fondo Blanco Estático) */
 body.theme-light {
-  background-image:
-    linear-gradient(rgba(245, 248, 222, 0.96), rgba(245, 248, 222, 0.94)),
-    url('../img/Fondo1p.jpeg') !important;
+  background-image: none !important;
+  background-color: #ffffff !important;
+  background-attachment: scroll !important;
   color: #030301 !important; /* Texto negro */
+}
+
+body.theme-light hr {
+  border-color: rgba(0, 0, 0, 0.1) !important; /* Lighter hr in light mode */
+}
+
+/* Ocultar decoraciones de fondo en modo claro para un fondo blanco puro */
+body.theme-light .background-decor {
+  display: none !important;
 }
 
 /* Sobrescribir textos de color claro a negro de la paleta */
@@ -512,7 +522,9 @@ body.theme-light .text-light,
 body.theme-light .text-white,
 body.theme-light .text-white-50,
 body.theme-light h1,
+body.theme-light h1.text-white, /* Specific override for h1 with text-white */
 body.theme-light h2,
+body.theme-light h2.text-white, /* Specific override for h2 with text-white */
 body.theme-light h3,
 body.theme-light h4,
 body.theme-light h5,
@@ -520,6 +532,10 @@ body.theme-light h6,
 body.theme-light p,
 body.theme-light span,
 body.theme-light label {
+  color: #030301 !important;
+}
+/* Ensure text-body also becomes black */
+body.theme-light .text-body {
   color: #030301 !important;
 }
 
@@ -540,6 +556,10 @@ body.theme-light .step-item .step-circle {
 body.theme-light .text-muted,
 body.theme-light .text-white-50,
 body.theme-light .opacity-50 {
+  color: #8d818c !important; /* Gris de la paleta */
+  opacity: 1 !important;
+}
+body.theme-light .text-body-secondary {
   color: #8d818c !important; /* Gris de la paleta */
   opacity: 1 !important;
 }
@@ -776,6 +796,10 @@ body.theme-light .btn-outline-light:hover {
   color: #ffffff !important;
 }
 
+body.theme-light .text-primary {
+  color: #4bc0d9 !important; /* Use cyan as primary in light mode */
+}
+
 /* Acordeones laterales (Aside) */
 body.theme-light .accordion-item,
 body.theme-light .accordion-button {
@@ -853,3 +877,220 @@ body.theme-light aside .list-group-item:last-child {
 body.theme-light aside a[href*="inicio_admin"] {
   border: 1px solid rgba(141, 129, 140, 0.2) !important;
 }
+
+/* ── ESTILOS DE FORMULARIOS Y BOTONES GENERALES EN MODO CLARO ── */
+body.theme-light .form-control,
+body.theme-light .registro-card .form-control {
+  background: #ffffff !important; /* White background */
+  border: 1px solid #ced4da !important; /* Light border */
+  color: #030301 !important; /* Black text */
+}
+body.theme-light .form-control::placeholder { color: #6c757d !important; } /* Darker placeholder */
+body.theme-light .form-control:focus,
+body.theme-light .registro-card .form-control:focus {
+  background: #ffffff !important; /* White background on focus */
+  color: #030301 !important; /* Black text on focus */
+  border-color: #4bc0d9 !important; /* Cyan border on focus */
+  box-shadow: 0 0 0 .2rem rgba(75,192,217,.25) !important; /* Cyan shadow on focus */
+}
+body.theme-light .form-check-label { color: #343a40 !important; } /* Darker label */
+
+body.theme-light .btn-warning {
+  background: #c47a2c !important;
+  border: none !important;
+  color: #ffffff !important; /* White text on orange */
+}
+body.theme-light .btn-warning:hover { background: #a8621f !important; }
+
+body.theme-light .custom-btn {
+  background-color: #4bc0d9 !important;
+  border: none !important;
+  color: #030301 !important; /* Black text */
+  box-shadow: 0 4px 18px rgba(75,192,217,0.15) !important; /* Lighter shadow */
+}
+body.theme-light .custom-btn:hover {
+  background-color: #22aed1 !important;
+  color: #ffffff !important;
+}
+
+body.theme-light .btn-cyan {
+  background: #4bc0d9 !important; /* Keep original accent color */
+  color: #030301 !important; /* Black text */
+}
+body.theme-light .btn-cyan:hover {
+  background: #22aed1 !important; /* Slightly darker cyan on hover */
+  color: #ffffff !important; /* White text on hover */
+}
+
+body.theme-light .btn-info {
+  background-color: #4bc0d9 !important;
+  border-color: #4bc0d9 !important;
+  color: #ffffff !important; /* White text on cyan button */
+}
+body.theme-light .btn-info:hover {
+  background-color: #22aed1 !important; /* Darker cyan on hover */
+  border-color: #22aed1 !important;
+  color: #ffffff !important;
+}
+
+body.theme-light .btn-outline-info {
+  border-color: #4bc0d9 !important;
+  color: #4bc0d9 !important;
+}
+body.theme-light .btn-outline-info:hover {
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+}
+
+/* ── ESTILOS ESPECÍFICOS PARA VISTAS DE ADMINISTRACIÓN EN MODO CLARO ── */
+body.theme-light .card.bg-dark,
+body.theme-light .modal-content.bg-dark {
+  background-color: #ffffff !important;
+  border-color: rgba(141, 129, 140, 0.3) !important;
+}
+body.theme-light .card.bg-dark .card-header,
+body.theme-light .modal-content.bg-dark .modal-header {
+  background-color: #f8f9fa !important; /* Light grey header */
+  border-bottom-color: rgba(141, 129, 140, 0.2) !important;
+}
+body.theme-light .table.table-dark {
+  --bs-table-bg: #ffffff !important;
+  --bs-table-color: #030301 !important;
+  --bs-table-hover-bg: rgba(75, 192, 217, 0.08) !important;
+  border-color: rgba(141, 129, 140, 0.2) !important;
+}
+body.theme-light .table.table-dark thead.thead-azul {
+  --bs-table-bg: #4bc0d9 !important;
+  --bs-table-color: #ffffff !important;
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark thead.thead-azul th {
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark tbody tr {
+  border-color: rgba(141, 129, 140, 0.1) !important;
+}
+body.theme-light .table.table-dark .text-white { color: #030301 !important; }
+body.theme-light .table.table-dark .text-white-50 { color: #6c757d !important; }
+body.theme-light .table.table-dark .bg-primary.bg-opacity-10 {
+  background-color: rgba(75, 192, 217, 0.1) !important; /* Light cyan for 'today' row */
+}
+body.theme-light .table.table-dark .badge.bg-primary {
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark .badge.bg-secondary {
+  background-color: #e9ecef !important; /* Light grey for secondary badge */
+  color: #495057 !important;
+}
+body.theme-light .table.table-dark .badge.bg-warning {
+  background-color: #ffc107 !important;
+  color: #030301 !important;
+}
+body.theme-light .table.table-dark .bg-secondary.bg-opacity-10 {
+  background-color: #e9ecef !important; /* Light grey for details */
+}
+body.theme-light .table.table-dark .bg-secondary.bg-opacity-25 {
+  background-color: #e9ecef !important; /* Light grey for selects */
+}
+body.theme-light .table.table-dark .btn-outline-light {
+  border-color: #ced4da !important;
+  color: #495057 !important;
+}
+body.theme-light .table.table-dark .btn-outline-light:hover {
+  background-color: #e9ecef !important;
+  color: #030301 !important;
+}
+body.theme-light .table.table-dark .btn-outline-info {
+  border-color: #4bc0d9 !important;
+  color: #4bc0d9 !important;
+}
+body.theme-light .table.table-dark .btn-outline-info:hover {
+  background-color: #4bc0d9 !important;
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark .btn-outline-success {
+  border-color: #28a745 !important;
+  color: #28a745 !important;
+}
+body.theme-light .table.table-dark .btn-outline-success:hover {
+  background-color: #28a745 !important;
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark .btn-outline-primary {
+  border-color: #007bff !important;
+  color: #007bff !important;
+}
+body.theme-light .table.table-dark .btn-outline-primary:hover {
+  background-color: #007bff !important;
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark .btn-outline-secondary {
+  border-color: #6c757d !important;
+  color: #6c757d !important;
+}
+body.theme-light .table.table-dark .btn-outline-secondary:hover {
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark .modal-footer .btn-secondary {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #ffffff !important;
+}
+body.theme-light .table.table-dark .modal-footer .btn-secondary:hover {
+  background-color: #5a6268 !important;
+  border-color: #545b62 !important;
+}
+
+/* Flatpickr theme for light mode */
+body.theme-light .flatpickr-calendar {
+  background: #ffffff !important;
+  border: 1px solid #ced4da !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+body.theme-light .flatpickr-day.selected,
+body.theme-light .flatpickr-day.selected:hover {
+  background: #4bc0d9 !important;
+  border-color: #4bc0d9 !important;
+  color: #ffffff !important;
+}
+body.theme-light .flatpickr-day.today:not(.selected) {
+  border-color: #4bc0d9 !important;
+  color: #4bc0d9 !important;
+}
+body.theme-light .flatpickr-day.today:not(.selected):hover {
+  background: rgba(75, 192, 217, 0.1) !important;
+}
+body.theme-light .flatpickr-day.inRange,
+body.theme-light .flatpickr-day.inRange:hover,
+body.theme-light .flatpickr-day.startRange,
+body.theme-light .flatpickr-day.startRange:hover,
+body.theme-light .flatpickr-day.endRange,
+body.theme-light .flatpickr-day.endRange:hover {
+  background: rgba(75, 192, 217, 0.1) !important;
+  border-color: rgba(75, 192, 217, 0.1) !important;
+}
+body.theme-light .flatpickr-day,
+body.theme-light .flatpickr-weekday,
+body.theme-light .flatpickr-month,
+body.theme-light .flatpickr-current-month .flatpickr-monthDropdown-months,
+body.theme-light .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
+  color: #030301 !important;
+}
+body.theme-light .flatpickr-time input.flatpickr-hour,
+body.theme-light .flatpickr-time input.flatpickr-minute,
+body.theme-light .flatpickr-time .flatpickr-am-pm {
+  color: #030301 !important;
+  background: #f8f9fa !important;
+  border: 1px solid #ced4da !important;
+}
+body.theme-light .flatpickr-time .numInputWrapper span.arrowUp:after,
+body.theme-light .flatpickr-time .numInputWrapper span.arrowDown:after {
+  border-color: #030301 !important;
+}
+
+/* Remove specific dark theme for flatpickr as we're defining light theme */
+/* The dark.min.css should ideally be loaded conditionally or overridden */
+/* For now, the body.theme-light rules will take precedence */

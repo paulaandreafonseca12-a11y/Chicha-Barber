@@ -19,7 +19,6 @@ class Usuario(AbstractUser):
     telefono = models.CharField(max_length=15, verbose_name="Teléfono")
     rol = models.CharField(max_length=20, choices=ROLES, default='cliente')
     estado = models.BooleanField(default=True, verbose_name='Estado')
-    tema = models.CharField(max_length=10, default='light')
     
     # Campo específico para barberos
     especialidad = models.CharField(max_length=100, blank=True, null=True)

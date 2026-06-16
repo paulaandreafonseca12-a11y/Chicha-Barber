@@ -3,17 +3,17 @@
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+        <svg class="bi me-2 text-body" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
       </a>
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/" class="nav-link px-2 text-secondary">Inicio</a></li>
-        <li><a href="{% url 'servicios' %}" class="nav-link px-2 text-white">Servicios</a></li>
-        <li><a href="{% url 'productos_galeria' %}" class="nav-link px-2 text-white">Productos</a></li>
-        <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-white">Promociones</a></li>
+        <li><a href="{% url 'servicios' %}" class="nav-link px-2 text-body">Servicios</a></li>
+        <li><a href="{% url 'productos_galeria' %}" class="nav-link px-2 text-body">Productos</a></li>
+        <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-body">Promociones</a></li>
       </ul>
 
-      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white">
+      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0">
         {% if user.is_authenticated %}
         <div class="dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-info rounded-pill px-3 py-1"
@@ -28,7 +28,7 @@
           <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
             <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column" style="background: rgba(255, 255, 255, 0.03);">
               <span class="text-white-50 fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Tu Cuenta</span>
-              <span class="small fw-semibold text-white">{{ user.get_rol_display|default:"Cliente" }}</span>
+              <span class="small fw-semibold text-body">{{ user.get_rol_display|default:"Cliente" }}</span>
             </li>
            {% if user.rol == 'admin' or user.rol == 'barbero' %}
             <li>
@@ -65,7 +65,7 @@
           <a class="btn btn-outline-light rounded-pill px-3 py-2" href="{% url 'login' %}">Iniciar Sesión</a>
           <a class="btn btn-info rounded-pill px-3 py-2 text-dark fw-bold" href="{% url 'registro' %}">Registrarse</a>
         {% endif %}
-        <a class="nav-link text-white" href="#">
+        <a class="nav-link text-body" href="#">
           
         </a>
       </div>
