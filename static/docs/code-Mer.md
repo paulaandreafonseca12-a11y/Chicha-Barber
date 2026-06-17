@@ -4,6 +4,7 @@ erDiagram
     USUARIO ||--o{ RESERVA : "Realiza (Rol: CLIENTE)"
     USUARIO ||--o{ FACTURA : "Se le asigna"
     USUARIO ||--o{ COMPRA : "Registra (Venta Online)"
+    USUARIO }o--o{ SERVICIO : "Tiene especialidad (Rol: BARBERO)"
 
     USUARIO {
         int id PK
@@ -15,6 +16,7 @@ erDiagram
         string rol "ENUM: admin, barbero, cliente"
         boolean estado "Activo/Inactivo"
         image foto_perfil
+        ManyToManyField especialidades "Servicios que el barbero puede realizar"
     }
 
     %% ================= MÓDULO: RESERVAS =================
@@ -29,6 +31,7 @@ erDiagram
         time hora_inicio
         time hora_fin
         string estado "disponible, reservado, cancelado"
+        datetime fecha_creacion "Fecha y hora de creación del turno"
     }
     RESERVA {
         int id PK
@@ -41,6 +44,7 @@ erDiagram
         string telefono_cliente
         float precio_historico "Precio al momento de reservar"
         string estado "reservada, confirmada, cancelada"
+        datetime fecha_creacion "Fecha y hora de creación de la reserva"
     }
 
     %% ================= MÓDULO: SERVICIOS =================
