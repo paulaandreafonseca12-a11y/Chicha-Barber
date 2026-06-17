@@ -134,6 +134,11 @@
         </div>
 
         {% else %}
+          <a class="btn btn-outline-light rounded-pill px-3 py-2" href="{% url 'login' %}">Iniciar Sesión</a>
+          <a class="btn btn-info rounded-pill px-3 py-2 text-dark fw-bold" href="{% url 'registro' %}">Registrarse</a>
+        {% endif %}
+        <a class="nav-link text-body" href="#">
+          
 
         <a class="btn btn-outline-light rounded-pill px-3 py-2"
            href="{% url 'login' %}">
