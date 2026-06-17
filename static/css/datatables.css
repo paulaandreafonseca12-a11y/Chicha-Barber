@@ -452,7 +452,7 @@ table.table.dataTable > tbody > tr.selected > * {
   color: rgb(var(--dt-row-selected-text));
 }
 table.table.dataTable > tbody > tr.selected a {
-  color: rgb(228, 228, 228);
+  color: rgb(250, 248, 248);
   color: rgb(var(--dt-row-selected-link));
 }
 table.table.dataTable.table-striped > tbody > tr:nth-of-type(2n+1) > * {
