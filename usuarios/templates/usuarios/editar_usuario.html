@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-    <div class="card border-0 shadow" style="max-width: 650px; margin: 0 auto;">
+    <div class="card bg-dark text-white border-secondary shadow" style="max-width: 650px; margin: 0 auto;">
 
-        <div class="card-header color-azul d-flex align-items-center gap-2">
+        <div class="card-header thead-azul d-flex align-items-center gap-2">
             <i class="bi bi-person-gear text-white fs-5"></i>
             <h5 class="mb-0 text-white fw-bold">Editar Usuario</h5>
         </div>
@@ -12,14 +12,14 @@
         <div class="card-body p-4">
 
             <!-- INFO DEL USUARIO -->
-            <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-3 bg-light">
-                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-dark bg-warning"
-                     style="width:48px; height:48px; font-size:18px;">
+            <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
+                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold bg-warning text-dark"
+                     style="width:48px; height:48px; font-size:18px; flex-shrink:0;">
                     {{ usuario.nombre_completo|first|upper }}
                 </div>
                 <div>
-                    <div class="fw-bold">{{ usuario.get_full_name }}</div>
-                    <div class="text-muted small">Doc: {{ usuario.username }}</div>
+                    <div class="fw-bold text-white">{{ usuario.get_full_name }}</div>
+                    <div class="text-white-50 small">Doc: {{ usuario.username }}</div>
                 </div>
             </div>
 
@@ -29,7 +29,7 @@
                 <div class="row g-3">
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Nombre</label>
+                        <label class="form-label fw-semibold text-white-50">Nombre</label>
                         {{ form.first_name }}
                         {% if form.first_name.errors %}
                             <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Apellido</label>
+                        <label class="form-label fw-semibold text-white-50">Apellido</label>
                         {{ form.last_name }}
                         {% if form.last_name.errors %}
                             <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Correo Electrónico</label>
+                        <label class="form-label fw-semibold text-white-50">Correo Electrónico</label>
                         {{ form.email }}
                         {% if form.email.errors %}
                             <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Teléfono</label>
+                        <label class="form-label fw-semibold text-white-50">Teléfono</label>
                         {{ form.telefono }}
                         {% if form.telefono.errors %}
                             <div class="text-danger small mt-1">{{ form.telefono.errors.0 }}</div>
@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Rol</label>
+                        <label class="form-label fw-semibold text-white-50">Rol</label>
                         {{ form.rol }}
                         {% if form.rol.errors %}
                             <div class="text-danger small mt-1">{{ form.rol.errors.0 }}</div>
@@ -71,21 +71,21 @@
                     <div class="col-md-6 d-flex align-items-center gap-3 mt-2">
                         <div class="form-check">
                             {{ form.is_staff }}
-                            <label class="form-check-label fw-semibold ms-1">Acceso admin</label>
+                            <label class="form-check-label fw-semibold ms-1 text-white-50">Acceso admin</label>
                         </div>
                     </div>
 
                     <div class="col-md-6 d-flex align-items-center gap-3 mt-2">
                         <div class="form-check">
                             {{ form.estado }}
-                            <label class="form-check-label fw-semibold ms-1">Usuario activo</label>
+                            <label class="form-check-label fw-semibold ms-1 text-white-50">Usuario activo</label>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn color-azul text-white fw-bold px-4">
+                    <button type="submit" class="btn custom-btn fw-bold px-4">
                         <i class="bi bi-save me-2"></i>Guardar Cambios
                     </button>
                     <a href="{% url 'lista_usuarios' %}" class="btn btn-outline-secondary fw-bold px-4">
@@ -98,4 +98,4 @@
 
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

@@ -1,49 +1,95 @@
-{% extends 'base-admin.html' %}
+{% extends 'base-admin.html' %} 
+{% load static %}
 
 {% block content %}
-<div class="container py-4" style="max-width: 700px;">
-
-    <div class="card border-0 shadow">
-
-        <!-- HEADER CON BOTÓN -->
-        <div class="card-header d-flex justify-content-between align-items-center text-white"
-             style="background-color: #07d2ff;">
-
-            <span class="fw-bold">
-                <i class="bi bi-box-seam me-2"></i>Nuevo Producto
-            </span>
-
-            <a href="{% url 'lista_productos_admin' %}" class="btn fw-bold text-white border-0 px-4 rounded-pill shadow-sm"
-               style="background-color: #07d2ff;">
-                <i class="bi bi-arrow-left me-2"></i>Volver
-            </a>
-        </div>
-
-        <div class="card-body">
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="mb-3">
-                    <label class="form-label fw-bold">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="text-danger small">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-
-                <div class="d-flex gap-3 mt-4">
-                    <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-secondary w-50">
-                        <i class="bi bi-x-circle me-1"></i>Cancelar
-                    </a>
-                    <button type="submit" class="btn fw-bold text-white w-50"
-                            style="background-color: #07d2ff;">
-                        <i class="bi bi-save me-1"></i>Guardar Cambios
-                    </button>
-                </div>
-            </form>
-        </div>
-
+<div class="container py-4 mt-2 mb-5" style="max-width: 700px">
+  
+  <div class="card bg-dark text-white border-secondary shadow">
+    
+    <div
+      class="card-header text-white py-3 border-0"
+      style="background-color: #07d2ff"
+    >
+      <span class="fw-bold fs-5 text-white">
+        <i class="bi bi-box-seam me-2"></i>
+        {% if form.instance.pk %} Editar Producto {% else %} Nuevo Producto {% endif %}
+      </span>
     </div>
+
+    <div class="card-body p-4">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %} 
+
+        {# 1. Renderizado de campos de texto, números e imágenes #} 
+        {% for field in form %} 
+          {% if field.name != 'estado' %}
+          <div class="mb-3">
+            <label class="form-label fw-bold text-white-50 small">{{ field.label }}</label>
+            
+            <div class="form-control-container">
+              {{ field }}
+            </div>
+            
+            {% if field.errors %}
+            <div class="text-danger small mt-1">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ field.errors|striptags }}
+            </div>
+            {% endif %}
+          </div>
+          {% endif %} 
+        {% endfor %}
+
+        <hr class="border-secondary my-4" />
+
+        {# 2. Zona Inferior: Texto "Estado" y el cuadrado azul pegado a la derecha #}
+        <div class="mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <label
+              class="fw-bold text-white mb-0 lh-1"
+              for="id_estado"
+              style="cursor: pointer; user-select: none"
+            >
+              Estado
+            </label>
+            <div class="d-flex align-items-center">
+              <input type="checkbox" name="estado" id="id_estado" {% if form.estado.value %}checked{% endif %} class="form-check-input m-0">
+            </div>
+          </div>
+
+          {% if form.estado.errors %}
+          <div class="text-danger small mt-2">
+            <i class="bi bi-exclamation-circle me-1"></i>{{ form.estado.errors|striptags }}
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="d-flex gap-3 mt-4">
+          <a
+            href="{% url 'lista_productos_admin' %}"
+            class="btn btn-outline-secondary text-white border-secondary w-50"
+          >
+            <i class="bi bi-x-circle me-1"></i>Cancelar
+          </a>
+          <button
+            type="submit"
+            class="btn fw-bold text-white w-50"
+            style="background-color: #07d2ff"
+          >
+            <i class="bi bi-save me-1"></i>Guardar Producto
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const inputs = document.querySelectorAll('.form-control, .form-select');
+    inputs.forEach(input => {
+      // Agrega de forma limpia las clases oscuras para que coincida con la tabla
+      input.classList.add('bg-dark', 'text-white', 'border-secondary');
+    });
+  });
+</script>
 {% endblock %}

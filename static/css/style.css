@@ -9,8 +9,8 @@
 /* ── FONDO GENERAL ── */
 .back {
   background-image:
-    linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.7)),
-    url('../img/Fondo.png');
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.5)),
+    url('../img/Fondo1p.jpeg') !important;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -489,6 +489,11 @@ select.cb-input {
 .forgot-link:hover {
     color: #f7b640;
 }
+/* =========================
+   Botones lista de usuarios
+========================= */
+.filtro-rol { background: transparent; }
+.filtro-rol:hover { background: transparent; }
 
 /* ==========================================================================
    TEMA CLARO (PALETA DE COLORES RESTRINGIDA)
@@ -498,7 +503,7 @@ select.cb-input {
 body.theme-light {
   background-image:
     linear-gradient(rgba(245, 248, 222, 0.96), rgba(245, 248, 222, 0.94)),
-    url('../img/Fondo.png') !important;
+    url('../img/Fondo1p.jpeg') !important;
   color: #030301 !important; /* Texto negro */
 }
 
