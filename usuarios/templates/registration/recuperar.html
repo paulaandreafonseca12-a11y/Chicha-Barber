@@ -10,7 +10,6 @@
 
 <div class="main-wrapper mx-auto">
 
-    <!-- HEADER -->
     <header class="text-center mb-4">
         <div class="logo-wrap rounded-circle overflow-hidden mx-auto mb-2">
             <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-100 h-100 object-fit-cover">
@@ -19,11 +18,23 @@
         <span class="brand-sub small text-uppercase">Studio · Nobsa</span>
     </header>
 
-    <!-- FORMULARIO -->
     <main class="form-box p-4 rounded-3">
 
         <h2 class="form-heading text-white mb-1">Recuperar</h2>
         <p class="small text-white opacity-50 mb-3">Ingresa tu correo para recibir las instrucciones.</p>
+
+        {% if form.errors %}
+        <div class="alert alert-danger mb-3 py-2 px-3 small" style="background-color: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; color: #f8d7da; border-radius: 6px;">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p class="m-0">⚠️ {{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <p class="m-0">⚠️ {{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <form method="post">
             {% csrf_token %}
@@ -34,6 +45,7 @@
                 <input
                     type="email"
                     name="email"
+                    id="id_email"
                     class="cb-input"
                     placeholder="correo@ejemplo.com"
                     autocomplete="email"
@@ -52,5 +64,17 @@
 
     </main>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const inputEmail = document.getElementById('id_email');
+    if (inputEmail) {
+        inputEmail.addEventListener('input', function() {
+            // Elimina espacios en blanco y pasa todo a minúsculas inmediatamente
+            this.value = this.value.toLowerCase().replace(/\s/g, '');
+        });
+    }
+});
+</script>
 
 {% endblock content %}
