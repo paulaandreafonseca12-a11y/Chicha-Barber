@@ -198,36 +198,28 @@
         </div>
 
     </div>
-
-</div>
-```
-
-</div>
-
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+    </script>
 {% endblock %}
 
-{% block scripts %}
 
+{% block scripts %}
+<!-- DataTables CSS -->
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 
+<!-- jQuery (requerido por DataTables) -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
+<!-- DataTables JS -->
 <script src="{% static 'js/datatables.js' %}"></script>
 
+<!-- Custom Configuración de DataTable -->
 <script src="{% static 'js/tconf/tconf-tablaCarrusel.js' %}"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    var tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    );
-
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-});
-</script>
-
 {% endblock scripts %}
