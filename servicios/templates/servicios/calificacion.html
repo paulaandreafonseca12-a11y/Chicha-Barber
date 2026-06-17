@@ -32,13 +32,13 @@
                         </div>
                         <p class="card-text text-body-secondary mb-3 flex-grow-1 fst-italic small">"{{ item.comentario }}"</p>
 
-                        <h3 class="fw-bold mb-3 color-azul">${{ item.servicio.precio }}</h3>
+                        <h3 class="fw-bold mb-3 text-info">${{ item.servicio.precio }}</h3>
                         
                         <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
                             <span class="text-body-secondary small fw-semibold">
                                 <i class="bi bi-clock me-1"></i>{{ item.servicio.duracion }} min
                             </span>
-                            <a href="{% url 'registro' item.servicio.pk %}" class="btn btn-primary color-azul btn-sm rounded-pill">
+                            <a href="{% url 'registro' item.servicio.pk %}" class="btn btn-info btn-sm rounded-pill">
                                 <i class="bi bi-calendar-check me-1"></i> Reservar
                             </a>
                         </div>

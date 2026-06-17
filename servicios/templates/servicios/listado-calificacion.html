@@ -2,60 +2,126 @@
 {% load static %}
 
 {% block content %}
-
-    
-    <div class="container mt-5 ">
-      <div class="card shadow">
-          <div  class="card-header bg-primary text-white d-flex justify-content-between color-azul">
-              <h5 class="mb-0 ">Gestión de calificaciones</h5>
-             
-          </div>
-          <div class="card-body">
-              <table class="table table-hover">
-                  <thead class="table-light">
-                      <tr>
-                          <th>ID</th>
-                          <th>Imagen</th>
-                          <th>Servicio</th>
-                          <th>Cliente</th>
-                          <th>Puntuación</th>
-                          <th>Comentario</th>
-                          <th>Fecha de calificación</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                    
-                    {% for calificacion in calificaciones %} <tr>
-                          <td>#{{ calificacion.pk }}</td> 
-                          <td>
-                              {% if calificacion.servicio.imagen %}
-                                  <img src="{{ calificacion.servicio.imagen.url }}" alt="{{ calificacion.servicio.nombre }}" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
-                              {% else %}
-                                  <img src="{% static 'img/Fondo.png' %}" alt="Sin imagen" class="img-thumbnail rounded" style="width: 60px; height: 60px; object-fit: cover;">
-                              {% endif %}
-                          </td>
-                          <td><strong>{{ calificacion.servicio.nombre }}</strong></td>
-                          <td>{{ calificacion.cliente }}</td>
-                          <td>{{ calificacion.puntuacion }}</td>
-                          <td>{{ calificacion.comentario }}</td>
-                          <td>{{ calificacion.fecha_calificacion }}</td>
-                          <td>
-                                <a href="{% url 'responder-calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-primary color-azul">
-                                    <i class="bi bi-reply"></i> Responder
-                                </a>
-                          </td>
-                      </tr>
-                      {% empty %} <tr>
-                          <td colspan="8" class="text-center">No hay calificaciones registradas.</td>
-                      </tr>
-                      {% endfor %} </tbody>
-              </table>
-          </div>
-      </div>
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        
+       
+        <a href="{% url 'listado-calificacion' %}" class="btn custom-btn fw-bold">
+            <i class="bi bi-plus-circle me-1"></i> Nueva Calificación {# Or a button to filter unresponded #}
+        </a>
     </div>
-  </main>
+
+    <!-- Tarjetas de resumen -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+                        <i class="bi bi-star-fill fs-3 text-primary"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white-50 mb-0">Total de Calificaciones</h6>
+                        <h3 class="fw-bold mb-0">{{ total_calificaciones|default:0 }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                        <i class="bi bi-chat-right-text-fill fs-3 text-success"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white-50 mb-0">Calificaciones Respondidas</h6>
+                        <h3 class="fw-bold mb-0">{{ respondidas|default:0 }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-warning bg-opacity-25 p-3 rounded-circle me-3">
+                        <i class="bi bi-hourglass-split fs-3 text-warning"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white-50 mb-0">Calificaciones Pendientes</h6>
+                        <h3 class="fw-bold mb-0">{{ pendientes|default:0 }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card bg-dark text-white shadow border-secondary mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="tablaCalificaciones" class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
+                    <thead class="thead-azul">
+                        <tr>
+                            <th scope="col" class="ps-4">Servicio</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col" class="text-center">Puntuación</th>
+                            <th scope="col">Comentario</th>
+                            <th scope="col" class="text-center">Estado Respuesta</th>
+                            <th scope="col" class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for calificacion in calificaciones %}
+                        <tr>
+                            <td class="ps-4">
+                                <h6 class="mb-0 fw-bold">{{ calificacion.servicio.nombre }}</h6>
+                            </td>
+                            <td>{{ calificacion.cliente }}</td>
+                            <td class="text-center">
+                                {% for i in "12345" %}
+                                    
+                                    
+                                {% endfor %}
+                            </td>
+                            <td>{{ calificacion.comentario|truncatechars:50 }}</td>
+                            <td class="text-center">
+                                {% if calificacion.respuesta %}
+                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Respondida</span>
+                                {% else %}
+                                    <span class="badge bg-warning"><i class="bi bi-hourglass-split me-1"></i>Pendiente</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'responder-calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-info me-1" title="Responder">
+                                    <i class="bi bi-chat-right-text"></i>
+                                </a>
+                                <a href="{% url 'eliminar_calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No hay calificaciones registradas.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-  
-                      
-  
+{% block scripts %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="{% static 'css/datatables.css' %}">
+
+<!-- jQuery (requerido por DataTables) -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="{% static 'js/datatables.js' %}"></script>
+
+<!-- Custom Configuración de DataTable -->
+<script src="{% static 'js/tconf/tconf-tablaCalificaciones.js' %}"></script>
+{% endblock scripts %}

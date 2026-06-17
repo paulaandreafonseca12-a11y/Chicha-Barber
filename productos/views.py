@@ -18,14 +18,16 @@ from facturas.models import Factura, DetalleFactura
 
 def productos_galeria(request):
     factura_id = request.GET.get('factura_id')
+
     if factura_id:
         request.session['active_factura_id'] = factura_id
-        
-    productos = Producto.objects.all()
-    return render(request, 'productos/productos_galeria.html', {
-        'productos': productos
-    })
 
+    context = {
+        'titulo': 'Galería de Productos',
+        'productos': Producto.objects.filter(estado=True)
+    }
+
+    return render(request, 'productos/productos_galeria.html', context)
 
 # 🔒 CARRITO PROTEGIDO
 @login_required
@@ -36,13 +38,13 @@ def carrito(request):
 # 🔒 PAGO PROTEGIDO
 @login_required
 def pago(request):
-    # Usamos get_solo para asegurar que siempre haya un objeto
-    datos_banco = DatosTransferencia.get_solo()
-    factura_id = request.session.get('active_factura_id')
-    return render(request, 'productos/pago.html', {
-        'datos_banco': datos_banco,
-        'factura_id': factura_id
-    })
+    context = {
+        'titulo': 'Método de Pago',
+        'datos_banco': DatosTransferencia.get_solo(),
+        'factura_id': request.session.get('active_factura_id')
+    }
+
+    return render(request, 'productos/pago.html', context)
 
 
 # 🔒 PROCESAR PAGO PROTEGIDO (CORREGIDO Y OPTIMIZADO)
@@ -201,46 +203,58 @@ def procesar_pago_cliente(request):
 
 def lista_productos_admin(request):
     productos = Producto.objects.all()
-    return render(request, 'productos/productos_admin.html', {
+
+    context = {
+        'titulo': 'Gestión de Productos',
         'productos': productos,
-        'titulo': "Gestión de Productos",
-        # 🔹 Inyección de los métodos dinámicos que creamos en el Modelo
         'total_productos': Producto.total_productos(),
         'activos': Producto.total_activos(),
         'inactivos': Producto.total_inactivos(),
-    })
+    }
 
+    return render(request, 'productos/productos_admin.html', context)
 
 def crear_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
+
         if form.is_valid():
-            # El Stock se genera de forma automática mediante la señal (Signal) de tu models.py
             form.save()
             messages.success(request, "✅ Producto creado correctamente")
             return redirect('lista_productos_admin')
-        else:
-            messages.error(request, "❌ Error al crear producto")
+
     else:
         form = ProductoForm()
 
-    return render(request, 'productos/editar_producto.html', {'form': form})
+    context = {
+        'titulo': 'Crear Producto',
+        'form': form
+    }
+
+    return render(request, 'productos/editar_producto.html', context)
 
 
 def editar_producto(request, pk):
     producto = get_object_or_404(Producto, codigo_producto=pk)
+
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES, instance=producto)
+
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Producto actualizado correctamente")
             return redirect('lista_productos_admin')
-        else:
-            messages.error(request, "❌ Error al actualizar")
+
     else:
         form = ProductoForm(instance=producto)
 
-    return render(request, 'productos/editar_producto.html', {'form': form})
+    context = {
+        'titulo': 'Editar Producto',
+        'form': form,
+        'producto': producto
+    }
+
+    return render(request, 'productos/editar_producto.html', context)
 
 
 def eliminar_producto(request, pk):
@@ -259,43 +273,41 @@ def eliminar_producto(request, pk):
 # ==========================================
 
 def lista_stock(request):
-    # Optimización de consulta SQL unificando la relación con producto
     stocks = Stock.objects.select_related('producto')
-    
-    # 📊 Cálculo detallado en el backend para las tarjetas informativas
-    total_productos = stocks.count()
-    stock_critico = stocks.filter(cantidad__lte=5).count()                    # Menor o igual a 5 u.
-    stock_bajo = stocks.filter(cantidad__gt=5, cantidad__lte=10).count()       # Entre 6 u. y 10 u.
-    stock_optimo = stocks.filter(cantidad__gt=10).count()                     # Mayor a 10 u.
-    
-    return render(request, 'productos/stock_admin.html', {
+
+    context = {
+        'titulo': 'Stock de Productos',
         'stocks': stocks,
-        'titulo': "Stock de Productos",
-        'total_productos': total_productos,
-        'stock_critico': stock_critico,
-        'stock_bajo': stock_bajo,
-        'stock_optimo': stock_optimo,
-    })
+        'total_productos': stocks.count(),
+        'stock_critico': stocks.filter(cantidad__lte=5).count(),
+        'stock_bajo': stocks.filter(cantidad__gt=5, cantidad__lte=10).count(),
+        'stock_optimo': stocks.filter(cantidad__gt=10).count(),
+    }
+
+    return render(request, 'productos/stock_admin.html', context)
 
 
 def editar_stock(request, pk):
     stock = get_object_or_404(Stock, pk=pk)
+
     if request.method == 'POST':
         form = StockForm(request.POST, instance=stock)
+
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Stock actualizado correctamente")
             return redirect('lista_stock')
-        else:
-            messages.error(request, "❌ Error al actualizar stock")
+
     else:
         form = StockForm(instance=stock)
 
-    return render(request, 'productos/editar_stock.html', {
+    context = {
+        'titulo': f'Editar Stock - {stock.producto.nombre}',
         'form': form,
-        'stock': stock,
-        'titulo': f"Editar Stock - {stock.producto.nombre}"
-    })
+        'stock': stock
+    }
+
+    return render(request, 'productos/editar_stock.html', context)
 
 
 # ==========================================
@@ -309,54 +321,52 @@ def registrar_compra(request):
 
         if form_compra.is_valid() and form_detalle.is_valid():
             nueva_compra = form_compra.save()
+
             detalle = form_detalle.save(commit=False)
             detalle.compra = nueva_compra
-            detalle.save()  # Ejecuta el flujo seguro del save() del modelo
+            detalle.save()
 
-            # Sincronizamos totales
             nueva_compra.total = detalle.subtotal
             nueva_compra.save(update_fields=['total'])
 
             messages.success(request, "✅ Compra registrada exitosamente")
             return redirect('historial_compras')
-        else:
-            messages.error(request, "❌ Corrige los errores del formulario")
+
     else:
         form_compra = CompraForm()
         form_detalle = DetalleCompraForm()
 
-    return render(request, 'productos/registrar_compra.html', {
+    context = {
+        'titulo': 'Registrar Nueva Compra',
         'form_compra': form_compra,
-        'form_detalle': form_detalle,
-        'titulo': "Registrar Nueva Compra"
-    })
+        'form_detalle': form_detalle
+    }
+
+    return render(request, 'productos/registrar_compra.html', context)
 
 
 def historial_compras(request):
     compras = Compra.objects.all().order_by('-fecha_compra')
-    
-    # 📊 Cálculo en el backend del total de compras registradas
-    total_compras = compras.count()
-    
-    return render(request, 'productos/historial_compras.html', {
-        'compras': compras,
-        'titulo': "Historial de Compras",
-        'total_compras': total_compras,  # Enviamos el total a la plantilla
-    })
 
+    context = {
+        'titulo': 'Historial de Compras',
+        'compras': compras,
+        'total_compras': compras.count(),
+    }
+
+    return render(request, 'productos/historial_compras.html', context)
 
 def detalle_compra(request, pk):
     compra = get_object_or_404(Compra, codigo_compra=pk)
-    detalles = compra.detalles.all()
-    total = sum(d.subtotal for d in detalles)
 
-    return render(request, 'productos/detalle_compra.html', {
+    context = {
+        'titulo': 'Detalle de Compra',
         'compra': compra,
-        'detalles': detalles,
-        'total_calculado': total,
-        'titulo': "Detalle de Compra"
-    })
+        'detalles': compra.detalles.all(),
+        'total_calculado': sum(d.subtotal for d in compra.detalles.all())
+    }
 
+    return render(request, 'productos/detalle_compra.html', context)
 
 def eliminar_compra(request, pk):
     compra = get_object_or_404(Compra, codigo_compra=pk)
@@ -397,11 +407,11 @@ def agregar_carrito(request):
 @login_required
 def editar_datos_banco(request):
     if not request.user.is_staff:
-        messages.error(request, "❌ No tienes permisos para editar la configuración bancaria.")
+        messages.error(request, "❌ No tienes permisos.")
         return redirect('inicio')
 
     datos = DatosTransferencia.get_solo()
-    
+
     if request.method == 'POST':
         datos.banco = request.POST.get('banco', '').strip()
         datos.tipo_cuenta = request.POST.get('tipo_cuenta', '').strip()
@@ -409,12 +419,22 @@ def editar_datos_banco(request):
         datos.titular = request.POST.get('titular', '').strip()
         datos.instrucciones = request.POST.get('instrucciones', '').strip()
         datos.save()
-        messages.success(request, "✅ Datos de transferencia actualizados")
-    
-    return render(request, 'productos/editar_datos_banco.html', {'datos': datos})
+
+        messages.success(request, "✅ Datos actualizados")
+
+    context = {
+        'titulo': 'Editar Datos Bancarios',
+        'datos': datos
+    }
+
+    return render(request, 'productos/editar_datos_banco.html', context)
 
 
 @login_required
 def ver_datos_banco(request):
-    datos = DatosTransferencia.get_solo()
-    return render(request, 'productos/ver_datos_banco.html', {'datos': datos})
+    context = {
+        'titulo': 'Datos Bancarios',
+        'datos': DatosTransferencia.get_solo()
+    }
+
+    return render(request, 'productos/ver_datos_banco.html', context)

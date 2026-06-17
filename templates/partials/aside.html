@@ -1,12 +1,16 @@
+{% load static %}
 <aside
   class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white shadow-lg"
   style="width: 280px; height: 100vh; overflow-y: auto; position: sticky; top: 0;"
 >
   <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-    <i class="bi bi-scissors me-2 fs-3 text-warning"></i>
-    <span class="fs-4 fw-bold">Chicha Barber</span>
-  </div>
+    <img src="{% static 'img/logo.png' %}"
+         alt="Chicha Barber"
+         height="50"
+         class="me-2">
 
+    <span class="fs-4 fw-bold">Chicha Barber</span>
+</div>
   <hr class="border-secondary" />
 
   <!-- ENLACE PRINCIPAL AL DASHBOARD -->
@@ -171,14 +175,14 @@
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'factura' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'factura' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0"
           type="button" data-bs-toggle="collapse" data-bs-target="#collapseFacturas">
-          <i class="bi bi-receipt me-2"></i> Facturación
+          <i class="bi bi-receipt me-2"></i> Compras
         </button>
       </h2>
       <div id="collapseFacturas" class="accordion-collapse collapse {% if 'factura' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
         <div class="accordion-body p-0">
           <div class="list-group list-group-flush">
             <a href="{% url 'factura_adm' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'factura_adm' or request.resolver_match.url_name == 'detalle_factura' %}text-warning fw-bold{% else %}text-white-50{% endif %} border-0 ps-4">
-              <i class="bi bi-receipt-cutoff me-2"></i> Lista de facturas
+              <i class="bi bi-receipt-cutoff me-2"></i> Lista de Compras
             </a>
           </div>
         </div>

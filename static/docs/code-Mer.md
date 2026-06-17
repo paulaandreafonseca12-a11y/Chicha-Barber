@@ -1,119 +1,183 @@
 erDiagram
     %% ================= MÓDULO: USUARIOS =================
-    USUARIO ||--o{ TURNO : "Ofrece (Profesional)"
-    USUARIO ||--o{ RESERVA : "Realiza (Cliente)"
-    USUARIO ||--o{ FACTURA : "Paga (Cliente)"
+    USUARIO ||--o{ TURNO : "Ofrece (Rol: BARBERO)"
+    USUARIO ||--o{ RESERVA : "Realiza (Rol: CLIENTE)"
+    USUARIO ||--o{ FACTURA : "Se le asigna"
+    USUARIO ||--o{ COMPRA : "Registra (Venta Online)"
+    USUARIO }o--o{ SERVICIO : "Tiene especialidad (Rol: BARBERO)"
 
     USUARIO {
-        int id PK "Ej: 15"
-        string documento "Ej: 1049123456"
-        string nombre "Ej: Antony Reynel"
-        string apellido "Ej: Botello"
-        string email "Ej: antony@email.com"
-        string telefono "Ej: 3123456789"
-        string rol "ENUM: ADMIN, BARBERO, CLIENTE"
-        boolean estado "Ej: True (Activo)"
+        int id PK
+        string username "Documento / ID único"
+        string first_name "Nombre"
+        string last_name "Apellido"
+        string email
+        string telefono
+        string rol "ENUM: admin, barbero, cliente"
+        boolean estado "Activo/Inactivo"
+        image foto_perfil
+        ManyToManyField especialidades "Servicios que el barbero puede realizar"
     }
 
     %% ================= MÓDULO: RESERVAS =================
-    TURNO ||--o| RESERVA : "Ocupado por"
-    RESERVA ||--o| CALIFICACION : "Recibe"
-    RESERVA ||--|| SERVICIO : "Incluye"
+    TURNO ||--o| RESERVA : "Asignado a"
+    RESERVA ||--|| SERVICIO : "Solicita"
+    RESERVA |o--o| PROMOCION : "Aplica (Opcional)"
 
     TURNO {
-        int id PK "Ej: 1045"
-        int profesional_id FK "Ej: 15 (ID de Antony)"
-        date fecha "Ej: 2026-05-13"
-        time hora_inicio "Ej: 14:00"
-        time hora_fin "Ej: 15:00"
-        string estado "Ej: Reservado"
+        int id PK
+        int profesional_id FK "ID de Usuario (Barbero)"
+        date fecha
+        time hora_inicio
+        time hora_fin
+        string estado "disponible, reservado, cancelado"
+        datetime fecha_creacion "Fecha y hora de creación del turno"
     }
     RESERVA {
-        int id PK "Ej: 502"
-        int turno_id FK "Ej: 1045"
-        int cliente_id FK "Ej: 89 (ID del Cliente)"
-        int servicio_id FK "Ej: 3 (Corte Clásico)"
-        float precio_historico "Ej: 25000.00"
-        string estado "Ej: Completada"
-    }
-    CALIFICACION {
-        int id PK "Ej: 120"
-        int reserva_id FK "Ej: 502"
-        int puntuacion "Ej: 5"
-        string comentario "Ej: Excelente atención y puntualidad"
+        int id PK
+        int turno_id FK
+        int cliente_id FK "ID de Usuario (Cliente)"
+        int servicio_id FK
+        int promocion_id FK
+        string nombre_cliente "Nombre manual (Backup)"
+        string correo_cliente
+        string telefono_cliente
+        float precio_historico "Precio al momento de reservar"
+        string estado "reservada, confirmada, cancelada"
+        datetime fecha_creacion "Fecha y hora de creación de la reserva"
     }
 
     %% ================= MÓDULO: SERVICIOS =================
     SERVICIO ||--o{ PROMOCION : "Tiene"
+    SERVICIO ||--o{ CALIFICACION : "Es evaluado"
 
     SERVICIO {
-        int id PK "Ej: 3"
-        string nombre "Ej: Corte Clásico + Barba"
-        float precio_actual "Ej: 25000.00"
-        int duracion_minutos "Ej: 60"
-        boolean estado "Ej: True"
+        int id PK
+        string nombre
+        decimal precio
+        int duracion "Minutos"
+        text descripcion
+        image imagen
+        boolean estado "Activo"
     }
     PROMOCION {
-        int id PK "Ej: 1"
-        int servicio_id FK "Ej: 3"
-        string nombre "Ej: Descuento Madrugadores"
-        float porcentaje_descuento "Ej: 15.0"
-        date fecha_inicio "Ej: 2026-05-01"
-        date fecha_fin "Ej: 2026-05-31"
-        boolean estado "Ej: True"
+        int id PK
+        int servicio_id FK
+        string nombre
+        decimal porcentaje_descuento
+        string duracion "Texto (Ej: 2 Semanas)"
+        text descripcion
+        date fecha_inicio
+        date fecha_fin
+        image imagen
+        boolean estado
+    }
+    CALIFICACION {
+        int id PK
+        int servicio_id FK
+        string cliente "Nombre del autor"
+        int puntuacion "1-5"
+        text comentario
+        datetime fecha_calificacion
+        boolean mostrar_en_inicio
     }
 
     %% ================= MÓDULO: INVENTARIO =================
-    PRODUCTO ||--o{ MOVIMIENTO_INVENTARIO : "Registra"
+    PRODUCTO ||--|| STOCK : "Tiene (OneToOne)"
+    PRODUCTO ||--o{ MOVIMIENTO_INVENTARIO : "Genera"
+    PRODUCTO ||--o{ DETALLE_COMPRA : "Se incluye en"
 
     PRODUCTO {
-        int id PK "Ej: 20"
-        string nombre "Ej: Cera Mate Nishman 100g"
-        string descripcion "Ej: Cera moldeadora acabado mate"
-        float precio_compra "Ej: 12000.00"
-        float precio_venta "Ej: 20000.00"
-        int stock_actual "Ej: 14"
-        boolean estado "Ej: True"
+        int codigo_producto PK
+        string codigo "PROD-0000X"
+        string nombre
+        text descripcion
+        decimal precio_compra
+        decimal precio_venta
+        image imagen
+        boolean estado
+    }
+    STOCK {
+        int id PK
+        int producto_id FK
+        int cantidad "Stock actual"
     }
     MOVIMIENTO_INVENTARIO {
-        int id PK "Ej: 850"
-        int producto_id FK "Ej: 20"
-        string tipo "Ej: Salida"
-        int cantidad "Ej: 1"
-        datetime fecha "Ej: 2026-05-13 14:50:00"
-        string motivo "Ej: Venta en mostrador"
+        int id PK
+        int producto_id FK
+        string tipo "entrada/salida"
+        int cantidad
+        string motivo
+        datetime fecha
+    }
+
+    %% ================= MÓDULO: COMPRAS (VENTA PRODUCTOS) =================
+    COMPRA ||--o{ DETALLE_COMPRA : "Contiene"
+
+    COMPRA {
+        int codigo_compra PK
+        int usuario_id FK "Cliente que compra"
+        string nombre_cliente
+        string correo
+        string telefono
+        string direccion
+        decimal total
+        string metodo_pago "persona, contraentrega, transferencia"
+        string estado_pago "pendiente_verificacion, completado"
+        file comprobante "Imagen del pago"
+        datetime fecha_compra
+    }
+    DETALLE_COMPRA {
+        int codigo_detalle PK
+        int compra_id FK
+        int producto_id FK
+        int cantidad
+        decimal subtotal
     }
 
     %% ================= MÓDULO: FACTURACIÓN =================
     FACTURA ||--o{ DETALLE_FACTURA : "Contiene"
-    DETALLE_FACTURA ||--o| PRODUCTO : "Vende (Opcional)"
-    DETALLE_FACTURA ||--o| RESERVA : "Cobra (Opcional)"
+    DETALLE_FACTURA |o--o| PRODUCTO : "Cobra"
+    DETALLE_FACTURA |o--o| RESERVA : "Cobra"
 
     FACTURA {
-        int id PK "Ej: 3001"
-        int cliente_id FK "Ej: 89"
-        datetime fecha_emision "Ej: 2026-05-13 15:00:00"
-        float total_pagado "Ej: 45000.00"
-        string metodo_pago "Ej: Nequi, Daviplata, Efectivo"
-        string estado "Ej: Pagada"
+        int id PK
+        int cliente_id FK
+        datetime fecha_emision
+        float total_pagado
+        string metodo_pago "efectivo, nequi, daviplata, etc."
+        string estado "pendiente, pagada, cancelada"
+        string nombre_cliente
+        string correo_cliente
+        string telefono_cliente
+        image comprobante_pago
+        image imagen_transaccion "Comprobante Admin"
     }
     DETALLE_FACTURA {
-        int id PK "Ej: 6005"
-        int factura_id FK "Ej: 3001"
-        int producto_id FK "Ej: Null (Si es servicio)"
-        int reserva_id FK "Ej: 502 (ID de la Reserva)"
-        int cantidad "Ej: 1"
-        float precio_unitario "Ej: 25000.00"
-        float subtotal "Ej: 25000.00"
+        int id PK
+        int factura_id FK
+        int producto_id FK "NULL si es servicio"
+        int reserva_id FK "NULL si es producto"
+        int cantidad
+        decimal precio_unitario
+        decimal subtotal
     }
 
     %% ================= MÓDULO: CONFIGURACIÓN =================
+    DATOS_TRANSFERENCIA {
+        int id PK "Singleton ID: 1"
+        string banco
+        string tipo_cuenta
+        string numero_cuenta
+        string titular
+        text instructions
+    }
     CARRUSEL {
-        int id PK "Ej: 1"
-        datetime fecha_creacion "Ej: 2026-05-01 10:00:00"
-        datetime fecha_modificacion "Ej: 2026-05-10 08:30:00"
-        string nombre "Ej: Banner Promo Mayo"
-        string imagen "Ej: carrusel/banner_mayo_1.jpg"
-        string texto "Ej: Aprovecha un 15% de descuento"
-        boolean estado "Ej: True"
+        int id PK
+        datetime fecha_creacion
+        datetime fecha_modificacion
+        string nombre
+        string imagen
+        string texto
+        boolean estado
     }
