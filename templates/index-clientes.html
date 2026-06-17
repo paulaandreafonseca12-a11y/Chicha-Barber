@@ -5,7 +5,7 @@
     <!-- Branding Central Superior -->
     <div class="row align-items-center">
       <div class="col-lg-6 text-light">
-        <p class="text-warning fw-bold text-white" style="margin-top: 6rem ">
+        <p class="text-warning fw-bold text-white" style="margin-top: 6rem">
           BARBERÍA PROFESIONAL
         </p>
         <h1 class="display-3 fw-bold">
@@ -14,12 +14,12 @@
           NUESTROS CLIENTES
         </h1>
         <p class="mt-3">
-          Cortes modernos, estilo único y atención profesional en Nobsa. 
+          Cortes modernos, estilo único y atención profesional en Nobsa.
         </p>
       </div>
       <div class="col-lg-6 d-flex justify-content-end mt-4 mt-lg-0 text-body">
         <div class="color-blanco shadow-lg w-50 overflow-hidden rounded">
-          <div class="bg-dark text-light p-3 text-center color-azul">
+          <div class="bg-dark text-light p-3 text-center color-champaña">
             <h4></h4>
           </div>
 
@@ -45,10 +45,12 @@
             </div>
 
             <a href="#mapa-ubicacion">
-              <button class="boton-ubicacion color-azul border-0 rounded w-100 mt-3 mb-3 h-200">Ver ubicación</button>
+              <button
+                class="boton-ubicacion color-champaña border-0 rounded w-100 mt-3 mb-3 h-200"
+              >
+                Ver ubicación
+              </button>
             </a>
-
-           
           </div>
         </div>
       </div>
@@ -65,7 +67,11 @@
           class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden"
           data-bs-ride="carousel"
           data-bs-interval="4500"
-          style="border: 2px solid rgba(255, 193, 7, 0.3); height: 420px; max-height: 420px;"
+          style="
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            height: 420px;
+            max-height: 420px;
+          "
         >
           <!-- Indicadores (Puntos de navegación) -->
           <div class="carousel-indicators mb-2" style="z-index: 3">
@@ -221,63 +227,99 @@
 </section>
 
 <section>
-<div class="container my-5 text-light">
-    <h2 class="text-aling mb-5 fw-bold" style="color: white; font-family: 'Arial', sans-serif;">Lo que dicen nuestros clientes</h2>
-    
+  <div class="container my-5 text-light">
+    <h2
+      class="text-aling mb-5 fw-bold"
+      style="color: white; font-family: &quot;Arial&quot;, sans-serif"
+    >
+      Lo que dicen nuestros clientes
+    </h2>
+
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for testimonio in testimonio %}
-        <div class="col">
-            <div class="card h-100 shadow-sm border-0 bg-light w-100 rounded-4 overflow-hidden">
-                <div class="card-body ">
-                    <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 65px; height: 65px;">
-                        <i class="bi bi-chat-quote-fill text-info fs-3"></i>
-                    </div>
-                    <h5 class="fw-bold mb-1" style="color: black; font-family: 'Arial', sans-serif;">{{ testimonio.servicio.nombre }}</h5>
-                    <div class="text-warning mb-3">
-                        {% for i in "12345"|make_list %}
-                            <i class="bi bi-star-fill text-warning"></i>
-                        {% endfor %}
-                    </div>
-                    <p class="fst-italic mb-4" style="color: black; font-family: 'Arial', sans-serif;">
-                        "{{ testimonio.comentario }}"
-                    </p>
-                </div>
-                
+      {% for testimonio in testimonio %}
+      <div class="col">
+        <div
+          class="card h-100 shadow-sm border-0 bg-light w-100 rounded-4 overflow-hidden"
+        >
+          <div class="card-body">
+            <div
+              class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm"
+              style="width: 65px; height: 65px; border: 2px solid #d4bc8a"
+            >
+              <i class="bi bi-chat-quote-fill fs-3" style="color: #d4bc8a"></i>
             </div>
+            <h5
+              class="fw-bold mb-1"
+              style="color: black; font-family: &quot;Arial&quot;, sans-serif"
+            >
+              {{ testimonio.servicio.nombre }}
+            </h5>
+            <div class="text-warning mb-3">
+              {% for i in "12345"|make_list %}
+              <i class="bi bi-star-fill text-warning"></i>
+              {% endfor %}
+            </div>
+            <p
+              class="fst-italic mb-4"
+              style="color: black; font-family: &quot;Arial&quot;, sans-serif"
+            >
+              "{{ testimonio.comentario }}"
+            </p>
+          </div>
         </div>
-        {% empty %}
-        <div class="col-12 text-center text-light">
-            <p class="text-body">Pronto verás aquí lo que opinan nuestros clientes.</p>
-        </div>
-        {% endfor %}
+      </div>
+      {% empty %}
+      <div class="col-12 text-center text-light">
+        <p class="text-body">
+          Pronto verás aquí lo que opinan nuestros clientes.
+        </p>
+      </div>
+      {% endfor %}
     </div>
-</div>
+  </div>
 
-<!-- SECCIÓN MAPA DE UBICACIÓN -->
-<section id="mapa-ubicacion" class="py-5">
+  <!-- SECCIÓN MAPA DE UBICACIÓN -->
+  <section id="mapa-ubicacion" class="py-5">
     <div class="container text-center text-light">
-        <h2 class="mb-4 fw-bold" style="font-family: 'Arial', sans-serif;">Nuestra Ubicación</h2>
-        <div class="ratio ratio-21x9 rounded-4 overflow-hidden shadow-lg border border-secondary" style="max-height: 450px; min-height: 300px;">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d992.4011169060295!2d-72.94139472437891!3d5.76991143301728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a47a8d54e652f%3A0xdc4fd5e0fc57f59e!2sCl.%206%20%2310-13%2C%20Nobsa%2C%20Boyac%C3%A1!5e0!3m2!1ses-419!2sco!4v1780588958968!5m2!1ses-419!2sco" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
+      <h2
+        class="mb-4 fw-bold"
+        style="font-family: &quot;Arial&quot;, sans-serif"
+      >
+        Nuestra Ubicación
+      </h2>
+      <div
+        class="ratio ratio-21x9 rounded-4 overflow-hidden shadow-lg border border-secondary"
+        style="max-height: 450px; min-height: 300px"
+      >
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d992.4011169060295!2d-72.94139472437891!3d5.76991143301728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a47a8d54e652f%3A0xdc4fd5e0fc57f59e!2sCl.%206%20%2310-13%2C%20Nobsa%2C%20Boyac%C3%A1!5e0!3m2!1ses-419!2sco!4v1780588958968!5m2!1ses-419!2sco"
+          width="100%"
+          height="450"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
     </div>
-</section>
+  </section>
 
-<script>
-  // Verificación de expiración periódica
-  function verificarExpiracionCarrito() {
-    let expiracion = localStorage.getItem("carrito_expiracion");
-    if (expiracion && Date.now() > expiracion) {
-      localStorage.removeItem("carrito");
-      localStorage.removeItem("carrito_expiracion");
-      let contador = document.getElementById("contador");
-      if (contador) contador.textContent = "0";
-      console.log("Carrito expirado.");
+  <script>
+    // Verificación de expiración periódica
+    function verificarExpiracionCarrito() {
+      let expiracion = localStorage.getItem("carrito_expiracion");
+      if (expiracion && Date.now() > expiracion) {
+        localStorage.removeItem("carrito");
+        localStorage.removeItem("carrito_expiracion");
+        let contador = document.getElementById("contador");
+        if (contador) contador.textContent = "0";
+        console.log("Carrito expirado.");
+      }
     }
-  }
 
-  // Revisar cada 2 segundos para mayor precisión
-  setInterval(verificarExpiracionCarrito, 2000);
-  verificarExpiracionCarrito();
-</script>
-{% endblock %}
+    // Revisar cada 2 segundos para mayor precisión
+    setInterval(verificarExpiracionCarrito, 2000);
+    verificarExpiracionCarrito();
+  </script>
+  {% endblock %}
+</section>
