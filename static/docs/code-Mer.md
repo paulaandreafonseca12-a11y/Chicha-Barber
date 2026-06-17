@@ -147,9 +147,6 @@ erDiagram
         float total_pagado
         string metodo_pago "efectivo, nequi, daviplata, etc."
         string estado "pendiente, pagada, cancelada"
-        string nombre_cliente
-        string correo_cliente
-        string telefono_cliente
         image comprobante_pago
         image imagen_transaccion "Comprobante Admin"
     }
