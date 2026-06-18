@@ -54,7 +54,6 @@ def procesar_pago_cliente(request):
         nombre = request.POST.get('nombre')
         correo = request.POST.get('correo')
         telefono = request.POST.get('telefono')
-        direccion = request.POST.get('direccion')
         metodo_pago = request.POST.get('pago')  # Recibe 'persona', 'contraentrega' o 'transferencia'
         tipo_transferencia = request.POST.get('tipo_transferencia') # 'nequi', 'daviplata', 'yape'
         factura_id = request.POST.get('factura_id')
@@ -105,9 +104,6 @@ def procesar_pago_cliente(request):
                         metodo_pago=metodo_factura,
                         total_pagado=0,
                         estado=estado_factura,
-                        nombre_cliente=nombre,
-                        correo_cliente=correo,
-                        telefono_cliente=telefono,
                         imagen_transaccion=comprobante_archivo
                     )
 
@@ -116,7 +112,6 @@ def procesar_pago_cliente(request):
                     nombre_cliente=nombre,
                     correo=correo,
                     telefono=telefono,
-                    direccion=direccion,
                     metodo_pago=metodo_pago,
                     estado_pago=estado_inicial,
                     comprobante=comprobante_archivo,

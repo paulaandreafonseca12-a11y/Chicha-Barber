@@ -57,6 +57,19 @@ class Factura(models.Model):
         default='pendiente'
     )
 
+    class Meta:
+        ordering = ['-fecha_emision']
+        verbose_name = 'Factura'
+        verbose_name_plural = 'Facturas'
+
+    def __str__(self):
+        return f"Factura #{self.id} - {self.cliente}"
+
+    def actualizar_total(self):
+        total = sum(detalle.subtotal for detalle in self.detalles.all())
+        self.total_pagado = total
+        self.save(update_fields=['total_pagado'])
+
     comprobante_pago = models.ImageField(
         upload_to=renombrar_comprobante_factura,
         null=True,
@@ -71,25 +84,9 @@ class Factura(models.Model):
         verbose_name="Imagen del Comprobante"
     )
 
-    class Meta:
-        ordering = ['-fecha_emision']
-        verbose_name = 'Factura'
-        verbose_name_plural = 'Facturas'
-
-    def __str__(self):
-        return f"Factura #{self.id} - {self.cliente}"
-
-    def actualizar_total(self):
-        total = sum(detalle.subtotal for detalle in self.detalles.all())
-        self.total_pagado = total
-        self.save(update_fields=['total_pagado'])
-    def actualizar_total(self):
-        """Calcula de forma segura el total sumando todos sus detalles."""
-        self.total_pagado = sum(float(detalle.subtotal) for detalle in self.detalles.all())
-        self.save(update_fields=['total_pagado'])
-
-    def __str__(self):
-        return f"Factura #{self.id} - {self.cliente or self.nombre_cliente or 'Sin Cliente'}"
+    # El método __str__ ya estaba definido correctamente al inicio de la clase
+    # y no hacía referencia a los campos problemáticos.
+    # La segunda definición duplicada ha sido eliminada.
 
 
 # ==========================================

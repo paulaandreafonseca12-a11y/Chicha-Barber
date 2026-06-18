@@ -236,7 +236,7 @@
     </h2>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for testimonio in testimonio %}
+      {% for testimonio in testimonios %}
       <div class="col">
         <div
           class="card h-100 shadow-sm border-0 bg-light w-100 rounded-4 overflow-hidden"
@@ -254,9 +254,9 @@
             >
               {{ testimonio.servicio.nombre }}
             </h5>
-            <div class="text-warning mb-3">
+            <div class="mb-3" style="color: #d4bc8a">
               {% for i in "12345"|make_list %}
-              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill"></i>
               {% endfor %}
             </div>
             <p
