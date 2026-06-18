@@ -247,20 +247,28 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
 
-    return render(request, 'reservas/reservas.html', {
-        'servicio': servicio,
-        'promo': promo,
-        'barberos': barberos,
-        'turnos_disponibles': turnos_disponibles,
-        'action_url': action_url,
-    })
+    context = {
+    'servicio': servicio,
+    'promo': promo,
+    'barberos': barberos,
+    'turnos_disponibles': turnos_disponibles,
+    'action_url': action_url,
+}
+
+    return render(request, 'reservas/reservas.html', context)
 
 
 def reserva_confirmada(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
-    return render(request, 'reservas/reserva_confirmada.html', {'reserva': reserva})
+
+    context = {
+        'reserva': reserva,
+    }
+
+    return render(request, 'reservas/reserva_confirmada.html', context)
 
 
+@login_required
 def cancelar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
     cita.estado = 'cancelada'
@@ -269,16 +277,25 @@ def cancelar_cita(request, pk):
     return redirect('ver_agenda')
 
 
+@login_required
 def editar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=reserva)
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Reserva actualizada.')
         return redirect('ver_agenda')
-    return render(request, 'reservas/editar_reserva.html', {'form': form, 'reserva': reserva})
+
+    context = {
+        'form': form,
+        'reserva': reserva,
+    }
+
+    return render(request, 'reservas/editar_reserva.html', context)
 
 
+@login_required
 def ver_agenda(request):
     # --- 1. CÁLCULO DE DATOS REALES PARA LAS TARJETAS (image_8bea83.jpg) ---
     hoy_fecha = date.today()
@@ -315,18 +332,20 @@ def ver_agenda(request):
 
 
     # --- 3. CONTEXTO ENRIQUECIDO ---
-    return render(request, 'reservas/ver_agenda.html', {
-        'reservas': lista_reservas,
-        'turnos_disponibles': turnos_disponibles,
-        'servicios': servicios,
-        'titulo': 'Agenda de Citas',
-        # Nuevas variables añadidas para renderizar las tarjetas
-        'total_citas_mes': total_citas_mes,
-        'turnos_disponibles_hoy': turnos_disponibles_hoy,
-        'citas_canceladas_mes': citas_canceladas_mes,
-    })
+    context = {
+    'reservas': lista_reservas,
+    'turnos_disponibles': turnos_disponibles,
+    'servicios': servicios,
+    'titulo': 'Agenda de Citas',
+    'total_citas_mes': total_citas_mes,
+    'turnos_disponibles_hoy': turnos_disponibles_hoy,
+    'citas_canceladas_mes': citas_canceladas_mes,
+}
+
+    return render(request, 'reservas/ver_agenda.html', context)
 
 
+@login_required
 def cambiar_estado_reserva(request, pk, nuevo_estado):
     reserva = get_object_or_404(Reserva, pk=pk)
     if nuevo_estado in ['reservada', 'confirmada', 'cancelada']:
@@ -338,16 +357,25 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
     return redirect('ver_agenda')
 
 
+@login_required
 def reprogramar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=cita)
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Cita reprogramada.')
         return redirect('ver_agenda')
-    return render(request, 'reservas/reprogramar.html', {'form': form, 'cita': cita})
+
+    context = {
+        'form': form,
+        'cita': cita,
+    }
+
+    return render(request, 'reservas/reprogramar.html', context)
 
 
+@login_required
 def crear_reserva_admin(request):
     servicios = Servicios.objects.all()
 
@@ -399,8 +427,11 @@ def crear_reserva_admin(request):
             messages.error(request, 'Servicio seleccionado no existe.')
         except Exception as e:
             messages.error(request, f'Error: {e}')
+    context = {
+        'servicios': servicios,
+}
 
-    return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
+    return render(request, 'reservas/crear_cita_admin.html', context)
 
 
 
@@ -426,13 +457,16 @@ def gestionar_disponibilidad_dias(request):
 
     barberos = Usuario.objects.filter(rol='barbero', estado=True)
 
-    return render(request, 'reservas/gestion_turno.html', {
-        'dias': dias,
-        'barberos': barberos,
-        'titulo': 'Gestión de Agenda por Días'
-    })
+    context = {
+    'dias': dias,
+    'barberos': barberos,
+    'titulo': 'Gestión de Agenda por Días'
+}
+
+    return render(request, 'reservas/gestion_turno.html', context)
 
 
+@login_required
 def activar_dia_agenda(request, fecha_str):
     """Crea turnos personalizados para barberos seleccionados."""
     if request.method == 'POST':
@@ -494,6 +528,7 @@ def activar_dia_agenda(request, fecha_str):
 
 
 
+@login_required
 def desactivar_dia_agenda(request, fecha_str):
     fecha = date.fromisoformat(fecha_str)
     

@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Carrusel
 from .forms import CarruselForm
 
+@login_required
 def carrusel_view(request):
     carruseles = Carrusel.objects.all()
     context = {
@@ -11,6 +13,7 @@ def carrusel_view(request):
     }
     return render(request, 'carrusel.html', context)
 
+@login_required
 def crear_carrusel(request):
     if request.method == 'POST':
         form = CarruselForm(request.POST, request.FILES)
@@ -21,26 +24,23 @@ def crear_carrusel(request):
     else:
         form = CarruselForm()
     
-    return render(request, 'crear_carrusel.html', {'form': form})
+    context = {
+        'titulo': 'Crear Carrusel',
+        'form': form,
+    }
+    return render(request, 'crear_carrusel.html', context)
 
+@login_required
 def eliminar_carrusel(request, pk):
-    # Uso de get_object_or_404 es más limpio y estándar en Django
-    try:
-        carrusel = Carrusel.objects.get(pk=pk)
-        carrusel.delete()
-        messages.success(request, 'Imagen de carrusel eliminada exitosamente.')
-    except Carrusel.DoesNotExist:
-        messages.error(request, 'La imagen de carrusel no existe.')
+    carrusel = get_object_or_404(Carrusel, pk=pk)
+    carrusel.delete()
+    messages.success(request, 'Imagen de carrusel eliminada exitosamente.')
     return redirect('carrusel')
 
+@login_required
 def editar_carrusel(request, pk):
-    # Se optimiza la búsqueda del objeto
-    try:
-        carrusel = Carrusel.objects.get(pk=pk)
-    except Carrusel.DoesNotExist:
-        messages.error(request, 'La imagen de carrusel no existe.')
-        return redirect('carrusel')
-
+    carrusel = get_object_or_404(Carrusel, pk=pk)
+    
     if request.method == 'POST':
         form = CarruselForm(request.POST, request.FILES, instance=carrusel)
         if form.is_valid():
@@ -50,22 +50,25 @@ def editar_carrusel(request, pk):
     else:
         form = CarruselForm(instance=carrusel)
     
-    # Se recomienda pasar 'carrusel' al contexto para mostrar datos en el template (como la imagen actual)
-    return render(request, 'editar_carrusel.html', {'form': form, 'carrusel': carrusel})
+    context = {
+        'titulo': 'Editar Carrusel',
+        'form': form,
+        'carrusel': carrusel,
+    }
+    return render(request, 'editar_carrusel.html', context)
 
+@login_required
 def toggle_carrusel(request, pk):
-    try:
-        carrusel = Carrusel.objects.get(pk=pk)
-        carrusel.estado = not carrusel.estado
-        carrusel.save()
-        estado_str = "activado" if carrusel.estado else "inactivado"
-        messages.success(request, f'Carrusel {estado_str} exitosamente.')
-    except Carrusel.DoesNotExist:
-        messages.error(request, 'La imagen de carrusel no existe.')
+    carrusel = get_object_or_404(Carrusel, pk=pk)
+    carrusel.estado = not carrusel.estado
+    carrusel.save()
+    estado_str = "activado" if carrusel.estado else "inactivado"
+    messages.success(request, f'Carrusel {estado_str} exitosamente.')
     return redirect('carrusel')
 
 from servicios.models import Calificacion
 
+@login_required
 def testimonios_admin_view(request):
     testimonios = Calificacion.objects.filter(puntuacion=5).order_by('-fecha_calificacion')
     context = {
@@ -74,6 +77,7 @@ def testimonios_admin_view(request):
     }
     return render(request, 'testimonios.html', context)
 
+@login_required
 def toggle_testimonio(request, pk):
     try:
         testimonio = Calificacion.objects.get(pk=pk, puntuacion=5)

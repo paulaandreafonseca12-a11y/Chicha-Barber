@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login, update_session_auth_hash
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
@@ -48,7 +48,7 @@ def login_view(request):
         form = CustomLoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            auth_login(request, user)
+            login(request, user)
             messages.success(request, f"¡Bienvenido de nuevo, {user.first_name}!")
             if next_url:
                 return redirect(next_url)
@@ -312,8 +312,9 @@ def perfil(request):
                     validar_password_fuerte(nueva)
                     request.user.set_password(nueva)
                     request.user.save()
+                    update_session_auth_hash(request, request.user) # Mantiene la sesión activa
                     messages.success(request, "✅ Contraseña actualizada. Inicia sesión de nuevo.")
-                    return redirect('login')
+                    return redirect('perfil')
                 except ValidationError as e:
                     for error in e.messages:
                         messages.error(request, f"❌ {error}")

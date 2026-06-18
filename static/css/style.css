@@ -11,7 +11,7 @@
 .back {
   background-image:
     linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.5)),
-    url('../img/Fondo1p.jpeg') !important;
+    url('../img/PHOTO-2026-06-04-16-02-47.jpg') !important;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -85,9 +85,9 @@ header a { transition: .3s; }
   border-radius: 10px;
 }
 .form-control::placeholder { color: #999; }
-.form-control:focus {
-  background: #111;
-  color: white;
+.registro-card .form-control:focus {
+  background: #111 !important;
+  color: white !important;
   border-color: #c47a2c;
   box-shadow: 0 0 0 .2rem rgba(196,122,44,.25);
 }
@@ -640,8 +640,8 @@ body.theme-dark input.form-control,
 .dataTables_filter input,
 .dt-length select,
 .dataTables_length select {
-  background-color: #1a1a1a !important;
-  color: #ffffff !important;
+  background-color: #1a1a1a;
+  color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 5px;
   padding: 4px 8px;

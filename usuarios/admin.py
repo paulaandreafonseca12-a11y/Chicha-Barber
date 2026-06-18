@@ -17,13 +17,13 @@ class UsuarioAdmin(UserAdmin):
     # Agregamos tus campos personalizados al formulario de edición del usuario
     fieldsets = UserAdmin.fieldsets + (
         ('Información de la Barbería', {
-            'fields': ('telefono', 'rol', 'estado', 'tema', 'especialidad', 'foto_perfil')
+            'fields': ('telefono', 'rol', 'estado', 'especialidad', 'foto_perfil')
         }),
     )
 
     # Agregamos tus campos personalizados al formulario de creación de usuario
     add_fieldsets = UserAdmin.add_fieldsets + (
         ('Información de la Barbería', {
-            'fields': ('telefono', 'rol', 'estado', 'tema', 'especialidad', 'foto_perfil')
+            'fields': ('telefono', 'rol', 'estado','especialidad', 'foto_perfil')
         }),
     )

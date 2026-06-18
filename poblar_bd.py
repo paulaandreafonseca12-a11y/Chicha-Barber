@@ -268,8 +268,6 @@ def poblar_facturas():
             total_pagado=float(reserva.precio_historico),
             metodo_pago=random.choice(metodos),
             estado='pagada' if reserva.estado == 'confirmada' else 'pendiente',
-            nombre_cliente=reserva.nombre_cliente,
-            correo_cliente=reserva.correo_cliente
         )
         DetalleFactura.objects.create(
             factura=factura,
