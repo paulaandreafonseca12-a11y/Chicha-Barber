@@ -25,7 +25,17 @@ from facturas.models import Factura
 
 
 def inicio(request):
-    return render(request, 'index.html')
+
+    context = {
+        'titulo': 'Inicio',
+        'usuario': request.user
+    }
+
+    return render(
+        request,
+        'index.html',
+        context
+    )
 
 
 def login_view(request):
@@ -47,12 +57,17 @@ def login_view(request):
             messages.error(request, "❌ Correo o contraseña incorrectos. Por favor, verifica los datos.")
     else:
         form = CustomLoginForm()
-
-    return render(request, 'registration/login.html', {
-        'form': form,
-        'next': next_url
-    })
-
+        
+        context = {
+            'form': form,
+            'text': next_url,
+            'titulo': 'Iniciar Sesión'
+            }
+        return render(
+            request,
+            'registration/login.html',
+            context
+)
 
 def registro_view(request):
     next_url = request.GET.get('next') or request.POST.get('next') or ''
@@ -83,11 +98,17 @@ def registro_view(request):
             return redirect('inicio')
     else:
         form = RegistroForm()
-
-    return render(request, 'usuarios/registro.html', {
-        'form': form,
-        'next': next_url
-    })
+        
+        context = {
+            'form': form,
+            'next': next_url,
+            'titulo': 'Registro'
+            }
+        return render(
+        request,
+        'usuarios/registro.html',
+        context
+)
 
 
 def lista_usuarios(request):
@@ -100,34 +121,84 @@ def lista_usuarios(request):
 
     usuarios = usuarios.order_by('first_name', 'last_name')
 
-    return render(request, 'usuarios/lista_usuarios.html', {
+    context = {
         'usuarios': usuarios,
-        'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios",
-        'total_usuarios': Usuario.objects.count(),
-        'total_clientes': Usuario.objects.filter(rol='cliente').count(),
-        'total_barberos': Usuario.objects.filter(rol='barbero').count(),
-        'total_admins':   Usuario.objects.filter(rol='admin').count(),
-    })
 
+        'titulo': (
+            rol_filtro.capitalize()
+            if rol_filtro
+            else 'Todos los Usuarios'
+        ),
+
+        'total_usuarios': Usuario.objects.count(),
+
+        'total_clientes': Usuario.objects.filter(
+            rol='cliente'
+        ).count(),
+
+        'total_barberos': Usuario.objects.filter(
+            rol='barbero'
+        ).count(),
+
+        'total_admins': Usuario.objects.filter(
+            rol='admin'
+        ).count(),
+
+        'rol_filtro': rol_filtro,
+    }
+
+    return render(
+        request,
+        'usuarios/lista_usuarios.html',
+        context
+    )
 
 def crear_usuario_admin(request):
+
     if request.method == 'POST':
         form = CrearUsuarioAdminForm(request.POST)
+
         if form.is_valid():
             user = form.save(commit=False)
-            
-            # 🔥 CORRECCIÓN EXTRA: También prevenimos el IntegrityError aquí
+
+            # Asignar valores por defecto
             user.tema = 'light'
             user.rol = form.cleaned_data['rol']
-            user.is_staff = form.cleaned_data.get('is_staff', False)
+            user.is_staff = form.cleaned_data.get(
+                'is_staff',
+                False
+            )
             user.is_superuser = False
+
             user.save()
-            messages.success(request, "✅ Usuario creado con éxito.")
-            return redirect('lista_usuarios')
+
+            messages.success(
+                request,
+                "✅ Usuario creado con éxito."
+            )
+
+            return redirect(
+                'lista_usuarios'
+            )
+
     else:
         form = CrearUsuarioAdminForm()
 
-    return render(request, 'usuarios/crear_usuario.html', {'form': form})
+
+    context = {
+        'form': form,
+        'titulo': 'Crear Usuario',
+
+    }
+
+
+    return render(
+        request,
+        'usuarios/crear_usuario.html',
+        context
+
+    )
+
 
 
 def cambiar_tema(request):
@@ -150,12 +221,18 @@ def editar_usuario(request, pk):
             return redirect('lista_usuarios')
     else:
         form = EditarUsuarioForm(instance=usuario)
+        
+        context={
+            'form':form,
+            'usuario':usuario,
+            'titulo':'Editar Usuario'
 
-    return render(request, 'usuarios/editar_usuario.html', {
-        'form': form,
-        'usuario': usuario
-    })
-
+}
+        return render(
+            request,
+            'usuarios/editar_usuario.html',
+            context
+)
 
 def recuperar_password_view(request):
     if request.method == 'POST':
@@ -181,14 +258,31 @@ def recuperar_password_view(request):
                     request,
                     "❌ No se pudo enviar el correo de recuperación. Intenta nuevamente."
                 )
-                return render(request, 'registration/recuperar.html', {'form': form})
+                
+                context={
+                    'form':form,
+                    'titulo':'Recuperar Contraseña'
+}
+                return render(
+                    request,
+                    'registration/recuperar.html',
+                    context
+)
 
             return redirect('password_reset_done')
     else:
         form = RecuperarPasswordForm()
-
-    return render(request, 'registration/recuperar.html', {'form': form})
-
+        
+        context={
+            'form':form,
+            'titulo':'Recuperar Contraseña'
+}
+        return render(
+            request,
+            'registration/recuperar.html',
+            context
+)
+        
 @login_required
 def perfil(request):
     form = EditarPerfilForm(instance=request.user)  # valor por defecto (GET)
