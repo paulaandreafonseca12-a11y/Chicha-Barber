@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.shortcuts import render
 
 from .models import Usuario
 from .forms import (
@@ -25,7 +26,7 @@ from facturas.models import Factura
 
 
 def inicio(request):
-    return (request, 'index.html')
+    return render(request, 'index.html')
 
 
 def login_view(request):
@@ -48,7 +49,7 @@ def login_view(request):
     else:
         form = CustomLoginForm()
 
-    return(request, 'registration/login.html', {
+    return render(request, 'registration/login.html', {
         'form': form,
         'next': next_url
     })
@@ -70,7 +71,7 @@ def registro_view(request):
             user.save()
 
             # Inicio de sesión automático
-            auth_login(request, user)
+            login(request, user)
 
             messages.success(
                 request,
@@ -84,7 +85,7 @@ def registro_view(request):
     else:
         form = RegistroForm()
 
-    return (request, 'usuarios/registro.html', {
+    return render(request, 'usuarios/registro.html', {
         'form': form,
         'next': next_url
     })
@@ -100,7 +101,7 @@ def lista_usuarios(request):
 
     usuarios = usuarios.order_by('first_name', 'last_name')
 
-    return (request, 'usuarios/lista_usuarios.html', {
+    return render(request, 'usuarios/lista_usuarios.html', {
         'usuarios': usuarios,
 
         'titulo': (
@@ -124,9 +125,9 @@ def lista_usuarios(request):
         ).count(),
 
         'rol_filtro': rol_filtro,
-    }
+    } )
 
-    return render(
+    return (
         request,
         'usuarios/lista_usuarios.html',
         context
@@ -163,7 +164,7 @@ def crear_usuario_admin(request):
     else:
         form = CrearUsuarioAdminForm()
 
-    return (request, 'usuarios/crear_usuario.html', {'form': form})
+    return render(request, 'usuarios/crear_usuario.html', {'form': form})
 
 
 def cambiar_tema(request):
@@ -187,16 +188,13 @@ def editar_usuario(request, pk):
     else:
         form = EditarUsuarioForm(instance=usuario)
         
-        context={
-            'form':form,
-            'usuario':usuario,
-            'titulo':'Editar Usuario'
-
-    return(request, 'usuarios/editar_usuario.html', {
+    context = {
         'form': form,
-        'usuario': usuario
-    })
+        'usuario': usuario,
+        'titulo': 'Editar Usuario'
+    }
 
+    return render(request, 'usuarios/editar_usuario.html', context)
 
 def recuperar_password_view(request):
     if request.method == 'POST':
@@ -222,13 +220,13 @@ def recuperar_password_view(request):
                     request,
                     "❌ No se pudo enviar el correo de recuperación. Intenta nuevamente."
                 )
-                return(request, 'registration/recuperar.html', {'form': form})
+                return render(request, 'registration/recuperar.html', {'form': form})
 
             return redirect('password_reset_done')
     else:
         form = RecuperarPasswordForm()
 
-    return (request, 'registration/recuperar.html', {'form': form})
+    return render(request, 'registration/recuperar.html', {'form': form})
 
 @login_required
 def perfil(request):
@@ -276,4 +274,4 @@ def perfil(request):
         'compras': compras,
         'facturas': facturas,
     }
-    return (request, 'private/perfil.html', context)
+    return render(request, 'private/perfil.html', context)
