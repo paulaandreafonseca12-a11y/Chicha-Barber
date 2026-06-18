@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.shortcuts import render
 
 from .models import Usuario
 from .forms import (
@@ -77,7 +78,7 @@ def registro_view(request):
             user.save()
 
             # Inicio de sesión automático
-            auth_login(request, user)
+            login(request, user)
 
             messages.success(
                 request,
@@ -109,7 +110,7 @@ def lista_usuarios(request):
 
     usuarios = usuarios.order_by('first_name', 'last_name')
 
-    context = {
+    return render(request, 'usuarios/lista_usuarios.html', {
         'usuarios': usuarios,
 
         'titulo': (
@@ -133,7 +134,7 @@ def lista_usuarios(request):
         ).count(),
 
         'rol_filtro': rol_filtro,
-    }
+    } )
 
     return render(request,'usuarios/lista_usuarios.html',context)
 
@@ -174,8 +175,6 @@ def crear_usuario_admin(request):
         'titulo': 'Crear Usuario',
 
     }
-
-
     return render(request,'usuarios/crear_usuario.html',context)
 
 
@@ -201,13 +200,13 @@ def editar_usuario(request, pk):
     else:
         form = EditarUsuarioForm(instance=usuario)
         
-        context={
-            'form':form,
-            'usuario':usuario,
-            'titulo':'Editar Usuario'
+    context = {
+        'form': form,
+        'usuario': usuario,
+        'titulo': 'Editar Usuario'
+    }
 
-}
-        return render(request,'usuarios/editar_usuario.html',context)
+    return render(request, 'usuarios/editar_usuario.html', context)
 
 def recuperar_password_view(request):
     if request.method == 'POST':
@@ -233,16 +232,7 @@ def recuperar_password_view(request):
                     request,
                     "❌ No se pudo enviar el correo de recuperación. Intenta nuevamente."
                 )
-                
-                context={
-                    'form':form,
-                    'titulo':'Recuperar Contraseña'
-}
-                return render(
-                    request,
-                    'registration/recuperar.html',
-                    context
-)
+                return render(request, 'registration/recuperar.html', {'form': form})
 
             return redirect('password_reset_done')
     else:

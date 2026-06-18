@@ -4,7 +4,7 @@ from django.db import transaction
 from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
 from facturas.models import Factura, DetalleFactura
