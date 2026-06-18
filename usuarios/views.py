@@ -31,11 +31,7 @@ def inicio(request):
         'usuario': request.user
     }
 
-    return render(
-        request,
-        'index.html',
-        context
-    )
+    return render(request,'index.html', context)
 
 
 def login_view(request):
@@ -63,11 +59,7 @@ def login_view(request):
             'text': next_url,
             'titulo': 'Iniciar Sesión'
             }
-        return render(
-            request,
-            'registration/login.html',
-            context
-)
+        return render(request,'registration/login.html',context)
 
 def registro_view(request):
     next_url = request.GET.get('next') or request.POST.get('next') or ''
@@ -104,11 +96,7 @@ def registro_view(request):
             'next': next_url,
             'titulo': 'Registro'
             }
-        return render(
-        request,
-        'usuarios/registro.html',
-        context
-)
+        return render(request,'usuarios/registro.html',context)
 
 
 def lista_usuarios(request):
@@ -147,11 +135,7 @@ def lista_usuarios(request):
         'rol_filtro': rol_filtro,
     }
 
-    return render(
-        request,
-        'usuarios/lista_usuarios.html',
-        context
-    )
+    return render(request,'usuarios/lista_usuarios.html',context)
 
 def crear_usuario_admin(request):
 
@@ -192,12 +176,7 @@ def crear_usuario_admin(request):
     }
 
 
-    return render(
-        request,
-        'usuarios/crear_usuario.html',
-        context
-
-    )
+    return render(request,'usuarios/crear_usuario.html',context)
 
 
 
@@ -228,11 +207,7 @@ def editar_usuario(request, pk):
             'titulo':'Editar Usuario'
 
 }
-        return render(
-            request,
-            'usuarios/editar_usuario.html',
-            context
-)
+        return render(request,'usuarios/editar_usuario.html',context)
 
 def recuperar_password_view(request):
     if request.method == 'POST':
@@ -277,11 +252,7 @@ def recuperar_password_view(request):
             'form':form,
             'titulo':'Recuperar Contraseña'
 }
-        return render(
-            request,
-            'registration/recuperar.html',
-            context
-)
+        return render(request,'registration/recuperar.html', context)
         
 @login_required
 def perfil(request):
