@@ -246,19 +246,26 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             messages.error(request, '¡Ups! El turno seleccionado ya no está disponible. Por favor elige otro.')
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
-        context={
-            'servicio': servicio,
-            'promo': promo,
-            'barberos': barberos,
-            'turnos_disponibles': turnos_disponibles,
-            'action_url': action_url,
-        }
-        return render(request, 'reservas/reservas.html', context)
+
+    context = {
+    'servicio': servicio,
+    'promo': promo,
+    'barberos': barberos,
+    'turnos_disponibles': turnos_disponibles,
+    'action_url': action_url,
+}
+
+    return render(request, 'reservas/reservas.html', context)
 
 
 def reserva_confirmada(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
-    return render(request, 'reservas/reserva_confirmada.html', {'reserva': reserva})
+
+    context = {
+        'reserva': reserva,
+    }
+
+    return render(request, 'reservas/reserva_confirmada.html', context)
 
 
 @login_required
@@ -274,11 +281,18 @@ def cancelar_cita(request, pk):
 def editar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=reserva)
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Reserva actualizada.')
         return redirect('ver_agenda')
-    return render(request, 'reservas/editar_reserva.html', {'form': form, 'reserva': reserva})
+
+    context = {
+        'form': form,
+        'reserva': reserva,
+    }
+
+    return render(request, 'reservas/editar_reserva.html', context)
 
 
 @login_required
@@ -315,17 +329,18 @@ def ver_agenda(request):
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
     servicios = Servicios.objects.all()
-    
-    context =  {
-        'reservas': lista_reservas,
-        'turnos_disponibles': turnos_disponibles,
-        'servicios': servicios,
-        'titulo': 'Agenda de Citas',
-        # Nuevas variables añadidas para renderizar las tarjetas
-        'total_citas_mes': total_citas_mes,
-        'turnos_disponibles_hoy': turnos_disponibles_hoy,
-        'citas_canceladas_mes': citas_canceladas_mes,
-    }
+
+
+    # --- 3. CONTEXTO ENRIQUECIDO ---
+    context = {
+    'reservas': lista_reservas,
+    'turnos_disponibles': turnos_disponibles,
+    'servicios': servicios,
+    'titulo': 'Agenda de Citas',
+    'total_citas_mes': total_citas_mes,
+    'turnos_disponibles_hoy': turnos_disponibles_hoy,
+    'citas_canceladas_mes': citas_canceladas_mes,
+}
 
     return render(request, 'reservas/ver_agenda.html', context)
 
@@ -346,11 +361,18 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
 def reprogramar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=cita)
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Cita reprogramada.')
         return redirect('ver_agenda')
-    return render(request, 'reservas/reprogramar.html', {'form': form, 'cita': cita})
+
+    context = {
+        'form': form,
+        'cita': cita,
+    }
+
+    return render(request, 'reservas/reprogramar.html', context)
 
 
 @login_required
@@ -405,8 +427,11 @@ def crear_reserva_admin(request):
             messages.error(request, 'Servicio seleccionado no existe.')
         except Exception as e:
             messages.error(request, f'Error: {e}')
+    context = {
+        'servicios': servicios,
+}
 
-    return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
+    return render(request, 'reservas/crear_cita_admin.html', context)
 
 
 
@@ -431,12 +456,14 @@ def gestionar_disponibilidad_dias(request):
         })
 
     barberos = Usuario.objects.filter(rol='barbero', estado=True)
-    context =  {
-        'dias': dias,
-        'barberos': barberos,
-        'titulo': 'Gestión de Agenda por Días'
-    }
-    return render(request, 'reservas/gestion_turno.html')
+
+    context = {
+    'dias': dias,
+    'barberos': barberos,
+    'titulo': 'Gestión de Agenda por Días'
+}
+
+    return render(request, 'reservas/gestion_turno.html', context)
 
 
 @login_required

@@ -37,6 +37,15 @@ erDiagram
         int id PK
         int turno_id FK
         int cliente_id FK "ID de Usuario (Cliente)"
+        string profesional
+        datetime fecha
+        time hora_inicio
+        time hora_fin
+        string estado "reservada, confirmada, cancelada"
+        datetime fecha_creacion
+        string nombre_cliente
+        string correo_cliente
+        string telefono_cliente
         int servicio_id FK
         int promocion_id FK
         string nombre_cliente "Nombre manual (Backup)"
@@ -45,6 +54,7 @@ erDiagram
         float precio_historico "Precio al momento de reservar"
         string estado "reservada, confirmada, cancelada"
         datetime fecha_creacion "Fecha y hora de creación de la reserva"
+
     }
 
     %% ================= MÓDULO: SERVICIOS =================
