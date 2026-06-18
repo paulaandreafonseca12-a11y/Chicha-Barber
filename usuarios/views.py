@@ -25,17 +25,7 @@ from facturas.models import Factura
 
 
 def inicio(request):
-
-    context = {
-        'titulo': 'Inicio',
-        'usuario': request.user
-    }
-
-    return render(
-        request,
-        'index.html',
-        context
-    )
+    return (request, 'index.html')
 
 
 def login_view(request):
@@ -57,17 +47,12 @@ def login_view(request):
             messages.error(request, "❌ Correo o contraseña incorrectos. Por favor, verifica los datos.")
     else:
         form = CustomLoginForm()
-        
-        context = {
-            'form': form,
-            'text': next_url,
-            'titulo': 'Iniciar Sesión'
-            }
-        return render(
-            request,
-            'registration/login.html',
-            context
-)
+
+    return(request, 'registration/login.html', {
+        'form': form,
+        'next': next_url
+    })
+
 
 def registro_view(request):
     next_url = request.GET.get('next') or request.POST.get('next') or ''
@@ -98,17 +83,11 @@ def registro_view(request):
             return redirect('inicio')
     else:
         form = RegistroForm()
-        
-        context = {
-            'form': form,
-            'next': next_url,
-            'titulo': 'Registro'
-            }
-        return render(
-        request,
-        'usuarios/registro.html',
-        context
-)
+
+    return (request, 'usuarios/registro.html', {
+        'form': form,
+        'next': next_url
+    })
 
 
 def lista_usuarios(request):
@@ -121,7 +100,7 @@ def lista_usuarios(request):
 
     usuarios = usuarios.order_by('first_name', 'last_name')
 
-    context = {
+    return (request, 'usuarios/lista_usuarios.html', {
         'usuarios': usuarios,
 
         'titulo': (
@@ -184,21 +163,7 @@ def crear_usuario_admin(request):
     else:
         form = CrearUsuarioAdminForm()
 
-
-    context = {
-        'form': form,
-        'titulo': 'Crear Usuario',
-
-    }
-
-
-    return render(
-        request,
-        'usuarios/crear_usuario.html',
-        context
-
-    )
-
+    return (request, 'usuarios/crear_usuario.html', {'form': form})
 
 
 def cambiar_tema(request):
@@ -227,12 +192,11 @@ def editar_usuario(request, pk):
             'usuario':usuario,
             'titulo':'Editar Usuario'
 
-}
-        return render(
-            request,
-            'usuarios/editar_usuario.html',
-            context
-)
+    return(request, 'usuarios/editar_usuario.html', {
+        'form': form,
+        'usuario': usuario
+    })
+
 
 def recuperar_password_view(request):
     if request.method == 'POST':
@@ -258,31 +222,14 @@ def recuperar_password_view(request):
                     request,
                     "❌ No se pudo enviar el correo de recuperación. Intenta nuevamente."
                 )
-                
-                context={
-                    'form':form,
-                    'titulo':'Recuperar Contraseña'
-}
-                return render(
-                    request,
-                    'registration/recuperar.html',
-                    context
-)
+                return(request, 'registration/recuperar.html', {'form': form})
 
             return redirect('password_reset_done')
     else:
         form = RecuperarPasswordForm()
-        
-        context={
-            'form':form,
-            'titulo':'Recuperar Contraseña'
-}
-        return render(
-            request,
-            'registration/recuperar.html',
-            context
-)
-        
+
+    return (request, 'registration/recuperar.html', {'form': form})
+
 @login_required
 def perfil(request):
     form = EditarPerfilForm(instance=request.user)  # valor por defecto (GET)
@@ -329,4 +276,4 @@ def perfil(request):
         'compras': compras,
         'facturas': facturas,
     }
-    return render(request, 'private/perfil.html', context)
+    return (request, 'private/perfil.html', context)

@@ -4,7 +4,7 @@ from django.db import transaction
 from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
 from facturas.models import Factura, DetalleFactura
@@ -175,11 +175,11 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
         if not turno_id:
             messages.error(request, 'Selecciona un turno disponible.')
-            return render(request, 'reservas/reservas.html', context_error)
+            return (request, 'reservas/reservas.html', context_error)
 
         if not (nombre and correo and telefono):
             messages.error(request, 'Todos los campos son obligatorios.')
-            return render(request, 'reservas/reservas.html', context_error)
+            return (request, 'reservas/reservas.html', context_error)
 
         try:
             with transaction.atomic():
@@ -255,7 +255,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     'action_url': action_url,
 }
 
-    return render(request, 'reservas/reservas.html', context)
+    return (request, 'reservas/reservas.html', context)
 
 
 def reserva_confirmada(request, pk):
@@ -265,7 +265,7 @@ def reserva_confirmada(request, pk):
         'reserva': reserva,
     }
 
-    return render(request, 'reservas/reserva_confirmada.html', context)
+    return (request, 'reservas/reserva_confirmada.html', context)
 
 
 @login_required
@@ -292,7 +292,7 @@ def editar_reserva(request, pk):
         'reserva': reserva,
     }
 
-    return render(request, 'reservas/editar_reserva.html', context)
+    return (request, 'reservas/editar_reserva.html', context)
 
 
 @login_required
@@ -342,7 +342,7 @@ def ver_agenda(request):
     'citas_canceladas_mes': citas_canceladas_mes,
 }
 
-    return render(request, 'reservas/ver_agenda.html', context)
+    return (request, 'reservas/ver_agenda.html', context)
 
 
 @login_required
@@ -372,7 +372,7 @@ def reprogramar_cita(request, pk):
         'cita': cita,
     }
 
-    return render(request, 'reservas/reprogramar.html', context)
+    return (request, 'reservas/reprogramar.html', context)
 
 
 @login_required
@@ -390,12 +390,12 @@ def crear_reserva_admin(request):
 
         if not (nombre and correo and telefono and fecha_reserva_raw and servicio_id):
             messages.error(request, 'Todos los campos son obligatorios.')
-            return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
+            return (request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
 
         fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
         if fecha_reserva is None:
             messages.error(request, 'Fecha de cita inválida.')
-            return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
+            return (request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
         try:
             with transaction.atomic():
                 servicio = Servicios.objects.get(id=servicio_id)
@@ -431,7 +431,7 @@ def crear_reserva_admin(request):
         'servicios': servicios,
 }
 
-    return render(request, 'reservas/crear_cita_admin.html', context)
+    return (request, 'reservas/crear_cita_admin.html', context)
 
 
 
@@ -463,7 +463,7 @@ def gestionar_disponibilidad_dias(request):
     'titulo': 'Gestión de Agenda por Días'
 }
 
-    return render(request, 'reservas/gestion_turno.html', context)
+    return (request, 'reservas/gestion_turno.html', context)
 
 
 @login_required
