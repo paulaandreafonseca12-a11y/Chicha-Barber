@@ -25,7 +25,7 @@ from facturas.models import Factura
 
 
 def inicio(request):
-    return render(request, 'index.html')
+    return (request, 'index.html')
 
 
 def login_view(request):
@@ -48,7 +48,7 @@ def login_view(request):
     else:
         form = CustomLoginForm()
 
-    return render(request, 'registration/login.html', {
+    return(request, 'registration/login.html', {
         'form': form,
         'next': next_url
     })
@@ -84,7 +84,7 @@ def registro_view(request):
     else:
         form = RegistroForm()
 
-    return render(request, 'usuarios/registro.html', {
+    return (request, 'usuarios/registro.html', {
         'form': form,
         'next': next_url
     })
@@ -100,7 +100,7 @@ def lista_usuarios(request):
 
     usuarios = usuarios.order_by('first_name', 'last_name')
 
-    return render(request, 'usuarios/lista_usuarios.html', {
+    return (request, 'usuarios/lista_usuarios.html', {
         'usuarios': usuarios,
         'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios",
         'total_usuarios': Usuario.objects.count(),
@@ -127,7 +127,7 @@ def crear_usuario_admin(request):
     else:
         form = CrearUsuarioAdminForm()
 
-    return render(request, 'usuarios/crear_usuario.html', {'form': form})
+    return (request, 'usuarios/crear_usuario.html', {'form': form})
 
 
 def cambiar_tema(request):
@@ -151,7 +151,7 @@ def editar_usuario(request, pk):
     else:
         form = EditarUsuarioForm(instance=usuario)
 
-    return render(request, 'usuarios/editar_usuario.html', {
+    return(request, 'usuarios/editar_usuario.html', {
         'form': form,
         'usuario': usuario
     })
@@ -181,13 +181,13 @@ def recuperar_password_view(request):
                     request,
                     "❌ No se pudo enviar el correo de recuperación. Intenta nuevamente."
                 )
-                return render(request, 'registration/recuperar.html', {'form': form})
+                return(request, 'registration/recuperar.html', {'form': form})
 
             return redirect('password_reset_done')
     else:
         form = RecuperarPasswordForm()
 
-    return render(request, 'registration/recuperar.html', {'form': form})
+    return (request, 'registration/recuperar.html', {'form': form})
 
 @login_required
 def perfil(request):
@@ -235,4 +235,4 @@ def perfil(request):
         'compras': compras,
         'facturas': facturas,
     }
-    return render(request, 'private/perfil.html', context)
+    return (request, 'private/perfil.html', context)

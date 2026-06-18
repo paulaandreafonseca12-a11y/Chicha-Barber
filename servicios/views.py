@@ -18,7 +18,7 @@ def servicios(request):
         'titulo': 'Nuestros Servicios',
         'servicios': servicios 
     }
-    return render(request, 'servicios/servicios.html', context)
+    return (request, 'servicios/servicios.html', context)
 
 def registro(request, servicio_pk):
     servicio = get_object_or_404(Servicios, pk=servicio_pk)
@@ -64,11 +64,11 @@ def registro(request, servicio_pk):
         'form': form,
         'next': next_url # Pasamos 'next' al contexto para el template
     }
-    return render(request, 'usuarios/registro.html', context)
+    return (request, 'usuarios/registro.html', context)
 
 
 def login(request):
-    return render(request, 'login/reservas.html')
+    return (request, 'login/reservas.html')
 
 
 
@@ -78,7 +78,7 @@ def servicios_admin(request):
         'titulo': 'Administración de Servicios',
         'servicios': servicios  
     }
-    return render(request, 'servicios/listado-admin.html', context)
+    return (request, 'servicios/listado-admin.html', context)
 
 def crear_servicios(request):
     if request.method == 'POST':
@@ -93,7 +93,7 @@ def crear_servicios(request):
     else:
         form = ServiciosForm()
     
-    return render(request, 'servicios/agregar_servicios.html', {
+    return (request, 'servicios/agregar_servicios.html', {
         'form': form, 
         'titulo': 'Crear Nuevo Servicio'
     })
@@ -103,7 +103,7 @@ def promocion(request):
         'titulo': 'Promociones',
         'promociones': promociones
     }
-    return render(request, 'servicios/promocion.html', context)
+    return (request, 'servicios/promocion.html', context)
 
 def listado_admin(request):
     servicios = Servicios.objects.all()
@@ -116,7 +116,7 @@ def listado_admin(request):
         'activos': activos,
         'inactivos': inactivos,
     }
-    return render(request, 'servicios/listado-admin.html', context)
+    return (request, 'servicios/listado-admin.html', context)
 
 def listado_promocion(request):
     promociones = Promocion.objects.all()
@@ -127,7 +127,7 @@ def listado_promocion(request):
         'activas': promociones.filter(estado=True).count(),
         'inactivas': promociones.filter(estado=False).count(),
     }
-    return render(request, 'servicios/listado-promocion.html', context)
+    return (request, 'servicios/listado-promocion.html', context)
 def editar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
@@ -144,7 +144,7 @@ def editar_servicios(request, pk):
         'servicio': servicio
         }
 
-    return render(request, 'servicios/editar_servicios.html', context)
+    return (request, 'servicios/editar_servicios.html', context)
 
 def eliminar_servicios(request, pk):
     servicio = get_object_or_404(Servicios, pk=pk)
@@ -152,7 +152,7 @@ def eliminar_servicios(request, pk):
         servicio.delete()
         messages.success(request, 'Servicio eliminado.')
         return redirect('listado-admin')
-    return render(request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
+    return (request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
 
 def crear_promocion(request):
     if request.method == 'POST':
@@ -167,7 +167,7 @@ def crear_promocion(request):
     else:
         form = PromocionForm()
     
-    return render(request, 'servicios/agregar_promocion.html', {
+    return (request, 'servicios/agregar_promocion.html', {
         'form': form, 
         'titulo': 'Crear Nueva Promoción'
     })
@@ -184,7 +184,7 @@ def editar_promocion(request, pk):
         # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
         form = PromocionEditarForm(instance=promocion)
 
-    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
+    return (request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
 
 def eliminar_promocion(request, pk):
     promocion = get_object_or_404(Promocion, pk=pk)
@@ -192,7 +192,7 @@ def eliminar_promocion(request, pk):
         promocion.delete()
         messages.success(request, 'Promoción eliminada.')
         return redirect('listado-promocion')
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
+    return (request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
 
 def calificacion_view(request):
     calificaciones = Calificacion.objects.all()
@@ -200,7 +200,7 @@ def calificacion_view(request):
         'titulo': 'Califica Nuestros Servicios',
         'calificaciones': calificaciones
     }
-    return render(request, 'servicios/calificacion.html', context)
+    return (request, 'servicios/calificacion.html', context)
 
 def listado_calificacion(request):
     calificaciones = Calificacion.objects.all()
@@ -212,7 +212,7 @@ def listado_calificacion(request):
         
         
     }
-    return render(request, 'servicios/listado-calificacion.html', context)
+    return (request, 'servicios/listado-calificacion.html', context)
 
 def responder_calificacion(request, pk):
     # Seguridad: Solo administradores
@@ -259,7 +259,7 @@ def responder_calificacion(request, pk):
         'calificacion': calificacion,
         'titulo': f'Responder a {calificacion.cliente}'
     }
-    return render(request, 'servicios/responder-calificacion.html', context)
+    return (request, 'servicios/responder-calificacion.html', context)
 
 def guardar_calificacion_view(request):
     if request.method == 'POST':
@@ -276,4 +276,4 @@ def eliminar_calificacion(request, pk):
         calificacion.delete()
         messages.success(request, 'Calificación eliminada.')
         return redirect('listado-calificacion')
-    return render(request, 'servicios/eliminar_calificacion.html', {'calificacion': calificacion})
+    return(request, 'servicios/eliminar_calificacion.html', {'calificacion': calificacion})
