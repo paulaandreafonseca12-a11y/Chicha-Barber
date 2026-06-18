@@ -14,6 +14,7 @@ from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario
 from core.utils import enviar_correo_reserva
 from core.utils import enviar_correo_cancelacion_admin
+from django.shortcuts import (render,get_object_or_404,redirect)
 
 
 
@@ -297,6 +298,11 @@ def editar_reserva(request, pk):
 
 @login_required
 def ver_agenda(request):
+    # Seguridad: Solo admin o barbero pueden ver la agenda completa
+    if request.user.rol not in ['admin', 'barbero']:
+        messages.error(request, "No tienes permiso para ver la agenda.")
+        return redirect('inicio')
+
     # --- 1. CÁLCULO DE DATOS REALES PARA LAS TARJETAS (image_8bea83.jpg) ---
     hoy_fecha = date.today()
     mes_actual = hoy_fecha.month
@@ -377,6 +383,11 @@ def reprogramar_cita(request, pk):
 
 @login_required
 def crear_reserva_admin(request):
+    # Seguridad: Solo admin o staff
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "Acceso restringido a administradores.")
+        return redirect('ver_agenda')
+
     servicios = Servicios.objects.all()
 
     if request.method == 'POST':
@@ -391,7 +402,6 @@ def crear_reserva_admin(request):
         if not (nombre and correo and telefono and fecha_reserva_raw and servicio_id):
             messages.error(request, 'Todos los campos son obligatorios.')
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
-
         fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
         if fecha_reserva is None:
             messages.error(request, 'Fecha de cita inválida.')
@@ -434,8 +444,13 @@ def crear_reserva_admin(request):
     return render(request, 'reservas/crear_cita_admin.html', context)
 
 
-
+@login_required
 def gestionar_disponibilidad_dias(request):
+    # Seguridad: Solo administradores pueden gestionar turnos masivos
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "No tienes permisos para gestionar la disponibilidad.")
+        return redirect('ver_agenda')
+
     """Muestra una lista de los próximos 14 días y si tienen turnos activos."""
     hoy = date.today()
     dias = []
@@ -469,6 +484,10 @@ def gestionar_disponibilidad_dias(request):
 @login_required
 def activar_dia_agenda(request, fecha_str):
     """Crea turnos personalizados para barberos seleccionados."""
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('ver_agenda')
+
     if request.method == 'POST':
         fecha = date.fromisoformat(fecha_str)
         barbero_id = request.POST.get('barbero')
@@ -530,6 +549,10 @@ def activar_dia_agenda(request, fecha_str):
 
 @login_required
 def desactivar_dia_agenda(request, fecha_str):
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('ver_agenda')
+
     fecha = date.fromisoformat(fecha_str)
     
     # 1. Buscamos reservas activas
