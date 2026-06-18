@@ -189,9 +189,10 @@ def recuperar_password_view(request):
 
     return render(request, 'registration/recuperar.html', {'form': form})
 
-
 @login_required
 def perfil(request):
+    form = EditarPerfilForm(instance=request.user)  # valor por defecto (GET)
+
     if request.method == 'POST':
         if 'editar_perfil' in request.POST:
             form = EditarPerfilForm(request.POST, request.FILES, instance=request.user)
@@ -199,6 +200,9 @@ def perfil(request):
                 form.save()
                 messages.success(request, "✅ Perfil actualizado con éxito.")
                 return redirect('perfil')
+            else:
+                messages.error(request, "❌ Revisa los datos del formulario, hay errores.")
+                # 'form' ya quedó enlazado con los errores, no se vuelve a tocar
 
         elif 'cambiar_password' in request.POST:
             actual = request.POST.get('password_actual', '')
@@ -221,7 +225,6 @@ def perfil(request):
                     for error in e.messages:
                         messages.error(request, f"❌ {error}")
 
-    form = EditarPerfilForm(instance=request.user)
     reservas = Reserva.objects.filter(cliente=request.user).order_by('-fecha_reserva')
     compras = Compra.objects.filter(correo=request.user.email).order_by('-fecha_compra')
     facturas = Factura.objects.filter(cliente=request.user).order_by('-fecha_emision')
