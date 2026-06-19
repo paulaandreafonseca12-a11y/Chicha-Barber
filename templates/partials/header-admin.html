@@ -28,7 +28,8 @@
               <li><a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio_admin' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin</a></li>
               <li><a class="dropdown-item py-2 fw-bold" style="color: #c47a2c !important;" href="{% url 'inicio' %}"><i class="bi bi-grid-1x2-fill me-2"></i>Ver pagina web</a></li>
               <li><a class="dropdown-item py-2" href="/guardados/"><i class="bi bi-bookmark me-2"></i>Guardados</a></li>
-            {% endif %}
+              {% endif %}
+              
             <li>
               <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
                 {% if user.tema == 'dark' %}

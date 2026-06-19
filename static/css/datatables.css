@@ -1058,7 +1058,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
   box-sizing: border-box;
   content: "";
   border-top: 5px solid transparent;
-  border-left: 10px solid rgba(0, 0, 0, 0.5);
+  border-left: 10px solid rgba(255, 255, 255, 0.5);
   border-bottom: 5px solid transparent;
   border-right: 0px solid transparent;
 }
@@ -1067,11 +1067,11 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control.arrow-right::
   border-top: 5px solid transparent;
   border-left: 0px solid transparent;
   border-bottom: 5px solid transparent;
-  border-right: 10px solid rgba(0, 0, 0, 0.5);
+  border-right: 10px solid rgba(254, 254, 254, 0.5);
 }
 table.dataTable.dtr-inline.collapsed > tbody > tr.dtr-expanded > td.dtr-control:before,
 table.dataTable.dtr-inline.collapsed > tbody > tr.dtr-expanded > th.dtr-control:before {
-  border-top: 10px solid rgba(0, 0, 0, 0.5);
+  border-top: 10px solid rgba(255, 255, 255, 0.5);
   border-left: 5px solid transparent;
   border-bottom: 0px solid transparent;
   border-right: 5px solid transparent;
@@ -1094,7 +1094,7 @@ table.dataTable.dtr-column > tbody > tr > th.control:before {
   box-sizing: border-box;
   content: "";
   border-top: 5px solid transparent;
-  border-left: 10px solid rgba(0, 0, 0, 0.5);
+  border-left: 10px solid rgba(253, 249, 249, 0.5);
   border-bottom: 5px solid transparent;
   border-right: 0px solid transparent;
 }
@@ -1105,13 +1105,13 @@ table.dataTable.dtr-column > tbody > tr > th.control.arrow-right::before {
   border-top: 5px solid transparent;
   border-left: 0px solid transparent;
   border-bottom: 5px solid transparent;
-  border-right: 10px solid rgba(0, 0, 0, 0.5);
+  border-right: 10px solid rgba(246, 242, 242, 0.5);
 }
 table.dataTable.dtr-column > tbody > tr.dtr-expanded td.dtr-control:before,
 table.dataTable.dtr-column > tbody > tr.dtr-expanded th.dtr-control:before,
 table.dataTable.dtr-column > tbody > tr.dtr-expanded td.control:before,
 table.dataTable.dtr-column > tbody > tr.dtr-expanded th.control:before {
-  border-top: 10px solid rgba(0, 0, 0, 0.5);
+  border-top: 10px solid rgba(254, 251, 251, 0.5);
   border-left: 5px solid transparent;
   border-bottom: 0px solid transparent;
   border-right: 5px solid transparent;

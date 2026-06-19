@@ -5,7 +5,7 @@
     <!-- Branding Central Superior -->
     <div class="row align-items-center">
       <div class="col-lg-6 text-light">
-        <p class="text-warning fw-bold text-white" style="margin-top: 6rem ">
+        <p class="text-warning fw-bold" style="margin-top: 6rem ">
           BARBERÍA PROFESIONAL
         </p>
         <h1 class="display-3 fw-bold">
@@ -17,13 +17,13 @@
           Cortes modernos, estilo único y atención profesional en Nobsa. 
         </p>
       </div>
-      <div class="col-lg-6 d-flex justify-content-end mt-4 mt-lg-0 text-body">
+      <div class="col-lg-6 d-flex justify-content-end mt-4 mt-lg-0">
         <div class="color-blanco shadow-lg w-50 overflow-hidden rounded">
-          <div class="bg-dark text-light p-3 text-center color-azul">
+          <div class="p-3 text-center color-azul">
             <h4></h4>
           </div>
 
-          <div class="p-4">
+          <div class="p-4 text-dark">
             <div class="d-flex align-items-center gap-2 mb-3 fs-6">
               <i class="bi bi-geo-alt-fill"></i>
               <span>Nobsa, Boyacá</span>
@@ -55,7 +55,8 @@
     </div>
   </div>
 </section>
-<section class="pt-4 bg-dark bg-opacity-75 mt-n position-relative text-light">
+
+<section class="pt-4 mt-n position-relative themed-section">
   <div class="container">
     <div class="row align-items-center">
       <!-- CARRUSEL -->
@@ -220,38 +221,45 @@
   </div>
 </section>
 
-<section>
-<div class="container my-5 text-light">
-    <h2 class="text-aling mb-5 fw-bold" style="color: white; font-family: 'Arial', sans-serif;">Lo que dicen nuestros clientes</h2>
+<!-- SECCIÓN DE CALIFICACIONES Y TESTIMONIOS (UBICADA DEBAJO DEL CARRUSEL) -->
+<section class="py-5 themed-section">
+  <div class="container text-light">
+    <h2 class="text-center mb-5 fw-bold" style="font-family: 'Arial', sans-serif;">Lo que dicen nuestros clientes</h2>
     
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for testimonio in testimonio %}
+        {% for item in testimonios %}
         <div class="col">
-            <div class="card h-100 shadow-sm border-0 bg-light w-100 rounded-4 overflow-hidden">
-                <div class="card-body ">
-                    <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 65px; height: 65px;">
+            <div class="card h-100 shadow-sm border-0 bg-light rounded-4 overflow-hidden">
+                <div class="card-body text-dark">
+                    <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 60px; height: 60px;">
                         <i class="bi bi-chat-quote-fill text-info fs-3"></i>
                     </div>
-                    <h5 class="fw-bold mb-1" style="color: black; font-family: 'Arial', sans-serif;">{{ testimonio.servicio.nombre }}</h5>
+                    <h5 class="fw-bold mb-0" style="color: black;">{{ item.cliente }}</h5>
+                    <p class="text-muted small mb-2">{{ item.servicio.nombre }}</p>
+
                     <div class="text-warning mb-3">
                         {% for i in "12345"|make_list %}
-                            <i class="bi bi-star-fill text-warning"></i>
+                            {% if forloop.counter <= item.puntuacion %}
+                                <i class="bi bi-star-fill"></i>
+                            {% else %}
+                                <i class="bi bi-star text-muted"></i>
+                            {% endif %}
                         {% endfor %}
                     </div>
-                    <p class="fst-italic mb-4" style="color: black; font-family: 'Arial', sans-serif;">
-                        "{{ testimonio.comentario }}"
+                    <p class="fst-italic mb-2" style="color: #333;">
+                        "{{ item.comentario }}"
                     </p>
                 </div>
-                
             </div>
         </div>
         {% empty %}
-        <div class="col-12 text-center text-light">
-            <p class="text-body">Pronto verás aquí lo que opinan nuestros clientes.</p>
+        <div class="col-12 text-center">
+            <p class="opacity-50">Aún no hay reseñas disponibles. ¡Sé el primero en calificarnos!</p>
         </div>
         {% endfor %}
     </div>
-</div>
+  </div>
+</section>
 
 <!-- SECCIÓN MAPA DE UBICACIÓN -->
 <section id="mapa-ubicacion" class="py-5">
