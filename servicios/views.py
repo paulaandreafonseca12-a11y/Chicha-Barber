@@ -90,7 +90,7 @@ def crear_servicios(request):
     else:
         form = ServiciosForm()
     
-    return render(request, 'servicios/agregar_servicios.html', {
+    return (request, 'servicios/agregar_servicios.html', {
         'form': form, 
         'titulo': 'Crear Nuevo Servicio'
     })
@@ -163,7 +163,7 @@ def eliminar_servicios(request, pk):
     context = {
         'servicio': servicio
     }
-    return render(request, 'servicios/eliminar_servicios.html', context)
+    return (request, 'servicios/eliminar_servicios.html', context)
 
 @login_required
 def crear_promocion(request):
@@ -183,7 +183,7 @@ def crear_promocion(request):
     else:
         form = PromocionForm()
     
-    return render(request, 'servicios/agregar_promocion.html', {
+    return (request, 'servicios/agregar_promocion.html', {
         'form': form, 
         'titulo': 'Crear Nueva Promoción'
     })
@@ -205,7 +205,7 @@ def editar_promocion(request, pk):
         # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
         form = PromocionEditarForm(instance=promocion)
 
-    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
+    return (request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
 
 @login_required
 def eliminar_promocion(request, pk):
@@ -218,7 +218,7 @@ def eliminar_promocion(request, pk):
         promocion.delete()
         messages.success(request, 'Promoción eliminada.')
         return redirect('listado-promocion')
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
+    return (request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
 
 def calificacion_view(request):
     calificaciones = Calificacion.objects.all()
@@ -238,7 +238,7 @@ def listado_calificacion(request):
         
         
     }
-    return render(request, 'servicios/listado-calificacion.html', context)
+    return (request, 'servicios/listado-calificacion.html', context)
 
 def responder_calificacion(request, pk):
     # Seguridad: Solo administradores
@@ -303,4 +303,4 @@ def eliminar_calificacion(request, pk):
         'calificacion': calificacion,
         'titulo': f'Eliminar calificación de {calificacion.cliente}'
     }
-    return render(request, 'servicios/eliminar_calificacion.html', context)
+    return (request, 'servicios/eliminar_calificacion.html', context)
