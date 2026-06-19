@@ -51,7 +51,7 @@
           <div>
             <h6 class="text-white-50 text-uppercase fw-semibold mb-1" style="font-size: 0.75rem; letter-spacing: 0.5px;">Reservas Activas</h6>
             <h3 class="fw-bold mb-0 text-primary">{{ total_reservas }}</h3>
-            {% if reservas_pendientes > 0 %}
+            {% if reservas_pendientes  %}
               <span class="badge bg-warning text-dark mt-1">{{ reservas_pendientes }} pendientes</span>
             {% endif %}
           </div>
@@ -76,7 +76,7 @@
 
     <!-- Productos -->
     <div class="col-xl-3 col-md-6">
-      <div class="card h-100 border-0 rounded-4 shadow-sm text-white" style="background: rgba(255, 193, 7, 0.2); border-left: 5px solid #ffc107 !important;">
+      <div class="card h-100 border-0 rounded-4 shadow-sm text-white" style="background: #eee0cb; border-left: 5px solid #eee0cb !important;">
         <div class="card-body p-4 d-flex align-items-center gap-3">
           <div class="bg-warning bg-opacity-25 text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 65px; height: 65px; flex-shrink: 0;">
             <i class="bi bi-box-seam fs-2"></i>

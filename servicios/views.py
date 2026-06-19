@@ -1,3 +1,5 @@
+from multiprocessing import context
+
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -65,7 +67,10 @@ def registro(request, servicio_pk):
 
 
 def login(request):
-    return render(request, 'login/reservas.html')
+    context = {
+        'titulo': 'Iniciar Sesión'
+    }
+    return render(request, 'login/reservas.html', context)
 
 @login_required
 def crear_servicios(request):
@@ -155,7 +160,10 @@ def eliminar_servicios(request, pk):
         servicio.delete()
         messages.success(request, 'Servicio eliminado.')
         return redirect('listado-admin')
-    return render(request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
+    context = {
+        'servicio': servicio
+    }
+    return render(request, 'servicios/eliminar_servicios.html', context)
 
 @login_required
 def crear_promocion(request):
@@ -226,7 +234,7 @@ def listado_calificacion(request):
         'titulo': 'Listado de Calificaciones',
         'calificaciones': calificaciones,
         'total_calificaciones': calificaciones.count(),
-       
+        'titulo': 'Listado de Calificaciones'
         
         
     }
@@ -290,4 +298,9 @@ def eliminar_calificacion(request, pk):
         calificacion.delete()
         messages.success(request, 'Calificación eliminada.')
         return redirect('listado-calificacion')
-    return render(request, 'servicios/eliminar_calificacion.html', {'calificacion': calificacion})
+    
+    context = {
+        'calificacion': calificacion,
+        'titulo': f'Eliminar calificación de {calificacion.cliente}'
+    }
+    return render(request, 'servicios/eliminar_calificacion.html', context)
