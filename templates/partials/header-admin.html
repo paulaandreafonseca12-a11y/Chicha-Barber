@@ -3,8 +3,8 @@
 <nav class="navbar color-azul">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
-      <div class="d-flex align-items-center gap-2"><img src="{% static 'img/logo.png' %}" alt="Logo" width="50"  style="min-height: 50px;" class="d-inline-block align-text-top">
-      <span class="fw-bold ">{{titulo|default:"Chicha Barber Studio"}}</span></div>
+      <div class="d-flex align-items-center gap-2">
+      <span class="fw-bold ">{{titulo|default:"Administración de Chicha Barber Studio"}}</span></div>
     </a>
   <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 button-azul text-white">
       {% if user.is_authenticated %}

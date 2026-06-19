@@ -4,7 +4,7 @@ from django.db import transaction
 from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
 from facturas.models import Factura, DetalleFactura
@@ -14,6 +14,7 @@ from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario
 from core.utils import enviar_correo_reserva
 from core.utils import enviar_correo_cancelacion_admin
+from django.shortcuts import (render,get_object_or_404,redirect)
 
 
 
@@ -247,20 +248,28 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
 
-    return render(request, 'reservas/reservas.html', {
-        'servicio': servicio,
-        'promo': promo,
-        'barberos': barberos,
-        'turnos_disponibles': turnos_disponibles,
-        'action_url': action_url,
-    })
+    context = {
+    'servicio': servicio,
+    'promo': promo,
+    'barberos': barberos,
+    'turnos_disponibles': turnos_disponibles,
+    'action_url': action_url,
+}
+
+    return render(request, 'reservas/reservas.html', context)
 
 
 def reserva_confirmada(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
-    return render(request, 'reservas/reserva_confirmada.html', {'reserva': reserva})
+
+    context = {
+        'reserva': reserva,
+    }
+
+    return render(request, 'reservas/reserva_confirmada.html', context)
 
 
+@login_required
 def cancelar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
     cita.estado = 'cancelada'
@@ -269,17 +278,31 @@ def cancelar_cita(request, pk):
     return redirect('ver_agenda')
 
 
+@login_required
 def editar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=reserva)
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Reserva actualizada.')
         return redirect('ver_agenda')
-    return render(request, 'reservas/editar_reserva.html', {'form': form, 'reserva': reserva})
+
+    context = {
+        'form': form,
+        'reserva': reserva,
+    }
+
+    return render(request, 'reservas/editar_reserva.html', context)
 
 
+@login_required
 def ver_agenda(request):
+    # Seguridad: Solo admin o barbero pueden ver la agenda completa
+    if request.user.rol not in ['admin', 'barbero']:
+        messages.error(request, "No tienes permiso para ver la agenda.")
+        return redirect('inicio')
+
     # --- 1. CÁLCULO DE DATOS REALES PARA LAS TARJETAS (image_8bea83.jpg) ---
     hoy_fecha = date.today()
     mes_actual = hoy_fecha.month
@@ -315,18 +338,20 @@ def ver_agenda(request):
 
 
     # --- 3. CONTEXTO ENRIQUECIDO ---
-    return render(request, 'reservas/ver_agenda.html', {
-        'reservas': lista_reservas,
-        'turnos_disponibles': turnos_disponibles,
-        'servicios': servicios,
-        'titulo': 'Agenda de Citas',
-        # Nuevas variables añadidas para renderizar las tarjetas
-        'total_citas_mes': total_citas_mes,
-        'turnos_disponibles_hoy': turnos_disponibles_hoy,
-        'citas_canceladas_mes': citas_canceladas_mes,
-    })
+    context = {
+    'reservas': lista_reservas,
+    'turnos_disponibles': turnos_disponibles,
+    'servicios': servicios,
+    'titulo': 'Agenda de Citas',
+    'total_citas_mes': total_citas_mes,
+    'turnos_disponibles_hoy': turnos_disponibles_hoy,
+    'citas_canceladas_mes': citas_canceladas_mes,
+}
+
+    return render(request, 'reservas/ver_agenda.html', context)
 
 
+@login_required
 def cambiar_estado_reserva(request, pk, nuevo_estado):
     reserva = get_object_or_404(Reserva, pk=pk)
     if nuevo_estado in ['reservada', 'confirmada', 'cancelada']:
@@ -338,17 +363,31 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
     return redirect('ver_agenda')
 
 
+@login_required
 def reprogramar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=cita)
+
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Cita reprogramada.')
         return redirect('ver_agenda')
-    return render(request, 'reservas/reprogramar.html', {'form': form, 'cita': cita})
+
+    context = {
+        'form': form,
+        'cita': cita,
+    }
+
+    return render(request, 'reservas/reprogramar.html', context)
 
 
+@login_required
 def crear_reserva_admin(request):
+    # Seguridad: Solo admin o staff
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "Acceso restringido a administradores.")
+        return redirect('ver_agenda')
+
     servicios = Servicios.objects.all()
 
     if request.method == 'POST':
@@ -363,7 +402,6 @@ def crear_reserva_admin(request):
         if not (nombre and correo and telefono and fecha_reserva_raw and servicio_id):
             messages.error(request, 'Todos los campos son obligatorios.')
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
-
         fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
         if fecha_reserva is None:
             messages.error(request, 'Fecha de cita inválida.')
@@ -399,12 +437,20 @@ def crear_reserva_admin(request):
             messages.error(request, 'Servicio seleccionado no existe.')
         except Exception as e:
             messages.error(request, f'Error: {e}')
+    context = {
+        'servicios': servicios,
+}
 
-    return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
+    return render(request, 'reservas/crear_cita_admin.html', context)
 
 
-
+@login_required
 def gestionar_disponibilidad_dias(request):
+    # Seguridad: Solo administradores pueden gestionar turnos masivos
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "No tienes permisos para gestionar la disponibilidad.")
+        return redirect('ver_agenda')
+
     """Muestra una lista de los próximos 14 días y si tienen turnos activos."""
     hoy = date.today()
     dias = []
@@ -426,15 +472,22 @@ def gestionar_disponibilidad_dias(request):
 
     barberos = Usuario.objects.filter(rol='barbero', estado=True)
 
-    return render(request, 'reservas/gestion_turno.html', {
-        'dias': dias,
-        'barberos': barberos,
-        'titulo': 'Gestión de Agenda por Días'
-    })
+    context = {
+    'dias': dias,
+    'barberos': barberos,
+    'titulo': 'Gestión de Agenda por Días'
+}
+
+    return render(request, 'reservas/gestion_turno.html', context)
 
 
+@login_required
 def activar_dia_agenda(request, fecha_str):
     """Crea turnos personalizados para barberos seleccionados."""
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('ver_agenda')
+
     if request.method == 'POST':
         fecha = date.fromisoformat(fecha_str)
         barbero_id = request.POST.get('barbero')
@@ -494,7 +547,12 @@ def activar_dia_agenda(request, fecha_str):
 
 
 
+@login_required
 def desactivar_dia_agenda(request, fecha_str):
+    if not (request.user.is_staff or request.user.rol == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('ver_agenda')
+
     fecha = date.fromisoformat(fecha_str)
     
     # 1. Buscamos reservas activas

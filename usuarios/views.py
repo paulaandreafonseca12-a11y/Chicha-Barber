@@ -1,66 +1,103 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import login as auth_login  # 🔥 IMPORTANTE: Para loguear automáticamente
-from .forms import RegistroForm
-from .models import Usuario
-from .forms import RegistroForm, CrearUsuarioAdminForm
-from .forms import RegistroForm, CrearUsuarioAdminForm, EditarUsuarioForm
-from django.shortcuts import get_object_or_404
-
+from django.contrib.auth import login, update_session_auth_hash
+from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.shortcuts import render
+
+from .models import Usuario
+from .forms import (
+    RegistroForm,
+    CustomLoginForm,
+    CrearUsuarioAdminForm,
+    EditarUsuarioForm,
+    EditarPerfilForm,
+    RecuperarPasswordForm,
+)
+
 from core.utils import enviar_correo_recuperacion
-from django.contrib.auth.decorators import login_required
-from .forms import RegistroForm, CrearUsuarioAdminForm, EditarUsuarioForm, EditarPerfilForm
+from core.validators import validar_password_fuerte
 from reservas.models import Reserva
 from productos.models import Compra
 from facturas.models import Factura
 
-def inicio(request):
-    return render(request, 'index.html')
 
+def inicio(request):
+
+    context = {
+        'titulo': 'Inicio',
+        'usuario': request.user
+    }
+
+    return render(request,'index.html', context)
+
+
+def login_view(request):
+    next_url = request.GET.get('next') or request.POST.get('next') or ''
+    
+    if request.user.is_authenticated:
+        return redirect('inicio')
+
+    if request.method == 'POST':
+        form = CustomLoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.success(request, f"¡Bienvenido de nuevo, {user.first_name}!")
+            if next_url:
+                return redirect(next_url)
+            return redirect('inicio')
+        else:
+            messages.error(request, "❌ Correo o contraseña incorrectos. Por favor, verifica los datos.")
+    else:
+        form = CustomLoginForm()
+        
+        context = {
+            'form': form,
+            'text': next_url,
+            'titulo': 'Iniciar Sesión'
+            }
+        return render(request,'registration/login.html',context)
 
 def registro_view(request):
-    # Capturamos la URL a la que el usuario quería ir originalmente
     next_url = request.GET.get('next') or request.POST.get('next') or ''
 
     if request.method == 'POST':
         form = RegistroForm(request.POST)
-
         if form.is_valid():
             user = form.save(commit=False)
-
-            # 🔥 FIJO: todos son cliente
+            
+            # 🔥 CORRECCIÓN: Asignamos un tema por defecto para evitar el IntegrityError (NOT NULL)
+            user.tema = 'light'
             user.rol = "cliente"
-
-            # Seguridad extra
             user.is_staff = False
             user.is_superuser = False
-
             user.save()
 
-            # 🔥 NUEVO: Iniciamos sesión automáticamente para evitar que pase por el login manual
-            auth_login(request, user)
+            # Inicio de sesión automático
+            login(request, user)
 
             messages.success(
                 request,
                 "✅ ¡Usuario registrado con éxito! Tu sesión ha sido iniciada."
             )
 
-            # 🔥 MEJORA: Si venía de una reserva, va directo a procesarla en reservas/views.py
             if next_url:
                 return redirect(next_url)
-            
-            return redirect('inicio') 
 
+            return redirect('inicio')
     else:
         form = RegistroForm()
-
-    return render(request, 'usuarios/registro.html', {
-        'form': form,
-        'next': next_url # Pasamos 'next' al template
-    })
+        
+        context = {
+            'form': form,
+            'next': next_url,
+            'titulo': 'Registro'
+            }
+        return render(request,'usuarios/registro.html',context)
 
 
 def lista_usuarios(request):
@@ -73,42 +110,74 @@ def lista_usuarios(request):
 
     usuarios = usuarios.order_by('first_name', 'last_name')
 
-    return render(request, 'usuarios/lista_usuarios.html', {
+    context = {
         'usuarios': usuarios,
-        'titulo': rol_filtro.capitalize() if rol_filtro else "Todos los Usuarios",
+
+        'titulo': (
+            rol_filtro.capitalize()
+            if rol_filtro
+            else 'Todos los Usuarios'
+        ),
+
         'total_usuarios': Usuario.objects.count(),
-        'total_clientes': Usuario.objects.filter(rol='cliente').count(),
-        'total_barberos': Usuario.objects.filter(rol='barbero').count(),
-        'total_admins':   Usuario.objects.filter(rol='admin').count(),
-    })
+
+        'total_clientes': Usuario.objects.filter(
+            rol='cliente'
+        ).count(),
+
+        'total_barberos': Usuario.objects.filter(
+            rol='barbero'
+        ).count(),
+
+        'total_admins': Usuario.objects.filter(
+            rol='admin'
+        ).count(),
+
+        'rol_filtro': rol_filtro,
+    }
+
+    return render(request, 'usuarios/lista_usuarios.html', context)
+
 
 def crear_usuario_admin(request):
+
     if request.method == 'POST':
         form = CrearUsuarioAdminForm(request.POST)
+
         if form.is_valid():
             user = form.save(commit=False)
+
+            # Asignar valores por defecto
+            user.tema = 'light'
             user.rol = form.cleaned_data['rol']
-            user.is_staff = form.cleaned_data.get('is_staff', False)
+            user.is_staff = form.cleaned_data.get(
+                'is_staff',
+                False
+            )
             user.is_superuser = False
+
             user.save()
-            messages.success(request, "✅ Usuario creado con éxito.")
-            return redirect('lista_usuarios')
+
+            messages.success(
+                request,
+                "✅ Usuario creado con éxito."
+            )
+
+            return redirect(
+                'lista_usuarios'
+            )
+
     else:
         form = CrearUsuarioAdminForm()
 
-    return render(request, 'usuarios/crear_usuario.html', {'form': form})
 
-def perfil(request):
-    if request.method == 'POST':
-        form = RegistroForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Perfil actualizado con éxito.")
-            return redirect('perfil')
-    else:
-        form = RegistroForm(instance=request.user)
-        
-    return render(request, 'private/perfil.html')
+    context = {
+        'form': form,
+        'titulo': 'Crear Usuario',
+
+    }
+    return render(request,'usuarios/crear_usuario.html',context)
+
 
 
 def cambiar_tema(request):
@@ -118,6 +187,7 @@ def cambiar_tema(request):
     user.tema = 'dark' if getattr(user, 'tema', 'light') == 'light' else 'light'
     user.save()
     return redirect(request.META.get('HTTP_REFERER', 'inicio'))
+
 
 def editar_usuario(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
@@ -130,42 +200,73 @@ def editar_usuario(request, pk):
             return redirect('lista_usuarios')
     else:
         form = EditarUsuarioForm(instance=usuario)
-
-    return render(request, 'usuarios/editar_usuario.html', {
+        
+    context = {
         'form': form,
-        'usuario': usuario
-    })
-    
+        'usuario': usuario,
+        'titulo': 'Editar Usuario'
+    }
 
+    return render(request, 'usuarios/editar_usuario.html', context)
 
 def recuperar_password_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        try:
-            usuario = Usuario.objects.get(email=email)
+        form = RecuperarPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+
+            try:
+                usuario = Usuario.objects.get(email__iexact=email)
+            except Usuario.DoesNotExist:
+                messages.error(request, "❌ No existe una cuenta registrada con ese correo.")
+                context = {
+                    'form': form,
+                    'titulo': 'Recuperar Contraseña'
+                }
+                return render(request, 'registration/recuperar.html', context)
+
             uid = urlsafe_base64_encode(force_bytes(usuario.pk))
             token = default_token_generator.make_token(usuario)
             reset_url = request.build_absolute_uri(
                 f'/recuperar/{uid}/{token}/'
             )
-            enviar_correo_recuperacion(
-                correo_cliente=usuario.email,
-                nombre=usuario.first_name,
-                reset_url=reset_url
-            )
-        except Usuario.DoesNotExist:
-            pass
-        except Exception:
-            pass  # No revelar si el correo existe o no
 
-        return redirect('password_reset_done')
+            try:
+                enviar_correo_recuperacion(
+                    correo_cliente=usuario.email,
+                    nombre=usuario.first_name,
+                    reset_url=reset_url
+                )
+            except Exception:
+                messages.error(
+                    request,
+                    "❌ No se pudo enviar el correo de recuperación. Intenta nuevamente."
+                )
+                context = {
+                    'form': form,
+                    'titulo': 'Recuperar Contraseña'
+                }
+                return render(request, 'registration/recuperar.html', context)
 
-    return render(request, 'registration/recuperar.html')
-
-
-
+            return redirect('password_reset_done')
+        else:
+            context = {
+                'form': form,
+                'titulo': 'Recuperar Contraseña'
+            }
+            return render(request, 'registration/recuperar.html', context)
+    else:
+        form = RecuperarPasswordForm()
+        context = {
+            'form': form,
+            'titulo': 'Recuperar Contraseña'
+        }
+        return render(request, 'registration/recuperar.html', context)
+    
 @login_required
 def perfil(request):
+    form = EditarPerfilForm(instance=request.user)  # valor por defecto (GET)
+
     if request.method == 'POST':
         if 'editar_perfil' in request.POST:
             form = EditarPerfilForm(request.POST, request.FILES, instance=request.user)
@@ -173,23 +274,31 @@ def perfil(request):
                 form.save()
                 messages.success(request, "✅ Perfil actualizado con éxito.")
                 return redirect('perfil')
+            else:
+                messages.error(request, "❌ Revisa los datos del formulario, hay errores.")
+                # 'form' ya quedó enlazado con los errores, no se vuelve a tocar
+
         elif 'cambiar_password' in request.POST:
-            actual = request.POST.get('password_actual')
-            nueva = request.POST.get('password_nueva')
-            confirmar = request.POST.get('password_confirmar')
+            actual = request.POST.get('password_actual', '')
+            nueva = request.POST.get('password_nueva', '')
+            confirmar = request.POST.get('password_confirmar', '')
+
             if not request.user.check_password(actual):
                 messages.error(request, "❌ La contraseña actual es incorrecta.")
             elif nueva != confirmar:
                 messages.error(request, "❌ Las contraseñas nuevas no coinciden.")
-            elif len(nueva) < 8:
-                messages.error(request, "❌ La contraseña debe tener al menos 8 caracteres.")
             else:
-                request.user.set_password(nueva)
-                request.user.save()
-                messages.success(request, "✅ Contraseña actualizada. Inicia sesión de nuevo.")
-                return redirect('login')
+                try:
+                    validar_password_fuerte(nueva)
+                    request.user.set_password(nueva)
+                    request.user.save()
+                    update_session_auth_hash(request, request.user) # Mantiene la sesión activa
+                    messages.success(request, "✅ Contraseña actualizada. Inicia sesión de nuevo.")
+                    return redirect('perfil')
+                except ValidationError as e:
+                    for error in e.messages:
+                        messages.error(request, f"❌ {error}")
 
-    form = EditarPerfilForm(instance=request.user)
     reservas = Reserva.objects.filter(cliente=request.user).order_by('-fecha_reserva')
     compras = Compra.objects.filter(correo=request.user.email).order_by('-fecha_compra')
     facturas = Factura.objects.filter(cliente=request.user).order_by('-fecha_emision')

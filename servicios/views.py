@@ -1,18 +1,15 @@
 from multiprocessing import context
 
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages # type: ignore
 from django.core.mail import send_mail
 
-from servicios.models import Calificacion
 from usuarios.forms import RegistroForm
-# Eliminados imports redundantes y corregido el import de modelos
-from .models import Servicios, Promocion 
+from usuarios.models import Usuario
+from .models import Servicios, Promocion, Calificacion
 from .forms import PromocionEditarForm, PromocionForm, ServiciosForm, ServiciosEditarForm, calificacionForm, ResponderCalificacionForm
-
-
-
 
 def servicios(request):
     servicios = Servicios.objects.all()
@@ -75,17 +72,12 @@ def login(request):
     }
     return render(request, 'login/reservas.html', context)
 
-
-
-def servicios_admin(request):
-    servicios = Servicios.objects.all()
-    context = {
-        'titulo': 'Administración de Servicios',
-        'servicios': servicios  
-    }
-    return render(request, 'servicios/listado-admin.html', context)
-
+@login_required
 def crear_servicios(request):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
+        messages.error(request, "Acceso denegado. Solo administradores.")
+        return redirect('listado-admin')
+
     if request.method == 'POST':
         form = ServiciosForm(request.POST, request.FILES)
         if form.is_valid():
@@ -133,7 +125,13 @@ def listado_promocion(request):
         'inactivas': promociones.filter(estado=False).count(),
     }
     return render(request, 'servicios/listado-promocion.html', context)
+
+@login_required
 def editar_servicios(request, pk):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-admin')
+
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
         # ERROR CORREGIDO: se debe usar 'servicio' (el objeto), no 'servicios' (la clase/modelo)
@@ -151,7 +149,12 @@ def editar_servicios(request, pk):
 
     return render(request, 'servicios/editar_servicios.html', context)
 
+@login_required
 def eliminar_servicios(request, pk):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-admin')
+
     servicio = get_object_or_404(Servicios, pk=pk)
     if request.method == 'POST':
         servicio.delete()
@@ -162,7 +165,12 @@ def eliminar_servicios(request, pk):
     }
     return render(request, 'servicios/eliminar_servicios.html', context)
 
+@login_required
 def crear_promocion(request):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-promocion')
+
     if request.method == 'POST':
         form = PromocionForm(request.POST, request.FILES)
         if form.is_valid():
@@ -180,7 +188,12 @@ def crear_promocion(request):
         'titulo': 'Crear Nueva Promoción'
     })
 
+@login_required
 def editar_promocion(request, pk):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-promocion')
+
     promocion = get_object_or_404(Promocion, pk=pk)
     if request.method == 'POST':
         form = PromocionEditarForm(request.POST, request.FILES, instance=promocion)
@@ -194,7 +207,12 @@ def editar_promocion(request, pk):
 
     return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
 
+@login_required
 def eliminar_promocion(request, pk):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == 'admin'):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-promocion')
+
     promocion = get_object_or_404(Promocion, pk=pk)
     if request.method == 'POST':
         promocion.delete()
@@ -229,18 +247,13 @@ def responder_calificacion(request, pk):
         return redirect('listado-calificacion')
 
     calificacion = get_object_or_404(Calificacion, pk=pk)
-    context = {'calificacion': calificacion}
+    form = ResponderCalificacionForm(request.POST or None)
 
     if request.method == 'POST':
-        texto_respuesta = request.POST.get('mensaje_admin')
-        
-        if not texto_respuesta:
-            messages.error(request, "La respuesta no puede estar vacía.")
-        else:
-            # Intentamos obtener un correo. 
-            # NOTA: Tu modelo Calificacion usa 'cliente' (CharField), no 'usuario'.
-            # Intentaremos buscar un usuario por ese nombre o usaremos un correo genérico si no existe.
-            from usuarios.models import Usuario
+        if form.is_valid():
+            texto_respuesta = form.cleaned_data['respuesta']
+            
+            # Buscamos el usuario por su primer nombre (según el modelo Calificacion)
             usuario = Usuario.objects.filter(first_name=calificacion.cliente).first()
             correo_destino = usuario.email if usuario else None
 

@@ -42,6 +42,7 @@
                 <input
                     type="email"
                     name="username"
+                    id="id_username"
                     class="cb-input"
                     placeholder="correo@ejemplo.com"
                     autocomplete="email"
@@ -56,6 +57,7 @@
                 <input
                     type="password"
                     name="password"
+                    id="id_password"
                     class="cb-input"
                     placeholder="••••••••"
                     autocomplete="current-password"
@@ -78,5 +80,27 @@
     </main>
 
 </div>
+
+<!-- 🔥 NUEVO: Script para evitar espacios o mayúsculas incorrectas en tiempo real -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const inputEmail = document.getElementById('id_username');
+    const inputPassword = document.getElementById('id_password');
+
+    // Control de formato para el correo
+    if (inputEmail) {
+        inputEmail.addEventListener('input', function() {
+            this.value = this.value.toLowerCase().replace(/\s/g, '');
+        });
+    }
+
+    // Control de formato para la contraseña (sin espacios accidentales)
+    if (inputPassword) {
+        inputPassword.addEventListener('input', function() {
+            this.value = this.value.replace(/\s/g, '');
+        });
+    }
+});
+</script>
 
 {% endblock content %}

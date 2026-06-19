@@ -5,7 +5,6 @@
 
 <div class="main-wrapper mx-auto">
 
-    <!-- HEADER -->
     <header class="text-center mb-4">
         <div class="logo-wrap rounded-circle overflow-hidden mx-auto mb-2">
             <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-100 h-100 object-fit-cover">
@@ -14,7 +13,6 @@
         <span class="brand-sub small text-uppercase">Studio · Nobsa</span>
     </header>
 
-    <!-- FORMULARIO -->
     <main class="form-box p-4 rounded-3">
 
         <h2 class="form-heading text-white mb-1">Crear Cuenta</h2>
@@ -32,7 +30,7 @@
         </div>
         {% endif %}
 
-        <form method="post">
+        <form method="post" id="form-registro">
             {% csrf_token %}
             
             <input type="hidden" name="next" value="{{ next }}">
@@ -81,7 +79,6 @@
                 </div>
             </div>
 
-            <!-- Rol fijo -->
             <div class="row g-3">
                 <div class="col-12">
                     <label class="form-label cb-label">Rol</label>
@@ -109,14 +106,13 @@
                 </div>
             </div>
 
-            <!-- BOTÓN -->
             <button type="submit" class="btn btn-auth w-100 mt-3">
                 REGISTRARSE
             </button>
             <p class="text-center text-white opacity-75 mt-3 small">
-    ¿Ya tienes una cuenta? 
-    <a href="{% url 'login' %}" class="text-white fw-bold">Inicia sesión</a>
-</p>
+                ¿Ya tienes una cuenta? 
+                <a href="{% url 'login' %}" class="text-white fw-bold">Inicia sesión</a>
+            </p>
 
         </form>
     </main>
@@ -125,6 +121,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Aplicación automática de clases estéticas CSS
     document.querySelectorAll("input").forEach(el => {
         if (el.type !== "text" || el.readOnly === false) {
             el.classList.add("cb-input");
@@ -133,6 +130,43 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("select").forEach(el => {
         el.classList.add("cb-input");
     });
+
+    // ==========================================
+    // CONTROL TOTAL DE ESPACIOS Y CARACTERES
+    // ==========================================
+
+    // 1. Identificar los inputs renderizados por Django usando sus atributos "name"
+    const inputDocumento = document.querySelector('input[name="username"]');
+    const inputTelefono = document.querySelector('input[name="telefono"]');
+    const inputEmail = document.querySelector('input[name="email"]');
+    const inputPassword1 = document.querySelector('input[name="password1"]');
+    const inputPassword2 = document.querySelector('input[name="password2"]');
+
+    // Restricción para Documento y Teléfono: SOLO números (elimina letras, espacios y símbolos)
+    if (inputDocumento) {
+        inputDocumento.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
+    if (inputTelefono) {
+        inputTelefono.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
+
+    // Restricción para Correo: Todo a minúsculas y elimina cualquier espacio en blanco
+    if (inputEmail) {
+        inputEmail.addEventListener('input', function() {
+            this.value = this.value.toLowerCase().replace(/\s/g, '');
+        });
+    }
+
+    // Restricción para Contraseñas: Sin espacios en blanco
+    const removerEspacios = function() {
+        this.value = this.value.replace(/\s/g, '');
+    };
+    if (inputPassword1) inputPassword1.addEventListener('input', removerEspacios);
+    if (inputPassword2) inputPassword2.addEventListener('input', removerEspacios);
 });
 </script>
 
