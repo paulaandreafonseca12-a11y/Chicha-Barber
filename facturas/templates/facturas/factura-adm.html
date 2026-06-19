@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-warning mb-0"></h2>
         <a href="{% url 'crear-factura' %}" class="btn custom-btn fw-bold px-4 py-2">
-            <i class="bi bi-plus-circle me-1"></i> Nueva Compra
+            <i class="bi bi-plus-circle me-1"></i> Nuevo de comprobante 
         </a>
     </div>
 
@@ -18,13 +18,15 @@
         <!-- Total Facturas -->
         <div class="col-md-3">
             <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex align-items-center py-3">
-                    <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3" style="width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-receipt fs-4 text-primary"></i>
+                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                    <!-- Icono a la izquierda -->
+                    <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                        <i class="bi bi-receipt fs-3 text-primary"></i>
                     </div>
-                    <div>
-                        <h6 class="text-white-50 small mb-0">Total Compras</h6>
-                        <h3 class="fw-bold mb-0" id="counter-total">0</h3>
+                    <!-- Letras y número a la derecha en horizontal -->
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <span class="text-white-50 fw-bold me-2 text-nowrap">Total comprobantes -</span>
+                        <h3 class="fw-bold mb-0 text-primary text-nowrap" id="counter-total">0</h3>
                     </div>
                 </div>
             </div>
@@ -33,13 +35,15 @@
         <!-- Pagadas -->
         <div class="col-md-3">
             <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex align-items-center py-3">
-                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3" style="width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-check-circle fs-4 text-success"></i>
+                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                    <!-- Icono a la izquierda -->
+                    <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                        <i class="bi bi-check-circle fs-3 text-success"></i>
                     </div>
-                    <div>
-                        <h6 class="text-white-50 small mb-0">Pagadas</h6>
-                        <h3 class="fw-bold mb-0" id="counter-pagadas">0</h3>
+                    <!-- Letras y número a la derecha en horizontal -->
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <span class="text-white-50 fw-bold me-2 text-nowrap">Pagadas -</span>
+                        <h3 class="fw-bold mb-0 text-success text-nowrap" id="counter-pagadas">0</h3>
                     </div>
                 </div>
             </div>
@@ -48,13 +52,15 @@
         <!-- Pendientes -->
         <div class="col-md-3">
             <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex align-items-center py-3">
-                    <div class="bg-warning bg-opacity-25 p-3 rounded-circle me-3" style="width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-clock-history fs-4 text-warning"></i>
+                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                    <!-- Icono a la izquierda -->
+                    <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                        <i class="bi bi-clock-history fs-3 text-warning"></i>
                     </div>
-                    <div>
-                        <h6 class="text-white-50 small mb-0">Pendientes</h6>
-                        <h3 class="fw-bold mb-0" id="counter-pendientes">0</h3>
+                    <!-- Letras y número a la derecha en horizontal -->
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <span class="text-white-50 fw-bold me-2 text-nowrap">Pendientes -</span>
+                        <h3 class="fw-bold mb-0 text-warning text-nowrap" id="counter-pendientes">0</h3>
                     </div>
                 </div>
             </div>
@@ -63,13 +69,15 @@
         <!-- Canceladas -->
         <div class="col-md-3">
             <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex align-items-center py-3">
-                    <div class="bg-danger bg-opacity-25 p-3 rounded-circle me-3" style="width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-x-circle fs-4 text-danger"></i>
+                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                    <!-- Icono a la izquierda -->
+                    <div class="bg-danger bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                        <i class="bi bi-x-circle fs-3 text-danger"></i>
                     </div>
-                    <div>
-                        <h6 class="text-white-50 small mb-0">Canceladas</h6>
-                        <h3 class="fw-bold mb-0" id="counter-canceladas">0</h3>
+                    <!-- Letras y número a la derecha en horizontal -->
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <span class="text-white-50 fw-bold me-2 text-nowrap">Canceladas -</span>
+                        <h3 class="fw-bold mb-0 text-danger text-nowrap" id="counter-canceladas">0</h3>
                     </div>
                 </div>
             </div>
@@ -84,13 +92,13 @@
                 <table id="tablaFacturas" class="table table-dark table-hover align-middle border-secondary mb-0 w-100" style="font-size: 0.98rem;">
                     <thead class="thead-azul">
                         <tr>
-                            <th scope="col" class="ps-4 py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 5%;">Compra</th>
+                            <th scope="col" class="ps-4 py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 5%;">Comprobante</th>
                             <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 20%;">Cliente</th>
                             <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 25%;">Detalles del Consumo</th>
                             <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Fecha</th>
                             <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Método</th>
                             <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Estado</th>
-                            <th scope="col" class="text-center py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 5%;">Comprobante</th>
+                            <th scope="col" class="text-center py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 5%;">Comprobante <br> Imagen </th>
                             <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Total</th>
                             <th scope="col" class="text-center py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 15%;">Acciones</th>
                         </tr>

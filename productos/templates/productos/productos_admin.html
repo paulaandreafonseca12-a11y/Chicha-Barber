@@ -11,54 +11,62 @@
         </a>
     </div>
 
-   <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4">
+    <!-- Total Productos -->
     <div class="col-md-4">
-        <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-            <div class="card-body d-flex align-items-center">
-                <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
+        <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
+            <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                <!-- Icono a la izquierda -->
+                <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
                     <i class="bi bi-boxes fs-3 text-primary"></i>
                 </div>
-                <div class="d-flex align-items-center">
-                    <span class="text-white-50 fw-bold me-2">Total Productos -</span>
-                    <h3 class="fw-bold mb-0">{{ total_productos|default:productos.count }}</h3>
+                <!-- Letras y número a la derecha en horizontal -->
+                <div class="d-flex align-items-center flex-nowrap">
+                    <span class="text-dark fw-bold me-2 text-nowrap">Total Productos -</span>
+                    <h3 class="fw-bold mb-0 text-primary text-nowrap">{{ total_productos|default:productos.count }}</h3>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Productos Activos -->
     <div class="col-md-4">
-        <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-            <div class="card-body d-flex align-items-center">
-                <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+        <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
+            <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                <!-- Icono a la izquierda -->
+                <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
                     <i class="bi bi-check-circle fs-3 text-success"></i>
                 </div>
-                <div class="d-flex align-items-center">
-                    <span class="text-white-50 fw-bold me-2">Productos Activos -</span>
-                    <h3 class="fw-bold mb-0">{{ activos|default:"0" }}</h3>
+                <!-- Letras y número a la derecha en horizontal -->
+                <div class="d-flex align-items-center flex-nowrap">
+                    <span class="text-dark fw-bold me-2 text-nowrap">Productos Activos -</span>
+                    <h3 class="fw-bold mb-0 text-dark text-nowrap">{{ activos|default:"0" }}</h3>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Productos Inactivos -->
     <div class="col-md-4">
-        <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-            <div class="card-body d-flex align-items-center">
-                <div class="bg-danger bg-opacity-25 p-3 rounded-circle me-3">
+        <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
+            <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                <!-- Icono a la izquierda -->
+                <div class="bg-danger bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
                     <i class="bi bi-x-circle fs-3 text-danger"></i>
                 </div>
-                <div class="d-flex align-items-center">
-                    <span class="text-white-50 fw-bold me-2">Productos Inactivos -</span>
-                    <h3 class="fw-bold mb-0">{{ inactivos|default:"0" }}</h3>
+                <!-- Letras y número a la derecha en horizontal -->
+                <div class="d-flex align-items-center flex-nowrap">
+                    <span class="text-dark fw-bold me-2 text-nowrap">Productos Inactivos -</span>
+                    <h3 class="fw-bold mb-0 text-dark text-nowrap">{{ inactivos|default:"0" }}</h3>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-    <div class="card bg-dark text-white shadow border-secondary mb-4">
+    <div class="card color-champaña text-dark shadow border-0 mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tablaProductos" class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
+                <table id="tablaProductos" class="table table-hover align-middle mb-0 w-100 text-dark">
                     <thead class="thead-azul">
                         <tr>
                             <th scope="col" class="ps-4">Código</th>
@@ -70,8 +78,8 @@
                     </thead>
                     <tbody>
                         {% for producto in productos %}
-                        <tr>
-                            <td class="ps-4 fw-bold text-info">#{{ producto.codigo }}</td>
+                        <tr class="border-dark border-opacity-10">
+                            <td class="ps-4 fw-bold text-dark">#{{ producto.codigo }}</td>
                             
                             <td>
                                 <div class="d-flex align-items-center">
@@ -79,11 +87,11 @@
                                         <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                     {% else %}
                                         <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-image text-white-50 fs-4"></i>
+                                            <i class="bi bi-image text-secondary fs-4"></i>
                                         </div>
                                     {% endif %}
                                     <div>
-                                        <h6 class="mb-0 fw-bold">{{ producto.nombre }}</h6>
+                                        <h6 class="mb-0 fw-bold text-dark">{{ producto.nombre }}</h6>
                                     </div>
                                 </div>
                             </td>
