@@ -200,7 +200,7 @@ def lista_productos_admin(request):
     productos = Producto.objects.all()
 
     context = {
-        'titulo': 'Gestión de Productos',
+        'titulo': 'Lista de Productos',
         'productos': productos,
         'total_productos': Producto.total_productos(),
         'activos': Producto.total_activos(),
