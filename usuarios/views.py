@@ -110,7 +110,7 @@ def lista_usuarios(request):
 
     usuarios = usuarios.order_by('first_name', 'last_name')
 
-    return render(request, 'usuarios/lista_usuarios.html', {
+    context = {
         'usuarios': usuarios,
 
         'titulo': (
@@ -134,9 +134,10 @@ def lista_usuarios(request):
         ).count(),
 
         'rol_filtro': rol_filtro,
-    } )
+    }
 
-    return render(request,'usuarios/lista_usuarios.html',context)
+    return render(request, 'usuarios/lista_usuarios.html', context)
+
 
 def crear_usuario_admin(request):
 
@@ -213,7 +214,16 @@ def recuperar_password_view(request):
         form = RecuperarPasswordForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
-            usuario = Usuario.objects.get(email__iexact=email)
+
+            try:
+                usuario = Usuario.objects.get(email__iexact=email)
+            except Usuario.DoesNotExist:
+                messages.error(request, "❌ No existe una cuenta registrada con ese correo.")
+                context = {
+                    'form': form,
+                    'titulo': 'Recuperar Contraseña'
+                }
+                return render(request, 'registration/recuperar.html', context)
 
             uid = urlsafe_base64_encode(force_bytes(usuario.pk))
             token = default_token_generator.make_token(usuario)
@@ -232,18 +242,27 @@ def recuperar_password_view(request):
                     request,
                     "❌ No se pudo enviar el correo de recuperación. Intenta nuevamente."
                 )
-                return render(request, 'registration/recuperar.html', {'form': form})
+                context = {
+                    'form': form,
+                    'titulo': 'Recuperar Contraseña'
+                }
+                return render(request, 'registration/recuperar.html', context)
 
             return redirect('password_reset_done')
+        else:
+            context = {
+                'form': form,
+                'titulo': 'Recuperar Contraseña'
+            }
+            return render(request, 'registration/recuperar.html', context)
     else:
         form = RecuperarPasswordForm()
-        
-        context={
-            'form':form,
-            'titulo':'Recuperar Contraseña'
-}
-        return render(request,'registration/recuperar.html', context)
-        
+        context = {
+            'form': form,
+            'titulo': 'Recuperar Contraseña'
+        }
+        return render(request, 'registration/recuperar.html', context)
+    
 @login_required
 def perfil(request):
     form = EditarPerfilForm(instance=request.user)  # valor por defecto (GET)
