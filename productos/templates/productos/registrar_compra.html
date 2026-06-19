@@ -1,26 +1,45 @@
 {% extends 'base-admin.html' %} z{% block content %}
-<div class="container mt-4 pt-5" style="max-width: 700px">
-  
-  {% if messages %} 
-    {% for msg in messages %}
-      <div class="alert alert-warning border-0">{{ msg }}</div>
-    {% endfor %} 
-  {% endif %}
+<div class="container mt-4 mb-5" style="max-width: 700px">
+  <style>
+    .registrar-compra-form .form-control,
+    .registrar-compra-form .form-select,
+    .registrar-compra-form textarea {
+      background-color: #ffffff !important;
+      color: #212529 !important;
+      border-color: #ced4da !important;
+    }
 
-  <div class="card bg-dark text-secondary border-secondary shadow">
-    
-    <div class="card-header d-flex justify-content-between align-items-center border-bottom border-secondary" style="background-color: #07d2ff;">
+    .registrar-compra-form .form-control::placeholder,
+    .registrar-compra-form .form-select {
+      color: #6c757d !important;
+    }
+  </style>
+  {% if messages %} {% for msg in messages %}
+  <div class="alert alert-warning border-0">{{ msg }}</div>
+  {% endfor %} {% endif %}
+
+  <div class="card color-champaña text-dark border-0 shadow-sm overflow-hidden">
+    <div
+      class="card-header d-flex justify-content-between align-items-center border-bottom border-secondary bg-transparent"
+    >
       <span class="fw-bold text-dark">
         <i class="bi bi-person-fill me-2"></i>Registrar Nueva Compra
       </span>
-      
-      <a href="{% url 'historial_compras' %}" class="btn btn-sm btn-outline-dark fw-bold border-0">
+
+      <a
+        href="{% url 'historial_compras' %}"
+        class="btn btn-sm btn-outline-dark fw-bold border-0"
+      >
         <i class="bi bi-arrow-left me-1"></i>Volver
       </a>
     </div>
 
-    <div class="card-body p-4">
-      <form method="POST" action="{% url 'registrar_compra' %}">
+    <div class="card-body p-4 bg-white">
+      <form
+        class="registrar-compra-form"
+        method="POST"
+        action="{% url 'registrar_compra' %}"
+      >
         {% csrf_token %}
 
         <div class="mb-3">
@@ -44,7 +63,7 @@
           {{ form_compra.metodo_pago }}
         </div>
 
-        <hr class="border-secondary my-4">
+        <hr class="border-secondary my-4" />
 
         <div class="mb-3">
           <label class="form-label fw-bold small">Producto</label>
@@ -56,10 +75,16 @@
         </div>
 
         <div class="d-flex gap-3 mt-4">
-          <a href="{% url 'historial_compras' %}" class="btn btn-outline-secondary w-50 fw-bold">
+          <a
+            href="{% url 'historial_compras' %}"
+            class="btn btn-outline-secondary w-50 fw-bold"
+          >
             <i class="bi bi-x-circle me-1"></i>Cancelar
           </a>
-          <button type="submit" class="btn fw-bold text-white w-50 border-0" style="background-color: #07d2ff;">
+          <button
+            type="submit"
+            class="btn color-champaña text-dark fw-bold w-50 border-0"
+          >
             <i class="bi bi-save me-1"></i>Guardar Registro
           </button>
         </div>

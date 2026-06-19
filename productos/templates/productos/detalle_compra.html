@@ -1,130 +1,233 @@
-{% extends 'base-admin.html' %}
-
+{% extends 'base-admin.html' %} 
 {% block content %}
 <div class="container-fluid py-4 min-vh-100">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold text-dark">
             
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="fw-bold text-white">{{ titulo }} #{{ compra.codigo_compra }}</h2>
-                    <p class="text-white-50">Visualiza la información detallada de esta transacción.</p>
-                </div>
-                <a href="{% url 'historial_compras' %}" class="btn btn-outline-info fw-bold rounded-pill px-4">
-                    <i class="bi bi-arrow-left me-2"></i>Volver al Historial
-                </a>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-secondary h-100 bg-dark text-white">
-                        <div class="card-header py-3 border-secondary" style="background-color: #07d2ff;">
-                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-person-circle me-2"></i>Datos del Cliente</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label class="text-white-50 small d-block">Nombre completo</label>
-                                <span class="fw-bold">{{ compra.nombre_cliente }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="text-white-50 small d-block">Correo electrónico</label>
-                                <span>{{ compra.correo|default:"No especificado" }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="text-white-50 small d-block">Teléfono</label>
-                                <span>{{ compra.telefono|default:"No especificado" }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="text-white-50 small d-block">Dirección de entrega</label>
-                                <span>{{ compra.direccion|default:"No especificada" }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="text-white-50 small d-block">Método de pago</label>
-                                <span class="badge bg-secondary text-white">{{ compra.metodo_pago|default:"No especificado" }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <label class="text-white-50 small d-block">Fecha de compra</label>
-                                <span>{{ compra.fecha_compra|date:"d/m/Y H:i" }}</span>
-                            </div>
-
-                            <hr class="border-secondary">
-
-                            <div class="mt-4">
-                                <h6 class="fw-bold text-info mb-3"><i class="bi bi-truck me-2"></i>Gestión de Entrega</h6>
-                                
-                                <div id="form-entrega" class="{% if compra.fecha_entrega %}d-none{% endif %}">
-                                    <label class="text-white-50 small">Método de entrega</label>
-                                    <select id="metodo_final" class="form-select form-select-sm mb-2 bg-dark text-white border-secondary">
-                                        <option value="Pago en Local">Pago en Local</option>
-                                        <option value="Contraentrega">Contraentrega</option>
-                                    </select>
-
-                                    <label class="text-white-50 small">Observaciones</label>
-                                    <textarea id="observaciones_entrega" class="form-control form-control-sm mb-2 bg-dark text-white border-secondary" rows="2"></textarea>
-
-                                    <button type="button" onclick="registrarEntrega()" class="btn btn-info fw-bold btn-sm w-100 mb-3 border-0">
-                                        MARCAR COMO ENTREGADO
-                                    </button>
-                                </div>
-
-                                <div id="log-entrega" class="p-3 border border-secondary rounded bg-secondary bg-opacity-10 {% if not compra.fecha_entrega %}d-none{% endif %}">
-                                    <p class="mb-1 small"><strong>Estado:</strong> <span class="text-success">Entregado</span></p>
-                                    <p class="mb-1 small"><strong>Vía:</strong> <span id="historial-metodo">{{ compra.metodo_logistica|default:"" }}</span></p>
-                                    <p class="mb-1 small"><strong>Hora:</strong> <br><span id="historial-hora" class="text-info fw-bold">{{ compra.fecha_entrega|date:"d/m/Y H:i:s" }}</span></p>
-                                    <p class="mb-2 small"><strong>Obs:</strong> <br><span id="historial-obs" class="text-white-50 small">{{ compra.observaciones|default:"Sin observaciones" }}</span></p>
-                                    
-                                    <div class="d-flex gap-2 mt-2">
-                                        <button class="btn btn-outline-light btn-sm flex-fill" onclick="editarEntrega()"><i class="bi bi-pencil"></i></button>
-                                        <button class="btn btn-outline-danger btn-sm flex-fill" onclick="eliminarEntrega()"><i class="bi bi-trash"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer border-secondary py-3 bg-dark mt-auto rounded-bottom">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-uppercase small">Total Pagado:</span>
-                                <h4 class="mb-0 fw-bold text-info">${{ total_calculado }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-8">
-                    <div class="card shadow-sm border-secondary h-100 bg-dark text-white">
-                        <div class="card-header py-3 border-secondary" style="background-color: #07d2ff;">
-                            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-box-seam me-2"></i>Productos Comprados</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-dark table-hover align-middle mb-0">
-                                    <thead class="border-secondary">
-                                        <tr>
-                                            <th class="ps-4 border-secondary text-info small">CÓDIGO</th>
-                                            <th class="border-secondary text-info small">PRODUCTO</th>
-                                            <th class="border-secondary text-info small">PRECIO UNIT.</th>
-                                            <th class="border-secondary text-info small text-center">CANT.</th>
-                                            <th class="text-end pe-4 border-secondary text-info small">SUBTOTAL</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for detalle in detalles %}
-                                        <tr>
-                                            <td class="ps-4 text-white-50 small">#{{ detalle.producto.codigo }}</td>
-                                            <td class="fw-bold">{{ detalle.producto.nombre }}</td>
-                                            <td>${{ detalle.producto.precio_venta }}</td>
-                                            <td class="text-center"><span class="badge bg-secondary">{{ detalle.cantidad }}</span></td>
-                                            <td class="text-end pe-4 fw-bold text-info">${{ detalle.subtotal }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </h2>
+          <p class="text-dark small opacity-75">
+           
+          </p>
         </div>
+        <a
+          href="{% url 'historial_compras' %}"
+          class="btn color-champaña fw-bold"
+        >
+          Volver al Historial
+        </a>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div
+            class="card color-champaña text-dark border-0 shadow-sm h-100 overflow-hidden"
+          >
+            <div class="card-header py-3 border-0 bg-transparent">
+              <h5 class="mb-0 fw-bold text-dark">
+                <i class="bi bi-person-circle me-2"></i>Datos del Cliente
+              </h5>
+            </div>
+            <div class="card-body bg-white">
+              <div class="mb-3">
+                <label class="text-dark small d-block">Nombre completo</label>
+                <span class="fw-bold text-dark"
+                  >{{ compra.nombre_cliente }}</span
+                >
+              </div>
+              <div class="mb-3">
+                <label class="text-dark small d-block"
+                  >Correo electrónico</label
+                >
+                <span class="text-dark"
+                  >{{ compra.correo|default:"No especificado" }}</span
+                >
+              </div>
+              <div class="mb-3">
+                <label class="text-dark small d-block">Teléfono</label>
+                <span class="text-dark"
+                  >{{ compra.telefono|default:"No especificado" }}</span
+                >
+              </div>
+              <div class="mb-3">
+                <label class="text-dark small d-block"
+                  >Dirección de entrega</label
+                >
+                <span class="text-dark"
+                  >{{ compra.direccion|default:"No especificada" }}</span
+                >
+              </div>
+              <div class="mb-3">
+                <label class="text-dark small d-block">Método de pago</label>
+                <span class="badge bg-secondary text-dark"
+                  >{{ compra.metodo_pago|default:"No especificado" }}</span
+                >
+              </div>
+              <div class="mb-3">
+                <label class="text-dark small d-block">Fecha de compra</label>
+                <span class="text-dark"
+                  >{{ compra.fecha_compra|date:"d/m/Y H:i" }}</span
+                >
+              </div>
+
+              <hr class="border-secondary" />
+
+              <div class="mt-4">
+                <h6 class="fw-bold text-dark mb-3">
+                  <i class="bi bi-truck me-2"></i>Gestión de Entrega
+                </h6>
+
+                <div
+                  id="form-entrega"
+                  class="{% if compra.fecha_entrega %}d-none{% endif %}"
+                >
+                  <label class="text-dark small">Método de entrega</label>
+                  <select
+                    id="metodo_final"
+                    class="form-select form-select-sm mb-2 bg-white text-dark border-secondary"
+                  >
+                    <option value="Pago en Local">Pago en Local</option>
+                    <option value="Contraentrega">Contraentrega</option>
+                  </select>
+
+                  <label class="text-dark small">Observaciones</label>
+                  <textarea
+                    id="observaciones_entrega"
+                    class="form-control form-control-sm mb-2 bg-white text-dark border-secondary"
+                    rows="2"
+                  ></textarea>
+
+                  <button
+                    type="button"
+                    onclick="registrarEntrega()"
+                    class="btn color-champaña text-dark fw-bold btn-sm w-100 mb-3 border-0"
+                  >
+                    MARCAR COMO ENTREGADO
+                  </button>
+                </div>
+
+                <div
+                  id="log-entrega"
+                  class="p-3 border border-secondary rounded bg-secondary bg-opacity-10 {% if not compra.fecha_entrega %}d-none{% endif %}"
+                >
+                  <p class="mb-1 small">
+                    <strong>Estado:</strong>
+                    <span class="text-success">Entregado</span>
+                  </p>
+                  <p class="mb-1 small">
+                    <strong>Vía:</strong>
+                    <span id="historial-metodo" class="text-dark"
+                      >{{ compra.metodo_logistica|default:"" }}</span
+                    >
+                  </p>
+                  <p class="mb-1 small">
+                    <strong>Hora:</strong> <br /><span
+                      id="historial-hora"
+                      class="text-dark fw-bold"
+                      >{{ compra.fecha_entrega|date:"d/m/Y H:i:s" }}</span
+                    >
+                  </p>
+                  <p class="mb-2 small">
+                    <strong>Obs:</strong> <br /><span
+                      id="historial-obs"
+                      class="text-dark small"
+                      >{{ compra.observaciones|default:"Sin observaciones"
+                      }}</span
+                    >
+                  </p>
+
+                  <div class="d-flex gap-2 mt-2">
+                    <button
+                      class="btn btn-outline-secondary btn-sm flex-fill text-dark"
+                      onclick="editarEntrega()"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button
+                      class="btn btn-outline-danger btn-sm flex-fill"
+                      onclick="eliminarEntrega()"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="card-footer border-secondary py-3 bg-dark mt-auto rounded-bottom"
+            >
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-uppercase small">Total Pagado:</span>
+                <h4 class="mb-0 fw-bold text-info">${{ total_calculado }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div
+            class="card color-champaña text-dark border-0 shadow-sm h-100 overflow-hidden"
+          >
+            <div class="card-header py-3 border-0 bg-transparent">
+              <h5 class="mb-0 fw-bold text-dark">
+                <i class="bi bi-box-seam me-2"></i>Productos Comprados
+              </h5>
+            </div>
+            <div class="card-body p-0 bg-white">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="border-secondary bg-light">
+                    <tr>
+                      <th class="ps-4 border-secondary text-dark small">
+                        CÓDIGO
+                      </th>
+                      <th class="border-secondary text-dark small">PRODUCTO</th>
+                      <th class="border-secondary text-dark small">
+                        PRECIO UNIT.
+                      </th>
+                      <th class="border-secondary text-dark small text-center">
+                        CANT.
+                      </th>
+                      <th
+                        class="text-end pe-4 border-secondary text-dark small"
+                      >
+                        SUBTOTAL
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for detalle in detalles %}
+                    <tr>
+                      <td class="ps-4 text-dark small">
+                        #{{ detalle.producto.codigo }}
+                      </td>
+                      <td class="fw-bold text-dark">
+                        {{ detalle.producto.nombre }}
+                      </td>
+                      <td class="text-dark">
+                        ${{ detalle.producto.precio_venta }}
+                      </td>
+                      <td class="text-center">
+                        <span class="badge bg-secondary text-dark"
+                          >{{ detalle.cantidad }}</span
+                        >
+                      </td>
+                      <td class="text-end pe-4 fw-bold text-dark">
+                        ${{ detalle.subtotal }}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

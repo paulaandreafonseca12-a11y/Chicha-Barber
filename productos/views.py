@@ -8,6 +8,7 @@ from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm
 from django.http import JsonResponse
 import json
 from django.db import transaction
+from django.db.models import Sum
 from core.utils import enviar_correo_compra
 from facturas.models import Factura, DetalleFactura
 
@@ -270,13 +271,18 @@ def eliminar_producto(request, pk):
 def lista_stock(request):
     stocks = Stock.objects.select_related('producto')
 
+    stock_total = stocks.aggregate(total=Sum('cantidad'))['total'] or 0
+    valor_stock = sum((stock.cantidad or 0) * (stock.producto.precio_venta or 0) for stock in stocks)
+
     context = {
         'titulo': 'Stock de Productos',
         'stocks': stocks,
         'total_productos': stocks.count(),
+        'stock_total': stock_total,
         'stock_critico': stocks.filter(cantidad__lte=5).count(),
         'stock_bajo': stocks.filter(cantidad__gt=5, cantidad__lte=10).count(),
         'stock_optimo': stocks.filter(cantidad__gt=10).count(),
+        'valor_stock': valor_stock,
     }
 
     return render(request, 'productos/stock_admin.html', context)

@@ -1,45 +1,48 @@
-{% extends 'base-admin.html' %} 
-{% load static %}
-
-{% block content %}
-<div class="container-fluid py-5">
+{% extends 'base-admin.html' %} {% load static %} {% block content %}
+<div class="container mt-4 mb-5">
   <div class="row justify-content-center">
-    <div class="col-md-6" style="max-width: 600px;">
-
-      <div class="card bg-dark text-white border-secondary shadow">
-        
-        <div class="card-header text-white py-3 border-0" style="background-color: #07d2ff;">
-          <h5 class="mb-0 fw-bold text-white">
+    <div class="col-md-6" style="max-width: 600px">
+      <div
+        class="card color-champaña text-dark border-0 shadow-sm overflow-hidden"
+      >
+        <div class="card-header py-3 border-0 bg-transparent">
+          <h5 class="mb-0 fw-bold text-dark">
             <i class="bi bi-box-seam me-2"></i>Actualizar Cantidad
           </h5>
         </div>
 
-        <div class="card-body p-4">
+        <div class="card-body p-4 bg-white">
           <form method="POST">
             {% csrf_token %}
 
             <div class="mb-4">
-              <label class="text-white-50 small d-block mb-1">Producto</label>
-              <span class="fw-bold text-white h5">{{ stock.producto.nombre }}</span>
+              <label class="text-dark small d-block mb-1">Producto</label>
+              <span class="fw-bold text-dark h5"
+                >{{ stock.producto.nombre }}</span
+              >
               <hr class="border-secondary my-3" />
             </div>
 
             <div class="mb-4">
-              <label class="form-label fw-bold text-white-50 small text-uppercase">Cantidad en Inventario</label>
+              <label class="form-label fw-bold text-dark small text-uppercase"
+                >Cantidad en Inventario</label
+              >
               <div class="input-group">
-                <span class="input-group-text bg-dark text-white border-secondary">
-                  <i class="bi bi-hash" style="color: #07d2ff;"></i>
+                <span
+                  class="input-group-text bg-white text-dark border-secondary"
+                >
+                  <i class="bi bi-hash" style="color: #b48b64"></i>
                 </span>
                 <input
                   type="number"
                   name="cantidad"
                   value="{{ stock.cantidad }}"
-                  class="form-control bg-dark text-white border-secondary"
+                  class="form-control bg-white text-dark border-secondary"
                   placeholder="0"
                   required
                 />
               </div>
-              <div class="form-text text-white-50 small mt-2">
+              <div class="form-text text-dark small mt-2">
                 Ingrese el número total de unidades disponibles.
               </div>
             </div>
@@ -47,14 +50,13 @@
             <div class="d-flex gap-3 mt-4">
               <a
                 href="{% url 'lista_productos_admin' %}"
-                class="btn btn-outline-secondary text-white border-secondary w-50"
+                class="btn btn-outline-secondary text-dark border-secondary w-50"
               >
                 <i class="bi bi-x-circle me-1"></i>Cancelar
               </a>
               <button
                 type="submit"
-                class="btn fw-bold text-white w-50"
-                style="background-color: #07d2ff;"
+                class="btn color-champaña text-dark fw-bold w-50"
               >
                 <i class="bi bi-save me-1"></i>Guardar Cambios
               </button>
