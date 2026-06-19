@@ -401,11 +401,19 @@ def crear_reserva_admin(request):
 
         if not (nombre and correo and telefono and fecha_reserva_raw and servicio_id):
             messages.error(request, 'Todos los campos son obligatorios.')
-            return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
+        context = {
+            'servicios': servicios,
+        }
+        return render(request, 'reservas/crear_cita_admin.html', context)
+        
         fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
         if fecha_reserva is None:
             messages.error(request, 'Fecha de cita inválida.')
-            return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
+        
+        context = {
+            'servicios': servicios,}
+        return render(request, 'reservas/crear_cita_admin.html', context)   
+    
         try:
             with transaction.atomic():
                 servicio = Servicios.objects.get(id=servicio_id)

@@ -1,3 +1,5 @@
+from multiprocessing import context
+
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -65,7 +67,10 @@ def registro(request, servicio_pk):
 
 
 def login(request):
-    return render(request, 'login/reservas.html')
+    context = {
+        'titulo': 'Iniciar Sesión'
+    }
+    return render(request, 'login/reservas.html', context)
 
 @login_required
 def crear_servicios(request):
@@ -85,7 +90,7 @@ def crear_servicios(request):
     else:
         form = ServiciosForm()
     
-    return render(request, 'servicios/agregar_servicios.html', {
+    return (request, 'servicios/agregar_servicios.html', {
         'form': form, 
         'titulo': 'Crear Nuevo Servicio'
     })
@@ -155,7 +160,10 @@ def eliminar_servicios(request, pk):
         servicio.delete()
         messages.success(request, 'Servicio eliminado.')
         return redirect('listado-admin')
-    return render(request, 'servicios/eliminar_servicios.html', {'servicio': servicio})
+    context = {
+        'servicio': servicio
+    }
+    return (request, 'servicios/eliminar_servicios.html', context)
 
 @login_required
 def crear_promocion(request):
@@ -175,7 +183,7 @@ def crear_promocion(request):
     else:
         form = PromocionForm()
     
-    return render(request, 'servicios/agregar_promocion.html', {
+    return (request, 'servicios/agregar_promocion.html', {
         'form': form, 
         'titulo': 'Crear Nueva Promoción'
     })
@@ -197,7 +205,7 @@ def editar_promocion(request, pk):
         # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
         form = PromocionEditarForm(instance=promocion)
 
-    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
+    return (request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
 
 @login_required
 def eliminar_promocion(request, pk):
@@ -210,7 +218,7 @@ def eliminar_promocion(request, pk):
         promocion.delete()
         messages.success(request, 'Promoción eliminada.')
         return redirect('listado-promocion')
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
+    return (request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
 
 def calificacion_view(request):
     calificaciones = Calificacion.objects.all()
@@ -226,11 +234,11 @@ def listado_calificacion(request):
         'titulo': 'Listado de Calificaciones',
         'calificaciones': calificaciones,
         'total_calificaciones': calificaciones.count(),
-       
+        'titulo': 'Listado de Calificaciones'
         
         
     }
-    return render(request, 'servicios/listado-calificacion.html', context)
+    return (request, 'servicios/listado-calificacion.html', context)
 
 def responder_calificacion(request, pk):
     # Seguridad: Solo administradores
@@ -290,4 +298,9 @@ def eliminar_calificacion(request, pk):
         calificacion.delete()
         messages.success(request, 'Calificación eliminada.')
         return redirect('listado-calificacion')
-    return render(request, 'servicios/eliminar_calificacion.html', {'calificacion': calificacion})
+    
+    context = {
+        'calificacion': calificacion,
+        'titulo': f'Eliminar calificación de {calificacion.cliente}'
+    }
+    return (request, 'servicios/eliminar_calificacion.html', context)

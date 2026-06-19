@@ -1,10 +1,46 @@
 
 /* ── COLORES ── */
-.color-champaña { background-color: #eee0cb !important; }
+/* Solo aplica champaña si el modo claro está activo */
+body.theme-light .color-champaña { background-color: #eee0cb !important; }
 .color-azul  { background-color: #22aed1 !important; }
 .color-azuloscuro   { background-color: #2b50aa !important; }
 .color-negro{ background-color: #170212!important; }
 .color-blanco { background-color: #ffffff !important; }
+
+/* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
+.theme-switch-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin: 10px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #eee0cb;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-switch-item:hover {
+  background: rgba(75, 192, 217, 0.1);
+  border-color: #4bc0d9;
+}
+
+.theme-switch-item i {
+  font-size: 1.1rem;
+  color: #22aed1;
+}
+
+body.theme-light .theme-switch-item {
+  background: #eee0cb;
+  border-color: rgba(141, 129, 140, 0.3);
+  color: #030301;
+}
+
+body.theme-light .theme-switch-item i {
+  color: #c47a2c;
+}
 
 
 /* ── FONDO GENERAL ── */
@@ -500,6 +536,13 @@ select.cb-input {
    TEMA CLARO (PALETA DE COLORES RESTRINGIDA)
    ========================================================================== */
 
+/* Estilo base para secciones que alternan color según el tema */
+.themed-section {
+    background-color: rgba(33, 37, 41, 0.75); /* Equivalente a bg-dark bg-opacity-75 */
+    color: #ffffff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* Fondo general de la página en claro (Fondo Blanco Estático) */
 body.theme-light {
   background-image: none !important;
@@ -515,6 +558,12 @@ body.theme-light hr {
 /* Ocultar decoraciones de fondo en modo claro para un fondo blanco puro */
 body.theme-light .background-decor {
   display: none !important;
+}
+
+/* Ajuste de secciones en modo claro */
+body.theme-light .themed-section {
+    background-color: #f8f9fa !important;
+    color: #030301 !important;
 }
 
 /* Sobrescribir textos de color claro a negro de la paleta */
@@ -540,16 +589,34 @@ body.theme-light .text-body {
 }
 
 /* Cajas, Tarjetas, Formularios, Acordeones en color blanco/claro */
-body.theme-light .card,
 body.theme-light .form-box,
 body.theme-light .p-4.rounded-4.shadow-sm,
 body.theme-light aside,
-body.theme-light .booking-card,
 body.theme-light .step-item .step-circle {
   background-color: #ffffff !important;
   color: #030301 !important;
   border-color: rgba(141, 129, 140, 0.3) !important; /* Borde gris de la paleta #8d818c */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Aplicar champaña a TODAS las tarjetas y sus partes (Inicio, Panel, etc) solo en modo claro */
+body.theme-light .card,
+body.theme-light .booking-card,
+body.theme-light .card-header,
+body.theme-light .card-footer,
+body.theme-light .modal-content {
+  background-color: #eee0cb !important;
+  color: #030301 !important;
+  border-color: rgba(141, 129, 140, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Tarjeta blanca en el hero (ajuste para modo claro) - 
+   Si quieres que estas también sean champaña, cambia #ffffff por #eee0cb */
+body.theme-light .color-blanco {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Sobrescribir subtextos en light mode */
@@ -575,6 +642,22 @@ body.theme-light .table-dark {
   --bs-table-hover-bg: rgba(34, 174, 209, 0.08) !important; /* Azul de la paleta en hover */
 }
 
+/* Forzar fondo blanco en contenedores de tablas y DataTables */
+body.theme-light .dt-container,
+body.theme-light .dataTables_wrapper,
+body.theme-light .table-responsive {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+}
+
+/* Forzar transparencia o color champaña en card-body para evitar parches blancos */
+body.theme-light .card-body {
+  background-color: #eee0cb !important;
+  color: #030301 !important;
+  border-radius: 0 0 15px 15px;
+}
+
+
 /* Cabecera azul para ambos modos */
 .thead-azul {
   --bs-table-bg: #22aed1 !important;
@@ -587,6 +670,20 @@ body.theme-light .table-dark {
 }
 
 /* ── ESTILOS DATATABLES PERSONALIZADOS ── */
+
+/* MODO CLARO: Forzar tablas blancas */
+body.theme-light .table-dark {
+  --bs-table-bg: #ffffff !important;
+  --bs-table-color: #030301 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.theme-light .table-dark tbody tr,
+body.theme-light .table-dark td,
+body.theme-light .table-dark th {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+}
 
 /* 1. MODO OSCURO (Predeterminado o body.theme-dark) */
 body.theme-dark .dt-paging .pagination .page-link,
@@ -602,9 +699,9 @@ body.theme-dark .dt-paging .pagination .page-link:hover,
 body.theme-dark .dataTables_paginate .pagination .page-link:hover,
 .dt-paging .pagination .page-link:hover,
 .dataTables_paginate .pagination .page-link:hover {
-  background-color: #c47a2c !important; /* Naranja de la paleta */
+  background-color: #eee0cb !important; /* Naranja de la paleta */
   color: #ffffff !important;
-  border-color: #c47a2c !important;
+  border-color: #eee0cb !important;
 }
 
 body.theme-dark .dt-paging .pagination .page-item.active .page-link,
@@ -944,15 +1041,46 @@ body.theme-light .btn-outline-info:hover {
 
 /* ── ESTILOS ESPECÍFICOS PARA VISTAS DE ADMINISTRACIÓN EN MODO CLARO ── */
 body.theme-light .card.bg-dark,
-body.theme-light .modal-content.bg-dark {
-  background-color: #ffffff !important;
-  border-color: rgba(141, 129, 140, 0.3) !important;
-}
+body.theme-light .modal-content.bg-dark,
 body.theme-light .card.bg-dark .card-header,
+body.theme-light .card.bg-dark .card-body,
 body.theme-light .modal-content.bg-dark .modal-header {
-  background-color: #f8f9fa !important; /* Light grey header */
+  background-color: #eee0cb !important; /* Mantener champaña en tarjetas admin */
+  border-color: rgba(141, 129, 140, 0.3) !important;
+  color: #030301 !important;
+}
+
+body.theme-light .card.bg-dark .text-info,
+body.theme-light .card.bg-dark .text-white-50 {
+  color: #2ca3c4 !important; /* Usar azul de la paleta para resaltar etiquetas */
+}
+
+body.theme-light .modal-header {
+  background-color: rgba(0, 0, 0, 0.05) !important;
   border-bottom-color: rgba(141, 129, 140, 0.2) !important;
 }
+
+/* Inputs específicos del panel admin (como en crear_cita_admin.html) */
+body.theme-light .custom-dark-input {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(141, 129, 140, 0.4) !important;
+  color: #030301 !important;
+}
+
+body.theme-light .custom-dark-input::placeholder {
+  color: #8d818c !important;
+}
+
+body.theme-light .custom-dark-input:focus {
+  border-color: #4bc0d9 !important;
+  box-shadow: 0 0 0 0.25rem rgba(75, 192, 217, 0.25) !important;
+}
+
+body.theme-light .custom-dark-input option {
+  background-color: #ffffff;
+  color: #030301;
+}
+
 body.theme-light .table.table-dark {
   --bs-table-bg: #ffffff !important;
   --bs-table-color: #030301 !important;
@@ -981,11 +1109,11 @@ body.theme-light .table.table-dark .badge.bg-primary {
   color: #ffffff !important;
 }
 body.theme-light .table.table-dark .badge.bg-secondary {
-  background-color: #e9ecef !important; /* Light grey for secondary badge */
+  background-color: #eee0cb !important; /* Light grey for secondary badge */
   color: #495057 !important;
 }
 body.theme-light .table.table-dark .badge.bg-warning {
-  background-color: #ffc107 !important;
+  background-color: #22aed1 !important;
   color: #030301 !important;
 }
 body.theme-light .table.table-dark .bg-secondary.bg-opacity-10 {
@@ -1011,11 +1139,11 @@ body.theme-light .table.table-dark .btn-outline-info:hover {
   color: #ffffff !important;
 }
 body.theme-light .table.table-dark .btn-outline-success {
-  border-color: #28a745 !important;
-  color: #28a745 !important;
+  border-color: #22aed1 !important;
+  color: #eee0cb !important;
 }
 body.theme-light .table.table-dark .btn-outline-success:hover {
-  background-color: #28a745 !important;
+  background-color: #22aed1 !important;
   color: #ffffff !important;
 }
 body.theme-light .table.table-dark .btn-outline-primary {
@@ -1089,6 +1217,23 @@ body.theme-light .flatpickr-time .flatpickr-am-pm {
 body.theme-light .flatpickr-time .numInputWrapper span.arrowUp:after,
 body.theme-light .flatpickr-time .numInputWrapper span.arrowDown:after {
   border-color: #030301 !important;
+}
+
+/* Iconos y controles de carrusel en modo claro */
+body.theme-light .carousel-control-prev-icon,
+body.theme-light .carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  filter: invert(1);
+}
+
+body.theme-light .carousel-indicators [data-bs-target] {
+  background-color: #030301 !important;
+}
+
+/* Transiciones suaves para todos los elementos al cambiar de tema */
+body, section, div, h1, h2, h3, h4, h5, h6, p, span, a, .card, .navbar {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 /* Remove specific dark theme for flatpickr as we're defining light theme */
