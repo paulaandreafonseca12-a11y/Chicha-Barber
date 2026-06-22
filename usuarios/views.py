@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.shortcuts import render
 
-from .models import Usuario
+from .models import Usuario, RegistroActividad
 from .forms import (
     RegistroForm,
     CustomLoginForm,
@@ -23,7 +23,7 @@ from core.validators import validar_password_fuerte
 from reservas.models import Reserva
 from productos.models import Compra
 from facturas.models import Factura
-
+from datetime import datetime, timedelta
 
 def inicio(request):
 
@@ -140,44 +140,29 @@ def lista_usuarios(request):
 
 
 def crear_usuario_admin(request):
-
     if request.method == 'POST':
         form = CrearUsuarioAdminForm(request.POST)
-
         if form.is_valid():
             user = form.save(commit=False)
-
-            # Asignar valores por defecto
             user.tema = 'light'
             user.rol = form.cleaned_data['rol']
-            user.is_staff = form.cleaned_data.get(
-                'is_staff',
-                False
-            )
+            user.is_staff = form.cleaned_data.get('is_staff', False)
             user.is_superuser = False
-
             user.save()
 
-            messages.success(
-                request,
-                "✅ Usuario creado con éxito."
+            RegistroActividad.objects.create(
+                usuario=request.user,
+                tipo='usuario',
+                descripcion=f'Creó el usuario "{user.get_full_name()}" con rol {user.get_rol_display()}'
             )
 
-            return redirect(
-                'lista_usuarios'
-            )
-
+            messages.success(request, "✅ Usuario creado con éxito.")
+            return redirect('lista_usuarios')
     else:
         form = CrearUsuarioAdminForm()
 
-
-    context = {
-        'form': form,
-        'titulo': 'Crear Usuario',
-
-    }
-    return render(request,'usuarios/crear_usuario.html',context)
-
+    context = {'form': form, 'titulo': 'Crear Usuario'}
+    return render(request, 'usuarios/crear_usuario.html', context)
 
 
 def cambiar_tema(request):
@@ -196,17 +181,21 @@ def editar_usuario(request, pk):
         form = EditarUsuarioForm(request.POST, instance=usuario)
         if form.is_valid():
             form.save()
+            RegistroActividad.objects.create(
+                usuario=request.user,
+                tipo='usuario',
+                descripcion=f'Editó el usuario "{usuario.get_full_name()}"'
+            )
             messages.success(request, f"✅ Usuario {usuario.get_full_name()} actualizado con éxito.")
             return redirect('lista_usuarios')
     else:
         form = EditarUsuarioForm(instance=usuario)
-        
+
     context = {
         'form': form,
         'usuario': usuario,
         'titulo': 'Editar Usuario'
     }
-
     return render(request, 'usuarios/editar_usuario.html', context)
 
 def recuperar_password_view(request):
@@ -263,6 +252,7 @@ def recuperar_password_view(request):
         }
         return render(request, 'registration/recuperar.html', context)
     
+
 @login_required
 def perfil(request):
     form = EditarPerfilForm(instance=request.user)  # valor por defecto (GET)
@@ -272,11 +262,15 @@ def perfil(request):
             form = EditarPerfilForm(request.POST, request.FILES, instance=request.user)
             if form.is_valid():
                 form.save()
+                RegistroActividad.objects.create(
+                    usuario=request.user,
+                    tipo='usuario',
+                    descripcion='Actualizó su perfil'
+                )
                 messages.success(request, "✅ Perfil actualizado con éxito.")
                 return redirect('perfil')
             else:
                 messages.error(request, "❌ Revisa los datos del formulario, hay errores.")
-                # 'form' ya quedó enlazado con los errores, no se vuelve a tocar
 
         elif 'cambiar_password' in request.POST:
             actual = request.POST.get('password_actual', '')
@@ -292,7 +286,12 @@ def perfil(request):
                     validar_password_fuerte(nueva)
                     request.user.set_password(nueva)
                     request.user.save()
-                    update_session_auth_hash(request, request.user) # Mantiene la sesión activa
+                    update_session_auth_hash(request, request.user)
+                    RegistroActividad.objects.create(
+                        usuario=request.user,
+                        tipo='sesion',
+                        descripcion='Cambió su contraseña'
+                    )
                     messages.success(request, "✅ Contraseña actualizada. Inicia sesión de nuevo.")
                     return redirect('perfil')
                 except ValidationError as e:
@@ -309,4 +308,8 @@ def perfil(request):
         'compras': compras,
         'facturas': facturas,
     }
+
+    if request.user.rol == 'admin':
+        context['actividades'] = RegistroActividad.objects.all()[:20]
+
     return render(request, 'private/perfil.html', context)

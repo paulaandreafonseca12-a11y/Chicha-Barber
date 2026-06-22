@@ -121,16 +121,6 @@
           </button>
         </div>
         <div class="col-4">
-          {% if user.rol == 'admin' %}
-          <a
-            href="{% url 'inicio_admin' %}"
-            class="btn w-100 py-3 rounded-4 d-flex flex-column align-items-center gap-2 text-decoration-none"
-            style="background: #fff; border: 1px solid #dee2e6"
-          >
-            <i class="bi bi-speedometer2 fs-4" style="color: #dc3545"></i>
-            <span class="small fw-semibold text-dark">Panel Admin</span>
-          </a>
-          {% else %}
           <button
             type="button"
             class="btn w-100 py-3 rounded-4 d-flex flex-column align-items-center gap-2"
@@ -138,10 +128,9 @@
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasHistorial"
           >
-            <i class="bi bi-clock-history fs-4" style="color: {% if user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}"></i>
-            <span class="small fw-semibold text-dark">Historial</span>
+            <i class="bi bi-clock-history fs-4" style="color: {% if user.rol == 'admin' %}#dc3545{% elif user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}"></i>
+            <span class="small fw-semibold text-dark">{% if user.rol == 'admin' %}Historial de actividad{% else %}Historial{% endif %}</span>
           </button>
-          {% endif %}
         </div>
       </div>
 
@@ -262,15 +251,57 @@
   </div>
 </div>
 
-<!-- OFFCANVAS: Historial (solo clientes y barberos) -->
-{% if user.rol != "admin" %}
+{% if user.rol == "admin" %}
+<!-- OFFCANVAS: Historial de actividad (admin) -->
+<div
+  class="offcanvas offcanvas-end"
+  tabindex="-1"
+  id="offcanvasHistorial"
+  style="width: 480px"
+>
+  <div class="offcanvas-header text-white" style="background: #dc3545">
+    <h5 class="offcanvas-title">
+      <i class="bi bi-clock-history me-2"></i>Historial de actividad
+    </h5>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="offcanvas"
+    ></button>
+  </div>
+  <div class="offcanvas-body">
+    {% if actividades %}
+    <div class="list-group list-group-flush">
+      {% for actividad in actividades %}
+      <div class="list-group-item border-0 border-bottom px-0 py-3">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <span class="fw-semibold d-block">{{ actividad.descripcion }}</span>
+            <small class="text-muted">
+              <i class="bi bi-calendar me-1"></i>{{ actividad.fecha|date:"d/m/Y H:i" }}
+            </small>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-clock-history text-muted" style="font-size: 3rem"></i>
+      <p class="text-muted mt-3">Aún no hay actividad registrada.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<!-- OFFCANVAS: Historial (clientes y barberos) -->
 <div
   class="offcanvas offcanvas-end"
   tabindex="-1"
   id="offcanvasHistorial"
   style="width: 800px"
 >
-  <div class="offcanvas-header text-white" style="background: {% if user.rol == 'admin' %}#dc3545{% elif user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}">
+  <div class="offcanvas-header text-white" style="background: {% if user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}">
     <h5 class="offcanvas-title">
       <i class="bi bi-clock-history me-2"></i>Mi Historial
     </h5>
@@ -290,7 +321,7 @@
           data-bs-target="#tabReservas"
         >
           <i class="bi bi-calendar-check me-1"></i>Reservas
-          <span class="badge rounded-pill ms-1" style="background: {% if user.rol == 'admin' %}#dc3545{% elif user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}"
+          <span class="badge rounded-pill ms-1" style="background: {% if user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}"
             >{{ reservas.count }}</span
           >
         </button>
