@@ -241,9 +241,9 @@
           <div class="card-body">
             <div
               class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm"
-              style="width: 65px; height: 65px; border: 2px solid #d4bc8a"
+              style="width: 65px; height: 65px; border: 2px solid #eee0cb"
             >
-              <i class="bi bi-chat-quote-fill fs-3" style="color: #d4bc8a"></i>
+              <i class="bi bi-chat-quote-fill fs-3" style="color: #eee0cb"></i>
             </div>
             <h5
               class="fw-bold mb-1"
@@ -251,7 +251,7 @@
             >
               {{ testimonio.servicio.nombre }}
             </h5>
-            <div class="mb-3" style="color: #d4bc8a">
+            <div class="mb-3" style="color: #eee0cb">
               {% for i in "12345"|make_list %}
               <i class="bi bi-star-fill"></i>
               {% endfor %}
@@ -264,10 +264,20 @@
             </p>
           </div>
         </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="opacity-50">Aún no hay reseñas disponibles. ¡Sé el primero en calificarnos!</p>
+        </div>
+       
+    </div>
+  </div>
+</section>
       </div>
-      {% empty %}
-      <div class="col-12 text-center">
-        <p class="opacity-50">Aún no hay reseñas disponibles. ¡Sé el primero en calificarnos!</p>
+    
+      <div class="col-12 text-center text-light">
+        <p class="text-body">
+          Pronto verás aquí lo que opinan nuestros clientes.
+        </p>
       </div>
       {% endfor %}
     </div>
