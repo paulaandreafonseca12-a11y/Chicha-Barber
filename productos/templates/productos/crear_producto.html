@@ -1,68 +1,80 @@
-{% extends "base-admin.html" %}
-
+{% extends "base-admin.html" %} 
+{% load static crispy_forms_tags %} 
 {% block content %}
 <div class="container-fluid py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-7 col-md-9">
-            <div class="card shadow-sm border-0 mb-4">
-                
-                <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="mb-0 fw-bold text-center">
-                        {% if form.instance.pk %}
-                            ✏️ Editar Producto
-                        {% else %}
-                            ✨ Crear Nuevo Producto
-                        {% endif %}
-                    </h5>
-                </div>
-                
-                <div class="card-body p-4">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            {{ form.nombre|as_crispy_field }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.descripcion|as_crispy_field }}
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form.precio_venta|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form.precio_compra|as_crispy_field }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-8 mb-3">
-                                {{ form.imagen|as_crispy_field }}
-                            </div>
-                            {% if form.stock %}
-                            <div class="col-md-4 mb-3">
-                                {{ form.stock|as_crispy_field }}
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <hr class="my-4 text-secondary opacity-25">
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-secondary px-4">
-                                Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-primary px-4">
-                                {% if form.instance.pk %}Actualizar Producto{% else %}Guardar Producto{% endif %}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+      <div
+        class="card color-champaña text-dark border-0 shadow-sm overflow-hidden mb-4"
+      >
+        <div class="card-header py-3 border-0 bg-transparent">
+          <h5 class="mb-0 fw-bold text-center text-dark">
+            {% if form.instance.pk %} ✏️ Editar Producto {% else %}  Crear
+            Nuevo Producto {% endif %}
+          </h5>
         </div>
+
+        <div class="card-body p-4 bg-white">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">{{ form.nombre|as_crispy_field }}</div>
+
+            <div class="mb-3">{{ form.descripcion|as_crispy_field }}</div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                {{ form.precio_venta|as_crispy_field }}
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ form.precio_compra|as_crispy_field }}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-8 mb-3">{{ form.imagen|as_crispy_field }}</div>
+              {% if form.stock %}
+              <div class="col-md-4 mb-3">{{ form.stock|as_crispy_field }}</div>
+              {% endif %}
+            </div>
+
+            <hr class="my-4 text-secondary opacity-25" />
+
+            <div class="d-flex justify-content-end gap-2">
+              <a
+                href="{% url 'lista_productos_admin' %}"
+                class="btn btn-outline-secondary text-dark border-secondary px-4"
+              >
+                Cancelar
+              </a>
+              <button
+                type="submit"
+                class="btn color-azul text-dark fw-bold px-4"
+              >
+                {% if form.instance.pk %}Actualizar Producto{% else %}Guardar
+                Producto{% endif %}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
+<style>
+  .card-body.bg-white .form-control,
+  .card-body.bg-white .form-select,
+  .card-body.bg-white .form-check-input,
+  .card-body.bg-white .form-range {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ced4da !important;
+  }
+  .card-body.bg-white .form-control:focus,
+  .card-body.bg-white .form-select:focus {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+  }
+</style>
 {% endblock %}
