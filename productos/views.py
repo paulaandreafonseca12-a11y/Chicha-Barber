@@ -227,7 +227,7 @@ def crear_producto(request):
         'form': form
     }
 
-    return render(request, 'productos/editar_producto.html', context)
+    return render(request, 'productos/crear_producto.html', context)
 
 
 def editar_producto(request, pk):
