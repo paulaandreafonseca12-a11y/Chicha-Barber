@@ -17,7 +17,7 @@
             <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light rounded-pill px-3 py-2 fw-semibold">
               <i class="bi bi-calendar-event me-2 text-warning"></i>Ver Agenda
             </a>
-            <a href="{% url 'crear_reserva_directa' %}" class="btn btn-warning rounded-pill px-3 py-2 text-dark fw-bold color-azul" style="background-color: #f5a623; border: none;">
+            <a href="{% url 'servicios' %}" class="btn color-azul rounded-pill px-3 py-2 text-white fw-bold border-0">
               <i class="bi bi-plus-circle me-2"></i>Nueva Reserva
             </a>
           </div>
@@ -105,10 +105,10 @@
     
     <!-- Reservas Recientes -->
     <div class="col-lg-8">
-      <div class="card border-0 rounded-4 h-100 shadow-sm" style="background:  color-blanco; border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+      <div class="card border-0 rounded-4 h-100 shadow-sm color-blanco" style="border: 1px solid rgba(255, 255, 255, 0.07) !important;">
         <div class="card-header bg-transparent border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
           <h5 class="fw-bold mb-0 text-black"><i class="bi bi-clock-history me-2 text-black"></i>Reservas Recientes</h5>
-          <a href="{% url 'ver_agenda' %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">Ver todas</a>
+          <a href="{% url 'ver_agenda' %}" class="btn btn-sm rounded-pill px-3" style="border: 1px solid #2b50aa; color: #2b50aa; background-color: transparent;">Ver todas</a>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
@@ -220,10 +220,10 @@
   <!-- SECCIÓN DE FACTURAS RECIENTES -->
   <div class="row">
     <div class="col-12">
-      <div class="card border-0 rounded-4 shadow-sm" style="background: rgba(20, 24, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+      <div class="card border-0 rounded-4 shadow-sm color-blanco" style="border: 1px solid rgba(255, 255, 255, 0.07) !important;">
         <div class="card-header bg-transparent border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
-          <h5 class="fw-bold mb-0 text-white"><i class="bi bi-receipt me-2 text-warning"></i>Facturas y Ventas Recientes</h5>
-          <a href="{% url 'factura_adm' %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">Ver todas</a>
+          <h5 class="fw-bold mb-0 text-black"><i class="bi bi-receipt me-2 text-warning"></i>Facturas y Ventas Recientes</h5>
+          <a href="{% url 'factura_adm' %}" class="btn btn-sm rounded-pill px-3" style="border: 1px solid #2b50aa; color: #2b50aa; background-color: transparent;">Ver todas</a>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
