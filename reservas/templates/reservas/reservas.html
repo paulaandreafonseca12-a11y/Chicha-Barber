@@ -1,130 +1,38 @@
 {% extends "base-clientes.html" %}
 {% load static %}
+
+{% block styles %}
+  <!-- Hereda los estilos globales y asegura la prioridad en cascada de las variables de reservas -->
+  <link rel="stylesheet" href="{% static 'css/tu_archivo_principal.css' %}">
+{% endblock %}
+
 {% block content %}
+<div class="booking-wrap position-relative d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 90px 16px 40px;">
+  
+  <!-- Contenedor Principal Oscuro / Claro Adaptativo -->
+  <div class="dark-barber-card p-4 p-md-5 w-100 position-relative" style="max-width: 800px;">
+    
+    <!-- Barra superior de luces neón decorativa -->
+    <div style="height: 5px; width: 100%; position: absolute; top: 0; left: 0; border-top-left-radius: 16px; border-top-right-radius: 16px; background: linear-gradient(90deg, var(--accent-azul), var(--accent-oscuro));"></div>
 
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap');
-
-  .booking-wrap {
-    --bg-card: #1a1612;
-    --bg-input: #221d18;
-    --bg-input-hover: #2a241d;
-    --accent: #c89b4d;
-    --accent-bright: #e3b768;
-    --accent-soft: rgba(200, 155, 77, 0.12);
-    --text-primary: #f3ead9;
-    --text-muted: #9c9186;
-    --border-subtle: #332c24;
-    --stripe-red: #7a3030;
-    --stripe-cream: #e9dfc9;
-    --stripe-navy: #1f2a3a;
-    font-family: 'Work Sans', sans-serif;
-  }
-
-  .booking-card { background: var(--bg-card); border: 1px solid var(--border-subtle); position: relative; overflow: hidden; }
-
-  .barber-stripe {
-    height: 7px; width: 100%; position: absolute; top: 0; left: 0;
-    background: repeating-linear-gradient(45deg,
-      var(--stripe-red) 0px, var(--stripe-red) 10px,
-      var(--stripe-cream) 10px, var(--stripe-cream) 20px,
-      var(--stripe-navy) 20px, var(--stripe-navy) 30px);
-  }
-
-  .ticket-eyebrow {
-    font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 3px;
-    font-size: .72rem; color: var(--accent); font-weight: 600;
-  }
-
-  .step-label {
-    font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1.5px;
-    font-size: .85rem; color: var(--text-primary); display: flex; align-items: center;
-    gap: .65rem; font-weight: 600;
-  }
-
-  .step-badge {
-    width: 28px; height: 28px; border: 1.5px dashed var(--accent); border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--accent-bright); flex-shrink: 0;
-  }
-
-  .choice-card {
-    background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 10px;
-    color: var(--text-muted); cursor: pointer; transition: background .15s ease, border-color .15s ease, color .15s ease;
-  }
-  .choice-card:hover { background: var(--bg-input-hover); border-color: #4a3f30; }
-  .btn-check:checked + .choice-card {
-    background: var(--accent-soft); border-color: var(--accent); color: var(--text-primary);
-    box-shadow: 0 0 0 1px var(--accent) inset;
-  }
-  .btn-check:focus-visible + .choice-card { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
-
-  .form-control-barber {
-    background: var(--bg-input) !important; border: 1px solid var(--border-subtle) !important; color: var(--text-primary) !important;
-  }
-  .form-control-barber::placeholder { color: var(--text-muted); }
-  .form-control-barber:focus {
-    border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important;
-    background: var(--bg-input) !important; color: var(--text-primary) !important;
-  }
-
-  .btn-confirm {
-    background: linear-gradient(135deg, var(--accent-bright), var(--accent)); color: #1a1410; border: none;
-    font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; border-radius: 8px;
-    transition: transform .12s ease, box-shadow .12s ease;
-  }
-  .btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(200, 155, 77, .3); color: #1a1410; }
-  .btn-confirm:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 3px; }
-
-  .account-box { background: #110f0c; border: 1px solid var(--border-subtle); border-radius: 8px; }
-
-  .copy-btn {
-    background: transparent; border: 1px solid var(--border-subtle); color: var(--accent);
-    border-radius: 6px; padding: .35rem .6rem; font-size: .75rem; cursor: pointer; transition: all .15s ease; white-space: nowrap;
-  }
-  .copy-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
-
-  .file-drop {
-    background: var(--bg-input); border: 1.5px dashed var(--border-subtle); border-radius: 8px;
-    cursor: pointer; transition: border-color .15s ease, background .15s ease;
-  }
-  .file-drop:hover { border-color: var(--accent); background: var(--bg-input-hover); }
-  .file-drop.has-file { border-color: var(--accent); background: var(--accent-soft); color: var(--text-primary) !important; }
-
-  .alert-barber {
-    background: rgba(122, 48, 48, .14); border: 1px solid var(--stripe-red); color: #e3bcbc;
-    border-radius: 8px; padding: .75rem 1rem; font-size: .9rem;
-  }
-
-  #turnos-container::-webkit-scrollbar { width: 6px; }
-  #turnos-container::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 4px; }
-  #turnos-container::-webkit-scrollbar-track { background: transparent; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .choice-card, .btn-confirm, .file-drop, .copy-btn { transition: none; }
-  }
-</style>
-
-<div class="booking-wrap position-relative d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 80px 16px 40px">
-  <div class="booking-card p-4 p-md-5 w-100" style="max-width: 800px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);">
-    <div class="barber-stripe"></div>
-
-    <div class="text-center mb-2">
-      <span class="ticket-eyebrow">Turno online · Barbería</span>
+    <div class="text-center mb-2 mt-2">
+      <span class="text-uppercase fw-bold text-accent" style="font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: .75rem;">Turno online · Barbería</span>
     </div>
-    <h2 class="text-center fw-bold mb-2" style="font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 2px; color: var(--text-primary);">
+    
+    <!-- Título principal -->
+    <h2 class="text-center fw-bold mb-2 text-brand-title" style="font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 2px;">
       Reserva tu Cita
     </h2>
-    <p class="text-center mb-5" style="color: var(--text-muted); font-size: .95rem;">
+    <p class="text-center mb-5 text-custom-muted" style="font-size: .95rem;">
       Elige a tu barbero, el horario que más te acomode y confirma en minutos.
     </p>
 
     {% if promo %}
     <div class="d-flex justify-content-center mb-4">
-      <div class="d-inline-flex align-items-center px-4 py-2 rounded-3" style="background: var(--accent-soft); border: 1px solid var(--accent); color: var(--accent-bright);">
-        <i class="bi bi-check2-circle me-2"></i>
+      <div class="d-inline-flex align-items-center px-4 py-2 rounded-3" style="background: rgba(34, 174, 209, 0.08); border: 1px solid rgba(34, 174, 209, 0.3); color: var(--color-champaña);">
+        <i class="bi bi-check2-circle me-2 fs-5" style="color: var(--accent-azul);"></i>
         <span>Promoción aplicada: <strong>{{ promo }}</strong></span>
-        <a href="{% url 'promocion' %}" class="ms-3 text-decoration-none" style="color: var(--text-muted); font-size: 0.75rem">(Cambiar)</a>
+        <a href="{% url 'promocion' %}" class="ms-3 text-decoration-none fw-bold text-custom-muted" style="font-size: 0.75rem">(Cambiar)</a>
       </div>
     </div>
     {% endif %}
@@ -132,43 +40,51 @@
     <form method="POST" action="{{ action_url }}" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <div class="mb-4">
-        <label class="step-label mb-3"><span class="step-badge">1</span> Selecciona tu barbero</label>
+      <!-- PASO 1: BARBEROS -->
+      <div class="mb-5">
+        <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
+          <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">1</span> 
+          Selecciona tu barbero
+        </label>
 
         <div class="row g-2" id="barberos-container">
           <div class="col-6 col-sm-4 col-md-3">
             <input type="radio" class="btn-check" name="barbero_id" id="barbero-any" value="any" checked onchange="filterTurnos()" />
-            <label class="choice-card w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-any">
-              <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px; background: var(--bg-input); border: 2px solid var(--border-subtle);">
-                <i class="bi bi-people fs-3" style="color: var(--text-muted);"></i>
+            <label class="choice-card-dark rounded-3 w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-any">
+              <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
+                <i class="bi bi-people fs-3 text-accent"></i>
               </div>
-              <span class="fw-bold lh-sm" style="font-size: 0.85rem">Cualquiera disponible</span>
+              <span class="fw-bold lh-sm" style="font-size: 0.85rem;">Cualquiera disponible</span>
             </label>
           </div>
 
           {% for barbero in barberos %}
           <div class="col-6 col-sm-4 col-md-3">
             <input type="radio" class="btn-check" name="barbero_id" id="barbero-{{ barbero.id }}" value="{{ barbero.id }}" onchange="filterTurnos()" />
-            <label class="choice-card w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-{{ barbero.id }}">
+            <label class="choice-card-dark rounded-3 w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-{{ barbero.id }}">
               {% if barbero.foto_perfil %}
-              <img src="{{ barbero.foto_perfil.url }}" class="rounded-circle mb-2 object-fit-cover" style="width: 65px; height: 65px; border: 2px solid var(--border-subtle);" alt="{{ barbero.get_full_name }}" />
+              <img src="{{ barbero.foto_perfil.url }}" class="rounded-circle mb-2 object-fit-cover" style="width: 65px; height: 65px; border: 1px solid rgba(255,255,255,0.15);" alt="{{ barbero.get_full_name }}" />
               {% else %}
-              <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px; background: var(--bg-input); border: 2px solid var(--border-subtle);">
-                <i class="bi bi-person fs-3" style="color: var(--text-muted);"></i>
+              <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
+                <i class="bi bi-person fs-3 text-accent"></i>
               </div>
               {% endif %}
-              <span class="fw-bold lh-sm text-truncate w-100" style="font-size: 0.85rem">{{ barbero.get_full_name }}</span>
+              <span class="fw-bold lh-sm text-truncate w-100" style="font-size: 0.85rem;">{{ barbero.get_full_name }}</span>
             </label>
           </div>
           {% endfor %}
         </div>
       </div>
 
-      <div class="mb-4">
-        <label class="step-label mb-3"><span class="step-badge">2</span> Selecciona un turno disponible</label>
+      <!-- PASO 2: TURNOS -->
+      <div class="mb-5">
+        <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
+          <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">2</span> 
+          Selecciona un turno disponible
+        </label>
 
         {% if not turnos_disponibles %}
-        <div class="alert-barber">
+        <div class="p-3 text-center rounded-3 fw-bold alert-barber">
           No hay turnos disponibles para los próximos días.
         </div>
         {% else %}
@@ -176,14 +92,14 @@
           {% for turno in turnos_disponibles %}
           <div class="col-12 col-sm-6 col-md-4 turno-item" data-barbero="{{ turno.profesional.id }}">
             <input type="radio" class="btn-check" name="turno_id" id="turno-{{ turno.id }}" value="{{ turno.id }}" required />
-            <label class="choice-card w-100 h-100 text-start p-3 d-flex flex-column justify-content-center" for="turno-{{ turno.id }}">
-              <div class="fw-bold mb-1" style="font-size: 0.9rem">
+            <label class="choice-card-dark rounded-3 w-100 text-start p-3 d-flex flex-column justify-content-center" for="turno-{{ turno.id }}">
+              <div class="fw-bold mb-1 text-time-date" style="font-size: 0.9rem;">
                 {{ turno.fecha|date:"l, d M" }}
               </div>
-              <div class="fs-4 mb-1" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; color: var(--text-primary);">
+              <div class="fs-4 mb-1 fw-bold text-brand-title" style="letter-spacing: 1px;">
                 {{ turno.hora_inicio|time:"H:i" }}
               </div>
-              <small class="mt-auto" style="font-size: 0.8rem; color: var(--text-muted);">{{ turno.profesional.get_full_name }}</small>
+              <small class="mt-auto opacity-75 text-custom-muted" style="font-size: 0.8rem;">{{ turno.profesional.get_full_name }}</small>
             </label>
           </div>
           {% endfor %}
@@ -191,8 +107,12 @@
         {% endif %}
       </div>
 
-      <div class="mb-4">
-        <label class="step-label mb-3"><span class="step-badge">3</span> Tus datos de contacto</label>
+      <!-- PASO 3: CONTACTO -->
+      <div class="mb-5">
+        <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
+          <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">3</span> 
+          Tus datos de contacto
+        </label>
         <div class="row g-3">
           <div class="col-md-6">
             <input name="nombre_cliente" type="text" class="form-control form-control-lg form-control-barber" placeholder="Nombre completo" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" />
@@ -201,52 +121,57 @@
             <input name="correo_cliente" type="email" class="form-control form-control-lg form-control-barber" placeholder="Correo electrónico" required value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" />
           </div>
           <div class="col-md-12">
-            <input name="telefono_cliente" type="tel" class="form-control form-control-lg form-control-barber" placeholder="Número de celular (ej. 3001234567)" required />
+            <input name="telefono_cliente" type="tel" class="form-control form-control-lg form-control-barber" placeholder="Número de celular" required />
           </div>
         </div>
       </div>
 
+      <!-- PASO 4: PAGO -->
       <div class="mb-4">
-        <label class="step-label mb-3"><span class="step-badge">4</span> Selecciona el medio de pago</label>
+        <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
+          <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">4</span> 
+          Selecciona el medio de pago
+        </label>
         <div class="row g-3">
           <div class="col-6">
             <input type="radio" class="btn-check" name="medio_pago" id="pago-persona" value="presencial" checked required onchange="toggleTransferenciaDetails()" />
-            <label class="choice-card w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-persona">
-              <i class="bi bi-cash-coin fs-3 mb-2"></i>
-              <span class="fw-bold" style="font-size: 0.9rem">Pago en Persona</span>
+            <label class="choice-card-dark rounded-3 w-100 py-3 d-flex flex-column align-items-center justify-content-center text-center" for="pago-persona">
+              <i class="bi bi-cash-coin fs-3 mb-2 text-accent"></i>
+              <span class="fw-bold" style="font-size: 0.9rem;">Pago en Persona</span>
             </label>
           </div>
           <div class="col-6">
             <input type="radio" class="btn-check" name="medio_pago" id="pago-transferencia" value="transferencia" required onchange="toggleTransferenciaDetails()" />
-            <label class="choice-card w-100 py-3 d-flex flex-column align-items-center justify-content-center" for="pago-transferencia">
-              <i class="bi bi-bank fs-3 mb-2"></i>
-              <span class="fw-bold" style="font-size: 0.9rem">Transferencia</span>
+            <label class="choice-card-dark rounded-3 w-100 py-3 d-flex flex-column align-items-center justify-content-center text-center" for="pago-transferencia">
+              <i class="bi bi-bank fs-3 mb-2 text-accent"></i>
+              <span class="fw-bold" style="font-size: 0.9rem;">Transferencia</span>
             </label>
           </div>
         </div>
       </div>
 
-      <div id="detalles-transferencia" class="mb-4 p-3 account-box d-none">
-        <h6 class="fw-bold mb-3" style="color: var(--accent);"><i class="bi bi-info-circle me-2"></i>Cuentas disponibles para transferencia</h6>
+      <!-- DETALLES TRANSFERENCIA -->
+      <div id="detalles-transferencia" class="mb-4 p-3 rounded-3 border d-none" style="background: rgba(0, 0, 0, 0.2); border-color: rgba(43, 80, 170, 0.4) !important;">
+        <h6 class="fw-bold mb-3 text-brand-title"><i class="bi bi-info-circle me-2"></i>Cuentas bancarias</h6>
         <div class="row g-3 mb-3" style="font-size: 0.9rem;">
           <div class="col-sm-6">
-            <div class="p-2 account-box d-flex justify-content-between align-items-center">
+            <div class="p-3 border rounded-3 d-flex justify-content-between align-items-center" style="background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05) !important;">
               <div>
-                <span class="ticket-eyebrow d-block mb-1">Nequi</span>
-                <span class="fs-5 fw-bold" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; color: var(--text-primary);">300 123 4567</span>
+                <span class="d-block mb-1 text-uppercase fw-bold text-accent" style="font-size: 0.7rem; letter-spacing: 1px;">Nequi</span>
+                <span class="fs-5 fw-bold text-white">300 123 4567</span>
               </div>
-              <button type="button" class="copy-btn" onclick="copyToClipboard('3001234567', this)" aria-label="Copiar número de Nequi">
+              <button type="button" class="btn btn-sm btn-outline-info" onclick="copyToClipboard('3001234567', this)">
                 <i class="bi bi-clipboard"></i>
               </button>
             </div>
           </div>
           <div class="col-sm-6">
-            <div class="p-2 account-box d-flex justify-content-between align-items-center">
+            <div class="p-3 border rounded-3 d-flex justify-content-between align-items-center" style="background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05) !important;">
               <div>
-                <span class="ticket-eyebrow d-block mb-1">Bancolombia (Ahorros)</span>
-                <span class="fs-5 fw-bold" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; color: var(--text-primary);">123-456789-01</span>
+                <span class="d-block mb-1 text-uppercase fw-bold text-accent" style="font-size: 0.7rem; letter-spacing: 1px;">Bancolombia</span>
+                <span class="fs-5 fw-bold text-white">123-456789-01</span>
               </div>
-              <button type="button" class="copy-btn" onclick="copyToClipboard('12345678901', this)" aria-label="Copiar número de cuenta Bancolombia">
+              <button type="button" class="btn btn-sm btn-outline-info" onclick="copyToClipboard('12345678901', this)">
                 <i class="bi bi-clipboard"></i>
               </button>
             </div>
@@ -254,15 +179,15 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-bold" style="color: var(--text-primary);"><i class="bi bi-hash me-2"></i>Número de transacción o referencia</label>
+          <label class="form-label fw-bold text-white"><i class="bi bi-hash me-2"></i>Número de transacción o referencia</label>
           <input type="text" name="id_transaccion" id="id_transaccion" class="form-control form-control-barber" placeholder="Ej: 1234567890" />
         </div>
 
         <div>
-          <label class="form-label fw-bold" style="color: var(--text-primary);"><i class="bi bi-cloud-arrow-up me-2"></i>Comprobante de pago</label>
-          <label for="comprobante" class="file-drop d-flex align-items-center justify-content-between p-3" id="file-drop-label" style="color: var(--text-muted);">
-            <span id="comprobante-filename"><i class="bi bi-paperclip me-2"></i>Toca para subir una imagen o PDF</span>
-            <span class="ticket-eyebrow" style="font-size: 0.65rem; letter-spacing: 1px;">Elegir archivo</span>
+          <label class="form-label fw-bold text-white"><i class="bi bi-cloud-arrow-up me-2"></i>Comprobante de pago</label>
+          <label for="comprobante" class="form-control form-control-barber d-flex align-items-center justify-content-between p-3" id="file-drop-label" style="cursor: pointer;">
+            <span id="comprobante-filename" class="text-custom-muted"><i class="bi bi-paperclip me-2"></i>Sube una imagen o PDF</span>
+            <span class="badge text-uppercase p-2" style="background: var(--accent-oscuro); color:#fff; font-size: 0.65rem;">Elegir</span>
           </label>
           <input type="file" name="comprobante" id="comprobante" accept="image/*,application/pdf" class="visually-hidden" onchange="updateFileName(this)" />
         </div>
@@ -274,12 +199,10 @@
     </form>
   </div>
 </div>
-
 {% endblock %}
 
 {% block scripts %}
 <script>
-  // Asegura el filtrado de turnos y estado inicial de los campos de pago al cargar la página
   document.addEventListener("DOMContentLoaded", function() {
     filterTurnos();
     toggleTransferenciaDetails();
@@ -299,9 +222,7 @@
       } else {
         turno.style.display = "none";
         const radio = turno.querySelector('input[type="radio"]');
-        if (radio && radio.checked) {
-          radio.checked = false;
-        }
+        if (radio && radio.checked) radio.checked = false;
       }
     });
 
@@ -314,21 +235,17 @@
       if (!noResultsMsg) {
         noResultsMsg = document.createElement("div");
         noResultsMsg.id = "no-turnos-msg";
-        noResultsMsg.className = "col-12 alert-barber text-center mt-3";
-        noResultsMsg.setAttribute("aria-live", "polite");
+        noResultsMsg.className = "col-12 p-3 text-center rounded-3 fw-bold mt-3 alert-barber";
         noResultsMsg.innerText = "No hay turnos disponibles para este barbero.";
         container.appendChild(noResultsMsg);
       } else {
         noResultsMsg.style.display = "block";
       }
-    } else {
-      if (noResultsMsg) {
-        noResultsMsg.style.display = "none";
-      }
+    } else if (noResultsMsg) {
+      noResultsMsg.style.display = "none";
     }
   }
 
-  // Muestra u oculta los campos de transferencia y maneja el atributo 'required'
   function toggleTransferenciaDetails() {
     const contenedorDetalles = document.getElementById("detalles-transferencia");
     const radioTransferencia = document.getElementById("pago-transferencia");
@@ -349,29 +266,25 @@
     }
   }
 
-  // Actualiza el texto del selector de archivo personalizado con el nombre del comprobante elegido
   function updateFileName(input) {
     const label = document.getElementById("file-drop-label");
     const span = document.getElementById("comprobante-filename");
     if (!label || !span) return;
 
     if (input.files && input.files.length > 0) {
-      span.innerHTML = '<i class="bi bi-file-earmark-check me-2"></i>' + input.files[0].name;
-      label.classList.add("has-file");
+      span.innerHTML = '<i class="bi bi-file-earmark-check me-2 text-success"></i>' + input.files[0].name;
+      span.style.setProperty("color", "#ffffff", "important");
     } else {
-      span.innerHTML = '<i class="bi bi-paperclip me-2"></i>Toca para subir una imagen o PDF';
-      label.classList.remove("has-file");
+      span.innerHTML = '<i class="bi bi-paperclip me-2"></i>Sube una imagen o PDF';
+      span.style.color = "var(--text-muted)";
     }
   }
 
-  // Copia un número de cuenta al portapapeles y da feedback visual breve en el botón
   function copyToClipboard(text, btn) {
     navigator.clipboard.writeText(text).then(() => {
       const original = btn.innerHTML;
-      btn.innerHTML = '<i class="bi bi-check2"></i>';
+      btn.innerHTML = '<i class="bi bi-check2 text-success"></i>';
       setTimeout(() => { btn.innerHTML = original; }, 1500);
-    }).catch(() => {
-      // Si el navegador bloquea el portapapeles, no rompemos nada; el usuario puede copiar manualmente.
     });
   }
 </script>
