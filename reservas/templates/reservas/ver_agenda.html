@@ -3,67 +3,64 @@
 {% block content %}
 <div class="container-fluid py-4">
 
-    <!-- TÍTULO DE LA VISTA (Estilo image_8bea83.jpg) -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-warning" style="color: #dfb34c !important;">
             <i class="bi bi-calendar-week me-2"></i>{{ titulo }}
         </h2>
     </div>
 
-    <!-- SECCIÓN DE TARJETAS ESTADÍSTICAS CON DATOS REALES -->
-    <div class="row g-3 mb-4">
+<div class="row g-3 mb-4">
         
-        <!-- Tarjeta 1: Total Citas (Mes) --> 
         <div class="col-md-4">
-            <div class="card text-white shadow-sm border-secondary" style="background-color: #212529;">
-                <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-white-50 small text-uppercase fw-bold mb-1">Total Citas (Mes)</p>
-                        <h2 class="display-5 fw-bold mb-0 text-white">{{ total_citas_mes }}</h2>
+            <div class="card h-100 bg-dark bg-opacity-50 text-white shadow-sm border border-light border-opacity-10" 
+                 style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 border border-primary border-opacity-25" 
+                             style="width: 45px; height: 45px;">
+                            <i class="bi bi-calendar-check text-primary fs-4"></i>
+                        </div>
+                        <span class="text-white-50 small text-uppercase fw-bold mb-0" style="letter-spacing: 0.5px;">Total Citas (Mes)</span>
                     </div>
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                         style="width: 60px; height: 60px; background-color: rgba(13, 110, 253, 0.15);">
-                        <i class="bi bi-calendar-check text-primary fs-2"></i>
-                    </div>
+                    <h2 class="fw-bold mb-0 text-white display-6" style="font-size: 2rem;">{{ total_citas_mes }}</h2>
                 </div>
             </div>
         </div>
 
-        <!-- Tarjeta 2: Turnos Disponibles (Hoy) -->
         <div class="col-md-4">
-            <div class="card text-white shadow-sm border-secondary" style="background-color: #212529;">
-                <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-white-50 small text-uppercase fw-bold mb-1">Turnos Disponibles (Hoy)</p>
-                        <h2 class="display-5 fw-bold mb-0 text-success" style="color: #198754 !important;">{{ turnos_disponibles_hoy }}</h2>
+            <div class="card h-100 bg-dark bg-opacity-50 text-white shadow-sm border border-light border-opacity-10" 
+                 style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-10 border border-success border-opacity-25" 
+                             style="width: 45px; height: 45px;">
+                            <i class="bi bi-arrow-counterclockwise text-success fs-4"></i>
+                        </div>
+                        <span class="text-white-50 small text-uppercase fw-bold mb-0" style="letter-spacing: 0.5px;">Turnos Disponibles (Hoy)</span>
                     </div>
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                         style="width: 60px; height: 60px; background-color: rgba(25, 135, 84, 0.15);">
-                        <i class="bi bi-arrow-counterclockwise text-success fs-2"></i>
-                    </div>
+                    <h2 class="fw-bold mb-0 text-success display-6" style="font-size: 2rem;">{{ turnos_disponibles_hoy }}</h2>
                 </div>
             </div>
         </div>
 
-        <!-- Tarjeta 3: Citas Canceladas (Mes) -->
         <div class="col-md-4">
-            <div class="card text-white shadow-sm border-secondary" style="background-color: #212529;">
-                <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-white-50 small text-uppercase fw-bold mb-1">Citas Canceladas (Mes)</p>
-                        <h2 class="display-5 fw-bold mb-0 text-danger" style="color: #dc3545 !important;">{{ citas_canceladas_mes }}</h2>
+            <div class="card h-100 bg-dark bg-opacity-50 text-white shadow-sm border border-light border-opacity-10" 
+                 style="backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-danger bg-opacity-10 border border-danger border-opacity-25" 
+                             style="width: 45px; height: 45px;">
+                            <i class="bi bi-calendar-x text-danger fs-4"></i>
+                        </div>
+                        <span class="text-white-50 small text-uppercase fw-bold mb-0" style="letter-spacing: 0.5px;">Citas Canceladas (Mes)</span>
                     </div>
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                         style="width: 60px; height: 60px; background-color: rgba(220, 53, 69, 0.15);">
-                        <i class="bi bi-calendar-x text-danger fs-2"></i>
-                    </div>
+                    <h2 class="fw-bold mb-0 text-danger display-6" style="font-size: 2rem;">{{ citas_canceladas_mes }}</h2>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- CONTENEDOR DE LA TABLA Y TABS -->
     <div class="card bg-dark text-white border-secondary shadow">
         <div class="card-header p-0" style="background-color: #1a1e21; border-bottom: 1px solid #495057;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pe-3">
@@ -81,7 +78,6 @@
                     </li>
                 </ul>
 
-                <!-- Botones Superiores de Acción -->
                 <div class="d-flex align-items-center gap-2 py-2 py-md-0">
                     <a href="{% url 'gestionar_dias' %}" class="btn btn-sm btn-outline-warning fw-bold px-3">
                         <i class="bi bi-calendar-range me-2"></i>Configurar Disponibilidad
@@ -96,7 +92,6 @@
         
         <div class="card-body p-4 tab-content" id="agendaTabContent">
             
-            <!-- TAB: CITAS RESERVADAS -->
             <div class="tab-pane fade show active" id="tab-reservas" role="tabpanel">
                 <div class="table-responsive">
                     <table class="table table-dark table-hover align-middle border-secondary mb-0">
@@ -165,7 +160,6 @@
                 </div>
             </div>
 
-            <!-- TAB: TURNOS DISPONIBLES -->
             <div class="tab-pane fade" id="tab-disponibilidad" role="tabpanel">
                 <div class="table-responsive">
                     <table class="table table-dark table-hover align-middle border-secondary mb-0">
@@ -198,7 +192,6 @@
     </div>
 </div>
 
-<!-- Modal de cancelación -->
 <div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white border-danger">
@@ -234,7 +227,6 @@ function abrirModalCancelar(btn) {
 </script>
 
 <style>
-    /* Estilo de línea cyan para el Tab activo */
     .nav-tabs .nav-link.active { 
         border-bottom: 3px solid #07d2ff !important;
         color: #07d2ff !important;

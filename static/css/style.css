@@ -192,371 +192,140 @@ header a {
 }
 
 /* ============================================
-   RESERVAS
+   RESERVAS (DISEÑO MODO OSCURO / MODO CLARO)
    ============================================ */
 
-:root {
-  --cyan: #00d4f0;
-  --cyan-dim: #0aa8bf;
-  --bg-dark: #0d0f13;
-  --card-bg: rgba(20, 24, 32, 0.97);
-  --card-border: rgba(255, 255, 255, 0.07);
-  --surface: rgba(255, 255, 255, 0.05);
-  --surface-hover: rgba(0, 212, 240, 0.12);
-  --text-muted-custom: #6b7280;
-  --bg: #0e0f11;
-  --card: rgba(18, 20, 23, 0.93);
-  --border: rgba(255, 255, 255, 0.07);
-  --accent: #29c5f6;
-  --glow: rgba(41, 197, 246, 0.22);
-  --text: #eef0f3;
-  --muted: #6b7280;
-  --input-bg: rgba(255, 255, 255, 0.05);
-  --input-border: rgba(255, 255, 255, 0.1);
-  --slot-bg: rgba(41, 197, 246, 0.07);
-  --slot-hover: rgba(41, 197, 246, 0.16);
+/* ── variables base (modo oscuro predeterminado) ── */
+.booking-wrap {
+  --bg-card-dark: rgba(20, 20, 20, 0.75);       
+  --bg-input-dark: rgba(255, 255, 255, 0.04);  
+  --bg-input-hover: rgba(255, 255, 255, 0.08); 
+  --color-champaña: #eee0cb;                    
+  --accent-azul: #22aed1;                       
+  --accent-oscuro: #2b50aa;                     
+  --text-muted: #b0a8b0;                        
+  font-family: 'Work Sans', sans-serif;
 }
 
-.bg-photo {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background: url("../img/Fondo.png") center/cover no-repeat;
-  filter: brightness(0.25) saturate(0.6);
+/* ── modo claro adaptativo para el flujo de reservas ── */
+body.theme-light .booking-wrap {
+  --bg-card-dark: #eee0cb;                       /* Fondo champaña de tu paleta */
+  --bg-input-dark: #ffffff;                      /* Cajas internas blancas limpias */
+  --bg-input-hover: rgba(34, 174, 209, 0.08); 
+  --color-champaña: #030301;                    /* Los títulos pasan a negro */
+  --text-muted: #8d818c;                        /* Gris de tu paleta clara */
 }
 
-/* Navbar */
-.navbar-brand span {
-  font-family: "Bebas Neue", sans-serif;
-  letter-spacing: 4px;
-  font-size: 1.5rem;
+/* ── componentes del contenedor ── */
+.booking-wrap .dark-barber-card {
+  background: var(--bg-card-dark) !important;
+  backdrop-filter: blur(14px);                  
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;  
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 16px !important;
+  transition: background-color 0.3s ease;
 }
-.navbar-brand span.accent {
-  color: var(--cyan);
-}
-.navbar {
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--card-border);
-  margin-top: 0;
-  position: relative;
-}
-.nav-reserve {
-  color: var(--cyan) !important;
-  font-size: 0.75rem;
-  letter-spacing: 3px;
-  font-weight: 500;
+body.theme-light .booking-wrap .dark-barber-card {
+  border: 1px solid rgba(141, 129, 140, 0.3) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Booking card */
-.booking-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
-  max-width: 780px;
-  width: 100%;
-}
-
-/* Stepper */
-.stepper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.step-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  position: relative;
-  z-index: 1;
-}
-.step-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
-  border: 2px solid var(--text-muted-custom);
-  color: var(--text-muted-custom);
-  background: transparent;
-  transition: all 0.3s;
-}
-.step-item.active .step-circle {
-  border-color: var(--cyan);
-  color: var(--cyan);
-}
-.step-item.done .step-circle {
-  border-color: var(--cyan);
-  background: var(--cyan);
-  color: #000;
-}
-.step-label {
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  color: var(--text-muted-custom);
-}
-.step-item.active .step-label,
-.step-item.done .step-label {
-  color: var(--cyan);
-}
-.step-line {
-  flex: 1;
-  height: 1px;
-  background: var(--card-border);
-  max-width: 120px;
-}
-
-/* Day cards */
-.day-card {
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 18px 12px;
+/* ── tarjetas de opción (barberos y pagos) ── */
+.booking-wrap .choice-card-dark {
+  background: var(--bg-input-dark) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-muted) !important;
   cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-  background: var(--surface);
-  user-select: none;
+  transition: all 0.2s ease-in-out;
 }
-.day-card:hover:not(.disabled) {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
+body.theme-light .booking-wrap .choice-card-dark {
+  border: 1px solid rgba(141, 129, 140, 0.3) !important;
 }
-.day-card.selected {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
+
+.booking-wrap .choice-card-dark:hover {
+  background: var(--bg-input-hover) !important;
+  border-color: rgba(34, 174, 209, 0.4) !important;
+  color: var(--color-champaña) !important;
 }
-.day-card .day-name {
-  font-size: 0.65rem;
+
+/* ── estado seleccionado (radios ocultos) ── */
+.booking-wrap .btn-check:checked + .choice-card-dark {
+  background: rgba(34, 174, 209, 0.15) !important;
+  border-color: var(--accent-azul) !important;
+  color: var(--color-champaña) !important;
+  box-shadow: 0 4px 15px rgba(34, 174, 209, 0.15) !important;
+}
+body.theme-light .booking-wrap .btn-check:checked + .choice-card-dark {
+  background: rgba(34, 174, 209, 0.12) !important;
+  color: #030301 !important;
+}
+.booking-wrap .btn-check:checked + .choice-card-dark span,
+.booking-wrap .btn-check:checked + .choice-card-dark div,
+.booking-wrap .btn-check:checked + .choice-card-dark i {
+  color: var(--color-champaña) !important;
+}
+
+/* ── campos de entrada de texto ── */
+.booking-wrap .form-control-barber {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+body.theme-light .booking-wrap .form-control-barber {
+  background: #ffffff !important;
+  border: 1px solid #ced4da !important;
+  color: #030301 !important;
+}
+.booking-wrap .form-control-barber::placeholder { 
+  color: rgba(255, 255, 255, 0.30) !important; 
+}
+body.theme-light .booking-wrap .form-control-barber::placeholder {
+  color: #6c757d !important;
+}
+.booking-wrap .form-control-barber:focus {
+  border-color: var(--accent-azul) !important;
+  box-shadow: 0 0 0 3px rgba(34, 174, 209, 0.2) !important;
+}
+
+/* ── botón de confirmación ── */
+.booking-wrap .btn-confirm {
+  background: linear-gradient(135deg, var(--accent-azul), var(--accent-oscuro)) !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-family: 'Bebas Neue', sans-serif;
   letter-spacing: 2px;
-  color: var(--text-muted-custom);
+  box-shadow: 0 4px 15px rgba(34, 174, 209, 0.3) !important;
+  transition: all 0.2s ease !important;
 }
-.day-card.selected .day-name {
-  color: var(--cyan);
-}
-.day-card .day-number {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2.8rem;
-  line-height: 1;
-  color: #fff;
-}
-.day-card.selected .day-number {
-  color: var(--cyan);
-}
-.day-card .day-month {
-  font-size: 0.75rem;
-  color: #aaa;
-}
-.day-card.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-.day-card .badge-closed {
-  font-size: 0.6rem;
-  letter-spacing: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #888;
-  border-radius: 4px;
-  padding: 2px 6px;
-  margin-top: 4px;
-  display: inline-block;
+.booking-wrap .btn-confirm:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(34, 174, 209, 0.5) !important;
+  color: #ffffff !important;
 }
 
-/* Time slots */
-.time-slot {
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 12px 6px;
-  cursor: pointer;
-  text-align: center;
-  background: var(--surface);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #ddd;
-  transition: all 0.2s;
-  position: relative;
-  user-select: none;
+/* ── alertas de turnos no disponibles ── */
+.booking-wrap .alert-barber {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--color-champaña) !important;
 }
-.time-slot::after {
-  content: "•";
-  display: block;
-  color: var(--cyan);
-  font-size: 0.5rem;
-  margin-top: 2px;
-}
-.time-slot:hover:not(.unavailable) {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
-}
-.time-slot.selected {
-  background: var(--cyan);
-  border-color: var(--cyan);
-  color: #000;
-  font-weight: 700;
-}
-.time-slot.selected::after {
-  color: #000;
-}
-.time-slot.unavailable {
-  opacity: 0.35;
-  cursor: not-allowed;
-  text-decoration: line-through;
+body.theme-light .booking-wrap .alert-barber {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
-.section-label {
-  font-size: 0.7rem;
-  letter-spacing: 2.5px;
-  color: var(--cyan);
-  font-weight: 600;
-}
+/* ── contenedor de turnos scrollable ── */
+#turnos-container::-webkit-scrollbar { width: 6px; }
+#turnos-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+body.theme-light #turnos-container::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
 
-/* Inputs reservas */
-.form-control-dark {
-  background: var(--surface) !important;
-  border: 1px solid var(--card-border) !important;
-  color: #fff !important;
-  border-radius: 10px;
-}
-.form-control-dark:focus {
-  border-color: var(--cyan) !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 240, 0.15) !important;
-}
-.form-control-dark::placeholder {
-  color: #555;
-}
-.form-label {
-  font-size: 0.8rem;
-  color: #aaa;
-  margin-bottom: 6px;
-}
-
-/* Payment */
-.payment-option {
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: var(--surface);
-}
-.payment-option:hover,
-.payment-option.selected {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
-}
-.payment-option .pay-title {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #fff;
-}
-.payment-option .pay-sub {
-  font-size: 0.75rem;
-  color: #888;
-}
-.payment-option .radio-dot {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid #555;
-  display: inline-block;
-  margin-right: 12px;
-  flex-shrink: 0;
-  transition: all 0.2s;
-  position: relative;
-  top: 2px;
-}
-.payment-option.selected .radio-dot {
-  border-color: var(--cyan);
-  background: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(0, 212, 240, 0.2);
-}
-
-/* Confirm table */
-.confirm-table tr {
-  border-bottom: 1px solid var(--card-border);
-}
-.confirm-table tr:last-child {
-  border-bottom: none;
-}
-.confirm-table td {
-  padding: 14px 0;
-}
-.confirm-table .label {
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  color: #888;
-}
-.confirm-table .value {
-  font-size: 0.9rem;
-  color: #fff;
-}
-.confirm-table .value.accent {
-  color: var(--cyan);
-  font-weight: 600;
-}
-
-/* Buttons reservas */
-.btn-cyan {
-  background: var(--cyan);
-  border: none;
-  color: #000;
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  border-radius: 10px;
-  padding: 14px;
-  transition: all 0.2s;
-}
-.btn-cyan:hover {
-  background: #fff;
-  color: #000;
-}
-.btn-back {
-  background: var(--surface);
-  border: 1px solid var(--card-border);
-  color: #aaa;
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  border-radius: 10px;
-  padding: 14px 20px;
-  transition: all 0.2s;
-}
-.btn-back:hover {
-  border-color: #aaa;
-  color: #fff;
-}
-
-/* Success */
-.success-icon {
-  font-size: 4rem;
-  color: var(--cyan);
-}
-.success-title {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2.8rem;
-  letter-spacing: 3px;
-  color: #fff;
-}
-
-/* Fade */
-.step-panel {
-  animation: fadeUp 0.3s ease both;
-}
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Clases semánticas adaptativas para textos de reservas */
+.booking-wrap .text-accent { color: var(--accent-azul) !important; }
+.booking-wrap .text-brand-title { color: var(--color-champaña) !important; }
+.booking-wrap .text-custom-muted { color: var(--text-muted) !important; }
+.booking-wrap .text-time-date { color: #ffffff !important; }
+body.theme-light .booking-wrap .text-time-date { color: #030301 !important; }
 
 /* =========================
    RESET
