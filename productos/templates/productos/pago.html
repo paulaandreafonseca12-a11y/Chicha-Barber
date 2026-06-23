@@ -1,8 +1,12 @@
-{% extends "base-clientes.html" %} {% load static %} {% block content %}
+{% extends "base-clientes.html" %}
+{% load static %}
+{% block content %}
+
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-6">
       <div class="card shadow-lg border-0 rounded-4">
+
         <div class="card-header color-champaña py-4 border-0 rounded-top-4">
           <h4 class="text-center text-black mb-0 fw-bold">
             <i class="bi bi-person-fill me-2"></i> Datos del Cliente
@@ -10,50 +14,27 @@
         </div>
 
         <div class="card-body p-4 p-md-5">
-          <form
-            method="POST"
-            action="{% url 'procesar_compra' %}"
-            enctype="multipart/form-data"
-          >
+
+          <form method="POST" action="{% url 'procesar_compra' %}" enctype="multipart/form-data" id="formCompra">
             {% csrf_token %}
 
             <div class="mb-3">
-              <label class="form-label text-dark fw-bold small text-uppercase"
-                >Nombre completo</label
-              >
-              <input
-                type="text"
-                name="nombre"
-                class="form-control form-control-lg border-2 bg-white text-dark shadow-none"
-                value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}"
-                required
-              />
+              <label class="form-label text-dark fw-bold small text-uppercase">Nombre completo</label>
+              <input type="text" name="nombre" class="form-control form-control-lg border-2 bg-white text-dark shadow-none"
+                value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" required>
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label class="form-label text-dark fw-bold small text-uppercase"
-                  >Correo electrónico</label
-                >
-                <input
-                  type="email"
-                  name="correo"
-                  class="form-control form-control-lg border-2 bg-white text-dark shadow-none"
-                  value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}"
-                  required
-                />
+                <label class="form-label text-dark fw-bold small text-uppercase">Correo electrónico</label>
+                <input type="email" name="correo" class="form-control form-control-lg border-2 bg-white text-dark shadow-none"
+                  value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" required>
               </div>
+
               <div class="col-md-6 mb-3">
-                <label class="form-label text-dark fw-bold small text-uppercase"
-                  >Teléfono</label
-                >
-                <input
-                  type="text"
-                  name="telefono"
-                  class="form-control form-control-lg border-2 bg-white text-dark shadow-none"
-                  value="{% if request.user.is_authenticated %}{{ request.user.telefono }}{% endif %}"
-                  required
-                />
+                <label class="form-label text-dark fw-bold small text-uppercase">Teléfono</label>
+                <input type="text" name="telefono" class="form-control form-control-lg border-2 bg-white text-dark shadow-none"
+                  value="{% if request.user.is_authenticated %}{{ request.user.telefono }}{% endif %}" required>
               </div>
             </div>
 
@@ -62,6 +43,7 @@
             <h5 class="fw-bold mb-3">
               <i class="bi bi-cart-check me-2"></i> Resumen del Pedido
             </h5>
+
             <div class="table-responsive bg-light rounded-3 p-3 mb-4">
               <table class="table table-borderless align-middle mb-0">
                 <thead class="border-bottom border-2">
@@ -73,86 +55,57 @@
                 </thead>
                 <tbody id="resumenProductos"></tbody>
               </table>
-              <div
-                class="d-flex justify-content-between pt-3 border-top border-champaña border-2"
-              >
+
+              <div class="d-flex justify-content-between pt-3 border-top border-champaña border-2">
                 <span class="fw-bold text-secondary text-uppercase">Total</span>
                 <h3 class="fw-bold mb-0" id="montoTotalDisplay">$0</h3>
               </div>
             </div>
 
             <h5 class="mt-4 fw-bold">💳 Método de Pago</h5>
+
             <div class="list-group mb-4">
-              <label
-                class="list-group-item p-3 border-2 rounded-3 mb-2 d-flex align-items-center"
-              >
-                <input
-                  class="form-check-input me-3"
-                  type="radio"
-                  name="pago"
-                  value="persona"
-                  onclick="mostrarInfoPago('persona')"
-                  required
-                />
+              <label class="list-group-item p-3 border-2 rounded-3 mb-2 d-flex align-items-center">
+                <input class="form-check-input me-3" type="radio" name="pago" value="persona"
+                  onclick="mostrarInfoPago('persona')" required>
                 <span class="fw-bold">Pago en el local</span>
               </label>
-              <label
-                class="list-group-item p-3 border-2 rounded-3 d-flex align-items-center"
-              >
-                <input
-                  class="form-check-input me-3"
-                  type="radio"
-                  name="pago"
-                  value="transferencia"
-                  onclick="mostrarInfoPago('transferencia')"
-                />
+
+              <label class="list-group-item p-3 border-2 rounded-3 d-flex align-items-center">
+                <input class="form-check-input me-3" type="radio" name="pago" value="transferencia"
+                  onclick="mostrarInfoPago('transferencia')">
                 <span class="fw-bold">Transferencia Bancaria</span>
               </label>
             </div>
 
             <div id="contenedorTipoTransferencia" class="mb-3 d-none">
-              <select
-                name="tipo_transferencia"
-                id="tipoTransferenciaInput"
-                class="form-select form-select-lg border-2 bg-white text-dark"
-              >
-                <option value="" selected disabled>
-                  -- Selecciona plataforma --
-                </option>
+              <select name="tipo_transferencia" id="tipoTransferenciaInput"
+                class="form-select form-select-lg border-2 bg-white text-dark">
+                <option value="" selected disabled>-- Selecciona plataforma --</option>
                 <option value="nequi">Nequi</option>
                 <option value="daviplata">Daviplata</option>
               </select>
             </div>
 
             <div id="contenedorComprobante" class="mb-3 d-none">
-              <label class="form-label fw-bold text-warning"
-                >📸 Subir Comprobante</label
-              >
-              <input
-                type="file"
-                name="comprobante"
-                id="comprobanteInput"
+              <label class="form-label fw-bold text-warning">📸 Subir Comprobante</label>
+              <input type="file" name="comprobante" id="comprobanteInput"
                 class="form-control form-control-lg border-2 bg-white text-dark"
-                accept="image/*, application/pdf"
-              />
+                accept="image/*, application/pdf">
             </div>
 
             <div id="infoPago" class="alert mt-3 d-none"></div>
 
-            <input type="hidden" name="carrito" id="carritoInput" />
-            <input
-              type="hidden"
-              name="factura_id"
-              value="{{ factura_id|default:'' }}"
-            />
+            <input type="hidden" name="carrito" id="carritoInput">
 
-            <button
-              type="submit"
-              class="btn color-azul w-100 mt-4 rounded-pill py-3 fw-bold shadow-sm"
-            >
+            <input type="hidden" name="factura_id" value="{{ factura_id|default:'' }}">
+
+            <button type="submit" class="btn color-azul w-100 mt-4 rounded-pill py-3 fw-bold shadow-sm">
               Confirmar Compra
             </button>
+
           </form>
+
         </div>
       </div>
     </div>
@@ -160,58 +113,65 @@
 </div>
 
 <script>
-  // Tu script permanece intacto para asegurar que la lógica siga funcionando
-  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+let carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
+
+// 🔥 SIEMPRE sincroniza el input antes de enviar
+function syncCarrito() {
   document.getElementById("carritoInput").value = JSON.stringify(carrito);
+}
 
-  function calcularYMostrarTotal() {
-    let total = 0;
-    const resumenCuerpo = document.getElementById("resumenProductos");
-    if (resumenCuerpo) resumenCuerpo.innerHTML = "";
-    const items = Array.isArray(carrito) ? carrito : Object.values(carrito);
-    items.forEach((item) => {
-      let precioNumerico = parseFloat(item.precio || 0);
-      let cantidadNumerica = parseInt(item.cantidad || 0);
-      let subtotal = precioNumerico * cantidadNumerica;
-      total += subtotal;
-      if (resumenCuerpo) {
-        resumenCuerpo.innerHTML += `
-          <tr class="border-bottom">
-            <td class="py-3">
-              <div class="d-flex align-items-center gap-3">
-                ${item.imagen ? `<img src="${item.imagen}" class="rounded shadow-sm" style="width: 40px; height: 40px; object-fit: cover;">` : ""}
-                <div><div class="fw-bold">${item.nombre}</div><small class="text-muted">$${precioNumerico.toLocaleString("es-CO")}</small></div>
-              </div>
-            </td>
-            <td class="text-center">${cantidadNumerica}</td>
-            <td class="text-end fw-bold">$${subtotal.toLocaleString("es-CO")}</td>
-          </tr>
-        `;
-      }
-    });
-    document.getElementById("montoTotalDisplay").innerText =
-      "$" + total.toLocaleString("es-CO");
-  }
-  calcularYMostrarTotal();
+// mostrar resumen
+function calcularYMostrarTotal() {
+  let total = 0;
+  const tbody = document.getElementById("resumenProductos");
+  tbody.innerHTML = "";
 
-  function mostrarInfoPago(tipo) {
-    let info = document.getElementById("infoPago");
-    let contenedorComprobante = document.getElementById(
-      "contenedorComprobante",
-    );
-    let contenedorTipo = document.getElementById("contenedorTipoTransferencia");
-    info.classList.remove("d-none");
-    if (tipo === "persona") {
-      info.className = "alert alert-info mt-3";
-      info.innerHTML = "💡 Puedes pagar directamente en nuestro local.";
-      contenedorComprobante.classList.add("d-none");
-      contenedorTipo.classList.add("d-none");
-    } else {
-      info.className = "alert alert-warning mt-3";
-      info.innerHTML = `<h5>Datos para Transferencia:</h5><p><strong>Banco:</strong> {{ datos_banco.banco|default:"No configurado" }}<br><strong>Cuenta:</strong> {{ datos_banco.numero_cuenta }}<br><strong>Titular:</strong> {{ datos_banco.titular }}</p>`;
-      contenedorTipo.classList.remove("d-none");
-      contenedorComprobante.classList.remove("d-none");
-    }
+  carrito.forEach(item => {
+    let subtotal = item.precio * item.cantidad;
+    total += subtotal;
+
+    tbody.innerHTML += `
+      <tr class="border-bottom">
+        <td class="py-3 fw-bold">${item.nombre}</td>
+        <td class="text-center">${item.cantidad}</td>
+        <td class="text-end fw-bold">$${subtotal.toLocaleString("es-CO")}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("montoTotalDisplay").innerText =
+    "$" + total.toLocaleString("es-CO");
+
+  syncCarrito();
+}
+
+calcularYMostrarTotal();
+
+// 🔥 LIMPIEZA REAL DESPUÉS DE COMPRA (CLAVE)
+document.getElementById("formCompra").addEventListener("submit", function () {
+  localStorage.removeItem("carrito");
+});
+
+// UI pago
+function mostrarInfoPago(tipo) {
+  let info = document.getElementById("infoPago");
+  let comp = document.getElementById("contenedorComprobante");
+  let tipoDiv = document.getElementById("contenedorTipoTransferencia");
+
+  info.classList.remove("d-none");
+
+  if (tipo === "persona") {
+    info.className = "alert alert-info mt-3";
+    info.innerHTML = "💡 Pago en el local";
+    comp.classList.add("d-none");
+    tipoDiv.classList.add("d-none");
+  } else {
+    info.className = "alert alert-warning mt-3";
+    info.innerHTML = `<h5>Datos de transferencia</h5><p>{{ datos_banco.banco }} - {{ datos_banco.numero_cuenta }}</p>`;
+    comp.classList.remove("d-none");
+    tipoDiv.classList.remove("d-none");
   }
+}
 </script>
+
 {% endblock content %}
