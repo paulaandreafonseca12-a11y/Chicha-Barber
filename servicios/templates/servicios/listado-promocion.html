@@ -4,64 +4,59 @@
 {% block content %}
 
 <div class="container mt-4 mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-       
+        <div class="d-flex justify-content-end align-items-center mb-4 ">
         <a href="{% url 'crear_promocion' %}" class="btn custom-btn fw-bold ">
             <i class="bi bi-plus-circle me-1 "></i> Nueva Promoción
         </a>
     </div>
  
-    <!-- Tarjetas de resumen -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-primary bg-opacity-25 p-3 rounded-circle me-3">
-                        <i class="bi bi-scissors fs-3 text-primary"></i>
+            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
+                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                    <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                        <i class="bi bi-boxes fs-3 text-primary"></i>
                     </div>
-                    <div>
-                        <h6 class="text-white-50 mb-0">Total de Promociones</h6>
-                        <h3 class="fw-bold mb-0">{{ total_promociones }}</h3>
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <span class="text-dark fw-bold me-2 text-nowrap">Total de promociones</span>
+                        <h3 class="fw-bold mb-0 text-primary text-nowrap">{{ total_promociones|default:"0" }}</h3>
                     </div>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-4">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
+                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                    <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
                         <i class="bi bi-check-circle fs-3 text-success"></i>
                     </div>
-                    <div>
-                        <h6 class="text-white-50 mb-0">Promociones Activas</h6>
-                        <h3 class="fw-bold mb-0">{{ activas }}</h3>
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <span class="text-dark fw-bold me-2 text-nowrap"> Promociones activas -</span>
+                        <h3 class="fw-bold mb-0 text-dark text-nowrap">{{ activas|default:"0" }}</h3>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="bg-danger bg-opacity-25 p-3 rounded-circle me-3">
-                        <i class="bi bi-x-circle fs-3 text-danger"></i>
+            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
+                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
+                    <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                        <i class="bi bi-check-circle fs-3 text-success"></i>
                     </div>
-                    <div>
-                        <h6 class="text-white-50 mb-0">Promociones Inactivas</h6>
-                        <h3 class="fw-bold mb-0">{{ inactivas }}</h3>
+                    <div class="d-flex align-items-center flex-nowrap">
+                        <span class="text-dark fw-bold me-2 text-nowrap"> Promociones inactivas -</span>
+                        <h3 class="fw-bold mb-0 text-dark text-nowrap">{{ inactivas|default:"0" }}</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
- 
-    <!-- Tabla -->
-    <div class="card bg-dark text-white shadow border-secondary mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="tablaPromociones" class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
-                    <thead class="thead-azul">
-                        <tr>
+    <div class="card bg-white text-dark shadow border-0 mb-4">
+        <div class="card-body p-0"> <div class="table-responsive mb-0 w-100">
+                <table id="tablaPromociones" class="table table-hover align-middle mb-0 w-100 text-dark">
+                    <thead class="thead-azul text-white"> <tr>
                             <th scope="col" class="ps-4">Imagen</th>
                             <th scope="col">Promoción</th>
                             <th scope="col" class="text-center">Estado</th>
@@ -77,13 +72,13 @@
                                         <img src="{{ promocion.imagen.url }}" alt="{{ promocion.nombre }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                     {% else %}
                                         <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-image text-white-50 fs-4"></i>
+                                            <i class="bi bi-image text-secondary fs-4"></i>
                                         </div>
                                     {% endif %}
                                 </div>
                             </td>
                             <td>
-                                <h6 class="mb-0 fw-bold">{{ promocion.nombre }}</h6>
+                                <h6 class="mb-0 fw-bold text-dark">{{ promocion.nombre }}</h6>
                             </td>
                             <td class="text-center">
                                 {% if promocion.estado %}
@@ -103,7 +98,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="4" class="text-center">No hay promociones registradas.</td>
+                            <td colspan="4" class="text-center text-muted">No hay promociones registradas.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -115,15 +110,11 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 
-<!-- jQuery (requerido por DataTables) -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
-<!-- DataTables JS -->
 <script src="{% static 'js/datatables.js' %}"></script>
 
-<!-- Custom Configuración de DataTable -->
 <script src="{% static 'js/tconf/tconf-tablaPromociones.js' %}"></script>
 {% endblock scripts %}

@@ -7,6 +7,42 @@
 .color-blanco { background-color: #ffffff !important; }
 
 
+
+/* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
+.theme-switch-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin: 10px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #eee0cb;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-switch-item:hover {
+  background: rgba(75, 192, 217, 0.1);
+  border-color: #4bc0d9;
+}
+
+.theme-switch-item i {
+  font-size: 1.1rem;
+  color: #22aed1;
+}
+
+body.theme-light .theme-switch-item {
+  background: #eee0cb;
+  border-color: rgba(141, 129, 140, 0.3);
+  color: #030301;
+}
+
+body.theme-light .theme-switch-item i {
+  color: #c47a2c;
+}
+
 /* ── FONDO GENERAL ── */
 .back {
   background-image:
@@ -28,7 +64,9 @@ main {
   overflow-y: auto;
 }
 
-.color-negro-bg { background: #030301 !important; }
+.color-negro-bg {
+  background: #ffffff !important;
+}
 
 /* ── HERO ── */
 /*.hero-section { min-height: 90vh; } /
@@ -654,8 +692,8 @@ body.theme-dark .dt-paging .pagination .page-item.disabled .page-link,
 body.theme-dark .dataTables_paginate .pagination .page-item.disabled .page-link,
 .dt-paging .pagination .page-item.disabled .page-link,
 .dataTables_paginate .pagination .page-item.disabled .page-link {
-  background-color: #0e0f11 !important;
-  color: #6b7280 !important;
+  background-color: #eee0cb !important;
+  color: #22aed1 !important;
   border-color: rgba(255, 255, 255, 0.05) !important;
   opacity: 0.6;
 }
@@ -670,7 +708,7 @@ body.theme-dark input.form-control,
 .dataTables_filter input,
 .dt-length select,
 .dataTables_length select {
-  background-color: #1a1a1a;
+  background-color: #eee0cb;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 5px;
@@ -714,7 +752,7 @@ body.theme-dark .dataTables_length label,
 .dataTables_filter label,
 .dt-length label,
 .dataTables_length label {
-  color: #eef0f3 !important;
+  color: #170212!important;
 }
 
 /* 2. MODO CLARO (body.theme-light) */
