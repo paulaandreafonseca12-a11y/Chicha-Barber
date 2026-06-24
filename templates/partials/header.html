@@ -104,19 +104,13 @@
 
             <li>
               <a class="dropdown-item py-2 cursor-pointer" id="global-theme-toggle" style="cursor: pointer;">
-                <i class="bi bi-brightness-high-fill me-2 text-warning" id="global-theme-icon"></i>
-                <span id="global-theme-text">Modo Claro</span>
-              <a class="dropdown-item py-2"
-                 href="{% url 'cambiar_tema' %}">
-
-                {% if user.tema == 'dark' %}
-                  <i class="bi bi-sun-fill me-2 text-warning"></i>
-                  Modo Claro
+                {% if user.tema == 'light' %}
+                  <i class="bi bi-moon-fill me-2 text-info" id="global-theme-icon"></i>
+                  <span id="global-theme-text">Modo Oscuro</span>
                 {% else %}
-                  <i class="bi bi-moon-fill me-2 text-info"></i>
-                  Modo Oscuro
+                  <i class="bi bi-brightness-high-fill me-2 text-warning" id="global-theme-icon"></i>
+                  <span id="global-theme-text">Modo Claro</span>
                 {% endif %}
-
               </a>
             </li>
 
@@ -164,27 +158,31 @@
     const themeText = document.getElementById('global-theme-text');
     const body = document.body;
 
+    // Inicializar UI basado en la clase del body renderizada por Django
+    const isLight = body.classList.contains('theme-light');
+    updateThemeUI(isLight);
+
     function updateThemeUI(isLight) {
-      if (isLight) {
-        body.classList.add('theme-light');
-        themeIcon.className = 'bi bi-moon-fill me-2 text-info';
-        themeText.textContent = 'Modo Oscuro';
-      } else {
-        body.classList.remove('theme-light');
-        themeIcon.className = 'bi bi-brightness-high-fill me-2 text-warning';
-        themeText.textContent = 'Modo Claro';
+      if (themeIcon && themeText) {
+        if (isLight) {
+          themeIcon.className = 'bi bi-moon-fill me-2 text-info';
+          themeText.textContent = 'Modo Oscuro';
+        } else {
+          themeIcon.className = 'bi bi-brightness-high-fill me-2 text-warning';
+          themeText.textContent = 'Modo Claro';
+        }
       }
     }
 
-    // Inicializar según localStorage
-    const currentTheme = localStorage.getItem('theme');
-    updateThemeUI(currentTheme === 'light');
-
     if (themeToggle) {
       themeToggle.addEventListener('click', function() {
-        const isLight = !body.classList.contains('theme-light');
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        updateThemeUI(isLight);
+        // Guardar en localStorage para mantener sincronía
+        const nextTheme = isLight ? 'dark' : 'light';
+        localStorage.setItem('theme', nextTheme);
+        localStorage.setItem('admin-theme', nextTheme);
+        
+        // Redirigir a Django para persistir en la base de datos
+        window.location.href = "{% url 'cambiar_tema' %}";
       });
     }
   });

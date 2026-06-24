@@ -7,9 +7,9 @@
     
     <!-- Título Principal y Botón Superior -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-warning mb-0"></h2>
-        <a href="{% url 'crear-factura' %}" class="btn custom-btn fw-bold px-4 py-2">
-            <i class="bi bi-plus-circle me-1"></i> Nuevo de comprobante 
+        <h2 class="fw-bold text-color-champaña mb-0"></h2>
+        <a href="{% url 'crear-factura' %}" class="btn color-azul fw-bold shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Comprobante
         </a>
     </div>
 
@@ -17,7 +17,7 @@
     <div class="row g-3 mb-4">
         <!-- Total Facturas -->
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
                     <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
@@ -25,7 +25,7 @@
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Total comprobantes -</span>
+                        <span class="text-dark fw-bold me-2 text-nowrap">Total comprobantes -</span>
                         <h3 class="fw-bold mb-0 text-primary text-nowrap" id="counter-total">0</h3>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
         
         <!-- Pagadas -->
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
                     <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
@@ -42,7 +42,7 @@
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Pagadas -</span>
+                        <span class="text-dark fw-bold me-2 text-nowrap">Pagadas -</span>
                         <h3 class="fw-bold mb-0 text-success text-nowrap" id="counter-pagadas">0</h3>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
 
         <!-- Pendientes -->
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
                     <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
@@ -59,7 +59,7 @@
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Pendientes -</span>
+                        <span class="text-dark fw-bold me-2 text-nowrap">Pendientes -</span>
                         <h3 class="fw-bold mb-0 text-warning text-nowrap" id="counter-pendientes">0</h3>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
 
         <!-- Canceladas -->
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
                     <div class="bg-danger bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
@@ -76,7 +76,7 @@
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Canceladas -</span>
+                        <span class="text-dark fw-bold me-2 text-nowrap">Canceladas -</span>
                         <h3 class="fw-bold mb-0 text-danger text-nowrap" id="counter-canceladas">0</h3>
                     </div>
                 </div>
@@ -85,11 +85,11 @@
     </div>
 
     <!-- Contenedor de la Tabla Principal Gigante -->
-    <div class="card bg-dark text-white shadow border-secondary mb-4">
+    <div class="card color-blanco text-dark shadow border-0 mb-4">
         <div class="card-body p-4">
             <div class="table-responsive text-nowrap">
                 <!-- Se eliminaron restricciones restrictivas de ancho para dejar que la tabla crezca de forma nativa -->
-                <table id="tablaFacturas" class="table table-dark table-hover align-middle border-secondary mb-0 w-100" style="font-size: 0.98rem;">
+                <table id="tablaFacturas" class="table table-hover align-middle mb-0 w-100 text-dark" style="font-size: 0.98rem;">
                     <thead class="thead-azul">
                         <tr>
                             <th scope="col" class="ps-4 py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 5%;">Comprobante</th>
@@ -105,18 +105,18 @@
                     </thead>
                     <tbody>
                         {% for factura in facturas %}
-                        <tr class="factura-row" style="transition: background-color 0.2s ease;">
-                            <td class="ps-4 fw-bold text-warning py-3">#{{ factura.id }}</td>
+                        <tr class="factura-row border-dark border-opacity-10" style="transition: background-color 0.2s ease;">
+                            <td class="ps-4 fw-bold text-dark py-3">#{{ factura.id }}</td>
                             
                             <td class="py-3">
-                                <div class="fw-bold text-white mb-0">
+                                <div class="fw-bold text-dark mb-0">
                                     {% if factura.cliente %}
                                         {{ factura.cliente.get_full_name }}
                                     {% else %}
                                         {{ factura.nombre_cliente|default:"Cliente General" }}
                                     {% endif %}
                                 </div>
-                                <small class="text-white-50 d-block" style="font-size: 0.82rem;">
+                                <small class="text-muted d-block" style="font-size: 0.82rem;">
                                     {% if factura.cliente %}
                                         {{ factura.cliente.email|default:"Sin correo" }}
                                     {% else %}
@@ -133,7 +133,7 @@
                                                 <span class="text-info fw-semibold text-truncate" style="max-width: 250px;">
                                                     <i class="bi bi-box-seam me-1"></i>{{ detalle.producto.nombre }}
                                                 </span>
-                                                <span class="text-white-50 font-monospace">x{{ detalle.cantidad }}</span>
+                                                <span class="text-muted font-monospace">x{{ detalle.cantidad }}</span>
                                             </div>
                                         {% endif %}
                                         {% if detalle.reserva %}
@@ -150,7 +150,7 @@
                             </td>
 
                             <td class="py-3">
-                                <div class="text-white-50 font-monospace" style="font-size: 0.88rem;">
+                                <div class="text-dark font-monospace" style="font-size: 0.88rem;">
                                     {{ factura.fecha_emision|date:"d/m/Y" }}
                                 </div>
                                 <div class="text-muted small" style="font-size: 0.78rem;">
@@ -159,20 +159,20 @@
                             </td>
 
                             <td class="py-3">
-                                <select class="form-select form-select-sm bg-secondary bg-opacity-25 text-white border-secondary field-update py-1.5" data-field="metodo_pago" data-id="{{ factura.id }}" style="border-radius: 6px; cursor: pointer;">
-                                    <option value="efectivo" class="bg-dark text-white" {% if factura.metodo_pago == "efectivo" %}selected{% endif %}>Efectivo</option>
-                                    <option value="nequi" class="bg-dark text-white" {% if factura.metodo_pago == "nequi" %}selected{% endif %}>Nequi</option>
-                                    <option value="daviplata" class="bg-dark text-white" {% if factura.metodo_pago == "daviplata" %}selected{% endif %}>Daviplata</option>
-                                    <option value="yape" class="bg-dark text-white" {% if factura.metodo_pago == "yape" %}selected{% endif %}>Yape</option>
-                                    <option value="tarjeta" class="bg-dark text-white" {% if factura.metodo_pago == "tarjeta" %}selected{% endif %}>Tarjeta</option>
+                                <select class="form-select form-select-sm text-dark border-secondary field-update py-1.5" data-field="metodo_pago" data-id="{{ factura.id }}" style="border-radius: 6px; cursor: pointer;">
+                                    <option value="efectivo" class="bg-white text-dark" {% if factura.metodo_pago == "efectivo" %}selected{% endif %}>Efectivo</option>
+                                    <option value="nequi" class="bg-white text-dark" {% if factura.metodo_pago == "nequi" %}selected{% endif %}>Nequi</option>
+                                    <option value="daviplata" class="bg-white text-dark" {% if factura.metodo_pago == "daviplata" %}selected{% endif %}>Daviplata</option>
+                                    <option value="yape" class="bg-white text-dark" {% if factura.metodo_pago == "yape" %}selected{% endif %}>Yape</option>
+                                    <option value="tarjeta" class="bg-white text-dark" {% if factura.metodo_pago == "tarjeta" %}selected{% endif %}>Tarjeta</option>
                                 </select>
                             </td>
 
                             <td class="py-3">
-                                <select class="form-select form-select-sm bg-secondary bg-opacity-25 border-secondary field-update select-estado fw-bold py-1.5 {% if factura.estado == 'pagada' %}text-success{% elif factura.estado == 'pendiente' %}text-warning{% else %}text-danger{% endif %}" data-field="estado" data-id="{{ factura.id }}" style="border-radius: 6px; cursor: pointer;">
-                                    <option value="pendiente" class="bg-dark text-warning" {% if factura.estado == "pendiente" %}selected{% endif %}>● Pendiente</option>
-                                    <option value="pagada" class="bg-dark text-success" {% if factura.estado == "pagada" %}selected{% endif %}>● Pagada</option>
-                                    <option value="cancelada" class="bg-dark text-danger" {% if factura.estado == "cancelada" %}selected{% endif %}>● Cancelada</option>
+                                <select class="form-select form-select-sm border-secondary field-update select-estado fw-bold py-1.5 {% if factura.estado == 'pagada' %}text-success{% elif factura.estado == 'pendiente' %}text-warning{% else %}text-danger{% endif %}" data-field="estado" data-id="{{ factura.id }}" style="border-radius: 6px; cursor: pointer;">
+                                    <option value="pendiente" class="bg-white text-warning" {% if factura.estado == "pendiente" %}selected{% endif %}>● Pendiente</option>
+                                    <option value="pagada" class="bg-white text-success" {% if factura.estado == "pagada" %}selected{% endif %}>● Pagada</option>
+                                    <option value="cancelada" class="bg-white text-danger" {% if factura.estado == "cancelada" %}selected{% endif %}>● Cancelada</option>
                                 </select>
                             </td>
 
@@ -194,13 +194,13 @@
                                 </div>
                             </td>
 
-                            <td class="fw-bold text-white py-3 font-monospace" style="font-size: 1.08rem;">
+                            <td class="fw-bold text-dark py-3 font-monospace" style="font-size: 1.08rem;">
                                 ${{ factura.total_pagado|floatformat:0 }}
                             </td>
 
                             <td class="text-center py-3">
                                 <div class="d-flex justify-content-center align-items-center gap-2">
-                                    <button type="button" class="btn btn-sm btn-outline-light border-secondary btn-add-item d-inline-flex align-items-center justify-content-center" data-id="{{ factura.id }}" title="Añadir Producto/Servicio" style="width: 38px; height: 38px; border-radius: 8px;">
+                                    <button type="button" class="btn btn-sm btn-outline-dark border-secondary btn-add-item d-inline-flex align-items-center justify-content-center" data-id="{{ factura.id }}" title="Añadir Producto/Servicio" style="width: 38px; height: 38px; border-radius: 8px;">
                                         <i class="bi bi-plus-lg fs-6"></i>
                                     </button>
 
@@ -227,7 +227,7 @@
                         {% empty %}
                         <tr>
                             <td colspan="9" class="text-center py-5 text-muted">
-                                <i class="bi bi-receipt fs-1 d-block mb-3 text-white-50"></i> No se encontraron facturas en el sistema.
+                                <i class="bi bi-receipt fs-1 d-block mb-3 text-secondary-subtle"></i> No se encontraron facturas en el sistema.
                             </td>
                         </tr>
                         {% endfor %}
@@ -240,7 +240,7 @@
 
 {% csrf_token %}
 
-<!-- Modal para agregar Items (Modo Oscuro Elegante) -->
+<!-- Modal para agregar Items (Elegante y Adaptable) -->
 <div class="modal fade" id="modalAddItem" tabindex="-1" aria-labelledby="modalAddItemLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white border border-secondary shadow">
@@ -253,54 +253,54 @@
                     <input type="hidden" id="input-factura-id" name="factura_id">
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-white-50">Tipo de Elemento</label>
+                        <label class="form-label fw-bold">Tipo de Elemento</label>
                         <div class="d-flex gap-3">
                             <div class="form-check">
                                 <input class="form-check-input radio-type" type="radio" name="tipo_item" id="typeProducto" value="producto" checked>
-                                <label class="form-check-label text-white" for="typeProducto"><i class="bi bi-box-seam me-1 text-info"></i> Producto</label>
+                                <label class="form-check-label" for="typeProducto"><i class="bi bi-box-seam me-1 text-info"></i> Producto</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input radio-type" type="radio" name="tipo_item" id="typeServicio" value="servicio">
-                                <label class="form-check-label text-white" for="typeServicio"><i class="bi bi-scissors me-1 text-warning"></i> Servicio/Reserva</label>
+                                <label class="form-check-label" for="typeServicio"><i class="bi bi-scissors me-1 text-warning"></i> Servicio/Reserva</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3" id="wrapper-select-producto">
-                        <label for="select-producto" class="form-label fw-bold text-white-50">Seleccionar Producto</label>
-                        <select class="form-select bg-secondary bg-opacity-25 text-white border-secondary" id="select-producto" name="producto_id">
-                            <option value="" selected disabled class="bg-dark text-white">-- Elegir Producto --</option>
+                        <label for="select-producto" class="form-label fw-bold">Seleccionar Producto</label>
+                        <select class="form-select border-secondary text-dark bg-white" id="select-producto" name="producto_id">
+                            <option value="" selected disabled>-- Elegir Producto --</option>
                             {% for p in productos %}
-                                <option value="{{ p.id }}" class="bg-dark text-white">{{ p.nombre }} - (${{ p.precio_venta|floatformat:0 }})</option>
+                                <option value="{{ p.id }}">{{ p.nombre }} - (${{ p.precio_venta|floatformat:0 }})</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="mb-3 d-none" id="wrapper-select-servicio">
-                        <label for="select-servicio" class="form-label fw-bold text-white-50">Seleccionar Servicio</label>
-                        <select class="form-select bg-secondary bg-opacity-25 text-white border-secondary" id="select-servicio" name="servicio_id">
-                            <option value="" selected disabled class="bg-dark text-white">-- Elegir Servicio --</option>
+                        <label for="select-servicio" class="form-label fw-bold">Seleccionar Servicio</label>
+                        <select class="form-select border-secondary text-dark bg-white" id="select-servicio" name="servicio_id">
+                            <option value="" selected disabled>-- Elegir Servicio --</option>
                             {% for s in servicios %}
-                                <option value="{{ s.id }}" class="bg-dark text-white">{{ s.nombre }} - (${{ s.precio|floatformat:0 }})</option>
+                                <option value="{{ s.id }}">{{ s.nombre }} - (${{ s.precio|floatformat:0 }})</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <label for="input-cantidad" class="form-label fw-bold text-white-50">Cantidad</label>
-                            <input type="number" class="form-control bg-secondary bg-opacity-25 text-white border-secondary" id="input-cantidad" name="cantidad" value="1" min="1" required>
+                            <label for="input-cantidad" class="form-label fw-bold">Cantidad</label>
+                            <input type="number" class="form-control border-secondary text-dark bg-white" id="input-cantidad" name="cantidad" value="1" min="1" required>
                         </div>
                         <div class="col-6 mb-3">
-                            <label for="input-precio" class="form-label fw-bold text-white-50">Precio Unitario ($)</label>
-                            <input type="number" class="form-control bg-secondary bg-opacity-25 text-white border-secondary" id="input-precio" name="precio_unitario" placeholder="Opcional">
+                            <label for="input-precio" class="form-label fw-bold">Precio Unitario ($)</label>
+                            <input type="number" class="form-control border-secondary text-dark bg-white" id="input-precio" name="precio_unitario" placeholder="Opcional">
                             <small class="text-muted" style="font-size: 0.75rem;">Dejar vacío para usar precio base</small>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-secondary">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn custom-btn fw-bold"><i class="bi bi-check-circle me-1"></i> Guardar Ítem</button>
+                    <button type="submit" class="btn color-azul fw-bold text-dark"><i class="bi bi-check-circle me-1"></i> Guardar Ítem</button>
                 </div>
             </form>
         </div>
