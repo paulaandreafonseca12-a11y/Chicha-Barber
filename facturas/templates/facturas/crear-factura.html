@@ -3,10 +3,12 @@
 <div class="container py-4">
   <div class="row justify-content-center">
     <div class="col-lg-9 col-md-11">
-      <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
-        <div class="card-header bg-white py-3 border-bottom color-azul">
-          <h5 class="mb-0 fw-bold text-dark text-center">
-            <i class="bi bi-receipt-cutoff me-2 text-primary"></i>
+      <div
+        class="card border-0 shadow-lg rounded-4 overflow-hidden color-blanco text-dark"
+      >
+        <div class="card-header color-champaña text-dark py-3 border-bottom">
+          <h5 class="mb-0 fw-bold text-center">
+            <i class="bi bi-receipt-cutoff me-2 text-dark"></i>
             {{ titulo }}
           </h5>
         </div>
@@ -21,8 +23,7 @@
 
             <div class="row g-3 mb-4">
               <h6 class="fw-bold text-secondary border-bottom pb-2">
-                <i class="bi bi-person-vcard me-2"></i>Información de
-                Compra
+                <i class="bi bi-person-vcard me-2"></i>Información de Compra
               </h6>
 
               <div class="col-md-6">
@@ -30,7 +31,7 @@
                   >Cliente Registrado (Opcional)</label
                 >
                 <select
-                  class="form-select shadow-sm"
+                  class="form-select shadow-sm bg-white"
                   name="cliente"
                   id="select-cliente"
                 >
@@ -54,7 +55,7 @@
                 <label class="form-label fw-semibold">Nombre del Cliente</label>
                 <input
                   type="text"
-                  class="form-control shadow-sm"
+                  class="form-control shadow-sm bg-white"
                   name="nombre_cliente"
                   id="id_nombre_cliente"
                   placeholder="Nombre completo"
@@ -66,7 +67,7 @@
                 <label class="form-label fw-semibold">Correo Electrónico</label>
                 <input
                   type="email"
-                  class="form-control shadow-sm"
+                  class="form-control shadow-sm bg-white"
                   name="correo_cliente"
                   id="id_correo_cliente"
                   placeholder="nombre@correo.com"
@@ -77,7 +78,7 @@
                 <label class="form-label fw-semibold">Teléfono</label>
                 <input
                   type="text"
-                  class="form-control shadow-sm"
+                  class="form-control shadow-sm bg-white"
                   name="telefono_cliente"
                   id="id_telefono_cliente"
                   placeholder="Ej: 3001234567"
@@ -87,7 +88,7 @@
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Método de Pago</label>
                 <select
-                  class="form-select shadow-sm"
+                  class="form-select shadow-sm bg-white"
                   name="metodo_pago"
                   required
                 >
@@ -104,7 +105,7 @@
                 </label>
                 <input
                   type="file"
-                  class="form-control shadow-sm"
+                  class="form-control shadow-sm bg-white"
                   name="imagen_transaccion"
                   accept="image/*"
                 />
@@ -115,7 +116,7 @@
               </div>
             </div>
 
-            <div class="row g-3 p-3 bg-light rounded-3 mb-4 align-items-end">
+            <div class="row g-3 p-3 bg-white rounded-3 mb-4 align-items-end">
               <h6 class="fw-bold text-dark mb-1">
                 <i class="bi bi-plus-circle-fill me-2 text-primary"></i>Añadir
                 Conceptos a la Cuenta
@@ -123,7 +124,10 @@
 
               <div class="col-md-4">
                 <label class="form-label small fw-bold">Tipo de Ítem</label>
-                <select class="form-select form-select-sm" id="selector-tipo">
+                <select
+                  class="form-select form-select-sm bg-white"
+                  id="selector-tipo"
+                >
                   <option value="servicio">✂️ Servicio</option>
                   <option value="producto">🧴 Producto</option>
                 </select>
@@ -134,7 +138,7 @@
                   >Seleccionar Elemento</label
                 >
                 <select
-                  class="form-select form-select-sm"
+                  class="form-select form-select-sm bg-white"
                   id="selector-servicio"
                 >
                   <option value="">Elegir servicio...</option>
@@ -148,7 +152,7 @@
                   {% endfor %}
                 </select>
                 <select
-                  class="form-select form-select-sm d-none"
+                  class="form-select form-select-sm d-none bg-white"
                   id="selector-producto"
                 >
                   <option value="">Elegir producto...</option>
@@ -167,7 +171,7 @@
                 <label class="form-label small fw-bold">Cant.</label>
                 <input
                   type="number"
-                  class="form-control form-select-sm"
+                  class="form-control form-select-sm bg-white"
                   id="input-cantidad"
                   value="1"
                   min="1"
@@ -190,7 +194,7 @@
                 class="table table-sm align-middle text-center border"
                 id="tabla-conceptos"
               >
-                <thead class="table-dark small">
+                <thead class="color-champaña text-dark small">
                   <tr>
                     <th>Tipo</th>
                     <th class="text-start">Concepto</th>
@@ -216,13 +220,13 @@
                   >Observaciones de la venta</label
                 >
                 <textarea
-                  class="form-control shadow-sm"
+                  class="form-control shadow-sm bg-white"
                   rows="2"
                   name="observaciones"
                   placeholder="Notas adicionales sobre el servicio o productos..."
                 ></textarea>
               </div>
-              <div class="col-md-4 text-end bg-light p-3 rounded-3 border">
+              <div class="col-md-4 text-end bg-white p-3 rounded-3 border">
                 <span
                   class="d-block text-secondary small fw-bold text-uppercase"
                   >Total a Cobrar</span
@@ -249,7 +253,7 @@
               </a>
               <button
                 type="submit"
-                class="btn btn-primary color-azul text-dark fw-bold rounded-pill px-5 shadow border-0"
+                class="btn color-azul text-dark fw-bold rounded-pill px-5 shadow border-0"
               >
                 <i class="bi bi-save2 me-2"></i>Emitir Compra Unificada
               </button>
@@ -257,7 +261,7 @@
           </form>
         </div>
         <div
-          class="card-footer bg-primary border-0 py-2 color-azul mt-auto rounded-bottom"
+          class="card-footer color-champaña text-dark border-0 py-2 mt-auto rounded-bottom"
         ></div>
       </div>
     </div>

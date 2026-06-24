@@ -8,17 +8,17 @@ class ProductoForm(forms.ModelForm):
         model = Producto
         # 🔑 Agregado 'estado' a la lista de campos visibles
         fields = ['nombre', 'descripcion', 'precio_venta', 'precio_compra', 'imagen', 'estado']
-        widgets = { # Eliminado bg-dark y text-white para adaptación al tema
-            'nombre': forms.TextInput(attrs={'class': 'form-control border-secondary'}),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control border-secondary', 'rows': 3}),
-            'precio_venta': forms.NumberInput(attrs={'class': 'form-control border-secondary'}),
-            'precio_compra': forms.NumberInput(attrs={'class': 'form-control border-secondary'}),
-            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control border-secondary'}),
+        widgets = { # Bootstrap blanco para todos los campos
+            'nombre': forms.TextInput(attrs={'class': 'form-control bg-white text-dark border-secondary'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control bg-white text-dark border-secondary', 'rows': 3}),
+            'precio_venta': forms.NumberInput(attrs={'class': 'form-control bg-white text-dark border-secondary'}),
+            'precio_compra': forms.NumberInput(attrs={'class': 'form-control bg-white text-dark border-secondary'}),
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control bg-white text-dark border-secondary'}),
             
-            # 🔲 Cuadrado sencillo, tamaño estándar y con cursor de mano
+            # Bootstrap checkbox estándar
             'estado': forms.CheckboxInput(attrs={
-                'class': 'form-check-input', 
-                'style': 'cursor: pointer; margin-left: 0;'
+                'class': 'form-check-input',
+                'style': 'cursor: pointer;'
             }),
         }
 
