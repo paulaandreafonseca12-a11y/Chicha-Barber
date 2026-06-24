@@ -1,64 +1,17 @@
+
 /* ── COLORES ── */
-.color-champaña {
-  background-color: #eee0cb !important;
-}
-/* Solo aplica champaña si el modo claro está activo */
-body.theme-light .color-champaña {
-  background-color: #eee0cb !important;
-}
-.color-azul {
-  background-color: #22aed1 !important;
-}
-.color-azuloscuro {
-  background-color: #2b50aa !important;
-}
-.color-negro {
-  background-color: #170212 !important;
-}
-.color-blanco {
-  background-color: #ffffff !important;
-}
+.color-champaña { background-color: #eee0cb !important; }
+.color-azul  { background-color: #22aed1 !important; }
+.color-azuloscuro   { background-color: #2b50aa !important; }
+.color-negro{ background-color: #170212!important; }
+.color-blanco { background-color: #ffffff !important; }
 
-/* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
-.theme-switch-item {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  border-radius: 10px;
-  margin: 10px 15px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #eee0cb;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.theme-switch-item:hover {
-  background: rgba(75, 192, 217, 0.1);
-  border-color: #4bc0d9;
-}
-
-.theme-switch-item i {
-  font-size: 1.1rem;
-  color: #22aed1;
-}
-
-body.theme-light .theme-switch-item {
-  background: #eee0cb;
-  border-color: rgba(141, 129, 140, 0.3);
-  color: #030301;
-}
-
-body.theme-light .theme-switch-item i {
-  color: #c47a2c;
-}
 
 /* ── FONDO GENERAL ── */
 .back {
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)),
-    url("../img/image.png") !important;
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.5)),
+    url('../img/image.png') !important;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -75,29 +28,21 @@ main {
   overflow-y: auto;
 }
 
-.color-negro-bg {
-  background: #030301 !important;
-}
+.color-negro-bg { background: #030301 !important; }
 
 /* ── HERO ── */
 /*.hero-section { min-height: 90vh; } /
 .about-section p { line-height: 1.8; color: #e6e6e6; }
 
 /* ── CAROUSEL ── */
-.carousel-item img {
-  height: 450px;
-  object-fit: cover;
-}
+.carousel-item img { height: 450px; object-fit: cover; }
 
 /* ── HEADER ── */
-header,
-.navbar {
+header, .navbar {
   position: relative;
   z-index: 1030;
 }
-header a {
-  transition: 0.3s;
-}
+header a { transition: .3s; }
 
 /* ── DROPDOWNS PREMIUM ── */
 .dropdown-menu-custom {
@@ -121,17 +66,9 @@ header a {
 }
 
 /* ── PRODUCTOS ── */
-.color-negro-bg {
-  background: #111;
-}
-.logo {
-  font-weight: bold;
-  font-size: 24px;
-}
-.titulo-productos {
-  color: #c59d5f;
-  font-weight: bold;
-}
+.color-negro-bg { background: #111; }
+.logo { font-weight: bold; font-size: 24px; }
+.titulo-productos { color: #c59d5f; font-weight: bold; }
 
 /* ── CARDS ── */
 .card-body {
@@ -147,27 +84,18 @@ header a {
   color: white;
   border-radius: 10px;
 }
-.form-control::placeholder {
-  color: #999;
-}
+.form-control::placeholder { color: #999; }
 .registro-card .form-control:focus {
   background: #111 !important;
   color: white !important;
   border-color: #c47a2c;
-  box-shadow: 0 0 0 0.2rem rgba(196, 122, 44, 0.25);
+  box-shadow: 0 0 0 .2rem rgba(196,122,44,.25);
 }
-.form-check-label {
-  color: #ccc;
-}
+.form-check-label { color: #ccc; }
 
 /* ── BOTONES ── */
-.btn-warning {
-  background: #c47a2c;
-  border: none;
-}
-.btn-warning:hover {
-  background: #a8621f;
-}
+.btn-warning            { background: #c47a2c; border: none; }
+.btn-warning:hover      { background: #a8621f; }
 
 .custom-btn {
   background-color: #22aed1 !important;
@@ -177,11 +105,8 @@ header a {
   border-radius: 5px !important;
   letter-spacing: 1px !important;
   font-size: 1rem !important;
-  transition:
-    background-color 0.2s,
-    transform 0.15s,
-    box-shadow 0.2s !important;
-  box-shadow: 0 4px 18px rgba(34, 174, 209, 0.25) !important;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s !important;
+  box-shadow: 0 4px 18px rgba(34,174,209,0.25) !important;
 }
 
 /* ── IMÁGENES ── */
@@ -192,228 +117,135 @@ header a {
 }
 
 /* ============================================
-   RESERVAS
+   RESERVAS (DISEÑO MODO OSCURO / MODO CLARO)
    ============================================ */
 
-:root {
-  --cyan: #00d4f0;
-  --cyan-dim: #0aa8bf;
-  --bg-dark: #0d0f13;
-  --card-bg: rgba(20, 24, 32, 0.97);
-  --card-border: rgba(255, 255, 255, 0.07);
-  --surface: rgba(255, 255, 255, 0.05);
-  --surface-hover: rgba(0, 212, 240, 0.12);
-  --text-muted-custom: #6b7280;
-  --bg: #0e0f11;
-  --card: rgba(18, 20, 23, 0.93);
-  --border: rgba(255, 255, 255, 0.07);
-  --accent: #29c5f6;
-  --glow: rgba(41, 197, 246, 0.22);
-  --text: #eef0f3;
-  --muted: #6b7280;
-  --input-bg: rgba(255, 255, 255, 0.05);
-  --input-border: rgba(255, 255, 255, 0.1);
-  --slot-bg: rgba(41, 197, 246, 0.07);
-  --slot-hover: rgba(41, 197, 246, 0.16);
+/* ── variables base (modo oscuro predeterminado) ── */
+.booking-wrap {
+  --bg-card-dark: rgba(20, 20, 20, 0.75);       
+  --bg-input-dark: rgba(255, 255, 255, 0.04);  
+  --bg-input-hover: rgba(255, 255, 255, 0.08); 
+  --color-champaña: #eee0cb;                    
+  --accent-azul: #22aed1;                       
+  --accent-oscuro: #2b50aa;                     
+  --text-muted: #b0a8b0;                        
+  font-family: 'Work Sans', sans-serif;
 }
 
-.bg-photo {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background: url("../img/Fondo.png") center/cover no-repeat;
-  filter: brightness(0.25) saturate(0.6);
+/* ── modo claro adaptativo para el flujo de reservas ── */
+body.theme-light .booking-wrap {
+  --bg-card-dark: #eee0cb;                       /* Fondo champaña de tu paleta */
+  --bg-input-dark: #ffffff;                      /* Cajas internas blancas limpias */
+  --bg-input-hover: rgba(34, 174, 209, 0.08); 
+  --color-champaña: #030301;                    /* Los títulos pasan a negro */
+  --text-muted: #8d818c;                        /* Gris de tu paleta clara */
 }
 
-/* Navbar */
-.navbar-brand span {
-  font-family: "Bebas Neue", sans-serif;
-  letter-spacing: 4px;
-  font-size: 1.5rem;
+/* ── componentes del contenedor ── */
+.booking-wrap .dark-barber-card {
+  background: var(--bg-card-dark) !important;
+  backdrop-filter: blur(14px);                  
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;  
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 16px !important;
+  transition: background-color 0.3s ease;
 }
-.navbar-brand span.accent {
-  color: var(--cyan);
-}
-.navbar {
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--card-border);
-  margin-top: 0;
-  position: relative;
-}
-.nav-reserve {
-  color: var(--cyan) !important;
-  font-size: 0.75rem;
-  letter-spacing: 3px;
-  font-weight: 500;
+body.theme-light .booking-wrap .dark-barber-card {
+  border: 1px solid rgba(141, 129, 140, 0.3) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Booking card */
-.booking-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
-  max-width: 780px;
-  width: 100%;
-}
-
-/* Stepper */
-.stepper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.step-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  position: relative;
-  z-index: 1;
-}
-.step-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
-  border: 2px solid var(--text-muted-custom);
-  color: var(--text-muted-custom);
-  background: transparent;
-  transition: all 0.3s;
-}
-.step-item.active .step-circle {
-  border-color: var(--cyan);
-  color: var(--cyan);
-}
-.step-item.done .step-circle {
-  border-color: var(--cyan);
-  background: var(--cyan);
-  color: #000;
-}
-.step-label {
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  color: var(--text-muted-custom);
-}
-.step-item.active .step-label,
-.step-item.done .step-label {
-  color: var(--cyan);
-}
-.step-line {
-  flex: 1;
-  height: 1px;
-  background: var(--card-border);
-  max-width: 120px;
-}
-
-/* Day cards */
-.day-card {
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 18px 12px;
+/* ── tarjetas de opción (barberos y pagos) ── */
+.booking-wrap .choice-card-dark {
+  background: var(--bg-input-dark) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-muted) !important;
   cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-  background: var(--surface);
-  user-select: none;
+  transition: all 0.2s ease-in-out;
 }
-.day-card:hover:not(.disabled) {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
+body.theme-light .booking-wrap .choice-card-dark {
+  border: 1px solid rgba(141, 129, 140, 0.3) !important;
 }
-.day-card.selected {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
+
+.booking-wrap .choice-card-dark:hover {
+  background: var(--bg-input-hover) !important;
+  border-color: rgba(34, 174, 209, 0.4) !important;
+  color: var(--color-champaña) !important;
 }
-.day-card .day-name {
-  font-size: 0.65rem;
+
+/* ── estado seleccionado (radios ocultos) ── */
+.booking-wrap .btn-check:checked + .choice-card-dark {
+  background: rgba(34, 174, 209, 0.15) !important;
+  border-color: var(--accent-azul) !important;
+  color: var(--color-champaña) !important;
+  box-shadow: 0 4px 15px rgba(34, 174, 209, 0.15) !important;
+}
+body.theme-light .booking-wrap .btn-check:checked + .choice-card-dark {
+  background: rgba(34, 174, 209, 0.12) !important;
+  color: #030301 !important;
+}
+.booking-wrap .btn-check:checked + .choice-card-dark span,
+.booking-wrap .btn-check:checked + .choice-card-dark div,
+.booking-wrap .btn-check:checked + .choice-card-dark i {
+  color: var(--color-champaña) !important;
+}
+
+/* ── campos de entrada de texto ── */
+.booking-wrap .form-control-barber {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+body.theme-light .booking-wrap .form-control-barber {
+  background: #ffffff !important;
+  border: 1px solid #ced4da !important;
+  color: #030301 !important;
+}
+.booking-wrap .form-control-barber::placeholder { 
+  color: rgba(255, 255, 255, 0.30) !important; 
+}
+body.theme-light .booking-wrap .form-control-barber::placeholder {
+  color: #6c757d !important;
+}
+.booking-wrap .form-control-barber:focus {
+  border-color: var(--accent-azul) !important;
+  box-shadow: 0 0 0 3px rgba(34, 174, 209, 0.2) !important;
+}
+
+/* ── botón de confirmación ── */
+.booking-wrap .btn-confirm {
+  background: linear-gradient(135deg, var(--accent-azul), var(--accent-oscuro)) !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-family: 'Bebas Neue', sans-serif;
   letter-spacing: 2px;
-  color: var(--text-muted-custom);
+  box-shadow: 0 4px 15px rgba(34, 174, 209, 0.3) !important;
+  transition: all 0.2s ease !important;
 }
-.day-card.selected .day-name {
-  color: var(--cyan);
-}
-.day-card .day-number {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2.8rem;
-  line-height: 1;
-  color: #fff;
-}
-.day-card.selected .day-number {
-  color: var(--cyan);
-}
-.day-card .day-month {
-  font-size: 0.75rem;
-  color: #aaa;
-}
-.day-card.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-.day-card .badge-closed {
-  font-size: 0.6rem;
-  letter-spacing: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #888;
-  border-radius: 4px;
-  padding: 2px 6px;
-  margin-top: 4px;
-  display: inline-block;
+.booking-wrap .btn-confirm:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(34, 174, 209, 0.5) !important;
+  color: #ffffff !important;
 }
 
-/* Time slots */
-.time-slot {
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 12px 6px;
-  cursor: pointer;
-  text-align: center;
-  background: var(--surface);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #ddd;
-  transition: all 0.2s;
-  position: relative;
-  user-select: none;
+/* ── alertas de turnos no disponibles ── */
+.booking-wrap .alert-barber {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--color-champaña) !important;
 }
-.time-slot::after {
-  content: "•";
-  display: block;
-  color: var(--cyan);
-  font-size: 0.5rem;
-  margin-top: 2px;
+body.theme-light .booking-wrap .alert-barber {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
-.time-slot:hover:not(.unavailable) {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
-}
-.time-slot.selected {
-  background: var(--cyan);
-  border-color: var(--cyan);
-  color: #000;
-  font-weight: 700;
-}
-.time-slot.selected::after {
-  color: #000;
-}
-.time-slot.unavailable {
-  opacity: 0.35;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
+.time-slot::after { content: '•'; display: block; color: var(--cyan); font-size: .5rem; margin-top: 2px; }
+.time-slot:hover:not(.unavailable) { border-color: var(--cyan); background: var(--surface-hover); }
+.time-slot.selected  { background: var(--cyan); border-color: var(--cyan); color: #000; font-weight: 700; }
+.time-slot.selected::after { color: #000; }
+.time-slot.unavailable { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
 
-.section-label {
-  font-size: 0.7rem;
-  letter-spacing: 2.5px;
-  color: var(--cyan);
-  font-weight: 600;
-}
+.section-label { font-size: .7rem; letter-spacing: 2.5px; color: var(--cyan); font-weight: 600; }
 
 /* Inputs reservas */
 .form-control-dark {
@@ -424,336 +256,256 @@ header a {
 }
 .form-control-dark:focus {
   border-color: var(--cyan) !important;
-  box-shadow: 0 0 0 3px rgba(0, 212, 240, 0.15) !important;
+  box-shadow: 0 0 0 3px rgba(0,212,240,.15) !important;
 }
-.form-control-dark::placeholder {
-  color: #555;
-}
-.form-label {
-  font-size: 0.8rem;
-  color: #aaa;
-  margin-bottom: 6px;
-}
+.form-control-dark::placeholder { color: #555; }
+.form-label { font-size: .8rem; color: #aaa; margin-bottom: 6px; }
 
 /* Payment */
 .payment-option {
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: var(--surface);
+  border: 1px solid var(--card-border); border-radius: 12px;
+  padding: 14px 16px; cursor: pointer; transition: all .2s; background: var(--surface);
 }
 .payment-option:hover,
-.payment-option.selected {
-  border-color: var(--cyan);
-  background: var(--surface-hover);
-}
-.payment-option .pay-title {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #fff;
-}
-.payment-option .pay-sub {
-  font-size: 0.75rem;
-  color: #888;
-}
+.payment-option.selected { border-color: var(--cyan); background: var(--surface-hover); }
+.payment-option .pay-title { font-size: .9rem; font-weight: 500; color: #fff; }
+.payment-option .pay-sub   { font-size: .75rem; color: #888; }
 .payment-option .radio-dot {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid #555;
-  display: inline-block;
-  margin-right: 12px;
-  flex-shrink: 0;
-  transition: all 0.2s;
-  position: relative;
-  top: 2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #555; display: inline-block; margin-right: 12px;
+  flex-shrink: 0; transition: all .2s; position: relative; top: 2px;
 }
 .payment-option.selected .radio-dot {
-  border-color: var(--cyan);
-  background: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(0, 212, 240, 0.2);
+  border-color: var(--cyan); background: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,212,240,.2);
 }
 
 /* Confirm table */
-.confirm-table tr {
-  border-bottom: 1px solid var(--card-border);
-}
-.confirm-table tr:last-child {
-  border-bottom: none;
-}
-.confirm-table td {
-  padding: 14px 0;
-}
-.confirm-table .label {
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  color: #888;
-}
-.confirm-table .value {
-  font-size: 0.9rem;
-  color: #fff;
-}
-.confirm-table .value.accent {
-  color: var(--cyan);
-  font-weight: 600;
-}
+.confirm-table tr            { border-bottom: 1px solid var(--card-border); }
+.confirm-table tr:last-child { border-bottom: none; }
+.confirm-table td            { padding: 14px 0; }
+.confirm-table .label  { font-size: .65rem; letter-spacing: 2px; color: #888; }
+.confirm-table .value  { font-size: .9rem; color: #fff; }
+.confirm-table .value.accent { color: var(--cyan); font-weight: 600; }
 
 /* Buttons reservas */
 .btn-cyan {
-  background: var(--cyan);
-  border: none;
-  color: #000;
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  border-radius: 10px;
-  padding: 14px;
-  transition: all 0.2s;
+  background: var(--cyan); border: none; color: #000;
+  font-weight: 700; font-size: .8rem; letter-spacing: 2px;
+  border-radius: 10px; padding: 14px; transition: all .2s;
 }
-.btn-cyan:hover {
-  background: #fff;
-  color: #000;
-}
+.btn-cyan:hover { background: #fff; color: #000; }
 .btn-back {
-  background: var(--surface);
-  border: 1px solid var(--card-border);
-  color: #aaa;
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  border-radius: 10px;
-  padding: 14px 20px;
-  transition: all 0.2s;
+  background: var(--surface); border: 1px solid var(--card-border);
+  color: #aaa; font-size: .8rem; letter-spacing: 1px;
+  border-radius: 10px; padding: 14px 20px; transition: all .2s;
 }
-.btn-back:hover {
-  border-color: #aaa;
-  color: #fff;
-}
+.btn-back:hover { border-color: #aaa; color: #fff; }
 
 /* Success */
-.success-icon {
-  font-size: 4rem;
-  color: var(--cyan);
-}
-.success-title {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2.8rem;
-  letter-spacing: 3px;
-  color: #fff;
-}
+.success-icon  { font-size: 4rem; color: var(--cyan); }
+.success-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 3px; color: #fff; }
 
 /* Fade */
-.step-panel {
-  animation: fadeUp 0.3s ease both;
-}
+.step-panel { animation: fadeUp .3s ease both; }
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+
+
+
 
 /* =========================
    RESET
 ========================= */
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 /* =========================
    FONDO DECORATIVO
 ========================= */
 .background-decor {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(245, 166, 35, 0.06) 0%,
-    transparent 70%
-  );
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(245,166,35,.06) 0%,
+        transparent 70%
+    );
 }
 
 .ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(245, 166, 35, 0.08);
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,.08);
 }
 
 .ring-1 {
-  width: 520px;
-  height: 520px;
-  top: -160px;
-  left: -160px;
+    width: 520px;
+    height: 520px;
+    top: -160px;
+    left: -160px;
 }
 
 .ring-2 {
-  width: 320px;
-  height: 320px;
-  bottom: -120px;
-  right: -120px;
+    width: 320px;
+    height: 320px;
+    bottom: -120px;
+    right: -120px;
 }
 
 /* =========================
    CONTENEDOR PRINCIPAL
 ========================= */
 .main-wrapper {
-  width: 100%;
-  max-width: 600px;
+    width: 100%;
+    max-width: 600px;
 }
 
 /* =========================
    LOGO
 ========================= */
 .logo-wrap {
-  width: 90px;
-  height: 90px;
-  border: 2px solid rgba(245, 166, 35, 0.4);
-  box-shadow: 0 0 20px rgba(245, 166, 35, 0.2);
+    width: 90px;
+    height: 90px;
+    border: 2px solid rgba(245,166,35,.4);
+    box-shadow: 0 0 20px rgba(245,166,35,.2);
 }
 
 /* =========================
    TIPOGRAFÍAS DE MARCA
 ========================= */
 .brand-name {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2.4rem;
-  letter-spacing: 1px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: 1px;
 }
 
 .brand-sub {
-  color: #f5a623;
-  letter-spacing: 0.2em;
+    color: #f5a623;
+    letter-spacing: 0.2em;
 }
 
 /* =========================
    FORMULARIO
 ========================= */
 .form-box {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    background: #111;
+    border: 1px solid rgba(255,255,255,.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,.5);
 }
 
 .form-heading {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 2rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
 }
 
 /* =========================
    LABELS
 ========================= */
 .cb-label {
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,.5);
 }
 
 /* =========================
    INPUTS
 ========================= */
 .input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(245, 166, 35, 0.8);
-  font-size: 0.9rem;
-  z-index: 1;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(245,166,35,.8);
+    font-size: 0.9rem;
+    z-index: 1;
 }
 
 .cb-input {
-  width: 100%;
-  padding: 10px 10px 10px 38px;
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.9rem;
-  outline: none;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+    width: 100%;
+    padding: 10px 10px 10px 38px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .cb-input:focus {
-  border-color: #f5a623;
-  box-shadow: 0 0 8px rgba(245, 166, 35, 0.2);
+    border-color: #f5a623;
+    box-shadow: 0 0 8px rgba(245,166,35,.2);
 }
 
 select.cb-input {
-  appearance: none;
+    appearance: none;
 }
 
 /* =========================
    OJO CONTRASEÑA
 ========================= */
 .input-eye {
-  color: rgba(255, 255, 255, 0.3);
-  transition: color 0.2s;
+    color: rgba(255,255,255,.3);
+    transition: color 0.2s;
 }
 
 .input-eye:hover {
-  color: #f5a623;
+    color: #f5a623;
 }
 
 /* =========================
    BOTÓN
 ========================= */
 .btn-auth {
-  background: #f5a623;
-  border: none;
-  border-radius: 8px;
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 1.3rem;
-  letter-spacing: 0.1em;
-  transition:
-    background 0.3s,
-    transform 0.3s;
+    background: #f5a623;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    transition: background 0.3s, transform 0.3s;
 }
 
 .btn-auth:hover {
-  background: #f7b640;
-  transform: translateY(-2px);
+    background: #f7b640;
+    transform: translateY(-2px);
 }
 
 .no-link-style {
-  color: #000 !important;
-  text-decoration: none !important;
+    color: #000 !important;
+    text-decoration: none !important;
 }
 
 /* =========================
    ÍCONO DE ÉXITO
 ========================= */
 .success-icon {
-  width: 70px;
-  height: 70px;
-  border: 2px solid #f5a623;
-  color: #f5a623;
-  font-size: 2rem;
-  box-shadow: 0 0 20px rgba(245, 166, 35, 0.2);
+    width: 70px;
+    height: 70px;
+    border: 2px solid #f5a623;
+    color: #f5a623;
+    font-size: 2rem;
+    box-shadow: 0 0 20px rgba(245,166,35,.2);
 }
 
 /* =========================
    ALERTAS
 ========================= */
 .auth-alert {
-  background: rgba(220, 53, 69, 0.1);
-  border: 1px solid rgba(220, 53, 69, 0.2);
-  font-size: 0.8rem;
-  color: #ff6b6b;
+    background: rgba(220,53,69,.1);
+    border: 1px solid rgba(220,53,69,.2);
+    font-size: 0.8rem;
+    color: #ff6b6b;
 }
 
 /* =========================
@@ -761,40 +513,22 @@ select.cb-input {
 ========================= */
 .aux-link,
 .forgot-link {
-  color: #f5a623;
-  text-decoration: none;
+    color: #f5a623;
+    text-decoration: none;
 }
 
 .forgot-link:hover {
-  color: #f7b640;
+    color: #f7b640;
 }
 /* =========================
    Botones lista de usuarios
 ========================= */
-.filtro-rol {
-  background: transparent;
-}
-.filtro-rol:hover {
-  background: transparent;
-}
+.filtro-rol { background: transparent; }
+.filtro-rol:hover { background: transparent; }
 
 /* ==========================================================================
    TEMA CLARO (PALETA DE COLORES RESTRINGIDA)
    ========================================================================== */
-
-/* Estilo base para secciones que alternan color según el tema */
-.themed-section {
-  background-color: rgba(
-    33,
-    37,
-    41,
-    0.75
-  ); /* Equivalente a bg-dark bg-opacity-75 */
-  color: #ffffff;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
 
 /* Fondo general de la página en claro (Fondo Blanco Estático) */
 body.theme-light {
@@ -811,12 +545,6 @@ body.theme-light hr {
 /* Ocultar decoraciones de fondo en modo claro para un fondo blanco puro */
 body.theme-light .background-decor {
   display: none !important;
-}
-
-/* Ajuste de secciones en modo claro */
-body.theme-light .themed-section {
-  background-color: #f8f9fa !important;
-  color: #030301 !important;
 }
 
 /* Sobrescribir textos de color claro a negro de la paleta */
@@ -842,39 +570,16 @@ body.theme-light .text-body {
 }
 
 /* Cajas, Tarjetas, Formularios, Acordeones en color blanco/claro */
+body.theme-light .card,
 body.theme-light .form-box,
 body.theme-light .p-4.rounded-4.shadow-sm,
 body.theme-light aside,
+body.theme-light .booking-card,
 body.theme-light .step-item .step-circle {
   background-color: #ffffff !important;
   color: #030301 !important;
-  border-color: rgba(
-    141,
-    129,
-    140,
-    0.3
-  ) !important; /* Borde gris de la paleta #8d818c */
+  border-color: rgba(141, 129, 140, 0.3) !important; /* Borde gris de la paleta #8d818c */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Aplicar champaña a TODAS las tarjetas y sus partes (Inicio, Panel, etc) solo en modo claro */
-body.theme-light .card,
-body.theme-light .booking-card,
-body.theme-light .card-header,
-body.theme-light .card-footer,
-body.theme-light .modal-content {
-  background-color: #eee0cb !important;
-  color: #030301 !important;
-  border-color: rgba(141, 129, 140, 0.3) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Tarjeta blanca en el hero (ajuste para modo claro) - 
-   Si quieres que estas también sean champaña, cambia #ffffff por #eee0cb */
-body.theme-light .color-blanco {
-  background-color: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Sobrescribir subtextos en light mode */
@@ -897,27 +602,7 @@ body.theme-light .table {
 body.theme-light .table-dark {
   --bs-table-bg: #ffffff !important;
   --bs-table-color: #030301 !important;
-  --bs-table-hover-bg: rgba(
-    34,
-    174,
-    209,
-    0.08
-  ) !important; /* Azul de la paleta en hover */
-}
-
-/* Forzar fondo blanco en contenedores de tablas y DataTables */
-body.theme-light .dt-container,
-body.theme-light .dataTables_wrapper,
-body.theme-light .table-responsive {
-  background-color: #ffffff !important;
-  color: #030301 !important;
-}
-
-/* Forzar transparencia o color champaña en card-body para evitar parches blancos */
-body.theme-light .card-body {
-  background-color: #eee0cb !important;
-  color: #030301 !important;
-  border-radius: 0 0 15px 15px;
+  --bs-table-hover-bg: rgba(34, 174, 209, 0.08) !important; /* Azul de la paleta en hover */
 }
 
 /* Cabecera azul para ambos modos */
@@ -933,20 +618,6 @@ body.theme-light .card-body {
 
 /* ── ESTILOS DATATABLES PERSONALIZADOS ── */
 
-/* MODO CLARO: Forzar tablas blancas */
-body.theme-light .table-dark {
-  --bs-table-bg: #ffffff !important;
-  --bs-table-color: #030301 !important;
-  border-color: rgba(0, 0, 0, 0.1) !important;
-}
-
-body.theme-light .table-dark tbody tr,
-body.theme-light .table-dark td,
-body.theme-light .table-dark th {
-  background-color: #ffffff !important;
-  color: #030301 !important;
-}
-
 /* 1. MODO OSCURO (Predeterminado o body.theme-dark) */
 body.theme-dark .dt-paging .pagination .page-link,
 body.theme-dark .dataTables_paginate .pagination .page-link,
@@ -961,9 +632,9 @@ body.theme-dark .dt-paging .pagination .page-link:hover,
 body.theme-dark .dataTables_paginate .pagination .page-link:hover,
 .dt-paging .pagination .page-link:hover,
 .dataTables_paginate .pagination .page-link:hover {
-  background-color: #eee0cb !important; /* Naranja de la paleta */
+  background-color: #c47a2c !important; /* Naranja de la paleta */
   color: #ffffff !important;
-  border-color: #eee0cb !important;
+  border-color: #c47a2c !important;
 }
 
 body.theme-dark .dt-paging .pagination .page-item.active .page-link,
@@ -1071,11 +742,7 @@ body.theme-light .dataTables_paginate .pagination .page-item.active .page-link {
 }
 
 body.theme-light .dt-paging .pagination .page-item.disabled .page-link,
-body.theme-light
-  .dataTables_paginate
-  .pagination
-  .page-item.disabled
-  .page-link {
+body.theme-light .dataTables_paginate .pagination .page-item.disabled .page-link {
   background-color: #f8f9fa !important;
   color: #8d818c !important;
   border-color: rgba(141, 129, 140, 0.2) !important;
@@ -1115,6 +782,8 @@ body.theme-light .dataTables_length label {
   color: #030301 !important;
 }
 
+
+
 /* Botones Exportar DataTables */
 .dt-btn-excel {
   background-color: #198754 !important;
@@ -1131,15 +800,9 @@ body.theme-light .dataTables_length label {
   color: white !important;
   border: none;
 }
-.dt-btn-excel:hover {
-  background-color: #146c43 !important;
-}
-.dt-btn-pdf:hover {
-  background-color: #b02a37 !important;
-}
-.dt-btn-print:hover {
-  background-color: #a8621f !important;
-}
+.dt-btn-excel:hover { background-color: #146c43 !important; }
+.dt-btn-pdf:hover { background-color: #b02a37 !important; }
+.dt-btn-print:hover { background-color: #a8621f !important; }
 
 /* Botones y Links en light mode */
 body.theme-light header,
@@ -1252,34 +915,28 @@ body.theme-light .registro-card .form-control {
   border: 1px solid #ced4da !important; /* Light border */
   color: #030301 !important; /* Black text */
 }
-body.theme-light .form-control::placeholder {
-  color: #6c757d !important;
-} /* Darker placeholder */
+body.theme-light .form-control::placeholder { color: #6c757d !important; } /* Darker placeholder */
 body.theme-light .form-control:focus,
 body.theme-light .registro-card .form-control:focus {
   background: #ffffff !important; /* White background on focus */
   color: #030301 !important; /* Black text on focus */
   border-color: #22aed1 !important; /* Cyan border on focus */
-  box-shadow: 0 0 0 0.2rem rgba(34, 174, 209, 0.25) !important; /* Cyan shadow on focus */
+  box-shadow: 0 0 0 .2rem rgba(34,174,209,.25) !important; /* Cyan shadow on focus */
 }
-body.theme-light .form-check-label {
-  color: #343a40 !important;
-} /* Darker label */
+body.theme-light .form-check-label { color: #343a40 !important; } /* Darker label */
 
 body.theme-light .btn-warning {
   background: #c47a2c !important;
   border: none !important;
   color: #ffffff !important; /* White text on orange */
 }
-body.theme-light .btn-warning:hover {
-  background: #a8621f !important;
-}
+body.theme-light .btn-warning:hover { background: #a8621f !important; }
 
 body.theme-light .custom-btn {
   background-color: #22aed1 !important;
   border: none !important;
   color: #030301 !important; /* Black text */
-  box-shadow: 0 4px 18px rgba(34, 174, 209, 0.15) !important; /* Lighter shadow */
+  box-shadow: 0 4px 18px rgba(34,174,209,0.15) !important; /* Lighter shadow */
 }
 body.theme-light .custom-btn:hover {
   background-color: #22aed1 !important;
@@ -1317,46 +974,15 @@ body.theme-light .btn-outline-info:hover {
 
 /* ── ESTILOS ESPECÍFICOS PARA VISTAS DE ADMINISTRACIÓN EN MODO CLARO ── */
 body.theme-light .card.bg-dark,
-body.theme-light .modal-content.bg-dark,
-body.theme-light .card.bg-dark .card-header,
-body.theme-light .card.bg-dark .card-body,
-body.theme-light .modal-content.bg-dark .modal-header {
-  background-color: #eee0cb !important; /* Mantener champaña en tarjetas admin */
+body.theme-light .modal-content.bg-dark {
+  background-color: #ffffff !important;
   border-color: rgba(141, 129, 140, 0.3) !important;
-  color: #030301 !important;
 }
-
-body.theme-light .card.bg-dark .text-info,
-body.theme-light .card.bg-dark .text-white-50 {
-  color: #2ca3c4 !important; /* Usar azul de la paleta para resaltar etiquetas */
-}
-
-body.theme-light .modal-header {
-  background-color: rgba(0, 0, 0, 0.05) !important;
+body.theme-light .card.bg-dark .card-header,
+body.theme-light .modal-content.bg-dark .modal-header {
+  background-color: #f8f9fa !important; /* Light grey header */
   border-bottom-color: rgba(141, 129, 140, 0.2) !important;
 }
-
-/* Inputs específicos del panel admin (como en crear_cita_admin.html) */
-body.theme-light .custom-dark-input {
-  background-color: #ffffff !important;
-  border: 1px solid rgba(141, 129, 140, 0.4) !important;
-  color: #030301 !important;
-}
-
-body.theme-light .custom-dark-input::placeholder {
-  color: #8d818c !important;
-}
-
-body.theme-light .custom-dark-input:focus {
-  border-color: #4bc0d9 !important;
-  box-shadow: 0 0 0 0.25rem rgba(75, 192, 217, 0.25) !important;
-}
-
-body.theme-light .custom-dark-input option {
-  background-color: #ffffff;
-  color: #030301;
-}
-
 body.theme-light .table.table-dark {
   --bs-table-bg: #ffffff !important;
   --bs-table-color: #030301 !important;
@@ -1375,30 +1001,21 @@ body.theme-light .table.table-dark thead.thead-azul th {
 body.theme-light .table.table-dark tbody tr {
   border-color: rgba(141, 129, 140, 0.1) !important;
 }
-body.theme-light .table.table-dark .text-white {
-  color: #030301 !important;
-}
-body.theme-light .table.table-dark .text-white-50 {
-  color: #6c757d !important;
-}
+body.theme-light .table.table-dark .text-white { color: #030301 !important; }
+body.theme-light .table.table-dark .text-white-50 { color: #6c757d !important; }
 body.theme-light .table.table-dark .bg-primary.bg-opacity-10 {
-  background-color: rgba(
-    34,
-    174,
-    209,
-    0.1
-  ) !important; /* Light cyan for 'today' row */
+  background-color: rgba(34, 174, 209, 0.1) !important; /* Light cyan for 'today' row */
 }
 body.theme-light .table.table-dark .badge.bg-primary {
   background-color: #22aed1 !important;
   color: #ffffff !important;
 }
 body.theme-light .table.table-dark .badge.bg-secondary {
-  background-color: #eee0cb !important; /* Light grey for secondary badge */
+  background-color: #e9ecef !important; /* Light grey for secondary badge */
   color: #495057 !important;
 }
 body.theme-light .table.table-dark .badge.bg-warning {
-  background-color: #22aed1 !important;
+  background-color: #ffc107 !important;
   color: #030301 !important;
 }
 body.theme-light .table.table-dark .bg-secondary.bg-opacity-10 {
@@ -1424,11 +1041,11 @@ body.theme-light .table.table-dark .btn-outline-info:hover {
   color: #ffffff !important;
 }
 body.theme-light .table.table-dark .btn-outline-success {
-  border-color: #22aed1 !important;
-  color: #eee0cb !important;
+  border-color: #28a745 !important;
+  color: #28a745 !important;
 }
 body.theme-light .table.table-dark .btn-outline-success:hover {
-  background-color: #22aed1 !important;
+  background-color: #28a745 !important;
   color: #ffffff !important;
 }
 body.theme-light .table.table-dark .btn-outline-primary {
@@ -1461,7 +1078,7 @@ body.theme-light .table.table-dark .modal-footer .btn-secondary:hover {
 body.theme-light .flatpickr-calendar {
   background: #ffffff !important;
   border: 1px solid #ced4da !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
 }
 body.theme-light .flatpickr-day.selected,
 body.theme-light .flatpickr-day.selected:hover {
@@ -1489,10 +1106,7 @@ body.theme-light .flatpickr-day,
 body.theme-light .flatpickr-weekday,
 body.theme-light .flatpickr-month,
 body.theme-light .flatpickr-current-month .flatpickr-monthDropdown-months,
-body.theme-light
-  .flatpickr-current-month
-  .flatpickr-monthDropdown-months
-  .flatpickr-monthDropdown-month {
+body.theme-light .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
   color: #030301 !important;
 }
 body.theme-light .flatpickr-time input.flatpickr-hour,
@@ -1505,40 +1119,6 @@ body.theme-light .flatpickr-time .flatpickr-am-pm {
 body.theme-light .flatpickr-time .numInputWrapper span.arrowUp:after,
 body.theme-light .flatpickr-time .numInputWrapper span.arrowDown:after {
   border-color: #030301 !important;
-}
-
-/* Iconos y controles de carrusel en modo claro */
-body.theme-light .carousel-control-prev-icon,
-body.theme-light .carousel-control-next-icon {
-  background-color: rgba(0, 0, 0, 0.1) !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
-  filter: invert(1);
-}
-
-body.theme-light .carousel-indicators [data-bs-target] {
-  background-color: #030301 !important;
-}
-
-/* Transiciones suaves para todos los elementos al cambiar de tema */
-body,
-section,
-div,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-span,
-a,
-.card,
-.navbar {
-  transition:
-    background-color 0.4s ease,
-    color 0.4s ease,
-    border-color 0.4s ease,
-    box-shadow 0.4s ease;
 }
 
 /* Remove specific dark theme for flatpickr as we're defining light theme */
