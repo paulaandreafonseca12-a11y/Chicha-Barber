@@ -114,7 +114,7 @@ def detalle_factura(request, id):
     )
 
     context = {
-        'titulo': 'Detalle de la factura',
+        'titulo': 'Detalle de la compra',
         'factura': factura,
     }
 
@@ -131,7 +131,7 @@ def imprimir_factura(request, id):
     )
 
     context = {
-        'titulo': 'Imprimir Factura',
+        'titulo': 'Imprimir Compra',
         'factura': factura,
     }
 
