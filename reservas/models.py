@@ -3,8 +3,9 @@ from datetime import datetime
 from django.db import models
 from django.utils import timezone
 from servicios.models import Servicios, Promocion
-from usuarios.models import Usuario
-
+from usuarios.models import Usuario, Notificacion
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import User # O tu modelo personalizado
 
 class Barbero(models.Model):
@@ -167,3 +168,33 @@ class Reserva(models.Model):
         fecha = self.fecha_reserva or (self.turno.fecha if self.turno else 'Sin fecha')
         return f"{cliente_nombre} - {self.servicio.nombre} ({fecha})"
     
+
+
+
+@receiver(post_save, sender=Reserva)
+def notificar_reserva(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    cliente_nombre = instance.nombre_cliente or (
+        instance.cliente.get_full_name() if instance.cliente else 'Cliente'
+    )
+
+    # Notificación al cliente (si está registrado)
+    if instance.cliente:
+        Notificacion.objects.create(
+            usuario=instance.cliente,
+            tipo='reserva',
+            mensaje=f"Tu reserva de {instance.servicio.nombre} fue registrada con éxito.",
+            url='/perfil/'
+        )
+
+    # Notificación a todos los administradores
+    admins = Usuario.objects.filter(rol='admin')
+    for admin in admins:
+        Notificacion.objects.create(
+            usuario=admin,
+            tipo='reserva',
+            mensaje=f"Nueva reserva de {cliente_nombre} para {instance.servicio.nombre}.",
+            url='/admin-reservas/'  # ajusta a tu URL real del listado de reservas
+        )

@@ -308,24 +308,7 @@
     </div>
   </section>
 
-  <script>
-    // Verificación de expiración periódica
-    function verificarExpiracionCarrito() {
-      let expiracion = localStorage.getItem("carrito_expiracion");
-      if (expiracion && Date.now() > expiracion) {
-        localStorage.removeItem("carrito");
-        localStorage.removeItem("carrito_expiracion");
-        let contador = document.getElementById("contador");
-        if (contador) contador.textContent = "0";
-        console.log("Carrito expirado.");
-      }
-    }
-
-    // Revisar cada 2 segundos para mayor precisión
-    setInterval(verificarExpiracionCarrito, 2000);
-    verificarExpiracionCarrito();
-  </script>
-  {% endblock %}
+ 
 </section>
 
 <!-- SECCIÓN MAPA DE UBICACIÓN -->

@@ -68,3 +68,29 @@ class RegistroActividad(models.Model):
 
     def __str__(self):
         return f"{self.usuario} - {self.descripcion} ({self.fecha:%d/%m/%Y %H:%M})"
+    
+class Notificacion(models.Model):
+    TIPO_CHOICES = (
+        ('compra', 'Compra'),
+        ('reserva', 'Reserva'),
+    )
+
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='notificaciones',
+        verbose_name='Destinatario'
+    )
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    mensaje = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, blank=True, null=True)
+    leida = models.BooleanField(default=False)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Notificación'
+        verbose_name_plural = 'Notificaciones'
+        ordering = ['-fecha']
+
+    def __str__(self):
+        return f"{self.usuario} - {self.mensaje}"
