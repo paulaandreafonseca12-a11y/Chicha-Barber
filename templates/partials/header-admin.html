@@ -19,7 +19,7 @@
             <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="navbarDropdown">
-            <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column" style="background: rgba(255, 255, 255, 0.03);">
+            <li class="px-3 py-2 border-bottom border-secondary border-opacity-25 mb-2 rounded-top-4 d-flex flex-column" style="background: #eee0cb;">
               <span class="text-white-50 fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Rol de administrador</span>
               <span class="small fw-semibold text-white">{{ user.get_rol_display|default:"Admin" }}</span>
             </li>
