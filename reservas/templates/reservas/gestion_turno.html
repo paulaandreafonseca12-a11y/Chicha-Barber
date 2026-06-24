@@ -1,14 +1,12 @@
 {% extends "base-admin.html" %}
 
 {% block content %}
-<div class="container py-4">
+<!-- Contenedor principal con espaciado lateral para separarlo del panel izquierdo -->
+<div class="container py-4 px-md-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-warning">
-            <i class="bi bi-calendar-week-fill me-2"></i>{{ titulo }}
-        </h2>
-        <a href="{% url 'ver_agenda' %}" class="btn btn-outline-light fw-bold">
-            <i class="bi bi-arrow-left me-2"></i>Volver a la Agenda
-        </a>
+    <a href="{% url 'ver_agenda' %}" class="btn btn-sm bg-white border border-light-subtle shadow-sm fw-bold px-3 text-dark ms-auto">
+    <i class="bi bi-arrow-left me-2"></i>Volver a la Agenda
+    </a>
     </div>
 
     {% if messages %}
@@ -20,35 +18,35 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Contenedor Principal Adaptado a Modo Oscuro -->
-    <div class="card bg-dark text-white border-secondary shadow-lg">
-        <div class="card-header py-3 text-white" style="background-color: #1a1e21; border-bottom: 1px solid #495057;">
-            <h5 class="mb-0 fw-bold text-info"><i class="bi bi-clock-history me-2"></i>Gestión de Disponibilidad (Próximos 15 Días)</h5>
+    <!-- Contenedor Principal Adaptado a Tema Blanco -->
+    <div class="card text-dark border border-secondary border-opacity-10 shadow-sm bg-white">
+        <div class="card-header py-3 bg-light" style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+            <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-clock-history me-2"></i>Gestión de Disponibilidad (Próximos 15 Días)</h5>
         </div>
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
-                    <thead class="thead-azul">
+                <table class="table align-middle mb-0 w-100" style="color: #212529;">
+                    <thead class="table-light" style="border-bottom: 2px solid rgba(0,0,0,0.05);">
                         <tr>
-                            <th class="ps-4">Día / Fecha</th>
-                            <th>Estado</th>
-                            <th class="text-center">Turnos Disponibles</th>
-                            <th class="text-center">Citas Ya Reservadas</th>
-                            <th class="text-end pe-4">Acciones</th>
+                            <th class="ps-4 py-3 text-secondary fw-bold small text-uppercase">Día / Fecha</th>
+                            <th class="text-secondary fw-bold small text-uppercase">Estado</th>
+                            <th class="text-center text-secondary fw-bold small text-uppercase">Turnos Disponibles</th>
+                            <th class="text-center text-secondary fw-bold small text-uppercase">Citas Ya Reservadas</th>
+                            <th class="text-end pe-4 text-secondary fw-bold small text-uppercase">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for dia in dias %}
-                        <!-- Fila de HOY adaptada con opacidad oscura -->
-                        <tr class="{% if dia.es_hoy %}bg-primary bg-opacity-10{% endif %}">
+                        <!-- Fila de HOY adaptada a tono claro suave -->
+                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.05);" class="{% if dia.es_hoy %}bg-primary bg-opacity-10{% endif %}">
                             <td class="ps-4">
-                                <div class="fw-bold text-white">{{ dia.fecha|date:"l"|capfirst }}</div>
-                                <div class="text-white-50 small">{{ dia.fecha|date:"d M, Y" }}</div>
+                                <div class="fw-bold text-dark">{{ dia.fecha|date:"l"|capfirst }}</div>
+                                <div class="text-muted small">{{ dia.fecha|date:"d M, Y" }}</div>
                                 {% if dia.es_hoy %}<span class="badge bg-primary ms-1">HOY</span>{% endif %}
                             </td>
                             <td>
                                 {% if dia.disponible %}
-                                    <span class="badge bg-success px-3 py-2">
+                                    <span class="badge bg-success px-3 py-2 text-white">
                                         <i class="bi bi-check-circle-fill me-1"></i> ABIERTO
                                     </span>
                                 {% else %}
@@ -58,12 +56,12 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <span class="fs-5 fw-bold {% if dia.cantidad > 0 %}text-info{% else %}text-white-50{% endif %}">
+                                <span class="fs-5 fw-bold {% if dia.cantidad > 0 %}text-primary{% else %}text-muted opacity-50{% endif %}">
                                     {{ dia.cantidad }}
                                 </span>
                             </td>
                             <td class="text-center">
-                                <span class="badge rounded-pill {% if dia.reservas > 0 %}bg-warning text-dark{% else %}bg-secondary bg-opacity-25 text-white-50 border border-secondary{% endif %}">
+                                <span class="badge rounded-pill {% if dia.reservas > 0 %}bg-warning text-dark{% else %}bg-light text-muted border border-light-subtle{% endif %}">
                                     {{ dia.reservas }} citas
                                 </span>
                             </td>
@@ -89,22 +87,22 @@
     </div>
 </div>
 
-<!-- Modal Activar Agenda (Estilizado a Modo Oscuro) -->
+<!-- Modal Activar Agenda (Estilizado a Tema Blanco Moderno) -->
 <div class="modal fade" id="modalActivar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white border-secondary">
+        <div class="modal-content bg-white text-dark border-0 shadow">
             <form id="formActivar" method="POST">
                 {% csrf_token %}
-                <div class="modal-header text-white border-secondary" style="background-color: #1a1e21;">
-                    <h5 class="modal-title text-info">
-                        <i class="bi bi-calendar-plus me-2"></i>Activar Agenda: <span id="fechaLegibleActivar"></span>
+                <div class="modal-header bg-light text-dark border-bottom" style="border-color: rgba(0,0,0,0.08)!important;">
+                    <h5 class="modal-title text-primary fw-bold">
+                        <i class="bi bi-calendar-plus me-2"></i>Activar Agenda: <span id="fechaLegibleActivar" class="text-dark"></span>
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-white-50 small text-uppercase">Barbero(s)</label>
-                        <select name="barbero" class="form-select custom-dark-input" required>
+                        <label class="form-label fw-bold text-secondary small text-uppercase">Barbero(s)</label>
+                        <select name="barbero" class="form-select custom-white-input" required>
                             <option value="todos">Todos los barberos activos</option>
                             {% for barbero in barberos %}
                                 <option value="{{ barbero.id }}">{{ barbero.get_full_name }}</option>
@@ -113,42 +111,42 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold text-white-50 small text-uppercase">Hora Inicio (24h)</label>
-                            <input type="number" name="hora_inicio" class="form-control custom-dark-input" value="8" min="0" max="23">
+                            <label class="form-label fw-bold text-secondary small text-uppercase">Hora Inicio (24h)</label>
+                            <input type="number" name="hora_inicio" class="form-control custom-white-input" value="8" min="0" max="23">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold text-white-50 small text-uppercase">Hora Fin (24h)</label>
-                            <input type="number" name="hora_fin" class="form-control custom-dark-input" value="18" min="0" max="23">
+                            <label class="form-label fw-bold text-secondary small text-uppercase">Hora Fin (24h)</label>
+                            <input type="number" name="hora_fin" class="form-control custom-white-input" value="18" min="0" max="23">
                         </div>
                     </div>
-                    <!-- Almuerzo estilizado sin fondo blanco brillante -->
-                    <div class="row bg-secondary bg-opacity-10 p-2 rounded mb-3 border border-secondary mx-0">
+                    <!-- Sección de Almuerzo Limpia y Clara -->
+                    <div class="row bg-light p-2 rounded mb-3 border border-light-subtle mx-0">
                         <div class="col-12 px-1">
-                            <label class="form-label fw-bold text-info small text-uppercase mb-2">Excluir Hora de Almuerzo (Opcional)</label>
+                            <label class="form-label fw-bold text-primary small text-uppercase mb-2">Excluir Hora de Almuerzo (Opcional)</label>
                         </div>
                         <div class="col-md-6 mb-2 px-1">
-                            <label class="small text-white-50">Inicio Almuerzo</label>
-                            <input type="number" name="h_almuerzo_inicio" class="form-control form-control-sm custom-dark-input" placeholder="Ej: 13" min="0" max="23">
+                            <label class="small text-secondary">Inicio Almuerzo</label>
+                            <input type="number" name="h_almuerzo_inicio" class="form-control form-control-sm custom-white-input" placeholder="Ej: 13" min="0" max="23">
                         </div>
                         <div class="col-md-6 mb-2 px-1">
-                            <label class="small text-white-50">Fin Almuerzo</label>
-                            <input type="number" name="h_almuerzo_fin" class="form-control form-control-sm custom-dark-input" placeholder="Ej: 14" min="0" max="23">
+                            <label class="small text-secondary">Fin Almuerzo</label>
+                            <input type="number" name="h_almuerzo_fin" class="form-control form-control-sm custom-white-input" placeholder="Ej: 14" min="0" max="23">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-white-50 small text-uppercase">Duración de cada Turno</label>
-                        <select name="duracion" class="form-select custom-dark-input">
+                        <label class="form-label fw-bold text-secondary small text-uppercase">Duración de cada Turno</label>
+                        <select name="duracion" class="form-select custom-white-input">
                             <option value="30">30 minutos</option>
                             <option value="45">45 minutos</option>
                             <option value="60" selected>1 hora</option>
                             <option value="90">1 hora 30 min</option>
                         </select>
                     </div>
-                    <p class="text-white-50 small"><i class="bi bi-info-circle text-info me-1"></i> El sistema generará turnos consecutivos basándose en esta configuración.</p>
+                    <p class="text-muted small mb-0"><i class="bi bi-info-circle text-primary me-1"></i> El sistema generará turnos consecutivos basándose en esta configuración.</p>
                 </div>
-                <div class="modal-footer border-secondary">
+                <div class="modal-footer border-0 bg-light-subtle">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn custom-cyan-btn px-4 fw-bold">Generar Turnos</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">Generar Turnos</button>
                 </div>
             </form>
         </div>
@@ -177,30 +175,15 @@ function confirmarDesactivar(fechaIso, fechaLegible, reservas) {
 </script>
 
 <style>
-    /* Inputs oscuros consistentes */
-    .custom-dark-input {
-        background-color: #1a1e21 !important;
-        border: 1px solid #495057 !important;
-        color: #ffffff !important;
+    /* Inputs blancos con bordes suaves consistentes */
+    .custom-white-input {
+        background-color: #ffffff !important;
+        border: 1px solid #dee2e6 !important;
+        color: #212529 !important;
     }
-    .custom-dark-input:focus {
-        border-color: #07d2ff !important;
-        box-shadow: 0 0 0 0.25rem rgba(7, 210, 255, 0.25) !important;
-    }
-    .custom-dark-input option {
-        background-color: #1a1e21;
-        color: #fff;
-    }
-    /* Botón cyan corporativo */
-    .custom-cyan-btn {
-        background-color: #07d2ff;
-        color: #1a1e21;
-        border: none;
-        transition: background-color 0.2s;
-    }
-    .custom-cyan-btn:hover {
-        background-color: #05b5dc;
-        color: #ffffff;
+    .custom-white-input:focus {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important;
     }
 </style>
 {% endblock %}
