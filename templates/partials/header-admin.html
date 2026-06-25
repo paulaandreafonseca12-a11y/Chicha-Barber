@@ -10,6 +10,8 @@
       
       <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white">
         {% if user.is_authenticated %}
+       {% include "partials/campanita.html" with estilo_campanita="admin" %}
+
         <div class="dropdown">
           <a
             class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn color-azul text-white rounded-pill px-3 py-1"
