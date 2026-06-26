@@ -4,7 +4,6 @@
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
-      <!-- LOGO -->
       <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
         <img src="{% static 'img/logo.png' %}"
              alt="Chicha Barber"
@@ -12,22 +11,19 @@
              class="me-2">
       </a>
 
-      <!-- MENÚ -->
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-4 ">
-        <li><a href="/" class="nav-link px-2 text-secondary text-white">Inicio</a></li>
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-4">
+        <li><a href="/" class="nav-link px-2 text-white-50">Inicio</a></li>
         <li><a href="{% url 'servicios' %}" class="nav-link px-2 text-white">Servicios</a></li>
         <li><a href="{% url 'productos_galeria' %}" class="nav-link px-2 text-white">Productos</a></li>
         <li><a href="{% url 'promocion' %}" class="nav-link px-2 text-white">Promociones</a></li>
       </ul>
 
-      <!-- DERECHA -->
       <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white">
 
         {% if user.is_authenticated %}
-          {% include "partials/campanita.html" %}
+          {% include "partials/campanita.html" with estilo_campanita="cliente" %}
         {% endif %}
 
-        <!-- CARRITO -->
         <a href="{% url 'carrito' %}"
            class="btn btn-warning position-relative rounded-circle d-flex align-items-center justify-content-center shadow color-champaña">
 
@@ -43,9 +39,8 @@
 
         {% if user.is_authenticated %}
 
-        <!-- USUARIO -->
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-info rounded-pill px-3 py-1"
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-info rounded-pill px-3 py-1 text-white"
              href="#"
              id="navbarDropdown"
              role="button"
@@ -145,7 +140,6 @@
             Registrarse
           </a>
 
-        
         {% endif %}
 
       </div>
@@ -162,7 +156,6 @@
     const themeText = document.getElementById('global-theme-text');
     const body = document.body;
 
-    // Inicializar UI basado en la clase del body renderizada por Django
     const isLight = body.classList.contains('theme-light');
     updateThemeUI(isLight);
 
@@ -180,12 +173,10 @@
 
     if (themeToggle) {
       themeToggle.addEventListener('click', function() {
-        // Guardar en localStorage para mantener sincronía
         const nextTheme = isLight ? 'dark' : 'light';
         localStorage.setItem('theme', nextTheme);
         localStorage.setItem('admin-theme', nextTheme);
         
-        // Redirigir a Django para persistir en la base de datos
         window.location.href = "{% url 'cambiar_tema' %}";
       });
     }

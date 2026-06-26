@@ -110,6 +110,7 @@ def procesar_pago_cliente(request):
 
                 # ✅ 2. Crear cabecera única de Compra para gestión logística/inventario
                 compra = Compra.objects.create(
+                    usuario=request.user,
                     nombre_cliente=nombre,
                     correo=correo,
                     telefono=telefono,
@@ -259,10 +260,6 @@ def eliminar_producto(request, pk):
     messages.success(request, "✅ Producto eliminado correctamente")
     return redirect('lista_productos_admin')
 
-
-# ==========================================
-# 🔥 STOCK (Inventario)
-# ==========================================
 
 # ==========================================
 # 🔥 STOCK (Inventario)
