@@ -58,11 +58,6 @@
             </li>
             {% if user.rol == 'admin' or user.rol == 'barbero' %}
             <li>
-              <a class="dropdown-item py-2 fw-bold" href="{% url 'inicio_admin' %}">
-                <i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin
-              </a>
-            </li>
-            <li>
               <a class="dropdown-item py-2 fw-bold" href="{% url 'inicio' %}">
                 <i class="bi bi-grid-1x2-fill me-2"></i>Ver página web
               </a>
