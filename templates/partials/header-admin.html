@@ -4,7 +4,7 @@
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
         <div class="d-flex align-items-center gap-2">
-          <span class="fw-bold text-dark"
+          <span class="fw-bold text-dark text-uppercase" style="font-size: 1.2rem"
             >{{titulo|default:"Administración de Chicha Barber Studio"}}</span
           >
         </div>
@@ -64,16 +64,11 @@
             </li>
             {% if user.rol == 'admin' or user.rol == 'barbero' %}
             <li>
-              <a
-                class="dropdown-item py-2 fw-bold"
-                style="color: #eee0cb !important"
-                href="{% url 'inicio_admin' %}"
-                ><i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin</a
-              >
+              
             </li>
             <li>
               <a
-                class="dropdown-item py-2 fw-bold"
+                class="dropdown-item py-2 fw-bold" 
                 style="color: #eee0cb !important"
                 href="{% url 'inicio' %}"
                 ><i class="bi bi-grid-1x2-fill me-2"></i>Ver pagina web</a
