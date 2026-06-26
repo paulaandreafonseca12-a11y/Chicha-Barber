@@ -138,7 +138,7 @@ def imprimir_factura(request, id):
     return render(request, 'facturas/imprimir-factura.html', context)
 
 # =========================
-# ACTUALIZAR FACTURA AJAX
+# ACTUALIZAR FACTURA 
 # =========================
 @csrf_protect
 def actualizar_factura_adm(request, id):

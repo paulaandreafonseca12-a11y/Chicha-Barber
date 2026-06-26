@@ -56,7 +56,7 @@ def procesar_pago_cliente(request):
         correo = request.POST.get('correo')
         telefono = request.POST.get('telefono')
         metodo_pago = request.POST.get('pago')  # Recibe 'persona', 'contraentrega' o 'transferencia'
-        tipo_transferencia = request.POST.get('tipo_transferencia') # 'nequi', 'daviplata', 'yape'
+        tipo_transferencia = request.POST.get('tipo_transferencia') # 'nequi', 'daviplata'
         factura_id = request.POST.get('factura_id')
         carrito_json = request.POST.get('carrito')
         
