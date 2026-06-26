@@ -8,6 +8,7 @@ from usuarios import views as views_usuarios
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', inicio, name='inicio'),

@@ -4,14 +4,11 @@
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
         <div class="d-flex align-items-center gap-2">
-          <span class="fw-bold text-dark text-uppercase" style="font-size: 1.2rem"
-            >{{titulo|default:"Administración de Chicha Barber Studio"}}</span
-          >
+          <span class="fw-bold text-dark">{{titulo|default:"Administración de Chicha Barber Studio"}}</span>
         </div>
       </a>
-      <div
-        class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white"
-      >
+      
+      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white">
         {% if user.is_authenticated %}
         <div class="dropdown">
           <a
@@ -33,9 +30,7 @@
             {% else %}
             <i class="bi bi-person-circle fs-5"></i>
             {% endif %}
-            <span class="d-none d-md-inline"
-              >Hola, {{ user.first_name|default:user.username }}</span
-            >
+            <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
           </a>
           <ul
             class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4"
@@ -54,58 +49,55 @@
                 >{{ user.get_rol_display|default:"Admin" }}</span
               >
             </li>
+            
             <li>
-              <a
-                class="dropdown-item py-2 fw-bold"
-                style="color: #4bc0d9 !important"
-                href="{% url 'perfil' %}"
-                ><i class="bi bi-person-vcard me-2"></i>Mi Perfil</a
-              >
+              <a class="dropdown-item py-2 fw-bold" style="color: #4bc0d9 !important" href="{% url 'perfil' %}">
+                <i class="bi bi-person-vcard me-2"></i>Mi Perfil
+              </a>
             </li>
+            
             {% if user.rol == 'admin' or user.rol == 'barbero' %}
             <li>
-              
+              <a class="dropdown-item py-2 fw-bold" href="{% url 'inicio_admin' %}">
+                <i class="bi bi-grid-1x2-fill me-2"></i>Panel Admin
+              </a>
             </li>
             <li>
-              <a
-                class="dropdown-item py-2 fw-bold" 
-                style="color: #eee0cb !important"
-                href="{% url 'inicio' %}"
-                ><i class="bi bi-grid-1x2-fill me-2"></i>Ver pagina web</a
-              >
+              <a class="dropdown-item py-2 fw-bold" href="{% url 'inicio' %}">
+                <i class="bi bi-grid-1x2-fill me-2"></i>Ver página web
+              </a>
             </li>
             <li>
-              <a class="dropdown-item py-2" href="/guardados/"
-                ><i class="bi bi-bookmark me-2"></i>Guardados</a
-              >
+              <a class="dropdown-item py-2" href="/guardados/">
+                <i class="bi bi-bookmark me-2"></i>Guardados
+              </a>
             </li>
             {% endif %}
 
             <li>
               <a class="dropdown-item py-2" href="{% url 'cambiar_tema' %}">
                 {% if user.tema == 'dark' %}
-                <i class="bi bi-sun-fill me-2 text-warning"></i> Modo Claro {%
-                else %} <i class="bi bi-moon-fill me-2 text-primary"></i> Modo
-                Oscuro {% endif %}
+                  <i class="bi bi-sun-fill me-2 text-warning"></i> Modo Claro
+                {% else %}
+                  <i class="bi bi-moon-fill me-2 text-primary"></i> Modo Oscuro
+                {% endif %}
               </a>
             </li>
+            
             <li><hr class="dropdown-divider" /></li>
+            
             <li>
               <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="dropdown-item text-danger py-2">
-                  Cerrar Sesión
+                  <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
                 </button>
               </form>
             </li>
           </ul>
         </div>
         {% else %}
-        <a
-          class="nav-link btn btn-outline-success rounded-pill px-4 py-2"
-          href="{% url 'login' %}"
-          >Acceder</a 
-        >
+        <a class="nav-link btn btn-outline-success rounded-pill px-4 py-2" href="{% url 'login' %}">Acceder</a>
         {% endif %}
       </div>
     </div>

@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from usuarios.models import Usuario
+from usuarios.models import Usuario, Notificacion
 
 # ==========================================
 # 🔹 PRODUCTO
@@ -121,10 +121,10 @@ class Compra(models.Model):
     correo = models.EmailField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     direccion = models.CharField(max_length=200, blank=True, null=True)
-    
+
     metodo_pago = models.CharField(max_length=50, choices=METODO_PAGO_CHOICES, blank=True, null=True)
     estado_pago = models.CharField(max_length=30, choices=ESTADO_PAGO_CHOICES, default='completado')
-    
+
     comprobante = models.FileField(upload_to='comprobantes/', null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     fecha_compra = models.DateTimeField(auto_now_add=True)
@@ -195,3 +195,33 @@ class DatosTransferencia(models.Model):
 
     def __str__(self):
         return f"Datos de Transferencia - {self.banco}"
+
+
+# ==========================================
+# 🔔 SIGNAL → Notificar compra (cliente + admins)
+# Va al final del archivo porque necesita que la clase Compra
+# ya esté definida arriba.
+# ==========================================
+@receiver(post_save, sender=Compra)
+def notificar_compra(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    # Notificación al cliente (si está registrado)
+    if instance.usuario:
+        Notificacion.objects.create(
+            usuario=instance.usuario,
+            tipo='compra',
+            mensaje=f"Tu compra #{instance.codigo_compra} fue registrada con éxito.",
+            url='/perfil/'
+        )
+
+    # Notificación a todos los administradores
+    admins = Usuario.objects.filter(rol='admin')
+    for admin in admins:
+        Notificacion.objects.create(
+            usuario=admin,
+            tipo='compra',
+            mensaje=f"Nueva compra de {instance.nombre_cliente} por ${instance.total:.0f}.",
+            url='/admin-comprobantes/'  # ajusta a tu URL real del listado de compras/comprobantes
+        )

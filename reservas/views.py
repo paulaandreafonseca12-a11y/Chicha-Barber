@@ -205,6 +205,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 turno.estado = 'reservado'
                 turno.save()
 
+
+
                 # Usar factura existente o crear nueva
                 if factura_id:
                     factura = get_object_or_404(Factura, id=factura_id)
@@ -274,7 +276,19 @@ def cancelar_cita(request, pk):
     cita = get_object_or_404(Reserva, pk=pk)
     cita.estado = 'cancelada'
     cita.save()
-    messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
+    Notificacion.objects.create(
+        usuario=request.user,
+        mensaje=f'Se canceló tu cita del {cita.turno.fecha}'
+)
+    admins = Usuario.objects.filter(
+        rol='admin'
+)
+    for admin in admins:
+        Notificacion.objects.create(
+        usuario=admin,
+        mensaje=f'{request.user.get_full_name()} canceló una cita.'
+    )
+        messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
     return redirect('ver_agenda')
 
 

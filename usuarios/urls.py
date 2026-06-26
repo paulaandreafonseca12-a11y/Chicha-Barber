@@ -35,4 +35,5 @@ urlpatterns = [
     path('editar/<int:pk>/', views.editar_usuario, name='editar_usuario'),
     path('perfil/', views.perfil, name='perfil'),
     path('cambiar-tema/', views.cambiar_tema, name='cambiar_tema'),
+    path('notificaciones/marcar-leidas/', views.marcar_notificaciones_leidas, name='marcar_notificaciones_leidas'),
 ]

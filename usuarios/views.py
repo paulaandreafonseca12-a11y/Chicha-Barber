@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.shortcuts import render
 
-from .models import Usuario, RegistroActividad
+from .models import Usuario, RegistroActividad, Notificacion
 from .forms import (
     RegistroForm,
     CustomLoginForm,
@@ -313,3 +313,9 @@ def perfil(request):
         context['actividades'] = RegistroActividad.objects.all()[:20]
 
     return render(request, 'private/perfil.html', context)
+
+
+@login_required
+def marcar_notificaciones_leidas(request):
+    Notificacion.objects.filter(usuario=request.user, leida=False).update(leida=True)
+    return redirect(request.META.get('HTTP_REFERER', 'inicio'))

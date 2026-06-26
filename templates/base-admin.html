@@ -58,8 +58,14 @@
                 {% endif %}
                 <li class="nav-item">
                     <div class="theme-switch-item" id="theme-toggle">
-                        <span><i class="bi bi-brightness-high-fill me-2"></i> <span id="theme-text">Modo Claro</span></span>
-                        <i class="bi bi-toggle-off" id="theme-icon"></i>
+                        <span>
+                            {% if user.tema == 'light' %}
+                                <i class="bi bi-moon-fill me-2"></i> <span id="theme-text">Modo Oscuro</span>
+                            {% else %}
+                                <i class="bi bi-brightness-high-fill me-2"></i> <span id="theme-text">Modo Claro</span>
+                            {% endif %}
+                        </span>
+                        <i class="bi {% if user.tema == 'light' %}bi-toggle-on{% else %}bi-toggle-off{% endif %}" id="theme-icon"></i>
                     </div>
                 </li>
                 <li class="nav-item mt-2">
@@ -86,21 +92,29 @@
             const themeText = document.getElementById('theme-text');
             const themeIcon = document.getElementById('theme-icon');
 
-            // Cargar preferencia del LocalStorage
-            if (localStorage.getItem('admin-theme') === 'light') {
-                body.classList.add('theme-light');
-                updateUI(true);
+            // Inicializar UI basado en el tema actual del body (renderizado por Django)
+            const isLight = body.classList.contains('theme-light');
+            updateUI(isLight);
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    // Guardar en localStorage para sincronizar la web pública
+                    const nextTheme = isLight ? 'dark' : 'light';
+                    localStorage.setItem('theme', nextTheme);
+                    localStorage.setItem('admin-theme', nextTheme);
+                    
+                    // Redirigir al endpoint de Django para actualizar la base de datos
+                    window.location.href = "{% url 'cambiar_tema' %}";
+                });
             }
 
-            themeToggle.addEventListener('click', () => {
-                const isLight = body.classList.toggle('theme-light');
-                localStorage.setItem('admin-theme', isLight ? 'light' : 'dark');
-                updateUI(isLight);
-            });
-
             function updateUI(isLight) {
-                themeText.innerText = isLight ? "Modo Oscuro" : "Modo Claro";
-                themeIcon.className = isLight ? "bi bi-toggle-on" : "bi bi-toggle-off";
+                if (themeText) {
+                    themeText.innerText = isLight ? "Modo Oscuro" : "Modo Claro";
+                }
+                if (themeIcon) {
+                    themeIcon.className = isLight ? "bi bi-toggle-on" : "bi bi-toggle-off";
+                }
             }
         });
     </script>

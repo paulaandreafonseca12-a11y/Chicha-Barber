@@ -1,0 +1,64 @@
+ {% load static %}
+<!-- CAMPANITA DE NOTIFICACIONES -->
+<div class="dropdown">
+  <a href="#"
+     class="btn position-relative rounded-circle d-flex align-items-center justify-content-center shadow"
+     style="width:42px;height:42px;background:rgba(255,255,255,0.08);"
+     id="campanitaDropdown"
+     role="button"
+     data-bs-toggle="dropdown"
+     aria-expanded="false">
+
+    <i class="bi bi-bell-fill fs-5 text-white"></i>
+
+    {% if notificaciones_no_leidas > 0 %}
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style="font-size:0.65rem;">
+      {{ notificaciones_no_leidas }}
+    </span>
+    {% endif %}
+  </a>
+
+  <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-0"
+      aria-labelledby="campanitaDropdown"
+      style="width: 340px; max-height: 420px; overflow-y: auto;">
+
+    <li class="px-3 py-2 border-bottom d-flex justify-content-between align-items-center"
+        style="background: rgba(0,0,0,0.03);">
+      <span class="fw-bold small text-uppercase text-muted" style="letter-spacing:0.5px;">
+        Notificaciones
+      </span>
+      {% if notificaciones_no_leidas > 0 %}
+      <a href="{% url 'marcar_notificaciones_leidas' %}" class="small text-decoration-none">
+        Marcar todas como leídas
+      </a>
+      {% endif %}
+    </li>
+
+    {% for n in notificaciones_lista %}
+    <li>
+      <a href="{{ n.url|default:'#' }}"
+         class="dropdown-item py-2 px-3 border-bottom {% if not n.leida %}fw-semibold{% endif %}">
+        <div class="d-flex align-items-start gap-2">
+          {% if n.tipo == 'compra' %}
+            <i class="bi bi-bag-check-fill text-success mt-1"></i>
+          {% else %}
+            <i class="bi bi-calendar-check-fill text-info mt-1"></i>
+          {% endif %}
+          <div>
+            <div class="small">{{ n.mensaje }}</div>
+            <div class="text-muted" style="font-size:0.7rem;">
+              {{ n.fecha|date:"d/m/Y H:i" }}
+            </div>
+          </div>
+        </div>
+      </a>
+    </li>
+    {% empty %}
+    <li class="px-3 py-4 text-center text-muted small">
+      <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
+      No tienes notificaciones aún.
+    </li>
+    {% endfor %}
+  </ul>
+</div>
