@@ -3,7 +3,6 @@ from .models import Reserva
 
 # --- FORMULARIOS DE RESERVAS ---
 class ReservaForm(forms.ModelForm):
-    # Campos adicionales que no pertenecen directamente al modelo pero se usan en el formulario
     fecha = forms.CharField(required=True)
     hora = forms.CharField(required=True)
 
