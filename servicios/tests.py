@@ -1,4 +1,3 @@
-from django.test import TestCase
 import os
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
