@@ -37,7 +37,7 @@
 
     {% for n in notificaciones_lista %}
     <li>
-      <a href="{{ n.url|default:'#' }}"
+      <a href="{% url 'detalle_notificacion' n.pk %}"
          class="dropdown-item py-2 px-3 border-bottom {% if not n.leida %}fw-semibold{% endif %}">
         <div class="d-flex align-items-start gap-2">
           {% if n.tipo == 'compra' %}

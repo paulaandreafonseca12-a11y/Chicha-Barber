@@ -216,9 +216,9 @@ def crear_producto(request):
         form = ProductoForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, "✅ Producto creado correctamente")
-            return redirect('lista_productos_admin')
+          producto = form.save(commit=False)
+          print(producto.estado)  # Debe imprimir True
+        producto.save()
 
     else:
         form = ProductoForm()

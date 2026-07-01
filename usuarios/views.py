@@ -24,6 +24,7 @@ from reservas.models import Reserva
 from productos.models import Compra
 from facturas.models import Factura
 from datetime import datetime, timedelta
+import re
 
 def inicio(request):
 
@@ -319,3 +320,46 @@ def perfil(request):
 def marcar_notificaciones_leidas(request):
     Notificacion.objects.filter(usuario=request.user, leida=False).update(leida=True)
     return redirect(request.META.get('HTTP_REFERER', 'inicio'))
+
+@login_required
+def detalle_notificacion(request, pk):
+    notificacion = get_object_or_404(Notificacion, pk=pk, usuario=request.user)
+
+    if not notificacion.leida:
+        notificacion.leida = True
+        notificacion.save()
+
+    match = re.search(r'#(\d+)', notificacion.mensaje)
+    rel_id = match.group(1) if match else None
+
+    # ---- ADMIN / BARBERO: va directo a la tabla correspondiente ----
+    if request.user.rol in ('admin', 'barbero'):
+        if notificacion.tipo == 'reserva':
+            return redirect('ver_agenda')
+
+        elif notificacion.tipo == 'compra':
+            if rel_id:
+                try:
+                    Compra.objects.get(pk=rel_id)
+                    return redirect('detalle_compra', pk=rel_id)
+                except Compra.DoesNotExist:
+                    pass
+            return redirect('historial_compras')
+
+    # ---- CLIENTE: página de detalle bonita ----
+    objeto_relacionado = None
+    if rel_id:
+        try:
+            if notificacion.tipo == 'compra':
+                objeto_relacionado = Compra.objects.get(pk=rel_id, correo=request.user.email)
+            elif notificacion.tipo == 'reserva':
+                objeto_relacionado = Reserva.objects.get(pk=rel_id, cliente=request.user)
+        except (Compra.DoesNotExist, Reserva.DoesNotExist):
+            objeto_relacionado = None
+
+    context = {
+        'notificacion': notificacion,
+        'objeto_relacionado': objeto_relacionado,
+        'titulo': 'Detalle de Notificación',
+    }
+    return render(request, 'private/detalle_notificacion.html', context)
