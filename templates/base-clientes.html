@@ -6,20 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chicha Barber Studio</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-          crossorigin="anonymous">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-          rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    <link rel="icon"
-          href="{% static 'img/logo.png' %}"
-          type="image/x-icon">
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
 </head>
 
 <body class="back {% if user.is_authenticated and user.tema == 'light' %}theme-light{% else %}theme-dark{% endif %}">
@@ -27,83 +17,106 @@
     {% include 'partials/header.html' %}
 
     <main class="d-flex flex-column">
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
     {% include 'partials/footer.html' %}
 
-    {% block scripts %}
-    {% endblock scripts %}
+    <!-- SECCIÓN DEL CHAT IA CORREGIDA (WIDGET FLOTANTE EN LA ESQUINA) -->
+    {% if user.is_authenticated %}
+    
+    <!-- Ventana del Chat Widget -->
+    <div id="chatWidget" class="card shadow-lg border-0" 
+         style="width: 350px; position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none; background-color: #2c2c2c; border: 1px solid #444; border-radius: 15px; overflow: hidden;">
+        
+        <!-- Encabezado con controles de ventana -->
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center py-2 border-0">
+            <span class="fw-bold"><i class="bi bi-robot"></i> Asistente IA</span>
+            <div>
+                <button type="button" onclick="minimizarChat()" class="btn btn-sm text-white p-0 me-2" title="Minimizar">
+                    <i class="bi bi-dash-lg fs-5"></i>
+                </button>
+                <button type="button" onclick="cerrarChat()" class="btn btn-sm text-white p-0" title="Cerrar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Cuerpo del Chat -->
+        <div id="chatBody" class="card-body text-light" style="height: 300px; overflow-y: auto;">
+            <form id="chatForm">
+                {% csrf_token %}
+                <div class="input-group mb-2">
+                    <input type="text" name="pregunta" id="pregunta" class="form-control bg-dark text-white border-secondary" placeholder="¿En qué te puedo ayudar?" required>
+                    <button type="submit" class="btn btn-info text-white"><i class="bi bi-send-fill"></i></button>
+                </div>
+            </form>
+            <div id="resultadoIA" class="small p-2 bg-dark text-white rounded mt-2" style="display:none; min-height: 50px; border: 1px solid #444;"></div>
+        </div>
+    </div>
 
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-            crossorigin="anonymous">
-    </script>
+    <!-- Botón Flotante Redondo para abrir el Chat -->
+    <button id="openChatBtn" type="button" onclick="abrirChat()" 
+            class="btn shadow" 
+            style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; background-color: #22aed1; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+        <i class="bi bi-robot fs-3"></i>
+    </button>
+    
+    {% endif %}
 
-    <!-- SweetAlert2 -->
-    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
-
-    <!-- CONTADOR GLOBAL DEL CARRITO -->
+    <!-- SCRIPTS DE CONTROL DE INTERFAZ Y COMUNICACIÓN AJAX -->
     <script>
-        function actualizarContadorCarrito() {
-
-            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-            let total = 0;
-
-            carrito.forEach(producto => {
-                total += parseInt(producto.cantidad || 0);
-            });
-
-            const contador = document.getElementById("contador");
-
-            if (contador) {
-
-                contador.textContent = total;
-
-                if (total > 0) {
-                    contador.style.display = "inline-block";
-                } else {
-                    contador.style.display = "none";
-                }
-            }
+        // Funciones de control del chat flotante
+        function minimizarChat() {
+            const body = document.getElementById('chatBody');
+            body.classList.toggle('d-none');
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            actualizarContadorCarrito();
-        });
+        function cerrarChat() {
+            document.getElementById('chatWidget').style.display = 'none';
+            document.getElementById('openChatBtn').style.display = 'flex';
+        }
 
-        setInterval(actualizarContadorCarrito, 1000);
+        function abrirChat() {
+            document.getElementById('chatWidget').style.display = 'block';
+            document.getElementById('openChatBtn').style.display = 'none';
+            
+            // Si el cuerpo estaba minimizado al volver a abrir, lo muestra de nuevo
+            document.getElementById('chatBody').classList.remove('d-none');
+        }
+
+        // Lógica AJAX para procesar los mensajes sin recargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            const chatForm = document.getElementById('chatForm');
+            if (chatForm) {
+                chatForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const resultadoDiv = document.getElementById('resultadoIA');
+                    
+                    resultadoDiv.style.display = 'block';
+                    resultadoDiv.innerHTML = "<em>Consultando a la IA...</em>";
+
+                    fetch("{% url 'chat_ia' %}", {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        resultadoDiv.innerHTML = "<strong>Respuesta:</strong><br>" + data;
+                    })
+                    .catch(error => {
+                        resultadoDiv.innerHTML = "<span class='text-danger'>Error al conectar con la IA.</span>";
+                    });
+                });
+            }
+        });
     </script>
 
-    <!-- MENSAJES DJANGO -->
-    {% if messages %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            {% for message in messages %}
-
-            Swal.fire({
-                title:
-                "{% if message.tags == 'success' %}¡Completado!{% elif message.tags == 'error' %}¡Ups!{% elif message.tags == 'warning' %}Atención{% else %}Información{% endif %}",
-
-                text: "{{ message|escapejs }}",
-
-                icon:
-                "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
-
-                confirmButtonColor: '#007ca9',
-                confirmButtonText: 'Aceptar'
-            });
-
-            {% endfor %}
-
-        });
-    </script>
-    {% endif %}
+    <!-- Bootstrap Bundle JS y Dependencias adicionales -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
 
 </body>
 </html>
-
