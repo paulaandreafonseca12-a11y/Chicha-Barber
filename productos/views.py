@@ -56,7 +56,7 @@ def procesar_pago_cliente(request):
         correo = request.POST.get('correo')
         telefono = request.POST.get('telefono')
         metodo_pago = request.POST.get('pago')  # Recibe 'persona', 'contraentrega' o 'transferencia'
-        tipo_transferencia = request.POST.get('tipo_transferencia') # 'nequi', 'daviplata', 'yape'
+        tipo_transferencia = request.POST.get('tipo_transferencia') # 'nequi', 'daviplata'
         factura_id = request.POST.get('factura_id')
         carrito_json = request.POST.get('carrito')
         
@@ -110,6 +110,7 @@ def procesar_pago_cliente(request):
 
                 # ✅ 2. Crear cabecera única de Compra para gestión logística/inventario
                 compra = Compra.objects.create(
+                    usuario=request.user,
                     nombre_cliente=nombre,
                     correo=correo,
                     telefono=telefono,
@@ -215,9 +216,9 @@ def crear_producto(request):
         form = ProductoForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, "✅ Producto creado correctamente")
-            return redirect('lista_productos_admin')
+          producto = form.save(commit=False)
+          print(producto.estado)  # Debe imprimir True
+        producto.save()
 
     else:
         form = ProductoForm()
@@ -259,10 +260,6 @@ def eliminar_producto(request, pk):
     messages.success(request, "✅ Producto eliminado correctamente")
     return redirect('lista_productos_admin')
 
-
-# ==========================================
-# 🔥 STOCK (Inventario)
-# ==========================================
 
 # ==========================================
 # 🔥 STOCK (Inventario)
