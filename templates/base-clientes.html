@@ -22,66 +22,101 @@
 
     {% include 'partials/footer.html' %}
 
-    <!-- BOTÓN FLOTANTE QUE ABRE EL MODAL -->
+    <!-- SECCIÓN DEL CHAT IA CORREGIDA (WIDGET FLOTANTE EN LA ESQUINA) -->
     {% if user.is_authenticated %}
-    <button type="button" 
-            class="btn shadow" 
-            data-bs-toggle="modal" 
-            data-bs-target="#chatModal"
-            style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; background-color: #22aed1; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
-        <i class="bi bi-robot fs-3"></i>
-    </button>
-
-    <!-- MODAL DEL CHAT IA -->
-    <div class="modal fade" id="chatModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background-color: #2c2c2c; border: 1px solid #444;">
-          <div class="modal-header border-0">
-            <h5 class="modal-title text-white"><i class="bi bi-robot text-info"></i> Asistente IA</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
+    
+    <!-- Ventana del Chat Widget -->
+    <div id="chatWidget" class="card shadow-lg border-0" 
+         style="width: 350px; position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none; background-color: #2c2c2c; border: 1px solid #444; border-radius: 15px; overflow: hidden;">
+        
+        <!-- Encabezado con controles de ventana -->
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center py-2 border-0">
+            <span class="fw-bold"><i class="bi bi-robot"></i> Asistente IA</span>
+            <div>
+                <button type="button" onclick="minimizarChat()" class="btn btn-sm text-white p-0 me-2" title="Minimizar">
+                    <i class="bi bi-dash-lg fs-5"></i>
+                </button>
+                <button type="button" onclick="cerrarChat()" class="btn btn-sm text-white p-0" title="Cerrar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Cuerpo del Chat -->
+        <div id="chatBody" class="card-body text-light" style="height: 300px; overflow-y: auto;">
             <form id="chatForm">
                 {% csrf_token %}
-                <div class="input-group">
-                    <input type="text" name="pregunta" id="pregunta" class="form-control" placeholder="¿En qué te puedo ayudar?" required>
-                    <button type="submit" class="btn btn-info">Enviar</button>
+                <div class="input-group mb-2">
+                    <input type="text" name="pregunta" id="pregunta" class="form-control bg-dark text-white border-secondary" placeholder="¿En qué te puedo ayudar?" required>
+                    <button type="submit" class="btn btn-info text-white"><i class="bi bi-send-fill"></i></button>
                 </div>
             </form>
-            <div id="resultadoIA" class="mt-3 p-3 bg-dark text-white rounded" style="display:none; min-height: 50px;"></div>
-          </div>
+            <div id="resultadoIA" class="small p-2 bg-dark text-white rounded mt-2" style="display:none; min-height: 50px; border: 1px solid #444;"></div>
         </div>
-      </div>
     </div>
+
+    <!-- Botón Flotante Redondo para abrir el Chat -->
+    <button id="openChatBtn" type="button" onclick="abrirChat()" 
+            class="btn shadow" 
+            style="position: fixed; bottom: 20px; right: 20px; z-index: 9998; background-color: #22aed1; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+        <i class="bi bi-robot fs-3"></i>
+    </button>
+    
     {% endif %}
 
-    <!-- SCRIPT AJAX PARA EL CHAT -->
+    <!-- SCRIPTS DE CONTROL DE INTERFAZ Y COMUNICACIÓN AJAX -->
     <script>
-        document.getElementById('chatForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const resultadoDiv = document.getElementById('resultadoIA');
-            
-            resultadoDiv.style.display = 'block';
-            resultadoDiv.innerHTML = "<em>Consultando a la IA...</em>";
+        // Funciones de control del chat flotante
+        function minimizarChat() {
+            const body = document.getElementById('chatBody');
+            body.classList.toggle('d-none');
+        }
 
-            fetch("{% url 'chat_ia' %}", {
-                method: 'POST',
-                body: formData,
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
-            })
-            .then(response => response.text())
-            .then(data => {
-                resultadoDiv.innerHTML = "<strong>Respuesta:</strong><br>" + data;
-            });
+        function cerrarChat() {
+            document.getElementById('chatWidget').style.display = 'none';
+            document.getElementById('openChatBtn').style.display = 'flex';
+        }
+
+        function abrirChat() {
+            document.getElementById('chatWidget').style.display = 'block';
+            document.getElementById('openChatBtn').style.display = 'none';
+            
+            // Si el cuerpo estaba minimizado al volver a abrir, lo muestra de nuevo
+            document.getElementById('chatBody').classList.remove('d-none');
+        }
+
+        // Lógica AJAX para procesar los mensajes sin recargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            const chatForm = document.getElementById('chatForm');
+            if (chatForm) {
+                chatForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const resultadoDiv = document.getElementById('resultadoIA');
+                    
+                    resultadoDiv.style.display = 'block';
+                    resultadoDiv.innerHTML = "<em>Consultando a la IA...</em>";
+
+                    fetch("{% url 'chat_ia' %}", {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        resultadoDiv.innerHTML = "<strong>Respuesta:</strong><br>" + data;
+                    })
+                    .catch(error => {
+                        resultadoDiv.innerHTML = "<span class='text-danger'>Error al conectar con la IA.</span>";
+                    });
+                });
+            }
         });
     </script>
 
-    <!-- Tus otros scripts existentes abajo... -->
+    <!-- Bootstrap Bundle JS y Dependencias adicionales -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
-    
-    <!-- (Mantén aquí tu script del contador y tus mensajes de Django) -->
 
 </body>
 </html>
