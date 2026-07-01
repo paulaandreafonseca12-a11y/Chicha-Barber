@@ -7,6 +7,42 @@
 .color-blanco { background-color: #ffffff !important; }
 
 
+
+/* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
+.theme-switch-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin: 10px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #eee0cb;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-switch-item:hover {
+  background: rgba(75, 192, 217, 0.1);
+  border-color: #4bc0d9;
+}
+
+.theme-switch-item i {
+  font-size: 1.1rem;
+  color: #22aed1;
+}
+
+body.theme-light .theme-switch-item {
+  background: #eee0cb;
+  border-color: rgba(141, 129, 140, 0.3);
+  color: #030301;
+}
+
+body.theme-light .theme-switch-item i {
+  color: #c47a2c;
+}
+
 /* ── FONDO GENERAL ── */
 .back {
   background-image:
@@ -245,75 +281,17 @@ body.theme-light .booking-wrap .alert-barber {
 .time-slot.selected::after { color: #000; }
 .time-slot.unavailable { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
 
-.section-label { font-size: .7rem; letter-spacing: 2.5px; color: var(--cyan); font-weight: 600; }
+/* ── contenedor de turnos scrollable ── */
+#turnos-container::-webkit-scrollbar { width: 6px; }
+#turnos-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+body.theme-light #turnos-container::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); }
 
-/* Inputs reservas */
-.form-control-dark {
-  background: var(--surface) !important;
-  border: 1px solid var(--card-border) !important;
-  color: #fff !important;
-  border-radius: 10px;
-}
-.form-control-dark:focus {
-  border-color: var(--cyan) !important;
-  box-shadow: 0 0 0 3px rgba(0,212,240,.15) !important;
-}
-.form-control-dark::placeholder { color: #555; }
-.form-label { font-size: .8rem; color: #aaa; margin-bottom: 6px; }
-
-/* Payment */
-.payment-option {
-  border: 1px solid var(--card-border); border-radius: 12px;
-  padding: 14px 16px; cursor: pointer; transition: all .2s; background: var(--surface);
-}
-.payment-option:hover,
-.payment-option.selected { border-color: var(--cyan); background: var(--surface-hover); }
-.payment-option .pay-title { font-size: .9rem; font-weight: 500; color: #fff; }
-.payment-option .pay-sub   { font-size: .75rem; color: #888; }
-.payment-option .radio-dot {
-  width: 18px; height: 18px; border-radius: 50%;
-  border: 2px solid #555; display: inline-block; margin-right: 12px;
-  flex-shrink: 0; transition: all .2s; position: relative; top: 2px;
-}
-.payment-option.selected .radio-dot {
-  border-color: var(--cyan); background: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(0,212,240,.2);
-}
-
-/* Confirm table */
-.confirm-table tr            { border-bottom: 1px solid var(--card-border); }
-.confirm-table tr:last-child { border-bottom: none; }
-.confirm-table td            { padding: 14px 0; }
-.confirm-table .label  { font-size: .65rem; letter-spacing: 2px; color: #888; }
-.confirm-table .value  { font-size: .9rem; color: #fff; }
-.confirm-table .value.accent { color: var(--cyan); font-weight: 600; }
-
-/* Buttons reservas */
-.btn-cyan {
-  background: var(--cyan); border: none; color: #000;
-  font-weight: 700; font-size: .8rem; letter-spacing: 2px;
-  border-radius: 10px; padding: 14px; transition: all .2s;
-}
-.btn-cyan:hover { background: #fff; color: #000; }
-.btn-back {
-  background: var(--surface); border: 1px solid var(--card-border);
-  color: #aaa; font-size: .8rem; letter-spacing: 1px;
-  border-radius: 10px; padding: 14px 20px; transition: all .2s;
-}
-.btn-back:hover { border-color: #aaa; color: #fff; }
-
-/* Success */
-.success-icon  { font-size: 4rem; color: var(--cyan); }
-.success-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 3px; color: #fff; }
-
-/* Fade */
-.step-panel { animation: fadeUp .3s ease both; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-
+/* Clases semánticas adaptativas para textos de reservas */
+.booking-wrap .text-accent { color: var(--accent-azul) !important; }
+.booking-wrap .text-brand-title { color: var(--color-champaña) !important; }
+.booking-wrap .text-custom-muted { color: var(--text-muted) !important; }
+.booking-wrap .text-time-date { color: #ffffff !important; }
+body.theme-light .booking-wrap .text-time-date { color: #030301 !important; }
 
 
 /* =========================

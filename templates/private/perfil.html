@@ -1,10 +1,12 @@
-{% extends "base-clientes.html" %} {% load static %} {% block content %}
+{% extends "base-clientes.html" %} 
+{% load static %} 
+
+{% block content %}
 <div class="container mt-5 mb-5">
   <div class="row justify-content-center">
     <div class="col-md-7">
-      <!-- HERO -->
+      
       <div class="card border-0 shadow-lg rounded-5 mb-4 overflow-hidden" style="background: #ffffff;">
-        <!-- Cabecera decorativa estilo Champaña Premium -->
         <div style="height: 12px; background: linear-gradient(90deg, #F1E9DB, #e1d5c1);"></div>
         
         <div class="card-body p-4 p-sm-5">
@@ -26,6 +28,7 @@
               <i class="bi bi-person-fill text-white" style="font-size: 2.5rem"></i>
             </div>
             {% endif %}
+            
             <div>
               <h3 class="mb-2 fw-extrabold tracking-tight text-dark">
                 {{ user.get_full_name|default:user.username }}
@@ -46,7 +49,6 @@
             </div>
           </div>
 
-          <!-- Información de perfil estilizada -->
           <div class="row g-4">
             <div class="col-6">
               <div class="pb-2 border-bottom border-light-subtle h-100">
@@ -92,7 +94,6 @@
         </div>
       </div>
 
-      <!-- BOTONES ACCIONES -->
       <div class="row g-3 mb-4">
         <div class="col-4">
           <button
@@ -106,6 +107,7 @@
             <span class="small fw-bold">Editar perfil</span>
           </button>
         </div>
+        
         <div class="col-4">
           <button
             type="button"
@@ -118,6 +120,7 @@
             <span class="small fw-bold">Contraseña</span>
           </button>
         </div>
+        
         <div class="col-4">
           {% if user.rol == 'admin' %}
           <button
@@ -149,22 +152,12 @@
   </div>
 </div>
 
-<!-- OFFCANVAS: Editar perfil -->
-<div
-  class="offcanvas offcanvas-end border-0 shadow"
-  tabindex="-1"
-  id="offcanvasEditar"
-  style="width: 420px"
->
+<div class="offcanvas offcanvas-end border-0 shadow" tabindex="-1" id="offcanvasEditar" style="width: 420px">
   <div class="offcanvas-header text-white" style="background: {% if user.rol == 'admin' %}#00b4d8{% elif user.rol == 'barbero' %}#f0a500{% else %}#007ca9{% endif %}">
     <h5 class="offcanvas-title fw-bold">
       <i class="bi bi-pencil-square me-2"></i>Editar perfil
     </h5>
-    <button
-      type="button"
-      class="btn-close btn-close-white"
-      data-bs-dismiss="offcanvas"
-    ></button>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body p-4">
     <form method="post" enctype="multipart/form-data">
@@ -201,59 +194,29 @@
   </div>
 </div>
 
-<!-- OFFCANVAS: Cambiar contraseña -->
-<div
-  class="offcanvas offcanvas-end border-0 shadow"
-  tabindex="-1"
-  id="offcanvasPassword"
-  style="width: 420px"
->
+<div class="offcanvas offcanvas-end border-0 shadow" tabindex="-1" id="offcanvasPassword" style="width: 420px">
   <div class="offcanvas-header text-white" style="background: #f0a500">
     <h5 class="offcanvas-title fw-bold">
       <i class="bi bi-lock me-2"></i>Cambiar contraseña
     </h5>
-    <button
-      type="button"
-      class="btn-close btn-close-white"
-      data-bs-dismiss="offcanvas"
-    ></button>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body p-4">
     <form method="post">
       {% csrf_token %}
       <div class="mb-3">
         <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Contraseña actual</label>
-        <input
-          type="password"
-          name="password_actual"
-          class="form-control py-2"
-          placeholder="••••••••"
-        />
+        <input type="password" name="password_actual" class="form-control py-2" placeholder="••••••••" />
       </div>
       <div class="mb-3">
         <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Nueva contraseña</label>
-        <input
-          type="password"
-          name="password_nueva"
-          class="form-control py-2"
-          placeholder="••••••••"
-        />
+        <input type="password" name="password_nueva" class="form-control py-2" placeholder="••••••••" />
       </div>
       <div class="mb-4">
         <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Confirmar nueva contraseña</label>
-        <input
-          type="password"
-          name="password_confirmar"
-          class="form-control py-2"
-          placeholder="••••••••"
-        />
+        <input type="password" name="password_confirmar" class="form-control py-2" placeholder="••••••••" />
       </div>
-      <button
-        type="submit"
-        name="cambiar_password"
-        class="btn w-100 text-white py-3 rounded-3 fw-bold shadow-sm"
-        style="background: #f0a500"
-      >
+      <button type="submit" name="cambiar_password" class="btn w-100 text-white py-3 rounded-3 fw-bold shadow-sm" style="background: #f0a500">
         <i class="bi bi-shield-lock me-2"></i>Actualizar contraseña
       </button>
     </form>
@@ -261,25 +224,15 @@
 </div>
 
 {% if user.rol == "admin" %}
-<!-- OFFCANVAS: Historial de actividad (admin) -->
-<div
-  class="offcanvas offcanvas-end"
-  tabindex="-1"
-  id="offcanvasHistorial"
-  style="width: 480px"
->
-  <div class="offcanvas-header text-white" style="background: #dc3545">
-    <h5 class="offcanvas-title">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasHistorial" style="width: 480px">
+  <div class="offcanvas-header text-white" style="background: #eee0cb">
+    <h5 class="offcanvas-title text-dark">
       <i class="bi bi-clock-history me-2"></i>Historial de actividad
     </h5>
-    <button
-      type="button"
-      class="btn-close btn-close-white"
-      data-bs-dismiss="offcanvas"
-    ></button>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body">
-    {% if actividades %}
+    {% if actividad %}
     <div class="list-group list-group-flush">
       {% for actividad in actividades %}
       <div class="list-group-item border-0 border-bottom px-0 py-3">
@@ -303,6 +256,7 @@
   </div>
 </div>
 {% else %}
+<div class="offcanvas offcanvas-end border-0 shadow" tabindex="-1" id="offcanvasHistorial" style="width: 800px">
 <!-- OFFCANVAS: Historial (clientes y barberos) -->
 <div
   class="offcanvas offcanvas-end border-0 shadow"
@@ -314,41 +268,27 @@
     <h5 class="offcanvas-title fw-bold">
       <i class="bi bi-clock-history me-2"></i>Mi Historial
     </h5>
-    <button
-      type="button"
-      class="btn-close btn-close-white"
-      data-bs-dismiss="offcanvas"
-    ></button>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body p-0 bg-light-subtle">
-    <!-- Pestañas -->
     <ul class="nav nav-tabs px-4 pt-3 bg-white" id="historialTabs">
       <li class="nav-item">
-        <button
-          class="nav-link active fw-bold"
-          data-bs-toggle="tab"
-          data-bs-target="#tabReservas"
-        >
+        <button class="nav-link active fw-bold" data-bs-toggle="tab" data-bs-target="#tabReservas">
           <i class="bi bi-calendar-check me-1"></i>Reservas
+          <span class="badge rounded-pill ms-1" style="background: {% if user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}">
+            {{ reservas.count }}
+          </span>
           <span class="badge rounded-pill ms-1" style="background: {% if user.rol == 'barbero' %}#f0a500{% else %}#198754{% endif %}">{{ reservas.count }}</span>
         </button>
       </li>
       <li class="nav-item">
-        <button
-          class="nav-link fw-bold"
-          data-bs-toggle="tab"
-          data-bs-target="#tabCompras"
-        >
+        <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#tabCompras">
           <i class="bi bi-bag-check me-1"></i>Compras
           <span class="badge rounded-pill ms-1 bg-primary">{{ compras.count }}</span>
         </button>
       </li>
       <li class="nav-item">
-        <button
-          class="nav-link fw-bold"
-          data-bs-toggle="tab"
-          data-bs-target="#tabFacturas"
-        >
+        <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#tabFacturas">
           <i class="bi bi-receipt me-1"></i>Facturas
           <span class="badge rounded-pill ms-1 bg-dark">{{ facturas.count }}</span>
         </button>
@@ -356,8 +296,20 @@
     </ul>
 
     <div class="tab-content p-4">
-      <!-- TAB: Reservas -->
       <div class="tab-pane fade show active" id="tabReservas">
+        {% if reservas %} 
+          {% for reserva in reservas %}
+          <div class="card border-0 shadow-sm rounded-4 mb-3">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="fw-bold fs-5 text-dark">{{ reserva.servicio.nombre }}</span>
+                {% if reserva.estado == 'confirmada' %}
+                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill border border-success-subtle">Confirmada</span>
+                {% elif reserva.estado == 'cancelada' %}
+                <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill border border-danger-subtle">Cancelada</span>
+                {% else %}
+                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill border border-warning-subtle">Reservada</span>
+                {% endif %}
         {% if reservas %}
         {% for reserva in reservas %}
         <div class="card border-0 shadow-sm rounded-4 mb-3">
@@ -377,10 +329,31 @@
                 <i class="bi bi-calendar text-secondary"></i>
                 {% if reserva.fecha_reserva %} {{ reserva.fecha_reserva|date:"d/m/Y" }} a las {{ reserva.fecha_reserva|date:"H:i" }} {% else %} Fecha no disponible {% endif %}
               </div>
-              {% if reserva.turno %}
-              <div class="mb-2 d-flex align-items-center gap-2">
-                <i class="bi bi-person text-secondary"></i><span>{{ reserva.turno.profesional.get_full_name }}</span>
+              <div class="text-muted small">
+                <div class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-calendar text-secondary"></i>
+                  {% if reserva.fecha_reserva %} {{ reserva.fecha_reserva|date:"d/m/Y" }} a las {{ reserva.fecha_reserva|date:"H:i" }} {% else %} Fecha no disponible {% endif %}
+                </div>
+                {% if reserva.turno %}
+                <div class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-person text-secondary"></i><span>{{ reserva.turno.profesional.get_full_name }}</span>
+                </div>
+                {% endif %} 
+                {% if reserva.promocion %}
+                <div class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-tag text-success"></i><span class="text-success fw-semibold">{{ reserva.promocion.nombre }}</span>
+                </div>
+                {% endif %} 
+                {% if reserva.precio_historico %}
+                <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                  <span class="text-muted">Precio pagado</span>
+                  <span class="fs-5 fw-bold text-dark">${{ reserva.precio_historico|floatformat:0 }}</span>
+                </div>
+                {% endif %}
               </div>
+            </div>
+          </div>
+          {% endfor %} 
               {% endif %}
               {% if reserva.promocion %}
               <div class="mb-2 d-flex align-items-center gap-2">
@@ -401,19 +374,34 @@
         <div class="text-center py-5">
           <i class="bi bi-calendar-x text-muted" style="font-size: 3rem"></i>
           <p class="text-muted mt-3">Aún no tienes reservas registradas.</p>
-          <a
-            href="{% url 'crear_reserva_directa' %}"
-            class="btn btn-sm text-white px-4 py-2 rounded-pill fw-bold"
-            style="background: #198754"
-          >
+          <a href="{% url 'crear_reserva_directa' %}" class="btn btn-sm text-white px-4 py-2 rounded-pill fw-bold" style="background: #198754">
             Hacer una reserva
           </a>
         </div>
         {% endif %}
       </div>
 
-      <!-- TAB: Compras -->
       <div class="tab-pane fade" id="tabCompras">
+        {% if compras %} 
+          {% for compra in compras %}
+          <div class="card border-0 shadow-sm rounded-4 mb-3">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="fw-bold text-dark text-uppercase tracking-wider small">Compra #{{ compra.codigo_compra }}</span>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill">{{ compra.fecha_compra|date:"d/m/Y" }}</span>
+              </div>
+              {% for detalle in compra.detalles.all %}
+              <div class="d-flex align-items-center gap-3 mb-3 pb-2 border-bottom border-light">
+                {% if detalle.producto.imagen %}
+                <img src="{{ detalle.producto.imagen.url }}" width="45" height="45" class="rounded-3 shadow-sm" style="object-fit: cover" />
+                {% else %}
+                <div class="rounded-3 d-flex align-items-center justify-content-center border" style="width: 45px; height: 45px; background: #f8f9fa">
+                  <i class="bi bi-box text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="flex-grow-1">
+                  <div class="fw-semibold text-dark">{{ detalle.producto.nombre }}</div>
+                  <div class="text-muted" style="font-size: 0.8rem">{{ detalle.cantidad }} x ${{ detalle.producto.precio_venta|floatformat:0 }}</div>
         {% if compras %}
         {% for compra in compras %}
         <div class="card border-0 shadow-sm rounded-4 mb-3">
@@ -445,7 +433,18 @@
                 <div class="text-muted" style="font-size: 0.8rem">
                   {{ detalle.cantidad }} x ${{ detalle.producto.precio_venta|floatformat:0 }}
                 </div>
+                <span class="fw-bold text-dark">${{ detalle.subtotal|floatformat:0 }}</span>
               </div>
+              {% endfor %}
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted">
+                  <i class="bi bi-credit-card me-1"></i>{{ compra.metodo_pago|default:"—" }}
+                </small>
+                <strong class="fs-5 text-dark">Total: ${{ compra.total|floatformat:0 }}</strong>
+              </div>
+            </div>
+          </div>
+          {% endfor %} 
               <span class="fw-bold text-dark">${{ detalle.subtotal|floatformat:0 }}</span>
             </div>
             {% endfor %}
@@ -462,18 +461,13 @@
         <div class="text-center py-5">
           <i class="bi bi-bag-x text-muted" style="font-size: 3rem"></i>
           <p class="text-muted mt-3">Aún no tienes compras registradas.</p>
-          <a
-            href="{% url 'productos_galeria' %}"
-            class="btn btn-sm text-white px-4 py-2 rounded-pill fw-bold"
-            style="background: #007ca9"
-          >
+          <a href="{% url 'productos_galeria' %}" class="btn btn-sm text-white px-4 py-2 rounded-pill fw-bold" style="background: #007ca9">
             Ver productos
           </a>
         </div>
         {% endif %}
       </div>
 
-      <!-- TAB: Facturas -->
       <div class="tab-pane fade" id="tabFacturas">
         {% if facturas %}
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
@@ -509,10 +503,7 @@
                 </tr>
                 <tr class="collapse border-0" id="facturaInfo{{ factura.id }}">
                   <td colspan="4" class="p-4 bg-light-subtle border-0">
-                    <div
-                      class="small fw-bold text-muted mb-3 text-uppercase tracking-wider"
-                      style="font-size: 0.7rem"
-                    >
+                    <div class="small fw-bold text-muted mb-3 text-uppercase tracking-wider" style="font-size: 0.7rem">
                       Conceptos facturados:
                     </div>
                     {% for detalle in factura.detalles.all %}
