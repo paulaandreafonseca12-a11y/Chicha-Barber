@@ -1,0 +1,90 @@
+{% extends 'base-clientes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 700px;">
+
+  <a href="{% url 'perfil' %}" class="text-white-50 text-decoration-none small mb-3 d-inline-block">
+    <i class="bi bi-arrow-left me-1"></i> Volver a mi perfil
+  </a>
+
+  <div class="card border-0 rounded-4 shadow-lg overflow-hidden">
+
+    <div class="p-4 d-flex align-items-center gap-3 color-negro-bg text-white">
+      {% if notificacion.tipo == 'compra' %}
+        <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-25"
+             style="width:56px;height:56px;">
+          <i class="bi bi-bag-check-fill fs-3 text-success"></i>
+        </div>
+        <div>
+          <span class="badge bg-success mb-1">Compra</span>
+          <h5 class="mb-0">Notificación de compra</h5>
+        </div>
+      {% else %}
+        <div class="rounded-circle d-flex align-items-center justify-content-center bg-info bg-opacity-25"
+             style="width:56px;height:56px;">
+          <i class="bi bi-calendar-check-fill fs-3 text-info"></i>
+        </div>
+        <div>
+          <span class="badge bg-info text-dark mb-1">Reserva</span>
+          <h5 class="mb-0">Notificación de reserva</h5>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card-body p-4">
+
+      <p class="fs-5 mb-2">{{ notificacion.mensaje }}</p>
+
+      <p class="text-muted small mb-4">
+        <i class="bi bi-clock me-1"></i>
+        {{ notificacion.fecha|date:"d/m/Y H:i" }}
+      </p>
+
+      {% if objeto_relacionado %}
+        <hr>
+        <h6 class="text-uppercase text-muted small mb-3" style="letter-spacing:0.5px;">
+          Detalle {% if notificacion.tipo == 'compra' %}de la compra{% else %}de la reserva{% endif %}
+        </h6>
+
+        {% if notificacion.tipo == 'compra' %}
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between px-0">
+              <span class="text-muted">N° de compra</span>
+              <span class="fw-semibold">#{{ objeto_relacionado.pk }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between px-0">
+              <span class="text-muted">Fecha</span>
+              <span class="fw-semibold">{{ objeto_relacionado.fecha_compra|date:"d/m/Y H:i" }}</span>
+            </li>
+            {% if objeto_relacionado.total %}
+            <li class="list-group-item d-flex justify-content-between px-0">
+              <span class="text-muted">Total</span>
+              <span class="fw-semibold">${{ objeto_relacionado.total }}</span>
+            </li>
+            {% endif %}
+          </ul>
+        {% else %}
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between px-0">
+              <span class="text-muted">N° de reserva</span>
+              <span class="fw-semibold">#{{ objeto_relacionado.pk }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between px-0">
+              <span class="text-muted">Fecha de la reserva</span>
+              <span class="fw-semibold">{{ objeto_relacionado.fecha_reserva|date:"d/m/Y H:i" }}</span>
+            </li>
+          </ul>
+        {% endif %}
+      {% endif %}
+
+      <div class="mt-4 d-flex gap-2">
+        <a href="{% url 'perfil' %}" class="btn btn-warning color-champaña rounded-pill px-4">
+          Ir a mi perfil
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
