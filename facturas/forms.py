@@ -5,13 +5,12 @@ class FacturaForm(forms.ModelForm):
     class Meta:
         model = Factura
         fields = [
-            'cliente', 'metodo_pago', 'estado', 'total_pagado', 
+            'cliente', 'metodo_pago', 'total_pagado', 
             'nombre_cliente', 'correo_cliente', 'telefono_cliente'
         ]
         widgets = {
             'cliente': forms.Select(attrs={'class': 'form-select'}),
             'metodo_pago': forms.Select(attrs={'class': 'form-select'}),
-            'estado': forms.Select(attrs={'class': 'form-select'}),
             'total_pagado': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'nombre_cliente': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre (opcional)'}),
             'correo_cliente': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo (opcional)'}),

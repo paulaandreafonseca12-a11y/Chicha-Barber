@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'productos',
     'configuraciones',
     'facturas',
+    'chat_ia',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
