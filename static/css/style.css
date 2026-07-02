@@ -1124,3 +1124,100 @@ body.theme-light .color-champaña .dataTables_length label,
 .color-champaña .dataTables_length label {
   color: #030301 !important;
 }
+
+/* ── FORZAR ESTILO CLARO EN LA TABLA DE USUARIOS (sin importar el tema) ── */
+#tablaUsuarios_wrapper .dt-search input,
+#tablaUsuarios_wrapper .dataTables_filter input,
+#tablaUsuarios_wrapper .dt-length select,
+#tablaUsuarios_wrapper .dataTables_length select,
+#tablaUsuarios_wrapper input.form-control,
+#tablaUsuarios_wrapper select.form-select {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border: 1px solid rgba(141, 129, 140, 0.4) !important;
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+#tablaUsuarios_wrapper .dt-search input::placeholder {
+  color: #8d818c !important;
+}
+
+#tablaUsuarios_wrapper .dt-search input:focus,
+#tablaUsuarios_wrapper .dataTables_filter input:focus,
+#tablaUsuarios_wrapper .dt-length select:focus,
+#tablaUsuarios_wrapper .dataTables_length select:focus {
+  border-color: #22aed1 !important;
+  outline: none;
+  box-shadow: 0 0 8px rgba(34, 174, 209, 0.4) !important;
+}
+
+#tablaUsuarios_wrapper .dt-info,
+#tablaUsuarios_wrapper .dataTables_info,
+#tablaUsuarios_wrapper .dt-search label,
+#tablaUsuarios_wrapper .dataTables_filter label,
+#tablaUsuarios_wrapper .dt-length label,
+#tablaUsuarios_wrapper .dataTables_length label {
+  color: #030301 !important;
+}
+
+/* Paginación también en claro */
+#tablaUsuarios_wrapper .dt-paging .pagination .page-link,
+#tablaUsuarios_wrapper .dataTables_paginate .pagination .page-link {
+  background-color: #ffffff !important;
+  color: #22aed1 !important;
+  border-color: rgba(34, 174, 209, 0.2) !important;
+}
+#tablaUsuarios_wrapper .dt-paging .pagination .page-link:hover,
+#tablaUsuarios_wrapper .dataTables_paginate .pagination .page-link:hover {
+  background-color: #22aed1 !important;
+  color: #ffffff !important;
+  border-color: #22aed1 !important;
+}
+#tablaUsuarios_wrapper .dt-paging .pagination .page-item.active .page-link,
+#tablaUsuarios_wrapper .dataTables_paginate .pagination .page-item.active .page-link {
+  background-color: #22aed1 !important;
+  color: #ffffff !important;
+  border-color: #22aed1 !important;
+}
+#tablaUsuarios_wrapper .dt-paging .pagination .page-item.disabled .page-link,
+#tablaUsuarios_wrapper .dataTables_paginate .pagination .page-item.disabled .page-link {
+  background-color: #f8f9fa !important;
+  color: #8d818c !important;
+  border-color: rgba(141, 129, 140, 0.2) !important;
+  opacity: 0.6;
+}
+
+/* Corrección de visibilidad para el chat */
+#chatWidget {
+    color: #ffffff !important; /* Asegura que todo el texto sea blanco */
+}
+
+.msg-user {
+    background-color: #2b50aa !important; /* Azul Oscuro */
+    color: #ffffff !important;
+    padding: 10px 15px !important;
+    border-radius: 15px 15px 0 15px !important;
+    margin-bottom: 10px;
+    align-self: flex-end;
+    max-width: 85%;
+    border: 1px solid #22aed1;
+}
+
+.msg-ia {
+    background-color: #eee0cb !important; /* Color Champaña */
+    color: #170212 !important; /* Texto negro para que resalte sobre el champaña */
+    padding: 10px 15px !important;
+    border-radius: 15px 15px 15px 0 !important;
+    margin-bottom: 10px;
+    align-self: flex-start;
+    max-width: 85%;
+    font-weight: bold; /* Añadido para mejor legibilidad */
+}
+
+/* Asegurar que el input de texto también se vea bien */
+#chatForm input {
+    color: #170212 !important;
+}
+#chatForm input::placeholder {
+    color: #bbb !important;}

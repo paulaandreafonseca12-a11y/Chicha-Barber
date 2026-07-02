@@ -11,58 +11,62 @@
         <a href="{% url 'crear_usuario' %}" class="btn custom-btn fw-bold">
             <i class="bi bi-person-plus-fill me-1"></i> Agregar Usuario
         </a>
-    </div>
+    </div>  
 
-    <!-- Tarjetas de resumen -->
+    <!-- Tarjetas de resumen (estilo champaña, igual a Agenda) -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="bg-info bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:56px;height:56px;">
-                        <i class="bi bi-people-fill fs-3 text-info"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
+                         style="width:56px;height:56px;background-color:#22aed1;">
+                        <i class="bi bi-people-fill fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Total Usuarios -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap">{{ total_usuarios }}</h3>
+                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Total Usuarios -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_usuarios }}</h3>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:56px;height:56px;">
-                        <i class="bi bi-person-fill fs-3 text-warning"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
+                         style="width:56px;height:56px;background-color:#c47a2c;">
+                        <i class="bi bi-person-fill fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Clientes -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap">{{ total_clientes }}</h3>
+                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Clientes -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_clientes }}</h3>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="bg-info bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:56px;height:56px;">
-                        <i class="bi bi-scissors fs-3 text-info"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
+                         style="width:56px;height:56px;background-color:#28a745;">
+                        <i class="bi bi-scissors fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Barberos -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap">{{ total_barberos }}</h3>
+                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Barberos -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_barberos }}</h3>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-dark text-white border-secondary h-100 shadow-sm">
+            <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="bg-danger bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:56px;height:56px;">
-                        <i class="bi bi-shield-fill fs-3 text-danger"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
+                         style="width:56px;height:56px;background-color:#dc3545;">
+                        <i class="bi bi-shield-fill fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-white-50 fw-bold me-2 text-nowrap">Administradores -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap">{{ total_admins }}</h3>
+                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Administradores -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_admins }}</h3>
                     </div>
                 </div>
             </div>
@@ -81,31 +85,31 @@
         </button>
     </div>
 
-    <!-- Tabla -->
-    <div class="card bg-dark text-white shadow border-secondary mb-4">
+    <!-- Tabla estilo claro, igual a Agenda -->
+    <div class="card shadow border-0 mb-4" style="background-color:#ffffff;">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tablaUsuarios" class="table table-dark table-hover align-middle border-secondary mb-0 w-100">
-                    <thead class="thead-azul">
-                        <tr>
-                            <th class="ps-4">Nombre</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                            <th>Rol</th>
-                            <th>Acceso Admin</th>
-                            <th>Fecha Registro</th>
-                            <th class="text-center">Acciones</th>
+                <table id="tablaUsuarios" class="table table-hover align-middle mb-0 w-100">
+                    <thead>
+                        <tr style="color:#030301; border-bottom:2px solid rgba(0,0,0,0.08);">
+                            <th class="ps-4 text-uppercase small">Nombre</th>
+                            <th class="text-uppercase small">Correo</th>
+                            <th class="text-uppercase small">Teléfono</th>
+                            <th class="text-uppercase small">Rol</th>
+                            <th class="text-uppercase small">Acceso Admin</th>
+                            <th class="text-uppercase small">Fecha Registro</th>
+                            <th class="text-center text-uppercase small">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for usuario in usuarios %}
-                        <tr class="align-middle">
+                        <tr class="align-middle" style="color:#030301;">
                             <td class="ps-4">
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold
-                                        {% if usuario.rol == 'barbero' %}bg-info bg-opacity-25 text-info
-                                        {% elif usuario.rol == 'admin' %}bg-danger bg-opacity-25 text-danger
-                                        {% else %}bg-warning bg-opacity-25 text-warning{% endif %}"
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white
+                                        {% if usuario.rol == 'barbero' %}bg-info
+                                        {% elif usuario.rol == 'admin' %}bg-danger
+                                        {% else %}bg-warning text-dark{% endif %}"
                                          style="width:36px; height:36px; font-size:14px; flex-shrink:0;">
                                         {{ usuario.get_full_name|first|upper }}
                                     </div>
@@ -142,7 +146,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center py-5 text-white-50">
+                            <td colspan="7" class="text-center py-5" style="color:#8d818c;">
                                 <i class="bi bi-people fs-1 d-block mb-3"></i>
                                 No hay usuarios registrados.
                             </td>
@@ -158,15 +162,8 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
-
-<!-- jQuery (requerido por DataTables) -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-
-<!-- DataTables JS -->
 <script src="{% static 'js/datatables.js' %}"></script>
-
-<!-- Custom Configuración de DataTable -->
 <script src="{% static 'js/tconf/tconf-tablaUsuarios.js' %}"></script>
 {% endblock scripts %}
