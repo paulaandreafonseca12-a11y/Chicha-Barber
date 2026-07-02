@@ -1186,4 +1186,39 @@ body.theme-light .color-champaña .dataTables_length label,
   color: #8d818c !important;
   border-color: rgba(141, 129, 140, 0.2) !important;
   opacity: 0.6;
+
+
+/* Corrección de visibilidad para el chat */
+#chatWidget {
+    color: #ffffff !important; /* Asegura que todo el texto sea blanco */
+}
+
+.msg-user {
+    background-color: #2b50aa !important; /* Azul Oscuro */
+    color: #ffffff !important;
+    padding: 10px 15px !important;
+    border-radius: 15px 15px 0 15px !important;
+    margin-bottom: 10px;
+    align-self: flex-end;
+    max-width: 85%;
+    border: 1px solid #22aed1;
+}
+
+.msg-ia {
+    background-color: #eee0cb !important; /* Color Champaña */
+    color: #170212 !important; /* Texto negro para que resalte sobre el champaña */
+    padding: 10px 15px !important;
+    border-radius: 15px 15px 15px 0 !important;
+    margin-bottom: 10px;
+    align-self: flex-start;
+    max-width: 85%;
+    font-weight: bold; /* Añadido para mejor legibilidad */
+}
+
+/* Asegurar que el input de texto también se vea bien */
+#chatForm input {
+    color: #170212 !important;
+}
+#chatForm input::placeholder {
+    color: #bbb !important;
 }
