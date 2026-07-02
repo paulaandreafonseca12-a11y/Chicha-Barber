@@ -1,32 +1,38 @@
 {% extends "base-admin.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container-fluid py-3">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm border-0 mb-4">
-                
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 fw-bold">Formulario de Registro</h5>
-                </div>
-                
-                <div class="card-body p-4">
-                    <form method="POST">
-                        {% csrf_token %}
-                        
-                        {{ form|crispy }}
-                        
-                        <hr class="my-4 text-secondary opacity-25">
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{% url 'crear_servicios' %}" class="btn btn-outline-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-primary"> Guardar Servicio</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
+<div class="container-fluid py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card color-champaña text-dark border-0 shadow-sm overflow-hidden mb-4">
+        
+        <div class="card-header py-3 border-0 bg-transparent">
+          <h5 class="mb-0 fw-bold text-center text-dark">Formulario de Registro</h5>
         </div>
+        
+        <div class="card-body p-4 bg-white">
+          <div class="inputs-limpios">
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              {{ form|crispy }}
+              
+              <hr class="my-4 text-secondary opacity-25">
+
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" onclick="history.back()" class="btn btn-outline-secondary text-dark border-secondary px-4">
+                  Cancelar
+                </button>
+                <button type="submit" class="btn custom-btn px-4">
+                  Guardar Servicio
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

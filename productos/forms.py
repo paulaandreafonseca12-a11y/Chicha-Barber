@@ -7,7 +7,7 @@ class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
         # 🔑 Agregado 'estado' a la lista de campos visibles
-        fields = ['nombre', 'descripcion', 'precio_venta', 'precio_compra', 'imagen', 'estado']
+        fields = ['nombre', 'descripcion', 'precio_venta', 'precio_compra', 'imagen']
         widgets = { # Bootstrap blanco para todos los campos
             'nombre': forms.TextInput(attrs={'class': 'form-control bg-white text-dark border-secondary'}),
             'descripcion': forms.Textarea(attrs={'class': 'form-control bg-white text-dark border-secondary', 'rows': 3}),

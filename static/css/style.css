@@ -648,13 +648,13 @@ body.theme-dark input.form-control,
 .dataTables_filter input,
 .dt-length select,
 .dataTables_length select {
-  background-color: #eee0cb;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 5px;
-  padding: 4px 8px;
+  background-color: #ffffff !important;
+color: #1a1a1a !important;
+/* CAMBIO: Usamos un gris estándar visible (#ced4da) en lugar de blanco transparente */
+border: 1px solid #ced4da !important; 
+border-radius: 5px;
+padding: 4px 8px;
 }
-
 /* Specific override for the form-select and form-control under dt-container in dark mode */
 body.theme-dark .dt-container select.form-select,
 body.theme-dark .dt-container input.form-control,
