@@ -1186,7 +1186,7 @@ body.theme-light .color-champaña .dataTables_length label,
   color: #8d818c !important;
   border-color: rgba(141, 129, 140, 0.2) !important;
   opacity: 0.6;
-
+}
 
 /* Corrección de visibilidad para el chat */
 #chatWidget {
@@ -1220,5 +1220,4 @@ body.theme-light .color-champaña .dataTables_length label,
     color: #170212 !important;
 }
 #chatForm input::placeholder {
-    color: #bbb !important;
-}
+    color: #bbb !important;}
