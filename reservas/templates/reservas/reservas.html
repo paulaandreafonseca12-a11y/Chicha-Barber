@@ -1,7 +1,6 @@
 {% extends "base-clientes.html" %}
 {% load static %}
 
-
 {% block content %}
 <div class="booking-wrap position-relative d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 90px 16px 40px;">
   
@@ -94,6 +93,13 @@
             </label>
           </div>
           {% endfor %}
+        </div>
+
+        <div id="no-turnos-barbero-msg" class="p-4 text-center rounded-3 fw-bold d-none mt-2" style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.15);">
+          <i class="bi bi-calendar-x fs-3 d-block mb-2 text-custom-muted"></i>
+          <span class="text-custom-muted">No hay turnos disponibles para este barbero.</span>
+          <br>
+          <small class="fw-normal text-accent" style="font-size: 0.8rem;">Por favor, selecciona otro barbero o elige "Cualquiera disponible".</small>
         </div>
         {% endif %}
       </div>
@@ -196,8 +202,86 @@
     </form>
   </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
-  <script src="{% static 'js/calendario.js' %}"></script>
+<script>
+  // 1. FUNCIONES PARA EL MÉTODO DE PAGO
+  function toggleTransferenciaDetails() {
+      const isTransferencia = document.getElementById('pago-transferencia').checked;
+      const detallesPanel = document.getElementById('detalles-transferencia');
+      
+      if (isTransferencia) {
+          detallesPanel.classList.remove('d-none');
+          document.getElementById('id_transaccion').required = true;
+          document.getElementById('comprobante').required = true;
+      } else {
+          detallesPanel.classList.add('d-none');
+          document.getElementById('id_transaccion').required = false;
+          document.getElementById('comprobante').required = false;
+      }
+  }
+
+  function copyToClipboard(text, btnElement) {
+      navigator.clipboard.writeText(text).then(() => {
+          const icon = btnElement.querySelector('i');
+          const originalClass = icon.className;
+          icon.className = 'bi bi-check2 text-success';
+          setTimeout(() => { icon.className = originalClass; }, 2000);
+      });
+  }
+
+  function updateFileName(inputElement) {
+      const fileNameDisplay = document.getElementById('comprobante-filename');
+      if (inputElement.files && inputElement.files.length > 0) {
+          fileNameDisplay.innerHTML = '<i class="bi bi-file-earmark-check me-2 text-success"></i><span class="text-white">' + inputElement.files[0].name + '</span>';
+      } else {
+          fileNameDisplay.innerHTML = '<i class="bi bi-paperclip me-2"></i>Sube una imagen o PDF';
+      }
+  }
+
+  // 2. LÓGICA CUANDO LA PÁGINA CARGA
+  document.addEventListener("DOMContentLoaded", () => {
+      
+      toggleTransferenciaDetails();
+
+      // FILTRADO DE BARBEROS
+      const barberRadios = document.querySelectorAll('input[name="barbero_id"]');
+      const turnos = document.querySelectorAll('.turno-item');
+      const msgNoTurnos = document.getElementById('no-turnos-barbero-msg');
+
+      function filtrarTurnos() {
+          const barberoSeleccionado = document.querySelector('input[name="barbero_id"]:checked').value;
+          let turnosVisibles = 0;
+
+          turnos.forEach(turno => {
+              const idBarberoDelTurno = turno.getAttribute('data-barbero');
+              const radioTurno = turno.querySelector('input[type="radio"]');
+
+              if (barberoSeleccionado === 'any' || idBarberoDelTurno === barberoSeleccionado) {
+                  turno.classList.remove('d-none');
+                  turnosVisibles++;
+              } else {
+                  turno.classList.add('d-none');
+                  if (radioTurno.checked) {
+                      radioTurno.checked = false;
+                  }
+              }
+          });
+
+          // Controlar la visibilidad del mensaje de alerta por barbero
+          if (msgNoTurnos) {
+              if (turnosVisibles === 0) {
+                  msgNoTurnos.classList.remove('d-none');
+              } else {
+                  msgNoTurnos.classList.add('d-none');
+              }
+          }
+      }
+
+      barberRadios.forEach(radio => {
+          radio.addEventListener('change', filtrarTurnos);
+      });
+
+      filtrarTurnos();
+  });
+</script>
 {% endblock %}
