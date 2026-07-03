@@ -30,6 +30,7 @@ class Servicios(models.Model):
             self.imagen = None
             super().save(*args, **kwargs)
             self.imagen = imagen_temp # Restauramos la imagen para guardarla con el ID generado
+            kwargs.pop('force_insert', None)
         super().save(*args, **kwargs)
 
 def renombrar_imagen_promocion(instance, filename):
@@ -71,6 +72,7 @@ class Promocion(models.Model):
             self.imagen = None
             super().save(*args, **kwargs)
             self.imagen = imagen_temp
+            kwargs.pop('force_insert', None)
         super().save(*args, **kwargs)
 
 class Calificacion(models.Model):
