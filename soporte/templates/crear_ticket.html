@@ -1,0 +1,28 @@
+{% extends 'base-clientes.html' %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">Crear Ticket de Soporte</h1>
+        <p class="lead text-muted">Por favor, completa el siguiente formulario para enviar tu solicitud de soporte.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" action="{% url 'crear_ticket' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título del Ticket</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Ticket</button>
+            </form>
+        </div>
+    </div>
+    
+{% endblock %}
