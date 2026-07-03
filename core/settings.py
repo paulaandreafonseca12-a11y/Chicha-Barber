@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'configuraciones',
     'facturas',
     'chat_ia',
+    'soporte',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -230,3 +231,9 @@ EMAIL_TIMEOUT = 30
 # ======================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ======================================================
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_HTTPONLY = True

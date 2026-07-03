@@ -38,8 +38,14 @@ urlpatterns = [
     
     #ia - chat
    path('chat/', include('chat_ia.urls')),
+   
+   path('ayuda/', include('soporte.urls')),
+   
+ 
+    # ... tus otras urls
+    
+]
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # 🔥 ESTO HACE QUE LAS IMÁGENES FUNCIONEN
 if settings.DEBUG:

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-    <div class="card bg-dark text-white border-secondary shadow" style="max-width: 650px; margin: 0 auto;">
+    <div class="card bg-white text-dark border shadow" style="max-width: 650px; margin: 0 auto;">
 
         <div class="card-header thead-azul d-flex align-items-center gap-2">
             <i class="bi bi-person-plus-fill text-white fs-5"></i>
@@ -16,7 +16,7 @@
                 <div class="row g-3">
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-white-50">Número de Documento</label>
+                        <label class="form-label fw-semibold text-dark">Número de Documento</label>
                         {{ form.username }}
                         {% if form.username.errors %}
                             <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-white-50">Teléfono</label>
+                        <label class="form-label fw-semibold text-dark">Teléfono</label>
                         {{ form.telefono }}
                         {% if form.telefono.errors %}
                             <div class="text-danger small mt-1">{{ form.telefono.errors.0 }}</div>
@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-white-50">Nombre</label>
+                        <label class="form-label fw-semibold text-dark">Nombre</label>
                         {{ form.first_name }}
                         {% if form.first_name.errors %}
                             <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-white-50">Apellido</label>
+                        <label class="form-label fw-semibold text-dark">Apellido</label>
                         {{ form.last_name }}
                         {% if form.last_name.errors %}
                             <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label fw-semibold text-white-50">Correo Electrónico</label>
+                        <label class="form-label fw-semibold text-dark">Correo Electrónico</label>
                         {{ form.email }}
                         {% if form.email.errors %}
                             <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-white-50">Rol</label>
+                        <label class="form-label fw-semibold text-dark">Rol</label>
                         {{ form.rol }}
                         {% if form.rol.errors %}
                             <div class="text-danger small mt-1">{{ form.rol.errors.0 }}</div>
@@ -66,14 +66,14 @@
                     <div class="col-md-6 d-flex align-items-end">
                         <div class="form-check mb-2">
                             {{ form.is_staff }}
-                            <label class="form-check-label fw-semibold ms-2 text-white-50">
+                            <label class="form-check-label fw-semibold ms-2 text-dark">
                                 Acceso al panel admin
                             </label>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-white-50">Contraseña</label>
+                        <label class="form-label fw-semibold text-dark">Contraseña</label>
                         {{ form.password1 }}
                         {% if form.password1.errors %}
                             <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-white-50">Confirmar Contraseña</label>
+                        <label class="form-label fw-semibold text-dark">Confirmar Contraseña</label>
                         {{ form.password2 }}
                         {% if form.password2.errors %}
                             <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
