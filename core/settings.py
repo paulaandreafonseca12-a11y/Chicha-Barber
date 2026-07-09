@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from decouple import config
 
 # ======================================================
 # BASE DIR
@@ -12,9 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 # ======================================================
 
-SECRET_KEY = 'django-insecure-vj0@he!#u32)(2pk_@xyc_nqwqm962x(#-93qj9*n&s#8%emz)'
+SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -212,7 +213,6 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 
 import ssl
 import certifi
-import os
 
 os.environ['SSL_CERT_FILE'] = certifi.where()
 os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
@@ -221,9 +221,9 @@ EMAIL_BACKEND = 'core.email_backend.SSLEmailBackend'
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'aa9420001@smtp-brevo.com'
-EMAIL_HOST_PASSWORD = 'CcHkS6yZ21UIJWw7'
-DEFAULT_FROM_EMAIL = 'chichabarber39@gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 EMAIL_TIMEOUT = 30
 
 # ======================================================

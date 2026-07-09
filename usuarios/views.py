@@ -93,12 +93,12 @@ def registro_view(request):
     else:
         form = RegistroForm()
         
-        context = {
-            'form': form,
-            'next': next_url,
-            'titulo': 'Registro'
-            }
-        return render(request,'usuarios/registro.html',context)
+    context = {
+        'form': form,
+        'next': next_url,
+        'titulo': 'Registro'
+    }
+    return render(request, 'usuarios/registro.html', context)
 
 
 def lista_usuarios(request):

@@ -9,21 +9,25 @@ from facturas.models import Factura, DetalleFactura
 
 class FacturaTest(TestCase):
     def setUp(self):
-        # Obtener datos existentes
-        self.cliente = Usuario.objects.first()
-        self.producto = Producto.objects.first()
+        # Obtener datos existentes o crearlos si no existen
+        self.cliente = Usuario.objects.first() or Usuario.objects.create_user(
+            username='987654321',
+            email='cliente_factura@example.com',
+            password='Test1234*',
+            first_name='Cliente',
+            last_name='Prueba',
+            telefono='3001234567',
+            rol='cliente'
+        )
+        self.producto = Producto.objects.first() or Producto.objects.create(
+            nombre="Producto de prueba",
+            descripcion="Descripción de prueba",
+            precio_compra=Decimal("1000.00"),
+            precio_venta=Decimal("1500.00"),
+            estado=True
+        )
 
     def test_crear_factura_y_detalles(self):
-        # Verificar que existan datos
-        self.assertIsNotNone(
-            self.cliente,
-            "No existe ningún usuario en la base de datos."
-        )
-
-        self.assertIsNotNone(
-            self.producto,
-            "No existe ningún producto en la base de datos."
-        )
 
         # Crear factura
         factura = Factura.objects.create(

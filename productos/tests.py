@@ -15,11 +15,14 @@ from productos.models import (
 class ProductoCompraTest(TestCase):
 
     def setUp(self):
-        self.usuario = Usuario.objects.first()
-
-        self.assertIsNotNone(
-            self.usuario,
-            "Debe existir al menos un usuario."
+        self.usuario = Usuario.objects.first() or Usuario.objects.create_user(
+            username='123456789',
+            email='test_usuario@correo.com',
+            password='Test1234*',
+            first_name='Admin',
+            last_name='User',
+            telefono='3001234567',
+            rol='admin'
         )
 
         self.producto = Producto.objects.create(
@@ -130,6 +133,6 @@ class ProductoCompraTest(TestCase):
                 cantidad=100
             )
 
-        print("\n✅ Se detectó correctamente el stock insuficiente.")
+        print("\n[OK] Se detectó correctamente el stock insuficiente.")
 
 # Create your tests here.
