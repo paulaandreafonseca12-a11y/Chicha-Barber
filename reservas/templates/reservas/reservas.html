@@ -29,7 +29,7 @@
     </div>
     {% endif %}
 
-    <form method="POST" action="{{ action_url }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ action_url }}">
       {% csrf_token %}
 
       <div class="mb-5">
@@ -141,22 +141,25 @@
             <input type="radio" class="btn-check" name="medio_pago" id="pago-persona" value="presencial" checked required onchange="toggleTransferenciaDetails()" />
             <label class="choice-card-dark rounded-3 w-100 py-3 d-flex flex-column align-items-center justify-content-center text-center" for="pago-persona">
               <i class="bi bi-cash-coin fs-3 mb-2 text-accent"></i>
-              <span class="fw-bold" style="font-size: 0.9rem;">Pago en Persona</span>
+              <span class="fw-bold" style="font-size: 0.9rem;">Efectivo (En el local)</span>
             </label>
           </div>
           <div class="col-6">
             <input type="radio" class="btn-check" name="medio_pago" id="pago-transferencia" value="transferencia" required onchange="toggleTransferenciaDetails()" />
             <label class="choice-card-dark rounded-3 w-100 py-3 d-flex flex-column align-items-center justify-content-center text-center" for="pago-transferencia">
               <i class="bi bi-bank fs-3 mb-2 text-accent"></i>
-              <span class="fw-bold" style="font-size: 0.9rem;">Transferencia</span>
+              <span class="fw-bold" style="font-size: 0.9rem;">Transferencia (En el local)</span>
             </label>
           </div>
         </div>
       </div>
 
       <div id="detalles-transferencia" class="mb-4 p-3 rounded-3 border d-none" style="background: rgba(0, 0, 0, 0.2); border-color: rgba(43, 80, 170, 0.4) !important;">
-        <h6 class="fw-bold mb-3 text-brand-title"><i class="bi bi-info-circle me-2"></i>Cuentas bancarias</h6>
-        <div class="row g-3 mb-3" style="font-size: 0.9rem;">
+        <h6 class="fw-bold mb-2 text-brand-title"><i class="bi bi-info-circle me-2"></i>Cuentas habilitadas para pago en la barbería</h6>
+        <p class="text-custom-muted mb-3" style="font-size: 0.85rem;">Puedes realizar el pago a cualquiera de estas cuentas una vez finalizado tu servicio. También puedes escanear el código QR de cada cuenta directamente en la barbería para realizar el pago de forma rápida y segura.</p>
+        
+        <div class="row g-3" style="font-size: 0.9rem;">
+          <!-- Tarjeta de Nequi -->
           <div class="col-sm-6">
             <div class="p-3 border rounded-3 d-flex justify-content-between align-items-center" style="background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05) !important;">
               <div>
@@ -168,31 +171,19 @@
               </button>
             </div>
           </div>
+          
+          <!-- Tarjeta de DaviPlata -->
           <div class="col-sm-6">
             <div class="p-3 border rounded-3 d-flex justify-content-between align-items-center" style="background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05) !important;">
               <div>
-                <span class="d-block mb-1 text-uppercase fw-bold text-accent" style="font-size: 0.7rem; letter-spacing: 1px;">Bancolombia</span>
-                <span class="fs-5 fw-bold text-white">123-456789-01</span>
+                <span class="d-block mb-1 text-uppercase fw-bold text-accent" style="font-size: 0.7rem; letter-spacing: 1px;">DaviPlata</span>
+                <span class="fs-5 fw-bold text-white">300 123 4567</span>
               </div>
-              <button type="button" class="btn btn-sm btn-outline-info" onclick="copyToClipboard('12345678901', this)">
+              <button type="button" class="btn btn-sm btn-outline-info" onclick="copyToClipboard('3001234567', this)">
                 <i class="bi bi-clipboard"></i>
               </button>
             </div>
           </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-bold text-white"><i class="bi bi-hash me-2"></i>Número de transacción o referencia</label>
-          <input type="text" name="id_transaccion" id="id_transaccion" class="form-control form-control-barber" placeholder="Ej: 1234567890" />
-        </div>
-
-        <div>
-          <label class="form-label fw-bold text-white"><i class="bi bi-cloud-arrow-up me-2"></i>Comprobante de pago</label>
-          <label for="comprobante" class="form-control form-control-barber d-flex align-items-center justify-content-between p-3" id="file-drop-label" style="cursor: pointer;">
-            <span id="comprobante-filename" class="text-custom-muted"><i class="bi bi-paperclip me-2"></i>Sube una imagen o PDF</span>
-            <span class="badge text-uppercase p-2" style="background: var(--accent-oscuro); color:#fff; font-size: 0.65rem;">Elegir</span>
-          </label>
-          <input type="file" name="comprobante" id="comprobante" accept="image/*,application/pdf" class="visually-hidden" onchange="updateFileName(this)" />
         </div>
       </div>
 
@@ -211,12 +202,8 @@
       
       if (isTransferencia) {
           detallesPanel.classList.remove('d-none');
-          document.getElementById('id_transaccion').required = true;
-          document.getElementById('comprobante').required = true;
       } else {
           detallesPanel.classList.add('d-none');
-          document.getElementById('id_transaccion').required = false;
-          document.getElementById('comprobante').required = false;
       }
   }
 
@@ -227,15 +214,6 @@
           icon.className = 'bi bi-check2 text-success';
           setTimeout(() => { icon.className = originalClass; }, 2000);
       });
-  }
-
-  function updateFileName(inputElement) {
-      const fileNameDisplay = document.getElementById('comprobante-filename');
-      if (inputElement.files && inputElement.files.length > 0) {
-          fileNameDisplay.innerHTML = '<i class="bi bi-file-earmark-check me-2 text-success"></i><span class="text-white">' + inputElement.files[0].name + '</span>';
-      } else {
-          fileNameDisplay.innerHTML = '<i class="bi bi-paperclip me-2"></i>Sube una imagen o PDF';
-      }
   }
 
   // 2. LÓGICA CUANDO LA PÁGINA CARGA
