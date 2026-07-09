@@ -70,7 +70,8 @@
                             <td class="ps-4">
                                 <div class="d-flex align-items-center">
                                     {% if carrusel.imagen %}
-                                        <img src="{{ carrusel.imagen.url }}" alt="{{ carrusel.titulo }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                        <!-- Se agregó loading="lazy" aquí -->
+                                        <img src="{{ carrusel.imagen.url }}" loading="lazy" alt="{{ carrusel.titulo }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                     {% else %}
                                         <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
                                             <i class="bi bi-image text-white-50 fs-4"></i>
