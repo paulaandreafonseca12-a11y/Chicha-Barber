@@ -1,25 +1,17 @@
 {% extends "base-clientes.html" %}
 {% load static %}
 
-{% block styles %}
-  <!-- Hereda los estilos globales y asegura la prioridad en cascada de las variables de reservas -->
-  <link rel="stylesheet" href="{% static 'css/tu_archivo_principal.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="booking-wrap position-relative d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 90px 16px 40px;">
   
-  <!-- Contenedor Principal Oscuro / Claro Adaptativo -->
   <div class="dark-barber-card p-4 p-md-5 w-100 position-relative" style="max-width: 800px;">
     
-    <!-- Barra superior de luces neón decorativa -->
     <div style="height: 5px; width: 100%; position: absolute; top: 0; left: 0; border-top-left-radius: 16px; border-top-right-radius: 16px; background: linear-gradient(90deg, var(--accent-azul), var(--accent-oscuro));"></div>
 
     <div class="text-center mb-2 mt-2">
       <span class="text-uppercase fw-bold text-accent" style="font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: .75rem;">Turno online · Barbería</span>
     </div>
     
-    <!-- Título principal -->
     <h2 class="text-center fw-bold mb-2 text-brand-title" style="font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 2px;">
       Reserva tu Cita
     </h2>
@@ -40,7 +32,6 @@
     <form method="POST" action="{{ action_url }}" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <!-- PASO 1: BARBEROS -->
       <div class="mb-5">
         <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
           <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">1</span> 
@@ -49,7 +40,7 @@
 
         <div class="row g-2" id="barberos-container">
           <div class="col-6 col-sm-4 col-md-3">
-            <input type="radio" class="btn-check" name="barbero_id" id="barbero-any" value="any" checked onchange="filterTurnos()" />
+            <input type="radio" class="btn-check" name="barbero_id" id="barbero-any" value="any" checked />
             <label class="choice-card-dark rounded-3 w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-any">
               <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 65px; height: 65px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
                 <i class="bi bi-people fs-3 text-accent"></i>
@@ -60,7 +51,7 @@
 
           {% for barbero in barberos %}
           <div class="col-6 col-sm-4 col-md-3">
-            <input type="radio" class="btn-check" name="barbero_id" id="barbero-{{ barbero.id }}" value="{{ barbero.id }}" onchange="filterTurnos()" />
+            <input type="radio" class="btn-check" name="barbero_id" id="barbero-{{ barbero.id }}" value="{{ barbero.id }}" />
             <label class="choice-card-dark rounded-3 w-100 h-100 p-3 d-flex flex-column align-items-center justify-content-center text-center" for="barbero-{{ barbero.id }}">
               {% if barbero.foto_perfil %}
               <img src="{{ barbero.foto_perfil.url }}" class="rounded-circle mb-2 object-fit-cover" style="width: 65px; height: 65px; border: 1px solid rgba(255,255,255,0.15);" alt="{{ barbero.get_full_name }}" />
@@ -76,7 +67,6 @@
         </div>
       </div>
 
-      <!-- PASO 2: TURNOS -->
       <div class="mb-5">
         <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
           <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">2</span> 
@@ -104,29 +94,43 @@
           </div>
           {% endfor %}
         </div>
+
+        <div id="no-turnos-barbero-msg" class="p-4 text-center rounded-3 fw-bold d-none mt-2" style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.15);">
+          <i class="bi bi-calendar-x fs-3 d-block mb-2 text-custom-muted"></i>
+          <span class="text-custom-muted">No hay turnos disponibles para este barbero.</span>
+          <br>
+          <small class="fw-normal text-accent" style="font-size: 0.8rem;">Por favor, selecciona otro barbero o elige "Cualquiera disponible".</small>
+        </div>
         {% endif %}
       </div>
 
-      <!-- PASO 3: CONTACTO -->
       <div class="mb-5">
         <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
           <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">3</span> 
           Tus datos de contacto
         </label>
-        <div class="row g-3">
+        
+        <div class="row g-4">
           <div class="col-md-6">
-            <input name="nombre_cliente" type="text" class="form-control form-control-lg form-control-barber" placeholder="Nombre completo" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" />
+            <label class="form-label fw-bold text-white mb-2"><i class="bi bi-person me-2 text-accent"></i>Nombre completo</label>
+            <input name="nombre_cliente" type="text" class="form-control form-control-lg form-control-barber" placeholder="Ej: Juan Pérez" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" />
+            <small class="text-custom-muted mt-1 d-block" style="font-size: 0.8rem;">Ingresa tu nombre para identificarte al llegar.</small>
           </div>
+          
           <div class="col-md-6">
-            <input name="correo_cliente" type="email" class="form-control form-control-lg form-control-barber" placeholder="Correo electrónico" required value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" />
+            <label class="form-label fw-bold text-white mb-2"><i class="bi bi-envelope me-2 text-accent"></i>Correo electrónico</label>
+            <input name="correo_cliente" type="email" class="form-control form-control-lg form-control-barber" placeholder="Ej: tu-correo@email.com" required value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" />
+            <small class="text-custom-muted mt-1 d-block" style="font-size: 0.8rem;">Te enviaremos los detalles de tu cita por este medio.</small>
           </div>
+          
           <div class="col-md-12">
-            <input name="telefono_cliente" type="tel" class="form-control form-control-lg form-control-barber" placeholder="Número de celular" required />
+            <label class="form-label fw-bold text-white mb-2"><i class="bi bi-telephone me-2 text-accent"></i>Número de celular</label>
+            <input name="telefono_cliente" type="tel" class="form-control form-control-lg form-control-barber" placeholder="Ej: 300 123 4567" required />
+            <small class="text-custom-muted mt-1 d-block" style="font-size: 0.8rem;">Un número válido por si necesitamos contactarte sobre tu turno.</small>
           </div>
         </div>
       </div>
 
-      <!-- PASO 4: PAGO -->
       <div class="mb-4">
         <label class="fw-bold mb-3 text-uppercase d-flex align-items-center gap-2 text-brand-title" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem;">
           <span class="badge rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212;">4</span> 
@@ -150,7 +154,6 @@
         </div>
       </div>
 
-      <!-- DETALLES TRANSFERENCIA -->
       <div id="detalles-transferencia" class="mb-4 p-3 rounded-3 border d-none" style="background: rgba(0, 0, 0, 0.2); border-color: rgba(43, 80, 170, 0.4) !important;">
         <h6 class="fw-bold mb-3 text-brand-title"><i class="bi bi-info-circle me-2"></i>Cuentas bancarias</h6>
         <div class="row g-3 mb-3" style="font-size: 0.9rem;">
@@ -199,93 +202,86 @@
     </form>
   </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    filterTurnos();
-    toggleTransferenciaDetails();
-  });
-
-  function filterTurnos() {
-    const selectedBarberoInput = document.querySelector('input[name="barbero_id"]:checked');
-    const selectedBarbero = selectedBarberoInput ? selectedBarberoInput.value : "any";
-    const turnos = document.querySelectorAll(".turno-item");
-    let turnosVisibles = 0;
-
-    turnos.forEach((turno) => {
-      const turnoBarbero = turno.getAttribute("data-barbero");
-      if (selectedBarbero === "any" || turnoBarbero === selectedBarbero) {
-        turno.style.display = "block";
-        turnosVisibles++;
-      } else {
-        turno.style.display = "none";
-        const radio = turno.querySelector('input[type="radio"]');
-        if (radio && radio.checked) radio.checked = false;
-      }
-    });
-
-    let container = document.getElementById("turnos-container");
-    let noResultsMsg = document.getElementById("no-turnos-msg");
-
-    if (!container) return;
-
-    if (turnosVisibles === 0) {
-      if (!noResultsMsg) {
-        noResultsMsg = document.createElement("div");
-        noResultsMsg.id = "no-turnos-msg";
-        noResultsMsg.className = "col-12 p-3 text-center rounded-3 fw-bold mt-3 alert-barber";
-        noResultsMsg.innerText = "No hay turnos disponibles para este barbero.";
-        container.appendChild(noResultsMsg);
-      } else {
-        noResultsMsg.style.display = "block";
-      }
-    } else if (noResultsMsg) {
-      noResultsMsg.style.display = "none";
-    }
-  }
-
+  // 1. FUNCIONES PARA EL MÉTODO DE PAGO
   function toggleTransferenciaDetails() {
-    const contenedorDetalles = document.getElementById("detalles-transferencia");
-    const radioTransferencia = document.getElementById("pago-transferencia");
-    const inputTransaccion = document.getElementById("id_transaccion");
-    const inputComprobante = document.getElementById("comprobante");
-
-    if (radioTransferencia && radioTransferencia.checked) {
-      contenedorDetalles.classList.remove("d-none");
-      inputTransaccion.setAttribute("required", "true");
-      inputComprobante.setAttribute("required", "true");
-    } else {
-      contenedorDetalles.classList.add("d-none");
-      inputTransaccion.removeAttribute("required");
-      inputComprobante.removeAttribute("required");
-      inputTransaccion.value = "";
-      inputComprobante.value = "";
-      updateFileName(inputComprobante);
-    }
+      const isTransferencia = document.getElementById('pago-transferencia').checked;
+      const detallesPanel = document.getElementById('detalles-transferencia');
+      
+      if (isTransferencia) {
+          detallesPanel.classList.remove('d-none');
+          document.getElementById('id_transaccion').required = true;
+          document.getElementById('comprobante').required = true;
+      } else {
+          detallesPanel.classList.add('d-none');
+          document.getElementById('id_transaccion').required = false;
+          document.getElementById('comprobante').required = false;
+      }
   }
 
-  function updateFileName(input) {
-    const label = document.getElementById("file-drop-label");
-    const span = document.getElementById("comprobante-filename");
-    if (!label || !span) return;
-
-    if (input.files && input.files.length > 0) {
-      span.innerHTML = '<i class="bi bi-file-earmark-check me-2 text-success"></i>' + input.files[0].name;
-      span.style.setProperty("color", "#ffffff", "important");
-    } else {
-      span.innerHTML = '<i class="bi bi-paperclip me-2"></i>Sube una imagen o PDF';
-      span.style.color = "var(--text-muted)";
-    }
+  function copyToClipboard(text, btnElement) {
+      navigator.clipboard.writeText(text).then(() => {
+          const icon = btnElement.querySelector('i');
+          const originalClass = icon.className;
+          icon.className = 'bi bi-check2 text-success';
+          setTimeout(() => { icon.className = originalClass; }, 2000);
+      });
   }
 
-  function copyToClipboard(text, btn) {
-    navigator.clipboard.writeText(text).then(() => {
-      const original = btn.innerHTML;
-      btn.innerHTML = '<i class="bi bi-check2 text-success"></i>';
-      setTimeout(() => { btn.innerHTML = original; }, 1500);
-    });
+  function updateFileName(inputElement) {
+      const fileNameDisplay = document.getElementById('comprobante-filename');
+      if (inputElement.files && inputElement.files.length > 0) {
+          fileNameDisplay.innerHTML = '<i class="bi bi-file-earmark-check me-2 text-success"></i><span class="text-white">' + inputElement.files[0].name + '</span>';
+      } else {
+          fileNameDisplay.innerHTML = '<i class="bi bi-paperclip me-2"></i>Sube una imagen o PDF';
+      }
   }
+
+  // 2. LÓGICA CUANDO LA PÁGINA CARGA
+  document.addEventListener("DOMContentLoaded", () => {
+      
+      toggleTransferenciaDetails();
+
+      // FILTRADO DE BARBEROS
+      const barberRadios = document.querySelectorAll('input[name="barbero_id"]');
+      const turnos = document.querySelectorAll('.turno-item');
+      const msgNoTurnos = document.getElementById('no-turnos-barbero-msg');
+
+      function filtrarTurnos() {
+          const barberoSeleccionado = document.querySelector('input[name="barbero_id"]:checked').value;
+          let turnosVisibles = 0;
+
+          turnos.forEach(turno => {
+              const idBarberoDelTurno = turno.getAttribute('data-barbero');
+              const radioTurno = turno.querySelector('input[type="radio"]');
+
+              if (barberoSeleccionado === 'any' || idBarberoDelTurno === barberoSeleccionado) {
+                  turno.classList.remove('d-none');
+                  turnosVisibles++;
+              } else {
+                  turno.classList.add('d-none');
+                  if (radioTurno.checked) {
+                      radioTurno.checked = false;
+                  }
+              }
+          });
+
+          // Controlar la visibilidad del mensaje de alerta por barbero
+          if (msgNoTurnos) {
+              if (turnosVisibles === 0) {
+                  msgNoTurnos.classList.remove('d-none');
+              } else {
+                  msgNoTurnos.classList.add('d-none');
+              }
+          }
+      }
+
+      barberRadios.forEach(radio => {
+          radio.addEventListener('change', filtrarTurnos);
+      });
+
+      filtrarTurnos();
+  });
 </script>
 {% endblock %}

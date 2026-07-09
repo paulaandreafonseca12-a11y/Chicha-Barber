@@ -13,6 +13,7 @@ class TurnoModelTest(TestCase):
     def setUp(self):
         self.barbero = Usuario.objects.create(
             username="barbero1",
+            email="barbero1@example.com",
             first_name="Juan",
             last_name="Pérez",
             rol="barbero"
@@ -50,6 +51,7 @@ class ReservaModelTest(TestCase):
 
         self.barbero = Usuario.objects.create(
             username="barbero",
+            email="barbero@example.com",
             first_name="Carlos",
             last_name="Ramírez",
             rol="barbero"
@@ -57,6 +59,7 @@ class ReservaModelTest(TestCase):
 
         self.cliente = Usuario.objects.create(
             username="cliente",
+            email="cliente@example.com",
             first_name="Pedro",
             last_name="López",
             rol="cliente"
@@ -64,6 +67,7 @@ class ReservaModelTest(TestCase):
 
         self.admin = Usuario.objects.create(
             username="admin",
+            email="admin@example.com",
             first_name="Administrador",
             last_name="Sistema",
             rol="admin"
@@ -71,7 +75,9 @@ class ReservaModelTest(TestCase):
 
         self.servicio = Servicios.objects.create(
             nombre="Corte clásico",
-            precio=Decimal("25000")
+            precio=Decimal("25000"),
+            duracion=30,
+            descripcion="Corte clásico de prueba"
         )
 
         self.turno = Turno.objects.create(

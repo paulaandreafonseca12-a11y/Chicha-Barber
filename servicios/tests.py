@@ -1,9 +1,14 @@
 import os
-from django.test import TestCase
+import shutil
+import tempfile
+from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 from .models import Servicios, Promocion, Calificacion
 
+TEMP_MEDIA_ROOT = tempfile.mkdtemp()
+
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class ChichaBarberModelsTestCase(TestCase):
 
     def setUp(self):
@@ -100,5 +105,10 @@ class ChichaBarberModelsTestCase(TestCase):
             if promo.imagen:
                 if os.path.exists(promo.imagen.path):
                     os.remove(promo.imagen.path)
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
 # Create your tests here.
