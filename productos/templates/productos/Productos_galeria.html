@@ -38,6 +38,7 @@
         >
           <img
             src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'img/Aceite.jpg' %}{% endif %}"
+            loading="lazy"
             class="card-img-top"
             alt="{{ producto.nombre }}"
             style="height: 300px; object-fit: cover"
