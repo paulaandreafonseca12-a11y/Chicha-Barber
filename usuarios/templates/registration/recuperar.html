@@ -24,7 +24,7 @@
         <p class="small text-white opacity-50 mb-3">Ingresa tu correo para recibir las instrucciones.</p>
 
         {% if form.errors %}
-        <div class="alert alert-danger mb-3 py-2 px-3 small" style="background-color: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; color: #f8d7da; border-radius: 6px;">
+        <div class="alert alert-danger mb-3 py-2 px-3 small usuarios-recuperar__div-1">
             {% for field in form %}
                 {% for error in field.errors %}
                     <p class="m-0">⚠️ {{ error }}</p>

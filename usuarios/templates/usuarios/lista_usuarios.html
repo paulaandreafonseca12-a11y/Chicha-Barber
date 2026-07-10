@@ -15,13 +15,12 @@
         <div class="col-md-3">
             <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
-                         style="width:56px;height:56px;background-color:#22aed1;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 usuarios-lista-usuarios__div-1">
                         <i class="bi bi-people-fill fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Total Usuarios -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_usuarios }}</h3>
+                        <span class="fw-bold me-2 text-nowrap usuarios-lista-usuarios__span-2">Total Usuarios -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap usuarios-lista-usuarios__h3-3">{{ total_usuarios }}</h3>
                     </div>
                 </div>
             </div>
@@ -29,13 +28,12 @@
         <div class="col-md-3">
             <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
-                         style="width:56px;height:56px;background-color:#c47a2c;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 usuarios-lista-usuarios__div-4">
                         <i class="bi bi-person-fill fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Clientes -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_clientes }}</h3>
+                        <span class="fw-bold me-2 text-nowrap usuarios-lista-usuarios__span-5">Clientes -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap usuarios-lista-usuarios__h3-6">{{ total_clientes }}</h3>
                     </div>
                 </div>
             </div>
@@ -43,13 +41,12 @@
         <div class="col-md-3">
             <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
-                         style="width:56px;height:56px;background-color:#28a745;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 usuarios-lista-usuarios__div-7">
                         <i class="bi bi-scissors fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Barberos -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_barberos }}</h3>
+                        <span class="fw-bold me-2 text-nowrap usuarios-lista-usuarios__span-8">Barberos -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap usuarios-lista-usuarios__h3-9">{{ total_barberos }}</h3>
                     </div>
                 </div>
             </div>
@@ -57,13 +54,12 @@
         <div class="col-md-3">
             <div class="card color-champaña border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
-                         style="width:56px;height:56px;background-color:#dc3545;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 usuarios-lista-usuarios__div-10">
                         <i class="bi bi-shield-fill fs-3 text-white"></i>
                     </div>
                     <div class="d-flex align-items-center flex-nowrap">
-                        <span class="fw-bold me-2 text-nowrap" style="color:#030301;">Administradores -</span>
-                        <h3 class="fw-bold mb-0 text-nowrap" style="color:#030301;">{{ total_admins }}</h3>
+                        <span class="fw-bold me-2 text-nowrap usuarios-lista-usuarios__span-11">Administradores -</span>
+                        <h3 class="fw-bold mb-0 text-nowrap usuarios-lista-usuarios__h3-12">{{ total_admins }}</h3>
                     </div>
                 </div>
             </div>
@@ -83,12 +79,12 @@
     </div>
 
     <!-- Tabla estilo claro, igual a Agenda -->
-    <div class="card shadow border-0 mb-4" style="background-color:#ffffff;">
+    <div class="card shadow border-0 mb-4 usuarios-lista-usuarios__div-13">
         <div class="card-body">
             <div class="table-responsive">
                 <table id="tablaUsuarios" class="table table-hover align-middle mb-0 w-100">
                     <thead>
-                        <tr style="color:#030301; border-bottom:2px solid rgba(0,0,0,0.08);">
+                        <tr class="usuarios-lista-usuarios__tr-14">
                             <th class="ps-4 text-uppercase small">Nombre</th>
                             <th class="text-uppercase small">Correo</th>
                             <th class="text-uppercase small">Teléfono</th>
@@ -100,14 +96,10 @@
                     </thead>
                     <tbody>
                         {% for usuario in usuarios %}
-                        <tr class="align-middle" style="color:#030301;">
+                        <tr class="align-middle usuarios-lista-usuarios__tr-15">
                             <td class="ps-4">
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white
-                                        {% if usuario.rol == 'barbero' %}bg-info
-                                        {% elif usuario.rol == 'admin' %}bg-danger
-                                        {% else %}bg-warning text-dark{% endif %}"
-                                         style="width:36px; height:36px; font-size:14px; flex-shrink:0;">
+                                    <div class="usuarios-lista-usuarios__div-16" class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white {% if usuario.rol == 'barbero' %}bg-info {% elif usuario.rol == 'admin' %}bg-danger {% else %}bg-warning text-dark{% endif %}">
                                         {{ usuario.get_full_name|first|upper }}
                                     </div>
                                     {{ usuario.get_full_name }}
@@ -143,7 +135,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center py-5" style="color:#8d818c;">
+                            <td colspan="7" class="text-center py-5 usuarios-lista-usuarios__td-17">
                                 <i class="bi bi-people fs-1 d-block mb-3"></i>
                                 No hay usuarios registrados.
                             </td>

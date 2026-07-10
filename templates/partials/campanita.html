@@ -1,31 +1,21 @@
 {% load static %}
 <!-- CAMPANITA DE NOTIFICACIONES -->
 <div class="dropdown">
-  <a href="#"
-     class="btn position-relative rounded-circle d-flex align-items-center justify-content-center shadow {% if estilo_campanita == 'admin' %}color-azul{% else %}btn-warning color-champaña{% endif %}"
-     style="width:42px;height:42px;"
-     id="campanitaDropdown"
-     role="button"
-     data-bs-toggle="dropdown"
-     aria-expanded="false">
+  <a href="#" class="btn position-relative rounded-circle d-flex align-items-center justify-content-center shadow {% if estilo_campanita == 'admin' %}color-azul{% else %}btn-warning color-champaña{% endif %} partials-campanita__a-1" id="campanitaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
     <i class="bi bi-bell-fill fs-5 {% if estilo_campanita == 'admin' %}text-white{% else %}text-dark{% endif %}"></i>
 
     {% if notificaciones_no_leidas > 0 %}
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          style="font-size:0.65rem;">
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger partials-campanita__span-2">
       {{ notificaciones_no_leidas }}
     </span>
     {% endif %}
   </a>
 
-  <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-0"
-      aria-labelledby="campanitaDropdown"
-      style="width: 340px; max-height: 420px; overflow-y: auto;">
+  <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-0 partials-campanita__ul-3" aria-labelledby="campanitaDropdown">
 
-    <li class="px-3 py-2 border-bottom d-flex justify-content-between align-items-center"
-        style="background: rgba(0,0,0,0.03);">
-      <span class="fw-bold small text-uppercase text-muted" style="letter-spacing:0.5px;">
+    <li class="px-3 py-2 border-bottom d-flex justify-content-between align-items-center partials-campanita__li-4">
+      <span class="fw-bold small text-uppercase text-muted partials-campanita__span-5">
         Notificaciones
       </span>
       {% if notificaciones_no_leidas > 0 %}
@@ -47,7 +37,7 @@
           {% endif %}
           <div>
             <div class="small">{{ n.mensaje }}</div>
-            <div class="text-muted" style="font-size:0.7rem;">
+            <div class="text-muted partials-campanita__div-6">
               {{ n.fecha|date:"d/m/Y H:i" }}
             </div>
           </div>

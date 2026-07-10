@@ -1,8 +1,5 @@
 {% load static %}
-<aside
-  class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white shadow-lg"
-  style="width: 280px; height: 100vh; overflow-y: auto; position: sticky; top: 0;"
->
+<aside class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white shadow-lg partials-aside__aside-1">
   <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
     <img src="{% static 'img/logo.png' %}"
          alt="Chicha Barber"
@@ -15,9 +12,7 @@
 
   <!-- ENLACE PRINCIPAL AL DASHBOARD -->
   <div class="mb-3">
-    <a href="{% url 'inicio_admin' %}" 
-       class="d-flex align-items-center px-3 py-2.5 rounded text-decoration-none {% if request.resolver_match.url_name == 'inicio_admin' %}color-azul text-white fw-bold{% else %}text-white-50 bg-secondary bg-opacity-10{% endif %}"
-       style="font-size: 1rem; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.05);">
+    <a href="{% url 'inicio_admin' %}" class="d-flex align-items-center px-3 py-2.5 rounded text-decoration-none {% if request.resolver_match.url_name == 'inicio_admin' %}color-azul text-white fw-bold{% else %}text-white-50 bg-secondary bg-opacity-10{% endif %} partials-aside__a-2">
       <i class="bi bi-speedometer2 me-2 fs-5 {% if request.resolver_match.url_name == 'inicio_admin' %}text-white{% else %}text-warning{% endif %}"></i>
       <span>Dashboard</span>
     </a>
@@ -28,8 +23,7 @@
     <!-- GESTIÓN DE SERVICIOS -->
     <div class="accordion-item bg-dark border-0">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios" {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios" {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}{% endif %}>
           <i class="bi bi-gear-wide-connected me-2"></i> Gestión de Servicios
         </button>
       </h2>
@@ -47,8 +41,7 @@
     <!-- OFERTAS Y PROMOS -->
     <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'promocion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'promocion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromos" {% if 'promocion' in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'promocion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'promocion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromos" {% if 'promocion' in request.path %}{% endif %}>
           <i class="bi bi-megaphone me-2"></i> Ofertas y Promos
         </button>
       </h2>
@@ -66,8 +59,7 @@
     <!-- CALIFICACIONES -->
     <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'calificacion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'calificacion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapseCalificaciones" {% if 'calificacion' in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'calificacion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'calificacion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCalificaciones" {% if 'calificacion' in request.path %}{% endif %}>
           <i class="bi bi-star me-2"></i> Calificaciones
         </button>
       </h2>
@@ -85,8 +77,7 @@
     <!-- RESERVAS -->
     <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'reservas' in request.path or 'agenda' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'reservas' in request.path or 'agenda' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapseReservas" {% if 'reservas' in request.path or 'agenda' in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'reservas' in request.path or 'agenda' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'reservas' in request.path or 'agenda' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-9" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReservas" {% if 'reservas' in request.path or 'agenda' in request.path %}{% endif %}>
           <i class="bi bi-calendar-event me-2"></i> Reservas
         </button>
       </h2>
@@ -104,8 +95,7 @@
     <!-- PRODUCTOS -->
     <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapseProductos" {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-11" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProductos" {% if 'productos' in request.path and 'datos-banco' not in request.path or 'stock' in request.path or 'historial' in request.path or 'registrar-compra' in request.path %}{% endif %}>
           <i class="bi bi-box-seam me-2"></i> Productos
         </button>
       </h2>
@@ -129,8 +119,7 @@
     <!-- USUARIOS -->
     <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'usuarios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'usuarios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" {% if 'usuarios' in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'usuarios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'usuarios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-15" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" {% if 'usuarios' in request.path %}{% endif %}>
           <i class="bi bi-people me-2"></i> Usuarios
         </button>
       </h2>
@@ -148,8 +137,7 @@
     <!-- CONFIGURACIÓN -->
     <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion" {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-17" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion" {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% endif %}>
           <i class="bi bi-gear me-2"></i> Configuración
         </button>
       </h2>
@@ -173,8 +161,7 @@
     <!-- FACTURAS -->
     <div class="accordion-item bg-dark border-0 ">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'factura' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'factura' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0"
-          type="button" data-bs-toggle="collapse" data-bs-target="#collapseFacturas" {% if 'factura' in request.path %}style="background-color: #22aed1;"{% endif %}>
+        <button class="accordion-button {% if 'factura' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'factura' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-21" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFacturas" {% if 'factura' in request.path %}{% endif %}>
           <i class="bi bi-receipt me-2"></i> Comprobantes 
         </button>
       </h2>
