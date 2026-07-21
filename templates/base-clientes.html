@@ -24,8 +24,7 @@
     {% include 'partials/footer.html' %}
 
     {% if user.is_authenticated %}
-    <div id="chatWidget" class="card shadow-lg border-0 color-negro position-fixed" 
-         style="width: 350px; height: 400px; bottom: 20px; right: 20px; z-index: 9999; display: none; border-radius: 15px; overflow: hidden; transition: height 0.3s ease;">
+    <div id="chatWidget" class="card shadow-lg border-0 color-negro position-fixed templates-base-clientes__div-1">
         
         <div class="card-header color-azul text-white d-flex justify-content-between align-items-center py-2">
             <span class="fw-bold"><i class="bi bi-robot"></i> Chicha AI</span>
@@ -35,7 +34,7 @@
             </div>
         </div>
         
-        <div id="chatMessages" class="card-body p-3 color-negro d-flex flex-column" style="height: 300px; overflow-y: auto;">
+        <div id="chatMessages" class="card-body p-3 color-negro d-flex flex-column templates-base-clientes__div-2">
         </div>
 
         <form id="chatForm" class="p-2 color-champaña border-top border-secondary">
@@ -47,8 +46,7 @@
         </form>
     </div>
 
-    <button id="openChatBtn" onclick="abrirChat()" class="btn shadow color-azul text-white position-fixed d-flex align-items-center justify-content-center" 
-            style="bottom: 20px; right: 20px; z-index: 9998; border-radius: 50%; width: 60px; height: 60px; border: none;">
+    <button id="openChatBtn" onclick="abrirChat()" class="btn shadow color-azul text-white position-fixed d-flex align-items-center justify-content-center templates-base-clientes__button-3">
         <i class="bi bi-robot fs-3"></i>
     </button>
     {% endif %}
@@ -81,7 +79,7 @@
                 const input = document.getElementById('pregunta');
                 
                 // Añadir mensaje usuario (Del segundo código)
-                chatMessages.innerHTML += `<div class="msg-user align-self-end p-2 mb-2 rounded-3" style="background-color:#2b50aa; color:white; max-width:80%;">${input.value}</div>`;
+                chatMessages.innerHTML += `<div class="msg-user align-self-end p-2 mb-2 rounded-3 templates-base-clientes__div-4">${input.value}</div>`;
                 input.value = '';
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -90,7 +88,7 @@
                 .then(data => {
                     if(data.nuevo_mensaje) {
                         // Mensaje IA (Del segundo código)
-                        chatMessages.innerHTML += `<div class="msg-ia align-self-start p-2 mb-2 rounded-3" style="background-color:#eee0cb; color:black; max-width:80%; font-weight:bold;">
+                        chatMessages.innerHTML += `<div class="msg-ia align-self-start p-2 mb-2 rounded-3 templates-base-clientes__div-5">
                             <i class="bi bi-robot"></i> ${data.nuevo_mensaje}</div>`;
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     }

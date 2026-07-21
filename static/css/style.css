@@ -1221,3 +1221,320 @@ body.theme-light .color-champaña .dataTables_length label,
 }
 #chatForm input::placeholder {
     color: #bbb !important;}
+
+/* ==========================================================================
+   BEM AUTO-GENERATED SELECTORS (Refactored from inline styles)
+   ========================================================================== */
+
+.usuarios-lista-usuarios__div-1 { width:56px;height:56px;background-color:#22aed1; }
+.usuarios-lista-usuarios__span-2 { color:#030301; }
+.usuarios-lista-usuarios__h3-3 { color:#030301; }
+.usuarios-lista-usuarios__div-4 { width:56px;height:56px;background-color:#c47a2c; }
+.usuarios-lista-usuarios__span-5 { color:#030301; }
+.usuarios-lista-usuarios__h3-6 { color:#030301; }
+.usuarios-lista-usuarios__div-7 { width:56px;height:56px;background-color:#28a745; }
+.usuarios-lista-usuarios__span-8 { color:#030301; }
+.usuarios-lista-usuarios__h3-9 { color:#030301; }
+.usuarios-lista-usuarios__div-10 { width:56px;height:56px;background-color:#dc3545; }
+.usuarios-lista-usuarios__span-11 { color:#030301; }
+.usuarios-lista-usuarios__h3-12 { color:#030301; }
+.usuarios-lista-usuarios__div-13 { background-color:#ffffff; }
+.usuarios-lista-usuarios__tr-14 { color:#030301; border-bottom:2px solid rgba(0,0,0,0.08); }
+.usuarios-lista-usuarios__tr-15 { color:#030301; }
+.usuarios-lista-usuarios__div-16 { width:36px; height:36px; font-size:14px; flex-shrink:0; }
+.usuarios-lista-usuarios__td-17 { color:#8d818c; }
+.usuarios-editar-usuario__div-1 { max-width: 650px; margin: 0 auto; }
+.usuarios-editar-usuario__div-2 { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.08); }
+.usuarios-editar-usuario__div-3 { width:48px; height:48px; font-size:18px; flex-shrink:0; }
+.usuarios-crear-usuario__div-1 { max-width: 650px; margin: 0 auto; }
+.usuarios-recuperar__div-1 { background-color: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; color: #f8d7da; border-radius: 6px; }
+.private-perfil__div-1 { background: #ffffff; }
+.private-perfil__div-2 { height: 12px; background: linear-gradient(90deg, #F1E9DB, #e1d5c1); }
+.private-perfil__i-5 { font-size: 2.5rem }
+.private-perfil__small-7 { font-size: 0.75rem; }
+.private-perfil__small-8 { font-size: 0.75rem; }
+.private-perfil__small-9 { font-size: 0.75rem; }
+.private-perfil__small-10 { font-size: 0.75rem; }
+.private-perfil__small-11 { font-size: 0.75rem; }
+.private-perfil__button-12 { background: #F1E9DB; color: #4a3f35; }
+.private-perfil__button-14 { background: #F1E9DB; color: #4a3f35; }
+.private-perfil__i-15 { color: #f0a500 }
+.private-perfil__button-16 { background: #F1E9DB; color: #4a3f35; }
+.private-perfil__i-17 { color: #00b4d8 }
+.private-perfil__button-18 { background: #F1E9DB; color: #4a3f35; }
+.private-perfil__div-20 { width: 420px }
+.private-perfil__div-23 { width: 420px }
+.private-perfil__div-24 { background: #f0a500 }
+.private-perfil__button-25 { background: #f0a500 }
+.private-perfil__div-26 { width: 480px }
+.private-perfil__div-27 { background: #eee0cb }
+.private-perfil__i-28 { font-size: 3rem }
+.private-perfil__div-29 { width: 800px }
+.private-perfil__i-32 { font-size: 3rem }
+.private-perfil__a-33 { background: #198754 }
+.private-perfil__img-34 { object-fit: cover }
+.private-perfil__div-35 { width: 45px; height: 45px; background: #f8f9fa }
+.private-perfil__div-36 { font-size: 0.8rem }
+.private-perfil__i-37 { font-size: 3rem }
+.private-perfil__a-38 { background: #007ca9 }
+.private-perfil__tr-39 { font-size: 0.75rem }
+.private-perfil__div-40 { font-size: 0.7rem }
+.private-perfil__i-41 { font-size: 3rem }
+.private-detalle-notificacion__div-1 { max-width: 700px; }
+.private-detalle-notificacion__div-2 { width:56px;height:56px; }
+.private-detalle-notificacion__div-3 { width:56px;height:56px; }
+.private-detalle-notificacion__h6-4 { letter-spacing:0.5px; }
+.partials-header__span-1 { display:none; }
+.partials-header__li-2 { background: rgba(255,255,255,0.03); }
+.partials-header__span-3 { font-size:0.65rem; letter-spacing:0.5px; }
+.partials-header__a-4 { color:#c47a2c !important; }
+.partials-header__a-5 { color:rgba(var(--bs-info-rgb),1)!important; }
+.partials-header__a-6 { cursor: pointer; }
+.partials-header-admin__li-1 { background: rgba(255, 255, 255, 0.03) }
+.partials-header-admin__span-2 { font-size: 0.65rem; letter-spacing: 0.5px }
+.partials-header-admin__a-3 { color: #4bc0d9 !important }
+.partials-campanita__a-1 { width:42px;height:42px; }
+.partials-campanita__span-2 { font-size:0.65rem; }
+.partials-campanita__ul-3 { width: 340px; max-height: 420px; overflow-y: auto; }
+.partials-campanita__li-4 { background: rgba(0,0,0,0.03); }
+.partials-campanita__span-5 { letter-spacing:0.5px; }
+.partials-campanita__div-6 { font-size:0.7rem; }
+.partials-aside__aside-1 { width: 280px; height: 100vh; overflow-y: auto; position: sticky; top: 0; }
+.partials-aside__a-2 { font-size: 1rem; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.05); }
+.partials-aside__button-3 { background-color: #22aed1; }
+.partials-aside__button-5 { background-color: #22aed1; }
+.partials-aside__button-7 { background-color: #22aed1; }
+.partials-aside__button-9 { background-color: #22aed1; }
+.partials-aside__button-11 { background-color: #22aed1; }
+.partials-aside__button-15 { background-color: #22aed1; }
+.partials-aside__button-17 { background-color: #22aed1; }
+.partials-aside__button-21 { background-color: #22aed1; }
+.templates-index-clientes__p-1 { margin-top: 6rem }
+.templates-index-clientes__h1-2 { color: var(--bs-emphasis-color); }
+.templates-index-clientes__span-3 { font-family: 'Playfair Display', serif; font-style: italic; }
+.templates-index-clientes__p-4 { color: var(--bs-secondary-color); }
+.templates-index-clientes__span-5 { color: var(--bs-emphasis-color); }
+.templates-index-clientes__div-6 { max-width: 340px; }
+.templates-index-clientes__div-7 { width: 40px; height: 40px; }
+.templates-index-clientes__div-8 { width: 40px; height: 40px; }
+.templates-index-clientes__div-9 { width: 40px; height: 40px; }
+.templates-index-clientes__div-10 { width: 40px; height: 40px; }
+.templates-index-clientes__div-11 { z-index: 3 }
+.templates-index-clientes__img-12 { object-fit: cover }
+.templates-index-clientes__img-13 { object-fit: cover }
+.templates-index-clientes__img-14 { object-fit: cover }
+.templates-index-clientes__img-15 { object-fit: cover }
+.templates-index-clientes__img-16 { object-fit: cover }
+.templates-index-clientes__button-17 { z-index: 3; width: 10% }
+.templates-index-clientes__span-18 { transition: all 0.3s ease }
+.templates-index-clientes__button-19 { z-index: 3; width: 10% }
+.templates-index-clientes__span-20 { transition: all 0.3s ease }
+.templates-index-clientes__h2-21 { color: white; font-family: &quot;Arial&quot;, sans-serif }
+.templates-index-clientes__div-22 { width: 65px; height: 65px; border: 2px solid #eee0cb }
+.templates-index-clientes__i-23 { color: #eee0cb }
+.templates-index-clientes__h5-24 { color: black; font-family: &quot;Arial&quot;, sans-serif }
+.templates-index-clientes__div-25 { color: #eee0cb }
+.templates-index-clientes__p-26 { color: black; font-family: &quot;Arial&quot;, sans-serif }
+.templates-index-clientes__h2-27 { font-family: &quot;Arial&quot;, sans-serif }
+.templates-index-clientes__div-28 { max-height: 450px; min-height: 300px }
+.templates-index-clientes__iframe-29 { border: 0 }
+.templates-index-admin__div-1 { background: rgba(20, 24, 32, 0.85); backdrop-filter: blur(10px); }
+.templates-index-admin__span-2 { letter-spacing: 1.5px; }
+.templates-index-admin__div-3 { width: 56px; height: 56px; }
+.templates-index-admin__div-4 { width: 56px; height: 56px; }
+.templates-index-admin__span-5 { font-size: 0.75rem; }
+.templates-index-admin__div-6 { width: 56px; height: 56px; }
+.templates-index-admin__div-7 { width: 56px; height: 56px; }
+.templates-index-admin__div-8 { border: 1px solid rgba(255, 255, 255, 0.07) !important; }
+.templates-index-admin__a-9 { border: 1px solid #2b50aa; color: #2b50aa; background-color: transparent; }
+.templates-index-admin__table-10 { background: transparent; }
+.templates-index-admin__tr-11 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.templates-index-admin__div-12 { width: 32px; height: 32px; font-size: 0.8rem; }
+.templates-index-admin__small-13 { font-size: 0.75rem; }
+.templates-index-admin__span-14 { font-size: 0.8rem; }
+.templates-index-admin__div-15 { background: rgba(20, 24, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.07) !important; }
+.templates-index-admin__div-16 { background: rgba(255, 193, 7, 0.07); border: 1px solid rgba(255, 193, 7, 0.15); }
+.templates-index-admin__div-17 { width: 40px; height: 40px; }
+.templates-index-admin__small-18 { font-size: 0.75rem; }
+.templates-index-admin__span-19 { font-size: 0.85rem; }
+.templates-index-admin__div-20 { font-size: 0.7rem; margin-top: 2px; }
+.templates-index-admin__div-21 { width: 70px; height: 70px; }
+.templates-index-admin__div-22 { border: 1px solid rgba(255, 255, 255, 0.07) !important; }
+.templates-index-admin__a-23 { border: 1px solid #2b50aa; color: #2b50aa; background-color: transparent; }
+.templates-index-admin__table-24 { background: transparent; }
+.templates-index-admin__tr-25 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.templates-index-admin__small-26 { font-size: 0.75rem; }
+.templates-base-clientes__div-1 { width: 350px; height: 400px; bottom: 20px; right: 20px; z-index: 9999; display: none; border-radius: 15px; overflow: hidden; transition: height 0.3s ease; }
+.templates-base-clientes__div-2 { height: 300px; overflow-y: auto; }
+.templates-base-clientes__button-3 { bottom: 20px; right: 20px; z-index: 9998; border-radius: 50%; width: 60px; height: 60px; border: none; }
+.templates-base-clientes__div-4 { background-color:#2b50aa; color:white; max-width:80%; }
+.templates-base-clientes__div-5 { background-color:#eee0cb; color:black; max-width:80%; font-weight:bold; }
+.soporte-ayuda-home__p-1 { max-width: 600px; }
+.soporte-ayuda-home__div-2 { top: 2rem; }
+.servicios-servicios__div-1 { width: 18rem; }
+.servicios-servicios__img-2 { height: 300px; object-fit: cover; }
+.servicios-servicios__img-3 { height: 300px; object-fit: cover; }
+.servicios-promocion__img-1 { height: 200px; object-fit: cover; }
+.servicios-promocion__img-2 { height: 200px; object-fit: cover; }
+.servicios-listado-promocion__div-1 { width: 56px; height: 56px; }
+.servicios-listado-promocion__div-2 { width: 56px; height: 56px; }
+.servicios-listado-promocion__div-3 { width: 56px; height: 56px; }
+.servicios-listado-promocion__img-4 { width: 50px; height: 50px; object-fit: cover; }
+.servicios-listado-promocion__div-5 { width: 50px; height: 50px; }
+.servicios-listado-carrusel__img-1 { width: 50px; height: 50px; object-fit: cover; }
+.servicios-listado-carrusel__div-2 { width: 50px; height: 50px; }
+.servicios-listado-calificacion__div-1 { width: 56px; height: 56px; }
+.servicios-listado-calificacion__div-2 { width: 56px; height: 56px; }
+.servicios-listado-calificacion__div-3 { width: 56px; height: 56px; }
+.servicios-listado-admin__div-1 { width: 56px; height: 56px; }
+.servicios-listado-admin__div-2 { width: 56px; height: 56px; }
+.servicios-listado-admin__div-3 { width: 56px; height: 56px; }
+.servicios-listado-admin__img-4 { width: 50px; height: 50px; object-fit: cover; }
+.servicios-listado-admin__div-5 { width: 50px; height: 50px; }
+.servicios-carrusel__img-1 { width: 50px; height: 50px; object-fit: cover; }
+.servicios-carrusel__div-2 { width: 50px; height: 50px; }
+.servicios-calificacion__div-1 { width: 18rem; }
+.servicios-calificacion__img-2 { height: 180px; object-fit: cover; }
+.reservas-ver-agenda__div-1 { background-color: #f4ebd0; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.reservas-ver-agenda__div-2 { width: 35px; height: 35px; flex-shrink: 0; }
+.reservas-ver-agenda__span-3 { letter-spacing: 0.5px; }
+.reservas-ver-agenda__h2-4 { font-size: 1.8rem; }
+.reservas-ver-agenda__div-5 { background-color: #f4ebd0; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.reservas-ver-agenda__div-6 { width: 35px; height: 35px; flex-shrink: 0; }
+.reservas-ver-agenda__span-7 { letter-spacing: 0.5px; }
+.reservas-ver-agenda__h2-8 { font-size: 1.8rem; }
+.reservas-ver-agenda__div-9 { background-color: #f4ebd0; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.reservas-ver-agenda__div-10 { width: 35px; height: 35px; flex-shrink: 0; }
+.reservas-ver-agenda__span-11 { letter-spacing: 0.5px; }
+.reservas-ver-agenda__h2-12 { font-size: 1.8rem; }
+.reservas-ver-agenda__div-13 { border-bottom: 1px solid rgba(0,0,0,0.08); }
+.reservas-ver-agenda__table-14 { color: #212529; }
+.reservas-ver-agenda__thead-15 { border-bottom: 2px solid rgba(0,0,0,0.05); }
+.reservas-ver-agenda__tr-16 { border-bottom: 1px solid rgba(0,0,0,0.05); }
+.reservas-ver-agenda__a-17 { background-color: #25d366; border: none; }
+.reservas-ver-agenda__table-18 { color: #212529; }
+.reservas-ver-agenda__thead-19 { border-bottom: 2px solid rgba(0,0,0,0.05); }
+.reservas-ver-agenda__tr-20 { border-bottom: 1px solid rgba(0,0,0,0.05); }
+.reservas-ver-agenda__i-21 { font-size: 3rem; }
+.reservas-reserva-confirmada__i-1 { font-size: 5rem; }
+.reservas-reserva-confirmada__div-2 { height: 5px; background-color: #333; }
+.reservas-reserva-confirmada__div-3 { width: 0%; transition: width 3s linear; }
+.reservas-reservas__div-1 { min-height: 100vh; padding: 90px 16px 40px; }
+.reservas-reservas__div-2 { max-width: 800px; }
+.reservas-reservas__div-3 { height: 5px; width: 100%; position: absolute; top: 0; left: 0; border-top-left-radius: 16px; border-top-right-radius: 16px; background: linear-gradient(90deg, var(--accent-azul), var(--accent-oscuro)); }
+.reservas-reservas__span-4 { font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: .75rem; }
+.reservas-reservas__h2-5 { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 2px; }
+.reservas-reservas__p-6 { font-size: .95rem; }
+.reservas-reservas__div-7 { background: rgba(34, 174, 209, 0.08); border: 1px solid rgba(34, 174, 209, 0.3); color: var(--color-champaña); }
+.reservas-reservas__i-8 { color: var(--accent-azul); }
+.reservas-reservas__a-9 { font-size: 0.75rem }
+.reservas-reservas__label-10 { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem; }
+.reservas-reservas__span-11 { width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212; }
+.reservas-reservas__div-12 { width: 65px; height: 65px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
+.reservas-reservas__span-13 { font-size: 0.85rem; }
+.reservas-reservas__img-14 { width: 65px; height: 65px; border: 1px solid rgba(255,255,255,0.15); }
+.reservas-reservas__div-15 { width: 65px; height: 65px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
+.reservas-reservas__span-16 { font-size: 0.85rem; }
+.reservas-reservas__label-17 { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem; }
+.reservas-reservas__span-18 { width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212; }
+.reservas-reservas__div-19 { max-height: 350px; overflow-y: auto; overflow-x: hidden; padding-right: 5px; }
+.reservas-reservas__div-20 { font-size: 0.9rem; }
+.reservas-reservas__div-21 { letter-spacing: 1px; }
+.reservas-reservas__small-22 { font-size: 0.8rem; }
+.reservas-reservas__div-23 { background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.15); }
+.reservas-reservas__small-24 { font-size: 0.8rem; }
+.reservas-reservas__label-25 { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem; }
+.reservas-reservas__span-26 { width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212; }
+.reservas-reservas__small-27 { font-size: 0.8rem; }
+.reservas-reservas__small-28 { font-size: 0.8rem; }
+.reservas-reservas__small-29 { font-size: 0.8rem; }
+.reservas-reservas__label-30 { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem; }
+.reservas-reservas__span-31 { width: 26px; height: 26px; background-color: var(--accent-azul); color: #170212; }
+.reservas-reservas__span-32 { font-size: 0.9rem; }
+.reservas-reservas__span-33 { font-size: 0.9rem; }
+.reservas-reservas__div-34 { background: rgba(0, 0, 0, 0.2); border-color: rgba(43, 80, 170, 0.4) !important; }
+.reservas-reservas__p-35 { font-size: 0.85rem; }
+.reservas-reservas__div-36 { font-size: 0.9rem; }
+.reservas-reservas__div-37 { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05) !important; }
+.reservas-reservas__span-38 { font-size: 0.7rem; letter-spacing: 1px; }
+.reservas-reservas__div-39 { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05) !important; }
+.reservas-reservas__span-40 { font-size: 0.7rem; letter-spacing: 1px; }
+.reservas-reprogramar__a-1 { color: #07d2ff; }
+.reservas-reprogramar__div-2 { max-width: 850px; }
+.reservas-reprogramar__div-3 { background-color: #07d2ff; }
+.reservas-reprogramar__button-4 { background-color: #07d2ff; }
+.reservas-gestion-turno__div-1 { border-bottom: 1px solid rgba(0,0,0,0.08); }
+.reservas-gestion-turno__table-2 { color: #212529; }
+.reservas-gestion-turno__thead-3 { border-bottom: 2px solid rgba(0,0,0,0.05); }
+.reservas-gestion-turno__tr-4 { border-bottom: 1px solid rgba(0,0,0,0.05); }
+.reservas-gestion-turno__div-5 { border-color: rgba(0,0,0,0.08)!important; }
+.reservas-crear-cita-admin__div-1 { max-width: 700px; }
+.reservas-crear-cita-admin__div-2 { border-bottom: 1px solid rgba(0,0,0,0.08); }
+.productos-ver-datos-banco__th-1 { width: 35% }
+.productos-stock-admin__div-1 { width: 56px; height: 56px; }
+.productos-stock-admin__div-2 { width: 56px; height: 56px; }
+.productos-stock-admin__div-3 { width: 56px; height: 56px; }
+.productos-stock-admin__img-4 { width: 50px; height: 50px; object-fit: cover; }
+.productos-stock-admin__div-5 { width: 50px; height: 50px; }
+.productos-registrar-compra__div-1 { max-width: 700px }
+.productos-productos-galeria__div-1 { width: 18rem }
+.productos-productos-galeria__img-2 { height: 300px; object-fit: cover }
+.productos-productos-admin__div-1 { width: 56px; height: 56px; }
+.productos-productos-admin__div-2 { width: 56px; height: 56px; }
+.productos-productos-admin__div-3 { width: 56px; height: 56px; }
+.productos-productos-admin__img-4 { width: 50px; height: 50px; object-fit: cover; }
+.productos-productos-admin__div-5 { width: 50px; height: 50px; }
+.productos-historial-compras__div-1 { width: 56px; height: 56px; }
+.productos-editar-stock__div-1 { max-width: 600px }
+.productos-editar-stock__i-2 { color: #b48b64 }
+.productos-editar-producto__img-1 { max-width:180px; }
+.productos-confirmar-eliminar__div-1 { background-color: #1a1d20; min-height: 100vh; }
+.productos-confirmar-eliminar__div-2 { max-width: 500px; }
+.facturas-factura__span-1 { font-size: 0.65rem; }
+.facturas-factura-adm__div-1 { width: 56px; height: 56px; }
+.facturas-factura-adm__div-2 { width: 56px; height: 56px; }
+.facturas-factura-adm__div-3 { width: 56px; height: 56px; }
+.facturas-factura-adm__div-4 { width: 56px; height: 56px; }
+.facturas-factura-adm__table-5 { font-size: 0.98rem; }
+.facturas-factura-adm__th-6 { font-size: 0.85rem; width: 5%; }
+.facturas-factura-adm__th-7 { font-size: 0.85rem; width: 20%; }
+.facturas-factura-adm__th-8 { font-size: 0.85rem; width: 25%; }
+.facturas-factura-adm__th-9 { font-size: 0.85rem; width: 10%; }
+.facturas-factura-adm__th-10 { font-size: 0.85rem; width: 10%; }
+.facturas-factura-adm__th-11 { font-size: 0.85rem; width: 10%; }
+.facturas-factura-adm__th-12 { font-size: 0.85rem; width: 5%; }
+.facturas-factura-adm__th-13 { font-size: 0.85rem; width: 10%; }
+.facturas-factura-adm__th-14 { font-size: 0.85rem; width: 15%; }
+.facturas-factura-adm__tr-15 { transition: background-color 0.2s ease; }
+.facturas-factura-adm__small-16 { font-size: 0.82rem; }
+.facturas-factura-adm__div-17 { font-size: 0.88rem; }
+.facturas-factura-adm__span-18 { max-width: 250px; }
+.facturas-factura-adm__div-19 { font-size: 0.88rem; }
+.facturas-factura-adm__div-20 { font-size: 0.88rem; }
+.facturas-factura-adm__div-21 { font-size: 0.78rem; }
+.facturas-factura-adm__select-22 { border-radius: 6px; cursor: pointer; }
+.facturas-factura-adm__select-23 { border-radius: 6px; cursor: pointer; }
+.facturas-factura-adm__img-24 { width: 46px; height: 46px; object-fit: cover; }
+.facturas-factura-adm__div-25 { font-size: 0.75rem; line-height: 1; }
+.facturas-factura-adm__label-26 { font-size: 0.75rem; }
+.facturas-factura-adm__span-27 { cursor: pointer; }
+.facturas-factura-adm__td-28 { font-size: 1.08rem; }
+.facturas-factura-adm__button-29 { width: 38px; height: 38px; border-radius: 8px; }
+.facturas-factura-adm__a-30 { width: 38px; height: 38px; border-radius: 8px; }
+.facturas-factura-adm__a-31 { width: 38px; height: 38px; border-radius: 8px; }
+.facturas-factura-adm__a-32 { width: 38px; height: 38px; border-radius: 8px; }
+.facturas-factura-adm__button-33 { width: 38px; height: 38px; border-radius: 8px; opacity: 0.25; }
+.facturas-factura-adm__small-34 { font-size: 0.75rem; }
+.facturas-detalle-factura__select-1 { max-width: 250px; }
+.facturas-detalle-factura__select-2 { max-width: 250px; }
+.facturas-detalle-factura__div-3 { width: 100px; }
+.facturas-detalle-factura__div-4 { width: 120px; height: 120px; cursor: pointer; }
+.facturas-detalle-factura__img-5 { object-fit: cover; }
+.facturas-detalle-factura__img-6 { max-height: 80vh; width: auto; }
+.configuraciones-testimonios__td-1 { max-width: 300px; }
+.configuraciones-editar-carrusel__img-1 { width: 150px; height: 100px; object-fit: cover; }
+.configuraciones-carrusel__div-1 { width: 56px; height: 56px; }
+.configuraciones-carrusel__div-2 { width: 56px; height: 56px; }
+.configuraciones-carrusel__div-3 { width: 56px; height: 56px; }
+.configuraciones-carrusel__img-4 { width: 80px; height: 60px; object-fit: cover; }
+.configuraciones-carrusel__div-5 { width:80px; height:60px; }

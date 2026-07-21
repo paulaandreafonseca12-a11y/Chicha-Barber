@@ -22,10 +22,10 @@
             <div class="col d-flex justify-content-center">
                 <div class="card h-100 shadow-sm border-0 w-75 rounded-4" >
                     {% if promocion.imagen %}
-                        <img src="{{ promocion.imagen.url }}" alt="{{ promocion.nombre }}" class="card-img-top rounded-4" style="height: 200px; object-fit: cover;">
+                        <img src="{{ promocion.imagen.url }}" alt="{{ promocion.nombre }}" class="card-img-top rounded-4 servicios-promocion__img-1">
                     {% else %}
                         <!-- Imagen por defecto si no hay imagen de servicio, usa 'img/Fondo.png' como sugeriste -->
-                        <img src="{% static 'img/Fondo.png' %}" alt="Servicio sin imagen" class="card-img-top rounded-4" style="height: 200px; object-fit: cover;">
+                        <img src="{% static 'img/Fondo.png' %}" alt="Servicio sin imagen" class="card-img-top rounded-4 servicios-promocion__img-2">
                     {% endif %}
 
 

@@ -20,13 +20,13 @@
 
     <!-- Contenedor Principal Adaptado a Tema Blanco -->
     <div class="card text-dark border border-secondary border-opacity-10 shadow-sm bg-white">
-        <div class="card-header py-3 bg-light" style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+        <div class="card-header py-3 bg-light reservas-gestion-turno__div-1">
             <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-clock-history me-2"></i>Gestión de Disponibilidad (Próximos 15 Días)</h5>
         </div>
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table align-middle mb-0 w-100" style="color: #212529;">
-                    <thead class="table-light" style="border-bottom: 2px solid rgba(0,0,0,0.05);">
+                <table class="table align-middle mb-0 w-100 reservas-gestion-turno__table-2">
+                    <thead class="table-light reservas-gestion-turno__thead-3">
                         <tr>
                             <th class="ps-4 py-3 text-secondary fw-bold small text-uppercase">Día / Fecha</th>
                             <th class="text-secondary fw-bold small text-uppercase">Estado</th>
@@ -38,7 +38,7 @@
                     <tbody>
                         {% for dia in dias %}
                         <!-- Fila de HOY adaptada a tono claro suave -->
-                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.05);" class="{% if dia.es_hoy %}bg-primary bg-opacity-10{% endif %}">
+                        <tr class="{% if dia.es_hoy %}bg-primary bg-opacity-10{% endif %} reservas-gestion-turno__tr-4">
                             <td class="ps-4">
                                 <div class="fw-bold text-dark">{{ dia.fecha|date:"l"|capfirst }}</div>
                                 <div class="text-muted small">{{ dia.fecha|date:"d M, Y" }}</div>
@@ -93,7 +93,7 @@
         <div class="modal-content bg-white text-dark border-0 shadow">
             <form id="formActivar" method="POST">
                 {% csrf_token %}
-                <div class="modal-header bg-light text-dark border-bottom" style="border-color: rgba(0,0,0,0.08)!important;">
+                <div class="modal-header bg-light text-dark border-bottom reservas-gestion-turno__div-5">
                     <h5 class="modal-title text-primary fw-bold">
                         <i class="bi bi-calendar-plus me-2"></i>Activar Agenda: <span id="fechaLegibleActivar" class="text-dark"></span>
                     </h5>

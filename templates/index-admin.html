@@ -6,10 +6,10 @@
   <!-- BIENVENIDA -->
   <div class="row mb-4">
     <div class="col-12">
-      <div class="p-4 rounded-4 shadow-sm border border-secondary" style="background: rgba(20, 24, 32, 0.85); backdrop-filter: blur(10px);">
+      <div class="p-4 rounded-4 shadow-sm border border-secondary templates-index-admin__div-1">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
           <div>
-            <span class="text- text-uppercase fw-bold fs-7 " style="letter-spacing: 1.5px;">Panel de Administración</span>
+            <span class="text- text-uppercase fw-bold fs-7 templates-index-admin__span-2">Panel de Administración</span>
             <h1 class="h2 fw-bold text-white mb-1">¡Bienvenido, {{ nombre }}!</h1>
             <p class="text-light mb-0 opacity-75">Aquí tienes el resumen general de las actividades y estadísticas de hoy.</p>
           </div>
@@ -31,7 +31,7 @@
       <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
         <div class="card-body d-flex flex-row align-items-center flex-nowrap py-3">
           <!-- Icono a la izquierda -->
-          <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+          <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 templates-index-admin__div-3">
             <i class="bi bi-currency-dollar fs-3 text-success"></i>
           </div>
           <!-- Letras y número a la derecha en horizontal -->
@@ -48,7 +48,7 @@
       <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
         <div class="card-body d-flex flex-row align-items-center flex-nowrap py-3">
           <!-- Icono a la izquierda -->
-          <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+          <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 templates-index-admin__div-4">
             <i class="bi bi-calendar-check fs-3 text-primary"></i>
           </div>
           <!-- Letras y número a la derecha en horizontal -->
@@ -56,7 +56,7 @@
             <span class="text-dark fw-bold me-2 text-nowrap">Reservas -</span>
             <h3 class="fw-bold mb-0 text-primary text-nowrap">{{ total_reservas }}</h3>
             {% if reservas_pendientes %}
-              <span class="badge bg-warning text-dark ms-2 text-nowrap" style="font-size: 0.75rem;">
+              <span class="badge bg-warning text-dark ms-2 text-nowrap templates-index-admin__span-5">
                 {{ reservas_pendientes }} pend.
               </span>
             {% endif %}
@@ -70,7 +70,7 @@
       <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
         <div class="card-body d-flex flex-row align-items-center flex-nowrap py-3">
           <!-- Icono a la izquierda -->
-          <div class="bg-info bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+          <div class="bg-info bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 templates-index-admin__div-6">
             <i class="bi bi-people fs-3 text-info"></i>
           </div>
           <!-- Letras y número a la derecha en horizontal -->
@@ -87,7 +87,7 @@
       <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
         <div class="card-body d-flex flex-row align-items-center flex-nowrap py-3">
           <!-- Icono a la izquierda -->
-          <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+          <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 templates-index-admin__div-7">
             <i class="bi bi-box-seam fs-3 text-warning"></i>
           </div>
           <!-- Letras y número a la derecha en horizontal -->
@@ -105,16 +105,16 @@
     
     <!-- Reservas Recientes -->
     <div class="col-lg-8">
-      <div class="card border-0 rounded-4 h-100 shadow-sm color-blanco" style="border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+      <div class="card border-0 rounded-4 h-100 shadow-sm color-blanco templates-index-admin__div-8">
         <div class="card-header bg-transparent border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
           <h5 class="fw-bold mb-0 text-black"><i class="bi bi-clock-history me-2 text-black"></i>Reservas Recientes</h5>
-          <a href="{% url 'ver_agenda' %}" class="btn btn-sm rounded-pill px-3" style="border: 1px solid #2b50aa; color: #2b50aa; background-color: transparent;">Ver todas</a>
+          <a href="{% url 'ver_agenda' %}" class="btn btn-sm rounded-pill px-3 templates-index-admin__a-9">Ver todas</a>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover table-dark table-borderless align-middle mb-0" style="background: transparent;">
+            <table class="table table-hover table-dark table-borderless align-middle mb-0 templates-index-admin__table-10">
               <thead>
-                <tr class="text-muted border-bottom border-secondary" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                <tr class="text-muted border-bottom border-secondary templates-index-admin__tr-11">
                   <th class="ps-4 py-3">Cliente</th>
                   <th class="py-3">Servicio</th>
                   <th class="py-3">Fecha y Hora</th>
@@ -128,17 +128,17 @@
                     <tr class="border-bottom border-secondary border-opacity-25">
                       <td class="ps-4 py-3">
                         <div class="d-flex align-items-center gap-2">
-                          <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                          <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold templates-index-admin__div-12">
                             {{ reserva.nombre_cliente|default:reserva.cliente.first_name|slice:":2"|upper }}
                           </div>
                           <div>
                             <div class="fw-semibold text-white">{{ reserva.nombre_cliente|default:reserva.cliente.get_full_name|default:reserva.cliente.username }}</div>
-                            <small class="text-white-50" style="font-size: 0.75rem;">{{ reserva.telefono_cliente|default:reserva.cliente.telefono|default:"Sin teléfono" }}</small>
+                            <small class="text-white-50 templates-index-admin__small-13">{{ reserva.telefono_cliente|default:reserva.cliente.telefono|default:"Sin teléfono" }}</small>
                           </div>
                         </div>
                       </td>
                       <td class="py-3">
-                        <span class="badge bg-secondary py-2 px-3 rounded-pill fw-semibold" style="font-size: 0.8rem;">
+                        <span class="badge bg-secondary py-2 px-3 rounded-pill fw-semibold templates-index-admin__span-14">
                           {{ reserva.servicio.nombre }}
                         </span>
                       </td>
@@ -173,7 +173,7 @@
 
     <!-- Alertas de Stock e Inventario -->
     <div class="col-lg-4">
-      <div class="card border-0 rounded-4 h-100 shadow-sm" style="background: rgba(20, 24, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+      <div class="card border-0 rounded-4 h-100 shadow-sm templates-index-admin__div-15">
         <div class="card-header bg-transparent border-bottom border-secondary p-4">
           <h5 class="fw-bold mb-0 text-white"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Alertas de Inventario</h5>
         </div>
@@ -181,19 +181,19 @@
           <div class="d-flex flex-column gap-3">
             {% if productos_bajo_stock %}
               {% for stock in productos_bajo_stock %}
-                <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background: rgba(255, 193, 7, 0.07); border: 1px solid rgba(255, 193, 7, 0.15);">
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-3 templates-index-admin__div-16">
                   <div class="d-flex align-items-center gap-3">
-                    <div class="bg-warning bg-opacity-25 text-warning rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                    <div class="bg-warning bg-opacity-25 text-warning rounded-3 p-2 d-flex align-items-center justify-content-center templates-index-admin__div-17">
                       <i class="bi bi-box-seam fs-5"></i>
                     </div>
                     <div>
                       <div class="fw-semibold text-white">{{ stock.producto.nombre }}</div>
-                      <small class="text-white-50" style="font-size: 0.75rem;">Categoría: {{ stock.producto.get_categoria_display|default:"General" }}</small>
+                      <small class="text-white-50 templates-index-admin__small-18">Categoría: {{ stock.producto.get_categoria_display|default:"General" }}</small>
                     </div>
                   </div>
                   <div class="text-end">
-                    <span class="badge bg-danger rounded-pill fw-bold" style="font-size: 0.85rem;">{{ stock.cantidad }} unids.</span>
-                    <div class="text-white-50" style="font-size: 0.7rem; margin-top: 2px;">Stock Crítico</div>
+                    <span class="badge bg-danger rounded-pill fw-bold templates-index-admin__span-19">{{ stock.cantidad }} unids.</span>
+                    <div class="text-white-50 templates-index-admin__div-20">Stock Crítico</div>
                   </div>
                 </div>
               {% endfor %}
@@ -204,7 +204,7 @@
               </div>
             {% else %}
               <div class="text-center py-5">
-                <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3 templates-index-admin__div-21">
                   <i class="bi bi-shield-check fs-1"></i>
                 </div>
                 <h6 class="fw-semibold text-white mb-1">Inventario Seguro</h6>
@@ -220,16 +220,16 @@
   <!-- SECCIÓN DE FACTURAS RECIENTES -->
   <div class="row">
     <div class="col-12">
-      <div class="card border-0 rounded-4 shadow-sm color-blanco" style="border: 1px solid rgba(255, 255, 255, 0.07) !important;">
+      <div class="card border-0 rounded-4 shadow-sm color-blanco templates-index-admin__div-22">
         <div class="card-header bg-transparent border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
           <h5 class="fw-bold mb-0 text-black"><i class="bi bi-receipt me-2 text-warning"></i> Comprobantes y Ventas Recientes</h5>
-          <a href="{% url 'factura_adm' %}" class="btn btn-sm rounded-pill px-3" style="border: 1px solid #2b50aa; color: #2b50aa; background-color: transparent;">Ver todas</a>
+          <a href="{% url 'factura_adm' %}" class="btn btn-sm rounded-pill px-3 templates-index-admin__a-23">Ver todas</a>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover table-dark table-borderless align-middle mb-0" style="background: transparent;">
+            <table class="table table-hover table-dark table-borderless align-middle mb-0 templates-index-admin__table-24">
               <thead>
-                <tr class="text-muted border-bottom border-secondary" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                <tr class="text-muted border-bottom border-secondary templates-index-admin__tr-25">
                   <th class="ps-4 py-3">N° Factura</th>
                   <th class="py-3">Cliente</th>
                   <th class="py-3">Fecha Emisión</th>
@@ -250,7 +250,7 @@
                         <div class="fw-semibold text-white">
                           {{ factura.nombre_cliente|default:factura.cliente.get_full_name|default:factura.cliente.username|default:"General" }}
                         </div>
-                        <small class="text-white-50" style="font-size: 0.75rem;">{{ factura.correo_cliente|default:factura.cliente.email|default:"Sin correo" }}</small>
+                        <small class="text-white-50 templates-index-admin__small-26">{{ factura.correo_cliente|default:factura.cliente.email|default:"Sin correo" }}</small>
                       </td>
                       <td class="py-3">
                         {{ factura.fecha_emision|date:"d M Y, h:i A" }}
