@@ -140,7 +140,7 @@ def procesar_pago_cliente(request):
                         factura=factura,
                         producto=producto,
                         cantidad=cantidad,
-                        precio_unitario=producto.precio_venta,
+                        precio_unitario=producto.stock.precio_venta,
                         subtotal=detalle_compra_obj.subtotal
                     )
 
@@ -269,7 +269,7 @@ def lista_stock(request):
     stocks = Stock.objects.select_related('producto')
 
     stock_total = stocks.aggregate(total=Sum('cantidad'))['total'] or 0
-    valor_stock = sum((stock.cantidad or 0) * (stock.producto.precio_venta or 0) for stock in stocks)
+    valor_stock = sum((stock.cantidad or 0) * (stock.precio_venta or 0) for stock in stocks)
 
     context = {
         'titulo': 'Stock de Productos',
