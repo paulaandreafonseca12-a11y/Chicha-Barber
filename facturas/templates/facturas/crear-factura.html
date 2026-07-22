@@ -159,9 +159,9 @@
                   {% for producto in productos %}
                   <option
                     value="{{ producto.codigo_producto }}"
-                    data-precio="{{ producto.precio_venta }}"
+                    data-precio="{{ producto.stock.precio_venta }}"
                   >
-                    {{ producto.nombre }} - ${{ producto.precio_venta }}
+                    {{ producto.nombre }} - ${{ producto.stock.precio_venta }}
                   </option>
                   {% endfor %}
                 </select>

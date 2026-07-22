@@ -28,8 +28,6 @@ class ProductoCompraTest(TestCase):
         self.producto = Producto.objects.create(
             nombre="Cerveza Poker",
             descripcion="Cerveza de prueba",
-            precio_compra=Decimal("3000.00"),
-            precio_venta=Decimal("5000.00"),
             estado=True
         )
 
@@ -37,6 +35,8 @@ class ProductoCompraTest(TestCase):
         self.producto.refresh_from_db()
 
         self.producto.stock.cantidad = 20
+        self.producto.stock.precio_compra = Decimal("3000.00")
+        self.producto.stock.precio_venta = Decimal("5000.00")
         self.producto.stock.save()
 
     def test_crear_producto(self):
@@ -44,8 +44,8 @@ class ProductoCompraTest(TestCase):
         print("\n========== PRODUCTO ==========")
         print("Código:", self.producto.codigo)
         print("Nombre:", self.producto.nombre)
-        print("Precio Compra:", self.producto.precio_compra)
-        print("Precio Venta:", self.producto.precio_venta)
+        print("Precio Compra:", self.producto.stock.precio_compra)
+        print("Precio Venta:", self.producto.stock.precio_venta)
         print("Stock:", self.producto.stock.cantidad)
 
         self.assertEqual(self.producto.stock.cantidad, 20)
