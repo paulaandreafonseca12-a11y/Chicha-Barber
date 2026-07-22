@@ -11,7 +11,7 @@
 
             <div class="card shadow border-0">
 
-                <div class="card-header color-champaña py-3">
+                <div class="card-header color-champaña text-dark py-3">
                     <h4 class="mb-0 fw-bold text-dark">
                         <i class="bi bi-box-seam me-2"></i>
 
@@ -30,7 +30,8 @@
                         {% csrf_token %}
 
                         {% for field in form %}
-                            {% if field.name != 'estado' %}
+
+                            {% if field.name != "estado" %}
 
                                 <div class="mb-3">
 
@@ -44,42 +45,55 @@
 
                                     {{ field }}
 
-                                    {% if field.name == 'imagen' and form.instance.imagen %}
+                                    {% if field.name == "imagen" and form.instance.imagen %}
+
                                         <div class="mt-3">
 
-                                            <small class="text-muted">
+                                            <small class="text-muted d-block mb-2">
                                                 Imagen actual
                                             </small>
 
-                                            <br>
-
-                                            <img src="{{ form.instance.imagen.url }}" class="img-thumbnail mt-2 productos-editar-producto__img-1">
+                                            <img
+                                                src="{{ form.instance.imagen.url }}"
+                                                class="img-fluid img-thumbnail rounded"
+                                                style="max-height:220px;"
+                                                alt="{{ form.instance.nombre }}">
 
                                         </div>
+
                                     {% endif %}
 
                                     {% if field.help_text %}
+
                                         <div class="form-text">
+
                                             {{ field.help_text }}
+
                                         </div>
+
                                     {% endif %}
 
-                                    {% if field.errors %}
-                                        <div class="text-danger small mt-1">
-                                            {{ field.errors|striptags }}
+                                    {% for error in field.errors %}
+
+                                        <div class="invalid-feedback d-block">
+
+                                            {{ error }}
+
                                         </div>
-                                    {% endif %}
+
+                                    {% endfor %}
 
                                 </div>
 
                             {% endif %}
+
                         {% endfor %}
 
                         <hr>
 
                         <div class="mb-4">
 
-                            <label class="form-label fw-semibold d-block">
+                            <label class="form-label fw-semibold">
                                 Estado
                             </label>
 
@@ -91,27 +105,31 @@
                                     class="form-check-label"
                                     for="{{ form.estado.id_for_label }}">
 
-                                    Activo
+                                    Producto Activo
 
                                 </label>
 
                             </div>
 
-                            {% if form.estado.errors %}
-                                <div class="text-danger small mt-2">
-                                    {{ form.estado.errors|striptags }}
+                            {% for error in form.estado.errors %}
+
+                                <div class="invalid-feedback d-block">
+
+                                    {{ error }}
+
                                 </div>
-                            {% endif %}
+
+                            {% endfor %}
 
                         </div>
 
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <div class="d-flex justify-content-end gap-2">
 
                             <a
                                 href="{% url 'lista_productos_admin' %}"
-                                class="btn btn-outline-secondary me-md-2">
+                                class="btn btn-outline-secondary">
 
-                                <i class="bi bi-x-circle me-1"></i>
+                                <i class="bi bi-arrow-left"></i>
 
                                 Cancelar
 
@@ -119,11 +137,15 @@
 
                             <button
                                 type="submit"
-                                class="btn btn-primary">
+                                class="btn color-azul text-white fw-bold">
 
-                                <i class="bi bi-save me-1"></i>
+                                <i class="bi bi-save"></i>
 
-                                Guardar Producto
+                                {% if form.instance.pk %}
+                                    Actualizar Producto
+                                {% else %}
+                                    Guardar Producto
+                                {% endif %}
 
                             </button>
 
