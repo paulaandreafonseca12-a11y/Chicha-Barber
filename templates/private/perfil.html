@@ -335,7 +335,7 @@
               <div class="flex-grow-1">
                 <div class="fw-semibold text-dark">{{ detalle.producto.nombre }}</div>
                 <div class="text-muted private-perfil__div-36">
-                  {{ detalle.cantidad }} x ${{ detalle.producto.precio_venta|floatformat:0 }}
+                  {{ detalle.cantidad }} x ${{ detalle.producto.stock.precio_venta|floatformat:0 }}
                 </div>
                 <span class="fw-bold text-dark">${{ detalle.subtotal|floatformat:0 }}</span>
               </div>
