@@ -22,10 +22,12 @@ class FacturaTest(TestCase):
         self.producto = Producto.objects.first() or Producto.objects.create(
             nombre="Producto de prueba",
             descripcion="Descripción de prueba",
-            precio_compra=Decimal("1000.00"),
-            precio_venta=Decimal("1500.00"),
             estado=True
         )
+        self.producto.refresh_from_db()
+        self.producto.stock.precio_compra = Decimal("1000.00")
+        self.producto.stock.precio_venta = Decimal("1500.00")
+        self.producto.stock.save()
 
     def test_crear_factura_y_detalles(self):
 

@@ -1,8 +1,6 @@
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 from chat_ia.ai_service import obtener_respuesta_ia
 
-@login_required
 def vista_chat_ia(request):
     if "chat" not in request.session:
         request.session["chat"] = []

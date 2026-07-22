@@ -165,7 +165,7 @@ def actualizar_factura_adm(request, id):
                         factura.detalles.create(
                             producto=producto,
                             cantidad=cantidad,
-                            precio_unitario=float(precio_u) if precio_u else float(producto.precio_venta)
+                            precio_unitario=float(precio_u) if precio_u else float(producto.stock.precio_venta)
                         )
                     
                     elif tipo == 'servicio':
