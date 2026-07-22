@@ -20,7 +20,7 @@
             <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
-                    <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                    <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 facturas-factura-adm__div-1">
                         <i class="bi bi-receipt fs-3 text-primary"></i>
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
@@ -37,7 +37,7 @@
             <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
-                    <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                    <div class="bg-success bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 facturas-factura-adm__div-2">
                         <i class="bi bi-check-circle fs-3 text-success"></i>
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
@@ -54,7 +54,7 @@
             <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
-                    <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                    <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 facturas-factura-adm__div-3">
                         <i class="bi bi-clock-history fs-3 text-warning"></i>
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
@@ -71,7 +71,7 @@
             <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
                 <div class="card-body d-flex flex-row align-items-center flex-nowrap">
                     <!-- Icono a la izquierda -->
-                    <div class="bg-danger bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+                    <div class="bg-danger bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 facturas-factura-adm__div-4">
                         <i class="bi bi-x-circle fs-3 text-danger"></i>
                     </div>
                     <!-- Letras y número a la derecha en horizontal -->
@@ -89,23 +89,23 @@
         <div class="card-body p-4">
             <div class="table-responsive text-nowrap">
                 <!-- Se eliminaron restricciones restrictivas de ancho para dejar que la tabla crezca de forma nativa -->
-                <table id="tablaFacturas" class="table table-hover align-middle mb-0 w-100 text-dark" style="font-size: 0.98rem;">
+                <table id="tablaFacturas" class="table table-hover align-middle mb-0 w-100 text-dark facturas-factura-adm__table-5">
                     <thead class="thead-azul">
                         <tr>
-                            <th scope="col" class="ps-4 py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 5%;">Comprobante</th>
-                            <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 20%;">Cliente</th>
-                            <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 25%;">Detalles del Consumo</th>
-                            <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Fecha</th>
-                            <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Método</th>
-                            <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Estado</th>
-                            <th scope="col" class="text-center py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 5%;">Comprobante <br> Imagen </th>
-                            <th scope="col" class="py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 10%;">Total</th>
-                            <th scope="col" class="text-center py-3 text-uppercase tracking-wider" style="font-size: 0.85rem; width: 15%;">Acciones</th>
+                            <th scope="col" class="ps-4 py-3 text-uppercase tracking-wider facturas-factura-adm__th-6">Comprobante</th>
+                            <th scope="col" class="py-3 text-uppercase tracking-wider facturas-factura-adm__th-7">Cliente</th>
+                            <th scope="col" class="py-3 text-uppercase tracking-wider facturas-factura-adm__th-8">Detalles del Consumo</th>
+                            <th scope="col" class="py-3 text-uppercase tracking-wider facturas-factura-adm__th-9">Fecha</th>
+                            <th scope="col" class="py-3 text-uppercase tracking-wider facturas-factura-adm__th-10">Método</th>
+                            <th scope="col" class="py-3 text-uppercase tracking-wider facturas-factura-adm__th-11">Estado</th>
+                            <th scope="col" class="text-center py-3 text-uppercase tracking-wider facturas-factura-adm__th-12">Comprobante <br> Imagen </th>
+                            <th scope="col" class="py-3 text-uppercase tracking-wider facturas-factura-adm__th-13">Total</th>
+                            <th scope="col" class="text-center py-3 text-uppercase tracking-wider facturas-factura-adm__th-14">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for factura in facturas %}
-                        <tr class="factura-row border-dark border-opacity-10" style="transition: background-color 0.2s ease;">
+                        <tr class="factura-row border-dark border-opacity-10 facturas-factura-adm__tr-15">
                             <td class="ps-4 fw-bold text-dark py-3">#{{ factura.id }}</td>
                             
                             <td class="py-3">
@@ -116,7 +116,7 @@
                                         {{ factura.nombre_cliente|default:"Cliente General" }}
                                     {% endif %}
                                 </div>
-                                <small class="text-muted d-block" style="font-size: 0.82rem;">
+                                <small class="text-muted d-block facturas-factura-adm__small-16">
                                     {% if factura.cliente %}
                                         {{ factura.cliente.email|default:"Sin correo" }}
                                     {% else %}
@@ -129,15 +129,15 @@
                                 <div id="detalles-factura-{{ factura.id }}" class="pe-2">
                                     {% for detalle in factura.detalles.all %}
                                         {% if detalle.producto %}
-                                            <div class="mb-1 d-flex align-items-center justify-content-between bg-secondary bg-opacity-10 p-1.5 px-3 rounded" style="font-size: 0.88rem;">
-                                                <span class="text-info fw-semibold text-truncate" style="max-width: 250px;">
+                                            <div class="mb-1 d-flex align-items-center justify-content-between bg-secondary bg-opacity-10 p-1.5 px-3 rounded facturas-factura-adm__div-17">
+                                                <span class="text-info fw-semibold text-truncate facturas-factura-adm__span-18">
                                                     <i class="bi bi-box-seam me-1"></i>{{ detalle.producto.nombre }}
                                                 </span>
                                                 <span class="text-muted font-monospace">x{{ detalle.cantidad }}</span>
                                             </div>
                                         {% endif %}
                                         {% if detalle.reserva %}
-                                            <div class="mb-1 bg-secondary bg-opacity-10 p-1.5 px-3 rounded" style="font-size: 0.88rem;">
+                                            <div class="mb-1 bg-secondary bg-opacity-10 p-1.5 px-3 rounded facturas-factura-adm__div-19">
                                                 <span class="text-warning fw-semibold">
                                                     <i class="bi bi-scissors me-1"></i>{{ detalle.reserva.servicio.nombre }}
                                                 </span>
@@ -150,16 +150,16 @@
                             </td>
 
                             <td class="py-3">
-                                <div class="text-dark font-monospace" style="font-size: 0.88rem;">
+                                <div class="text-dark font-monospace facturas-factura-adm__div-20">
                                     {{ factura.fecha_emision|date:"d/m/Y" }}
                                 </div>
-                                <div class="text-muted small" style="font-size: 0.78rem;">
+                                <div class="text-muted small facturas-factura-adm__div-21">
                                     {{ factura.fecha_emision|date:"H:i" }} hs
                                 </div>
                             </td>
 
                             <td class="py-3">
-                                <select class="form-select form-select-sm text-dark border-secondary field-update py-1.5" data-field="metodo_pago" data-id="{{ factura.id }}" style="border-radius: 6px; cursor: pointer;">
+                                <select class="form-select form-select-sm text-dark border-secondary field-update py-1.5 facturas-factura-adm__select-22" data-field="metodo_pago" data-id="{{ factura.id }}">
                                     <option value="efectivo" class="bg-white text-dark" {% if factura.metodo_pago == "efectivo" %}selected{% endif %}>Efectivo</option>
                                     <option value="nequi" class="bg-white text-dark" {% if factura.metodo_pago == "nequi" %}selected{% endif %}>Nequi</option>
                                     <option value="daviplata" class="bg-white text-dark" {% if factura.metodo_pago == "daviplata" %}selected{% endif %}>Daviplata</option>
@@ -169,7 +169,7 @@
                             </td>
 
                             <td class="py-3">
-                                <select class="form-select form-select-sm border-secondary field-update select-estado fw-bold py-1.5 {% if factura.estado == 'pagada' %}text-success{% elif factura.estado == 'pendiente' %}text-warning{% else %}text-danger{% endif %}" data-field="estado" data-id="{{ factura.id }}" style="border-radius: 6px; cursor: pointer;">
+                                <select class="form-select form-select-sm border-secondary field-update select-estado fw-bold py-1.5 {% if factura.estado == 'pagada' %}text-success{% elif factura.estado == 'pendiente' %}text-warning{% else %}text-danger{% endif %} facturas-factura-adm__select-23" data-field="estado" data-id="{{ factura.id }}">
                                     <option value="pendiente" class="bg-white text-warning" {% if factura.estado == "pendiente" %}selected{% endif %}>● Pendiente</option>
                                     <option value="pagada" class="bg-white text-success" {% if factura.estado == "pagada" %}selected{% endif %}>● Pagada</option>
                                     <option value="cancelada" class="bg-white text-danger" {% if factura.estado == "cancelada" %}selected{% endif %}>● Cancelada</option>
@@ -180,44 +180,44 @@
                                 <div class="d-flex flex-column align-items-center justify-content-center gap-1">
                                     {% if factura.imagen_transaccion %}
                                     <a href="{{ factura.imagen_transaccion.url }}" target="_blank" class="d-inline-block">
-                                        <img src="{{ factura.imagen_transaccion.url }}" alt="Comprobante" class="rounded border border-secondary shadow-sm" style="width: 46px; height: 46px; object-fit: cover;">
+                                        <img src="{{ factura.imagen_transaccion.url }}" alt="Comprobante" class="rounded border border-secondary shadow-sm facturas-factura-adm__img-24">
                                     </a>
                                     {% else %}
-                                    <div class="text-muted d-flex flex-column align-items-center" style="font-size: 0.75rem; line-height: 1;">
+                                    <div class="text-muted d-flex flex-column align-items-center facturas-factura-adm__div-25">
                                         <i class="bi bi-image text-secondary fs-5 mb-1"></i>Sin foto
                                     </div>
                                     {% endif %}
-                                    <label class="btn btn-link p-0 m-0 text-decoration-none" style="font-size: 0.75rem;">
+                                    <label class="btn btn-link p-0 m-0 text-decoration-none facturas-factura-adm__label-26">
                                         <input type="file" class="image-update d-none" data-id="{{ factura.id }}" accept="image/*">
-                                        <span class="text-info opacity-75" style="cursor: pointer;">Cambiar</span>
+                                        <span class="text-info opacity-75 facturas-factura-adm__span-27">Cambiar</span>
                                     </label>
                                 </div>
                             </td>
 
-                            <td class="fw-bold text-dark py-3 font-monospace" style="font-size: 1.08rem;">
+                            <td class="fw-bold text-dark py-3 font-monospace facturas-factura-adm__td-28">
                                 ${{ factura.total_pagado|floatformat:0 }}
                             </td>
 
                             <td class="text-center py-3">
                                 <div class="d-flex justify-content-center align-items-center gap-2">
-                                    <button type="button" class="btn btn-sm btn-outline-dark border-secondary btn-add-item d-inline-flex align-items-center justify-content-center" data-id="{{ factura.id }}" title="Añadir Producto/Servicio" style="width: 38px; height: 38px; border-radius: 8px;">
+                                    <button type="button" class="btn btn-sm btn-outline-dark border-secondary btn-add-item d-inline-flex align-items-center justify-content-center facturas-factura-adm__button-29" data-id="{{ factura.id }}" title="Añadir Producto/Servicio">
                                         <i class="bi bi-plus-lg fs-6"></i>
                                     </button>
 
-                                    <a href="{% url 'detalle_factura' factura.id %}" class="btn btn-sm btn-outline-info d-inline-flex align-items-center justify-content-center" title="Ver detalle" style="width: 38px; height: 38px; border-radius: 8px;">
+                                    <a href="{% url 'detalle_factura' factura.id %}" class="btn btn-sm btn-outline-info d-inline-flex align-items-center justify-content-center facturas-factura-adm__a-30" title="Ver detalle">
                                         <i class="bi bi-pencil-square fs-6"></i>
                                     </a>
 
-                                    <a href="{% url 'imprimir_factura' factura.id %}" class="btn btn-sm btn-outline-success d-inline-flex align-items-center justify-content-center" title="Imprimir" style="width: 38px; height: 38px; border-radius: 8px;">
+                                    <a href="{% url 'imprimir_factura' factura.id %}" class="btn btn-sm btn-outline-success d-inline-flex align-items-center justify-content-center facturas-factura-adm__a-31" title="Imprimir">
                                         <i class="bi bi-printer fs-6"></i>
                                     </a>
 
                                     {% if factura.cliente and factura.cliente.email %}
-                                    <a href="mailto:{{ factura.cliente.email }}?subject=Factura%20%23{{ factura.id }}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center" title="Enviar correo" style="width: 38px; height: 38px; border-radius: 8px;">
+                                    <a href="mailto:{{ factura.cliente.email }}?subject=Factura%20%23{{ factura.id }}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center facturas-factura-adm__a-32" title="Enviar correo">
                                         <i class="bi bi-envelope fs-6"></i>
                                     </a>
                                     {% else %}
-                                    <button class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center justify-content-center" disabled style="width: 38px; height: 38px; border-radius: 8px; opacity: 0.25;">
+                                    <button class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center justify-content-center facturas-factura-adm__button-33" disabled>
                                         <i class="bi bi-envelope-x fs-6"></i>
                                     </button>
                                     {% endif %}
@@ -294,7 +294,7 @@
                         <div class="col-6 mb-3">
                             <label for="input-precio" class="form-label fw-bold">Precio Unitario ($)</label>
                             <input type="number" class="form-control border-secondary text-dark bg-white" id="input-precio" name="precio_unitario" placeholder="Opcional">
-                            <small class="text-muted" style="font-size: 0.75rem;">Dejar vacío para usar precio base</small>
+                            <small class="text-muted facturas-factura-adm__small-34">Dejar vacío para usar precio base</small>
                         </div>
                     </div>
                 </div>

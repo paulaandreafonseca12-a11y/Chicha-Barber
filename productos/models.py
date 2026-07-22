@@ -4,17 +4,56 @@ from django.dispatch import receiver
 from usuarios.models import Usuario, Notificacion
 
 # ==========================================
-# 🔹 PRODUCTO
+# 🔹 1. CATEGORÍA (Para organizar tus productos)
+# ==========================================
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre de la Categoría")
+    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción")
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+
+
+# ==========================================
+# 🔹 2. PROVEEDOR 
+# ==========================================
+class Proveedor(models.Model):
+    nombre = models.CharField(max_length=150, unique=True, verbose_name="Nombre del Proveedor")
+    telefono = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
+    correo = models.EmailField(blank=True, null=True, verbose_name="Correo Electrónico")
+    direccion = models.CharField(max_length=200, blank=True, null=True, verbose_name="Dirección")
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "Proveedor"
+        verbose_name_plural = "Proveedores"
+
+
+# ==========================================
+# 🔹 3. PRODUCTO (Solo Catálogo: Nombre, Descripción, Imagen y Categoría)
 # ==========================================
 class Producto(models.Model):
     codigo_producto = models.AutoField(primary_key=True)
     codigo = models.CharField(max_length=20, unique=True, blank=True)
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField()
-    precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
-    precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.BooleanField(default=True)  # True = Activo, False = Inactivo
-    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
+    nombre = models.CharField(max_length=100, verbose_name="Nombre del Producto")
+    descripcion = models.TextField(verbose_name="Descripción")
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True, verbose_name="Imagen")
+    estado = models.BooleanField(default=True, verbose_name="Activo")  # True = Activo, False = Inactivo
+    
+    categoria = models.ForeignKey(
+        Categoria,
+        on_delete=models.PROTECT,  # Evita borrar una categoría si tiene productos asociados
+        related_name='productos',
+        null=True,  # Permite migrar si ya tenías productos creados
+        blank=False,
+        verbose_name="Categoría"
+    )
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -28,7 +67,7 @@ class Producto(models.Model):
             return self.stock.cantidad
         return 0
 
-    # 🔹 Métodos de clase optimizados para alimentar tus tarjetas de resumen
+    # Métodos de clase para tus tarjetas de resumen en el Admin/Dashboard
     @classmethod
     def total_productos(cls):
         return cls.objects.count()
@@ -46,24 +85,33 @@ class Producto(models.Model):
 
 
 # ==========================================
-# 🔹 STOCK
+# 🔹 4. STOCK (Maneja Cantidad, Valores y Proveedor)
 # ==========================================
 class Stock(models.Model):
     producto = models.OneToOneField(
         Producto,
         on_delete=models.CASCADE,
-        related_name="stock",
-        null=True,
-        blank=True
+        related_name="stock"
     )
-    cantidad = models.PositiveIntegerField(default=0)
+    cantidad = models.PositiveIntegerField(default=0, verbose_name="Cantidad en Stock")
+    precio_compra = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Precio de Compra")
+    precio_venta = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Precio de Venta")
+    
+    proveedor = models.ForeignKey(
+        Proveedor,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='stocks',
+        verbose_name='Proveedor'
+    )
 
     def __str__(self):
-        return f"{self.producto.nombre if self.producto else 'Sin producto'} - Stock: {self.cantidad}"
+        return f"{self.producto.nombre if self.producto else 'Sin producto'} - Stock: {self.cantidad} | Venta: ${self.precio_venta}"
 
 
 # ==========================================
-# 🔹 MOVIMIENTO INVENTARIO
+# 🔹 5. MOVIMIENTO INVENTARIO
 # ==========================================
 class MovimientoInventario(models.Model):
     TIPO_CHOICES = [
@@ -85,15 +133,18 @@ class MovimientoInventario(models.Model):
         return f"{self.producto.codigo} - {self.tipo} {self.cantidad}"
 
 
-# 🔥 SIGNAL → Crear stock automático al registrar un producto
+# 🔥 SIGNAL → Crear stock automático en ceros al registrar un producto nuevo
 @receiver(post_save, sender=Producto)
 def crear_stock(sender, instance, created, **kwargs):
     if created:
-        Stock.objects.get_or_create(producto=instance, defaults={'cantidad': 0})
+        Stock.objects.get_or_create(
+            producto=instance, 
+            defaults={'cantidad': 0, 'precio_compra': 0, 'precio_venta': 0}
+        )
 
 
 # ==========================================
-# 🔹 COMPRA / VENTA MADRE
+# 🔹 6. COMPRA / VENTA MADRE (Historial de Pedidos)
 # ==========================================
 class Compra(models.Model):
     METODO_PAGO_CHOICES = [
@@ -130,9 +181,7 @@ class Compra(models.Model):
     fecha_compra = models.DateTimeField(auto_now_add=True)
 
     def actualizar_total(self):
-        """
-        Recalcula el total de la compra sumando los subtotales de sus detalles.
-        """
+        """ Recalcula el total sumando los subtotales de sus detalles """
         self.total = sum(detalle.subtotal for detalle in self.detalles.all())
         self.save(update_fields=['total'])
 
@@ -141,7 +190,7 @@ class Compra(models.Model):
 
 
 # ==========================================
-# 🔹 DETALLE DE COMPRA
+# 🔹 7. DETALLE DE COMPRA (Descuenta Stock Físico)
 # ==========================================
 class DetalleCompra(models.Model):
     codigo_detalle = models.AutoField(primary_key=True)
@@ -151,22 +200,23 @@ class DetalleCompra(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
     def save(self, *args, **kwargs):
-        # 1. Calcular de manera estricta el subtotal antes de guardar en la BD
-        self.subtotal = self.cantidad * self.producto.precio_venta
+        stock = self.producto.stock  # Relación OneToOne con Stock
 
-        # 2. Validar disponibilidad real en el inventario
-        stock = self.producto.stock
+        # 1. El precio de venta ahora se extrae desde el Stock
+        self.subtotal = self.cantidad * stock.precio_venta
+
+        # 2. Validar disponibilidad real en el inventario de productos
         if self.cantidad > stock.cantidad:
             raise ValueError(f"Stock insuficiente para '{self.producto.nombre}'. Disponible: {stock.cantidad}")
 
-        # 3. Guardar el registro del detalle de compra
+        # 3. Guardar el registro del detalle
         super().save(*args, **kwargs)
 
-        # 4. Descontar las unidades adquiridas del stock global
+        # 4. Descontar las unidades adquiridas de la bodega
         stock.cantidad -= self.cantidad
         stock.save(update_fields=['cantidad'])
 
-        # 5. Insertar automáticamente la bitácora de la salida en el histórico de inventario
+        # 5. Insertar automáticamente la bitácora de salida en el histórico de inventario
         MovimientoInventario.objects.create(
             producto=self.producto,
             tipo='salida',
@@ -179,7 +229,7 @@ class DetalleCompra(models.Model):
 
 
 # ==========================================
-# 🔹 DATOS DE TRANSFERENCIA
+# 🔹 8. DATOS DE TRANSFERENCIA
 # ==========================================
 class DatosTransferencia(models.Model):
     banco = models.CharField(max_length=100, default="Banco por definir")
@@ -198,16 +248,14 @@ class DatosTransferencia(models.Model):
 
 
 # ==========================================
-# 🔔 SIGNAL → Notificar compra (cliente + admins)
-# Va al final del archivo porque necesita que la clase Compra
-# ya esté definida arriba.
+# 🔔 9. SIGNAL → Notificar compra (Clientes e In-App Admins)
 # ==========================================
 @receiver(post_save, sender=Compra)
 def notificar_compra(sender, instance, created, **kwargs):
     if not created:
         return
 
-    # Notificación al cliente (si está registrado)
+    # Notificación al cliente si cuenta con usuario registrado
     if instance.usuario:
         Notificacion.objects.create(
             usuario=instance.usuario,
@@ -216,12 +264,12 @@ def notificar_compra(sender, instance, created, **kwargs):
             url='/perfil/'
         )
 
-    # Notificación a todos los administradores
+    # Notificación a la junta de administradores de la barbería
     admins = Usuario.objects.filter(rol='admin')
     for admin in admins:
         Notificacion.objects.create(
             usuario=admin,
             tipo='compra',
             mensaje=f"Nueva compra de {instance.nombre_cliente} por ${instance.total:.0f}.",
-            url='/admin-comprobantes/'  # ajusta a tu URL real del listado de compras/comprobantes
+            url='/admin-comprobantes/'  
         )

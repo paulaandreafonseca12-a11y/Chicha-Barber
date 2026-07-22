@@ -55,12 +55,7 @@
 
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted mb-1">Método de Pago:</label>
-            <select
-              class="form-select form-select-sm field-update fw-bold bg-white text-dark"
-              data-field="metodo_pago"
-              id="select-metodo-pago"
-              style="max-width: 250px;"
-            >
+            <select class="form-select form-select-sm field-update fw-bold bg-white text-dark facturas-detalle-factura__select-1" data-field="metodo_pago" id="select-metodo-pago">
               <option value="efectivo" {% if factura.metodo_pago == "efectivo" %}selected{% endif %}>Efectivo</option>
               <option value="nequi" {% if factura.metodo_pago == "nequi" %}selected{% endif %}>Nequi</option>
               <option value="daviplata" {% if factura.metodo_pago == "daviplata" %}selected{% endif %}>Daviplata</option>
@@ -70,12 +65,7 @@
 
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted mb-1">Estado de Factura:</label>
-            <select
-              class="form-select form-select-sm field-update fw-bold bg-white"
-              data-field="estado"
-              id="select-estado"
-              style="max-width: 250px;"
-            >
+            <select class="form-select form-select-sm field-update fw-bold bg-white facturas-detalle-factura__select-2" data-field="estado" id="select-estado">
               <option value="pendiente" {% if factura.estado == "pendiente" %}selected{% endif %}>Pendiente</option>
               <option value="pagada" {% if factura.estado == "pagada" %}selected{% endif %}>Pagada</option>
               <option value="cancelada" {% if factura.estado == "cancelada" %}selected{% endif %}>Cancelada</option>
@@ -96,7 +86,7 @@
               
               <div class="d-flex align-items-center gap-3">
                 {% if factura.imagen_transaccion.url|lower|slice:"-4:" == ".pdf" %}
-                  <div class="text-center p-2 border rounded bg-white" style="width: 100px;">
+                  <div class="text-center p-2 border rounded bg-white facturas-detalle-factura__div-3">
                     <i class="bi bi-file-earmark-pdf-fill text-danger fs-1"></i>
                     <span class="d-block small text-muted text-truncate">Documento PDF</span>
                   </div>
@@ -107,13 +97,8 @@
                     </a>
                   </div>
                 {% else %}
-                  <div class="position-relative border rounded overflow-hidden bg-white shadow-sm" style="width: 120px; height: 120px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalComprobante">
-                    <img 
-                      src="{{ factura.imagen_transaccion.url }}" 
-                      alt="Comprobante de pago" 
-                      class="w-100 h-100" 
-                      style="object-fit: cover;"
-                    />
+                  <div class="position-relative border rounded overflow-hidden bg-white shadow-sm facturas-detalle-factura__div-4" data-bs-toggle="modal" data-bs-target="#modalComprobante">
+                    <img src="{{ factura.imagen_transaccion.url }}" alt="Comprobante de pago" class="w-100 h-100 facturas-detalle-factura__img-5" />
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-25 opacity-0 hover-opacity-100 transition-3s">
                       <i class="bi bi-zoom-in text-white fs-4"></i>
                     </div>
@@ -196,7 +181,7 @@
         <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-0 bg-secondary bg-opacity-10 text-center">
-        <img src="{{ factura.imagen_transaccion.url }}" alt="Comprobante Completo" class="img-fluid rounded-bottom" style="max-height: 80vh; width: auto;">
+        <img src="{{ factura.imagen_transaccion.url }}" alt="Comprobante Completo" class="img-fluid rounded-bottom facturas-detalle-factura__img-6">
       </div>
       <div class="modal-footer py-1 bg-light">
         <a href="{{ factura.imagen_transaccion.url }}" download class="btn btn-sm btn-secondary">

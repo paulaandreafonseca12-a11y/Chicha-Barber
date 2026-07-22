@@ -2,117 +2,570 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4 mb-5">
+
+<div class="container py-4">
+
+
+    <!-- RESUMEN DEL INVENTARIO -->
+
     <div class="row g-3 mb-4">
+
+
+        <!-- STOCK TOTAL -->
+
         <div class="col-md-4">
-            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
-                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="bg-primary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
-                        <i class="bi bi-stack fs-3 text-primary"></i>
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body d-flex align-items-center">
+
+
+                    <div class="bg-primary bg-opacity-25 rounded-circle p-3 me-3">
+
+                        <i class="bi bi-boxes fs-3 text-primary"></i>
+
                     </div>
-                    <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-dark fw-bold me-2 text-nowrap">Stock Total -</span>
-                        <h3 class="fw-bold mb-0 text-primary text-nowrap">{{ stock_total|default:"0" }}</h3>
+
+
+                    <div>
+
+                        <span class="fw-bold">
+                            Stock Total
+                        </span>
+
+
+                        <h3 class="fw-bold text-primary mb-0">
+
+                            {{ stock_total|default:"0" }}
+
+                        </h3>
+
+
                     </div>
+
+
                 </div>
+
+
             </div>
+
+
         </div>
-        
+
+
+
+
+
+        <!-- STOCK BAJO -->
+
+
         <div class="col-md-4">
-            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
-                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
+
+
+            <div class="card shadow border-0 h-100">
+
+
+                <div class="card-body d-flex align-items-center">
+
+
+                    <div class="bg-warning bg-opacity-25 rounded-circle p-3 me-3">
+
+
                         <i class="bi bi-exclamation-triangle fs-3 text-warning"></i>
+
+
                     </div>
-                    <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-dark fw-bold me-2 text-nowrap">Stock Bajo -</span>
-                        <h3 class="fw-bold mb-0 text-warning text-nowrap">{{ stock_bajo|default:"0" }}</h3>
+
+
+
+                    <div>
+
+
+                        <span class="fw-bold">
+                            Stock Bajo
+                        </span>
+
+
+
+                        <h3 class="fw-bold text-warning mb-0">
+
+                            {{ stock_bajo|default:"0" }}
+
+                        </h3>
+
+
+
                     </div>
+
+
+
                 </div>
+
+
             </div>
+
+
         </div>
+
+
+
+
+
+
+
+        <!-- VALOR STOCK -->
+
 
         <div class="col-md-4">
-            <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
-                <div class="card-body d-flex flex-row align-items-center flex-nowrap">
-                    <div class="bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 56px; height: 56px;">
-                        <i class="bi bi-currency-dollar fs-3 text-secondary"></i>
+
+
+            <div class="card shadow border-0 h-100">
+
+
+                <div class="card-body d-flex align-items-center">
+
+
+
+                    <div class="bg-success bg-opacity-25 rounded-circle p-3 me-3">
+
+
+                        <i class="bi bi-currency-dollar fs-3 text-success"></i>
+
+
                     </div>
-                    <div class="d-flex align-items-center flex-nowrap">
-                        <span class="text-dark fw-bold me-2 text-nowrap">Valor Stock -</span>
-                        <h3 class="fw-bold mb-0 text-dark text-nowrap">${{ valor_stock|default:"0" }}</h3>
+
+
+
+                    <div>
+
+
+                        <span class="fw-bold">
+
+                            Valor Inventario
+
+                        </span>
+
+
+
+                        <h3 class="fw-bold mb-0">
+
+                            ${{ valor_stock|default:"0" }}
+
+                        </h3>
+
+
+
                     </div>
+
+
                 </div>
+
+
             </div>
+
+
         </div>
+
+
+
     </div>
 
-    <div class="card color-blanco text-dark shadow border-0 mb-4">
+
+
+
+
+
+    <!-- TABLA INVENTARIO -->
+
+
+    <div class="card shadow border-0">
+
+
         <div class="card-body">
+
+
             <div class="table-responsive">
-                <table id="tablaInventario" class="table table-hover align-middle mb-0 w-100 text-dark">
+
+
+                <table id="tablaInventario"
+                       class="table table-hover align-middle">
+
+
                     <thead class="thead-azul">
+
+
                         <tr>
-                            <th scope="col" class="ps-4">Código</th>
-                            <th scope="col">Producto</th>
-                            <th scope="col">Descripción</th>
-                            <th scope="col">Precio Venta</th>
-                            <th scope="col">Stock Actual</th>
-                            <th scope="col" class="text-center">Acción</th>
+
+
+                            <th>
+                                Código
+                            </th>
+
+
+                            <th>
+                                Producto
+                            </th>
+
+
+                            <th>
+                                Categoría
+                            </th>
+
+
+                            <th>
+                                Precio Compra
+                            </th>
+
+
+                            <th>
+                                Precio Venta
+                            </th>
+
+
+                            <th>
+                                Cantidad
+                            </th>
+
+
+                            <th>
+                                Proveedor
+                            </th>
+
+
+                            <th class="text-center">
+                                Acción
+                            </th>
+
+
                         </tr>
+
+
                     </thead>
+
+
+
+
+
                     <tbody>
-                        {% for s in stocks %}
-                        <tr class="border-dark border-opacity-10">
-                            <td class="ps-4 fw-bold text-dark">#{{ s.producto.codigo }}</td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    {% if s.producto.imagen %}
-                                        <img src="{{ s.producto.imagen.url }}" alt="{{ s.producto.nombre }}" class="rounded shadow-sm me-3" style="width: 50px; height: 50px; object-fit: cover;">
-                                    {% else %}
-                                        <div class="bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-image text-secondary fs-4"></i>
-                                        </div>
-                                    {% endif %}
-                                    <h6 class="mb-0 fw-bold text-dark">{{ s.producto.nombre }}</h6>
-                                </div>
-                            </td>
-                            <td class="text-muted">{{ s.producto.descripcion|truncatechars:40 }}</td>
-                            <td class="fw-semibold font-monospace">${{ s.producto.precio_venta|floatformat:0 }}</td>
-                            <td>
-                                {% if s.cantidad <= 5 %}
-                                    <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Crítico ({{ s.cantidad }})</span>
-                                {% elif s.cantidad <= 10 %}
-                                    <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-circle me-1"></i>Bajo ({{ s.cantidad }})</span>
+
+
+                    {% for s in stocks %}
+
+
+
+                    <tr>
+
+
+
+                        <!-- CODIGO -->
+
+
+                        <td class="fw-bold">
+
+
+                            {{ s.producto.codigo_producto }}
+
+
+                        </td>
+
+
+
+
+
+
+                        <!-- PRODUCTO -->
+
+
+                        <td>
+
+
+                            <div class="d-flex align-items-center">
+
+
+                                {% if s.producto.imagen %}
+
+
+                                    <img src="{{ s.producto.imagen.url }}"
+                                         class="rounded me-3"
+                                         width="55"
+                                         height="55"
+                                         style="object-fit:cover;">
+
+
                                 {% else %}
-                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>{{ s.cantidad }} u.</span>
+
+
+                                    <div class="bg-secondary rounded 
+                                                d-flex align-items-center 
+                                                justify-content-center me-3"
+                                         style="width:55px;height:55px;">
+
+
+                                        <i class="bi bi-image text-white"></i>
+
+
+                                    </div>
+
+
                                 {% endif %}
-                            </td>
-                            <td class="text-center">
-                                <a href="{% url 'editar_stock' s.producto.codigo_producto %}" class="btn btn-sm btn-outline-info">
-                                    <i class="bi bi-pencil me-1"></i>Editar
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center py-5 text-muted">
-                                <i class="bi bi-boxes fs-1 d-block mb-3 text-secondary-subtle"></i>
-                                No hay stock registrado.
-                            </td>
-                        </tr>
-                        {% endfor %}
+
+
+
+
+
+                                <span class="fw-bold">
+
+                                    {{ s.producto.nombre }}
+
+                                </span>
+
+
+
+                            </div>
+
+
+                        </td>
+
+
+
+
+
+
+                        <!-- CATEGORIA -->
+
+
+                        <td>
+
+
+                            {{ s.producto.categoria }}
+
+
+                        </td>
+
+
+
+
+
+
+                        <!-- PRECIO COMPRA -->
+
+
+                        <td class="fw-semibold text-muted">
+
+
+                            ${{ s.precio_compra|floatformat:0 }}
+
+
+                        </td>
+
+
+
+
+
+
+                        <!-- PRECIO VENTA -->
+
+
+                        <td class="fw-semibold">
+
+
+                            ${{ s.precio_venta|floatformat:0 }}
+
+
+                        </td>
+
+
+
+
+
+
+                        <!-- CANTIDAD -->
+
+
+                        <td>
+
+
+                            {% if s.cantidad <= 5 %}
+
+
+                                <span class="badge bg-danger">
+
+                                    <i class="bi bi-x-circle"></i>
+
+                                    {{ s.cantidad }}
+
+                                </span>
+
+
+
+                            {% elif s.cantidad <= 10 %}
+
+
+                                <span class="badge bg-warning text-dark">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ s.cantidad }}
+
+                                </span>
+
+
+
+                            {% else %}
+
+
+                                <span class="badge bg-success">
+
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    {{ s.cantidad }}
+
+
+                                </span>
+
+
+
+                            {% endif %}
+
+
+
+                        </td>
+
+
+
+
+
+
+
+                        <!-- PROVEEDOR -->
+
+
+                        <td>
+
+
+                            {% if s.proveedor %}
+
+
+                                {{ s.proveedor }}
+
+
+                            {% else %}
+
+
+                                Sin proveedor
+
+
+                            {% endif %}
+
+
+
+                        </td>
+
+
+
+
+
+
+
+                        <!-- ACCION -->
+
+
+                        <td class="text-center">
+
+
+                            <a href="{% url 'editar_stock' s.producto.codigo_producto %}"
+                               class="btn btn-sm btn-outline-primary">
+
+
+                                <i class="bi bi-pencil"></i>
+
+                                Editar
+
+
+                            </a>
+
+
+                        </td>
+
+
+
+                    </tr>
+
+
+
+
+                    {% empty %}
+
+
+
+                    <tr>
+
+
+                        <td colspan="8"
+                            class="text-center py-5 text-muted">
+
+
+                            <i class="bi bi-boxes fs-1"></i>
+
+
+                            <br>
+
+
+                            No hay productos registrados en inventario.
+
+
+                        </td>
+
+
+                    </tr>
+
+
+
+                    {% endfor %}
+
+
+
                     </tbody>
+
+
                 </table>
+
+
             </div>
+
+
         </div>
+
+
     </div>
+
+
+
 </div>
+
+
 {% endblock %}
 
+
+
+
+
 {% block scripts %}
-<link class="styles" rel="stylesheet" href="{% static 'css/datatables.css' %}">
+
+
+<link rel="stylesheet"
+      href="{% static 'css/datatables.css' %}">
+
+
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+
 <script src="{% static 'js/datatables.js' %}"></script>
+
+
 <script src="{% static 'js/tconf/tconf-tablaInventario.js' %}"></script>
+
+
+
 {% endblock scripts %}

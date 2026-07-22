@@ -1,22 +1,24 @@
 import os
 from pathlib import Path
+from decouple import config
+import certifi
 
 # ======================================================
 # BASE DIR
 # ======================================================
-# Primero definimos la ruta base del proyecto
-BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ======================================================
 # SECURITY
 # ======================================================
 
-SECRET_KEY = 'django-insecure-vj0@he!#u32)(2pk_@xyc_nqwqm962x(#-93qj9*n&s#8%emz)'
+SECRET_KEY = config("SECRET_KEY")
 
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+# Nota: Recuerda agregar tus dominios aquí si dejas DEBUG en False en producción
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=lambda v: [s.strip() for s in v.split(",") if s.strip()]) if not DEBUG else ["*"]
 
 
 # ======================================================
@@ -24,7 +26,6 @@ ALLOWED_HOSTS = []
 # ======================================================
 
 INSTALLED_APPS = [
-
     # DJANGO
     'django.contrib.admin',
     'django.contrib.auth',
@@ -81,25 +82,18 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-
         'DIRS': [
             os.path.join(BASE_DIR, 'templates')
         ],
-
         'APP_DIRS': True,
-
         'OPTIONS': {
-
             'context_processors': [
-
-    'django.template.context_processors.request',
-
-    'django.contrib.auth.context_processors.auth',
-
-    'django.contrib.messages.context_processors.messages',
-
-    'usuarios.context_processors.notificaciones',
-],
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'usuarios.context_processors.notificaciones',
+            ],
         },
     },
 ]
@@ -118,9 +112,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-
         'ENGINE': 'django.db.backends.sqlite3',
-
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
@@ -131,19 +123,15 @@ DATABASES = {
 # ======================================================
 
 AUTH_PASSWORD_VALIDATORS = [
-
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
-
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
-
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
@@ -187,9 +175,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # LOGIN
 # ======================================================
 
-# CUANDO EL USUARIO NO ESTÁ LOGUEADO
-# LO ENVÍA AL REGISTRO
-
+# CUANDO EL USUARIO NO ESTÁ LOGUEADO LO ENVÍA AL REGISTRO
 LOGIN_URL = '/usuarios/registro/'
 
 # DESPUÉS DEL LOGIN
@@ -210,21 +196,20 @@ AUTH_USER_MODEL = 'usuarios.Usuario'
 # EMAIL
 # ======================================================
 
-import ssl
-import certifi
-import os
+os.environ["SSL_CERT_FILE"] = certifi.where()
+os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
-os.environ['SSL_CERT_FILE'] = certifi.where()
-os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
-
-EMAIL_BACKEND = 'core.email_backend.SSLEmailBackend'
-EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_BACKEND = "core.email_backend.SSLEmailBackend"
+EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'aa9420001@smtp-brevo.com'
-EMAIL_HOST_PASSWORD = 'CcHkS6yZ21UIJWw7'
-DEFAULT_FROM_EMAIL = 'chichabarber39@gmail.com'
+
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+
 EMAIL_TIMEOUT = 30
+
 
 # ======================================================
 # DEFAULT AUTO FIELD
@@ -234,6 +219,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # ======================================================
+# SESSIONS
+# ======================================================
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_HTTPONLY = True

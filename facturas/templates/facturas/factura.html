@@ -40,7 +40,7 @@
                 {% if detalle.reserva %}
                   <span class="fw-bold d-block text-dark"><i class="bi bi-scissors me-2 color-champaña"></i>{{ detalle.reserva.servicio.nombre }}</span>
                   {% if detalle.reserva.promocion %}
-                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-1" style="font-size: 0.65rem;">
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-1 facturas-factura__span-1">
                       <i class="bi bi-tag-fill me-1"></i>{{ detalle.reserva.promocion.nombre }}
                     </span>
                   {% endif %}

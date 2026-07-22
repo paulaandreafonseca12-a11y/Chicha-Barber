@@ -19,12 +19,29 @@ urlpatterns = [
     path('producto/eliminar/<int:pk>/', views.eliminar_producto, name='eliminar_producto'),
     path('configuracion/datos-banco/', views.ver_datos_banco, name='ver_datos_banco'), # Para ver los datos
     path('configuracion/datos-banco/editar/', views.editar_datos_banco, name='editar_datos_banco'), # Para editar los datos
+    
+    # =========================
+    # 🟣 CATEGORÍAS
+    path('categoria/crear/',views.crear_categoria,name='crear_categoria'),
+    path('categorias/',views.lista_categorias,name='lista_categorias'),
+    path('categoria/editar/<int:id>/',  views.editar_categoria, name='editar_categoria'),
+    path('categoria/eliminar/<int:id>/', views.eliminar_categoria, name='eliminar_categoria'),
+    
+    # =========================
+   # 🟣 PROVEEDORES
+    # =========================
 
+   path( 'proveedores/',  views.lista_proveedores, name='lista_proveedores'),
+   path('proveedor/crear/',views.crear_proveedor,name='crear_proveedor'),
+   path('proveedor/editar/<int:id>/', views.editar_proveedor,name='editar_proveedor'),
+   path('proveedor/eliminar/<int:id>/',views.eliminar_proveedor,name='eliminar_proveedor'),
+ 
     # =========================
     # 🔥 STOCK
     # =========================
     path('stock/', views.lista_stock, name='lista_stock'),
     path('stock/editar/<int:pk>/', views.editar_stock, name='editar_stock'),
+
 
     # =========================
     # 🟡 COMPRAS
@@ -34,4 +51,4 @@ urlpatterns = [
     path('historial/', views.historial_compras, name='historial_compras'),
     path('historial/<int:pk>/', views.detalle_compra, name='detalle_compra'),
     path('historial/eliminar/<int:pk>/', views.eliminar_compra, name='eliminar_compra'),
-]
+  ] 

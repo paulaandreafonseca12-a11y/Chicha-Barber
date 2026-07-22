@@ -5,9 +5,9 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div
-        class="card border-0 shadow rounded-4 overflow-hidden color-champaña"
+        class="card border-0 shadow rounded-4 overflow-hidden"
       >
-        <div class="card-header py-3 border-0 bg-transparent">
+        <div class="card-header color-champaña text-dark py-3">
           <h5 class="mb-0 fw-bold text-dark">
             <i class="bi bi-bank me-2"></i>Datos de Transferencia Actuales
           </h5>
@@ -24,11 +24,7 @@
             <table class="table table-hover align-middle mb-4 border-secondary">
               <tbody>
                 <tr>
-                  <th
-                    scope="row"
-                    class="text-dark ps-3 fw-semibold"
-                    style="width: 35%"
-                  >
+                  <th scope="row" class="text-dark ps-3 fw-semibold productos-ver-datos-banco__th-1">
                     Nombre del Banco:
                   </th>
                   <td class="text-dark">
@@ -76,7 +72,7 @@
           <div class="d-flex justify-content-end gap-2 mt-4">
             <a
               href="{% url 'editar_datos_banco' %}"
-              class="btn color-champaña text-dark fw-bold rounded-pill px-4"
+              class="btn color-azul text-white fw-bold rounded-pill px-4"
             >
               <i class="bi bi-pencil-square me-2"></i>Editar Datos
             </a>

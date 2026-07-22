@@ -42,6 +42,7 @@
                         <span class="input-icon">👤</span>
                         {{ form.first_name }}
                     </div>
+                    <small class="form-hint text-white opacity-50">{{ form.first_name.help_text }}</small>
                 </div>
                 <div class="col-6">
                     <label class="form-label cb-label">Apellido(s)</label>
@@ -49,6 +50,7 @@
                         <span class="input-icon">👤</span>
                         {{ form.last_name }}
                     </div>
+                    <small class="form-hint text-white opacity-50">{{ form.last_name.help_text }}</small>
                 </div>
             </div>
 
@@ -59,6 +61,7 @@
                         <span class="input-icon">🪪</span>
                         {{ form.username }}
                     </div>
+                    <small class="form-hint text-white opacity-50">{{ form.username.help_text }}</small>
                 </div>
                 <div class="col-6">
                     <label class="form-label cb-label">Teléfono</label>
@@ -66,6 +69,7 @@
                         <span class="input-icon">📞</span>
                         {{ form.telefono }}
                     </div>
+                    <small class="form-hint text-white opacity-50">{{ form.telefono.help_text }}</small>
                 </div>
             </div>
 
@@ -76,16 +80,7 @@
                         <span class="input-icon">✉️</span>
                         {{ form.email }}
                     </div>
-                </div>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-12">
-                    <label class="form-label cb-label">Rol</label>
-                    <div class="position-relative">
-                        <span class="input-icon">👤</span>
-                        <input type="text" class="cb-input" value="Cliente" readonly>
-                    </div>
+                    <small class="form-hint text-white opacity-50">{{ form.email.help_text }}</small>
                 </div>
             </div>
 
@@ -96,6 +91,7 @@
                         <span class="input-icon">🔒</span>
                         {{ form.password1 }}
                     </div>
+                    <small class="form-hint text-white opacity-50">Mínimo 8 caracteres, con al menos 1 mayúscula y 1 número.</small>
                 </div>
                 <div class="col-6">
                     <label class="form-label cb-label">Confirmar</label>
@@ -103,6 +99,7 @@
                         <span class="input-icon">🔒</span>
                         {{ form.password2 }}
                     </div>
+                    <small class="form-hint text-white opacity-50">Debe coincidir exactamente con la contraseña anterior.</small>
                 </div>
             </div>
 

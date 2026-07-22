@@ -1,10 +1,10 @@
-﻿
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Compra, Producto, DetalleCompra, Stock, DatosTransferencia
-from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm 
+from .models import Compra, Producto, DetalleCompra, Stock, DatosTransferencia, Categoria, Proveedor
+from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm, CategoriaForm, ProveedorForm
 from django.http import JsonResponse
 import json
 from django.db import transaction
@@ -436,3 +436,170 @@ def ver_datos_banco(request):
     }
 
     return render(request, 'productos/ver_datos_banco.html', context)
+
+# ==========================================
+# 🟣 CATEGORÍAS Y PROVEEDORES
+# ==========================================
+
+def crear_categoria(request):
+    
+    if request.method == "POST":
+
+        form = CategoriaForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('lista_categorias')
+
+    else:
+
+        form = CategoriaForm()
+
+
+    return render(
+        request,
+        'productos/crear_categoria.html',
+        {
+            'form': form
+        }
+    )
+
+def lista_categorias(request):
+    
+    categorias = Categoria.objects.all().order_by('nombre')
+
+    contexto = {
+        'categorias': categorias
+    }
+
+    return render(
+        request,
+        'productos/lista_categoria.html',
+        contexto
+    )
+
+
+def editar_categoria(request, id):
+    
+    categoria = Categoria.objects.get(id=id)
+
+
+    if request.method == "POST":
+
+        form = CategoriaForm(
+            request.POST,
+            instance=categoria
+        )
+
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('lista_categorias')
+
+
+    else:
+
+        form = CategoriaForm(
+            instance=categoria
+        )
+
+
+    return render(
+        request,
+        'productos/editar_categoria.html',
+        {
+            'form': form,
+            'categoria': categoria
+        }
+    )
+    
+def eliminar_categoria(request, id):
+    
+    categoria = Categoria.objects.get(id=id)
+
+    categoria.delete()
+
+    return redirect('lista_categorias')
+    
+def crear_proveedor(request):
+    
+    if request.method == 'POST':
+
+        form = ProveedorForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('lista_proveedores')
+
+
+    else:
+
+        form = ProveedorForm()
+
+
+    return render(
+        request,
+        'productos/crear_proveedor.html',
+        {
+            'form': form
+        }
+    )
+
+def lista_proveedores(request):
+    
+    proveedores = Proveedor.objects.all()
+
+
+    return render(
+        request,
+        'productos/lista_proveedores.html',
+        {
+            'proveedores': proveedores
+        }
+    )
+def editar_proveedor(request, id):
+    
+    proveedor = Proveedor.objects.get(id=id)
+
+
+    if request.method == 'POST':
+
+        form = ProveedorForm(
+            request.POST,
+            instance=proveedor
+        )
+
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('lista_proveedores')
+
+
+    else:
+
+        form = ProveedorForm(instance=proveedor)
+
+
+    return render(
+        request,
+        'productos/editar_proveedor.html',
+        {
+            'form': form
+        }
+    )
+    
+def eliminar_proveedor(request, id):
+    
+    proveedor = Proveedor.objects.get(id=id)
+
+    proveedor.delete()
+
+    return redirect('lista_proveedores')

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5" style="max-width: 700px;">
+<div class="container py-5 private-detalle-notificacion__div-1">
 
   <a href="{% url 'perfil' %}" class="text-white-50 text-decoration-none small mb-3 d-inline-block">
     <i class="bi bi-arrow-left me-1"></i> Volver a mi perfil
@@ -12,8 +12,7 @@
 
     <div class="p-4 d-flex align-items-center gap-3 color-negro-bg text-white">
       {% if notificacion.tipo == 'compra' %}
-        <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-25"
-             style="width:56px;height:56px;">
+        <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-25 private-detalle-notificacion__div-2">
           <i class="bi bi-bag-check-fill fs-3 text-success"></i>
         </div>
         <div>
@@ -21,8 +20,7 @@
           <h5 class="mb-0">Notificación de compra</h5>
         </div>
       {% else %}
-        <div class="rounded-circle d-flex align-items-center justify-content-center bg-info bg-opacity-25"
-             style="width:56px;height:56px;">
+        <div class="rounded-circle d-flex align-items-center justify-content-center bg-info bg-opacity-25 private-detalle-notificacion__div-3">
           <i class="bi bi-calendar-check-fill fs-3 text-info"></i>
         </div>
         <div>
@@ -43,7 +41,7 @@
 
       {% if objeto_relacionado %}
         <hr>
-        <h6 class="text-uppercase text-muted small mb-3" style="letter-spacing:0.5px;">
+        <h6 class="text-uppercase text-muted small mb-3 private-detalle-notificacion__h6-4">
           Detalle {% if notificacion.tipo == 'compra' %}de la compra{% else %}de la reserva{% endif %}
         </h6>
 
