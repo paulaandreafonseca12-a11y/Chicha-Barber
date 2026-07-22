@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
@@ -8,7 +7,7 @@ from .forms import CompraForm, DetalleCompraForm, ProductoForm, StockForm, Categ
 from django.http import JsonResponse
 import json
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from core.utils import enviar_correo_compra
 from facturas.models import Factura, DetalleFactura
 
@@ -23,12 +22,31 @@ def productos_galeria(request):
     if factura_id:
         request.session['active_factura_id'] = factura_id
 
+    # 🔍 Filtros de búsqueda
+    buscar = request.GET.get('buscar', '').strip()
+    categoria_id = request.GET.get('categoria', '').strip()
+
+    productos = Producto.objects.filter(estado=True)
+
+    # Filtrar por nombre o descripción
+    if buscar:
+        productos = productos.filter(
+            Q(nombre__icontains=buscar) |
+            Q(descripcion__icontains=buscar)
+        )
+
+    # Filtrar por categoría
+    if categoria_id and categoria_id.isdigit():
+        productos = productos.filter(categoria_id=int(categoria_id))
+
     context = {
         'titulo': 'Galería de Productos',
-        'productos': Producto.objects.filter(estado=True)
+        'productos': productos,
+        'categorias': Categoria.objects.all().order_by('nombre'),
     }
 
     return render(request, 'productos/productos_galeria.html', context)
+
 
 # 🔒 CARRITO PROTEGIDO
 @login_required
@@ -603,3 +621,4 @@ def eliminar_proveedor(request, id):
     proveedor.delete()
 
     return redirect('lista_proveedores')
+

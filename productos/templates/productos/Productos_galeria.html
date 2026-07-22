@@ -14,7 +14,7 @@
 
             {{ message }}
 
-            <button 
+            <button     
                 type="button"
                 class="btn-close"
                 data-bs-dismiss="alert">
@@ -57,115 +57,32 @@
 
         <!-- FILTROS -->
 
-        <div class="card shadow border-0 rounded-4 mb-5">
-
-
-            <div class="card-body">
-
-
-                <form method="GET">
-
-
-                    <div class="row g-3 align-items-center">
-
-
-                        <!-- BUSCAR -->
-
-                        <div class="col-md-6">
-
-
-                            <input 
-                                type="text"
-                                name="buscar"
-                                class="form-control rounded-pill"
-                                placeholder="Buscar producto..."
-                                value="{{ request.GET.buscar }}">
-
-
-
-                        </div>
-
-
-
-
-
-                        <!-- CATEGORIA -->
-
-                        <div class="col-md-4">
-
-
-                            <select 
-                                name="categoria"
-                                class="form-select rounded-pill">
-
-
-                                <option value="">
-
-                                    Todas las categorías
-
-                                </option>
-
-
-
-                                {% for categoria in categorias %}
-
-
-                                    <option 
-                                        value="{{ categoria.id }}"
-
-                                        {% if request.GET.categoria == categoria.id|stringformat:"s" %}
-                                            selected
-                                        {% endif %}
-                                    >
-
-                                        {{ categoria.nombre }}
-
-                                    </option>
-
-
-                                {% endfor %}
-
-
-
-                            </select>
-
-
-                        </div>
-
-
-
-
-
-                        <!-- BOTON -->
-
-                        <div class="col-md-2">
-
-
-                            <button 
-                                class="btn color-azul rounded-pill w-100 fw-bold">
-
-
-                                <i class="bi bi-search"></i>
-
-                                Buscar
-
-
-                            </button>
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-                </form>
-
-
-            </div>
-
-
+        <div class="mb-4" style="padding-left: 20px;">
+            <form method="GET">
+                <div class="d-flex gap-2 align-items-center">
+                    <input 
+                        type="text"
+                        name="buscar"
+                        class="form-control rounded-pill"
+                        placeholder="Buscar..."
+                        value="{{ request.GET.buscar }}"
+                        style="max-width: 350px; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);">
+
+                    <button 
+                        class="btn color-azul rounded-pill fw-bold px-3"
+                        title="Buscar productos">
+                        <i class="bi bi-search"></i>
+                    </button>
+
+                    {% if request.GET.buscar %}
+                    <a href="{% url 'productos_galeria' %}"
+                       class="btn color-azul rounded-pill fw-bold text-white px-3"
+                       title="Limpiar filtros">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Limpiar
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
         </div>
 
 
@@ -380,186 +297,81 @@
 
 <script>
 
-
 function agregarCarrito(event, id, nombre, precio){
-
 
     let carrito = JSON.parse(
         localStorage.getItem("carrito")
     ) || [];
-
-
-
 
     let productoExistente = carrito.find(
         p => p.id === id
     );
 
-
-
-
     if(productoExistente){
-
-
         productoExistente.cantidad++;
-
-
     }else{
-
-
-
         carrito.push({
-
             id:id,
-
             nombre:nombre,
-
             precio:precio,
-
             cantidad:1
-
         });
-
-
     }
 
-
-
-
     localStorage.setItem(
-
         "carrito",
-
         JSON.stringify(carrito)
-
     );
-
-
-
-
 
     actualizarContador();
 
-
-
-
-
     let btn = event.target.closest("button");
 
-
-
-
-
     btn.innerHTML =
-
         "<i class='bi bi-check-circle'></i> AGREGADO";
 
-
-
-
-
     btn.classList.add(
-
         "btn-success",
-
         "text-white"
-
     );
-
-
-
-
 
     setTimeout(()=>{
-
-
         btn.innerHTML =
-
         "<i class='bi bi-cart-plus me-2'></i> AGREGAR AL CARRITO";
 
-
-
         btn.classList.remove(
-
             "btn-success",
-
             "text-white"
-
         );
-
-
-
     },1000);
-
-
-
-
 }
 
-
-
-
-
-
-
-
 function actualizarContador(){
-
-
-
     let carrito = JSON.parse(
-
         localStorage.getItem("carrito")
-
     ) || [];
 
-
-
-
     let total = carrito.reduce(
-
         (acc,p)=> acc + p.cantidad,
-
         0
-
     );
-
-
-
-
 
     let contador = document.getElementById("contador");
 
-
-
-
-
     if(contador){
-
-
-        contador.textContent = total;
-
-
+        if (total > 0) {
+            contador.textContent = total;
+            contador.style.display = "inline-block";
+        } else {
+            contador.style.display = "none";
+        }
     }
-
-
-
-
 }
 
-
-
-
-
 document.addEventListener(
-
     "DOMContentLoaded",
-
     actualizarContador
-
 );
-
-
 
 </script>
 
