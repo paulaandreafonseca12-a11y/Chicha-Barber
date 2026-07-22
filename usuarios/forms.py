@@ -32,6 +32,7 @@ class RegistroForm(UserCreationForm):
         min_length=6,
         label="Número de Documento",
         validators=[validador_solo_numeros],
+        help_text="Entre 6 y 20 dígitos. Solo números, sin espacios ni letras.",
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'pattern': r'^\d+$',
@@ -42,12 +43,14 @@ class RegistroForm(UserCreationForm):
     first_name = forms.CharField(
         max_length=150,
         validators=[validador_nombre],
+        help_text="Solo letras, sin números ni símbolos.",
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
     last_name = forms.CharField(
         max_length=150,
         validators=[validador_nombre],
+        help_text="Solo letras, sin números ni símbolos.",
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
@@ -55,6 +58,7 @@ class RegistroForm(UserCreationForm):
         max_length=15,
         min_length=7,
         validators=[validador_solo_numeros],
+        help_text="10 dígitos. Solo números, sin espacios.",
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'pattern': r'^\d+$'
@@ -62,6 +66,7 @@ class RegistroForm(UserCreationForm):
     )
 
     email = forms.EmailField(
+        help_text="Correo válido y no registrado antes. Ej: nombre@dominio.com",
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
 
@@ -240,12 +245,6 @@ class EditarUsuarioForm(forms.ModelForm):
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
 
-    rol = forms.ChoiceField(
-        choices=ROLES,
-        label="Rol",
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-
     is_staff = forms.BooleanField(
         required=False,
         label="Acceso al panel admin",
@@ -260,7 +259,7 @@ class EditarUsuarioForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ('first_name', 'last_name', 'email', 'telefono', 'rol', 'is_staff', 'estado')
+        fields = ('first_name', 'last_name', 'email', 'telefono', 'is_staff', 'estado')
 
     def clean_email(self):
         email = self.cleaned_data.get('email', '').strip().lower()
@@ -270,8 +269,7 @@ class EditarUsuarioForm(forms.ModelForm):
         if qs.exists():
             raise ValidationError("Ya existe otra cuenta registrada con este correo electrónico.")
         return email
-
-
+    
 class EditarPerfilForm(forms.ModelForm):
     first_name = forms.CharField(
         max_length=150,
