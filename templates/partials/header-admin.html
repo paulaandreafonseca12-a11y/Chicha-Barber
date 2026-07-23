@@ -2,6 +2,10 @@
 <header>
   <nav class="navbar color-champaña navbar-light">
     <div class="container-fluid">
+      <!-- Botón hamburguesa para abrir menú en móvil -->
+      <button class="btn btn-sm color-azul text-white d-lg-none me-2" type="button" onclick="toggleAside()" aria-label="Abrir menú">
+        <i class="bi bi-list fs-4"></i>
+      </button>
       <a class="navbar-brand" href="#">
         <div class="d-flex align-items-center gap-2">
           <span class="fw-bold text-dark">{{titulo|default:"Administración de Chicha Barber Studio"}}</span>
