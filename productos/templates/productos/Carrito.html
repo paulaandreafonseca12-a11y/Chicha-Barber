@@ -1,229 +1,571 @@
 {% extends "base-clientes.html" %}
 {% load static %}
+
 {% block content %}
 
 <section class="container py-5">
 
+
   <!-- TÍTULO -->
   <div class="text-center mb-5">
+
     <h1 class="fw-bold text-white display-4">
+
       <i class="bi bi-cart3 me-2 color-champaña px-3 py-2 rounded-2 text-dark"></i>
+
       Carrito de Compras
+
     </h1>
 
+
     <p class="text-light opacity-75">
-      Revisa tus productos antes de finalizar la compra.
+
+      Revisa tus productos y servicios antes de finalizar.
+
     </p>
+
+
   </div>
 
-  <!-- TABLA -->
+
+
+  <!-- TABLA CARRITO -->
+
   <div class="card border-0 shadow-lg color-negro rounded-4 overflow-hidden">
 
+
     <div class="card-header color-champaña text-dark fw-bold py-3">
+
       <i class="bi bi-bag-check-fill me-2"></i>
-      Productos Seleccionados
+
+      Elementos seleccionados
+
     </div>
+
+
 
     <div class="table-responsive">
+
+
       <table class="table table-dark table-hover text-center align-middle mb-0">
 
+
         <thead class="color-azul text-dark">
+
           <tr>
-            <th>Producto</th>
+
+            <th>Detalle</th>
+
             <th>Precio</th>
+
             <th>Cantidad</th>
-            <th>Subtotal</th>
+
+            <th>Total</th>
+
             <th>Acciones</th>
+
           </tr>
+
         </thead>
 
-        <tbody id="tabla-carrito"></tbody>
+
+
+        <tbody id="tabla-carrito">
+
+        </tbody>
+
+
 
       </table>
+
+
     </div>
+
 
   </div>
 
+
+
+
+
   <!-- TOTAL -->
+
   <div class="card mt-4 border-0 shadow-lg rounded-4 color-champaña">
+
 
     <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
 
+
       <h3 class="fw-bold mb-0 text-dark">
+
         Total:
-        <span id="total" class="text-success">$0</span>
+
+        <span id="total" class="text-success">
+
+          $0
+
+        </span>
+
+
       </h3>
+
+
+
+
 
       <div class="mt-3 mt-md-0">
 
+
+        <!-- AGREGAR PRODUCTOS -->
+
         <a href="{% url 'productos_galeria' %}"
-           class="btn color-blanco text-dark border border-dark me-2">
-          <i class="bi bi-arrow-left-circle me-1"></i>
-          Seguir Comprando
+
+           class="btn bg-white text-dark border border-dark me-2">
+
+
+          <i class="bi bi-bag-plus me-1"></i>
+
+          Agregar productos
+
+
         </a>
 
-        <a href="{% url 'pago' %}"
-           class="btn color-azuloscuro text-white px-4 border-0">
-          <i class="bi bi-credit-card-fill me-1"></i>
-          Comprar
+
+
+
+
+        <!-- AGENDAR SERVICIO -->
+
+        <a href="{% url 'servicios' %}"
+
+           class="btn bg-white text-dark border border-dark me-2">
+
+
+          <i class="bi bi-calendar-plus me-1"></i>
+
+          Agendar servicio
+
+
         </a>
+
+
+
+
+
+        <!-- PAGAR -->
+
+        <a href="{% url 'pago' %}"
+
+           class="btn bg-white text-dark border border-dark px-4">
+
+
+          <i class="bi bi-credit-card-fill me-1"></i>
+
+          Continuar pago
+
+
+        </a>
+
+
 
       </div>
 
+
+
     </div>
+
 
   </div>
 
+
+
 </section>
+
+
+
+
 
 <script>
 
+
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-/* =========================
-   FORMATO
-========================= */
-function formatoCOP(valor) {
-  return new Intl.NumberFormat('es-CO').format(valor);
+
+
+function formatoCOP(valor){
+
+    return new Intl.NumberFormat('es-CO').format(valor);
+
 }
 
-/* =========================
-   GUARDAR (FIX CLAVE)
-========================= */
-function guardarCarrito() {
-  if (carrito.length === 0) {
-    localStorage.removeItem("carrito"); // 💥 limpieza real
-  } else {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }
+
+
+
+function guardarCarrito(){
+
+
+    if(carrito.length === 0){
+
+        localStorage.removeItem("carrito");
+
+    }else{
+
+        localStorage.setItem(
+            "carrito",
+            JSON.stringify(carrito)
+        );
+
+    }
+
+
 }
 
-/* =========================
-   MOSTRAR
-========================= */
-function mostrarCarrito() {
 
-  const contenedor = document.getElementById("tabla-carrito");
-  const totalLabel = document.getElementById("total");
 
-  contenedor.innerHTML = "";
-  let total = 0;
 
-  if (carrito.length === 0) {
 
-    contenedor.innerHTML = `
-      <tr>
-        <td colspan="5" class="py-5 text-center">
-          <i class="bi bi-cart-x display-1 text-secondary"></i>
-          <h4 class="mt-3 text-secondary">Tu carrito está vacío</h4>
-          <p class="text-muted">Agrega productos para comenzar.</p>
-        </td>
-      </tr>
-    `;
 
-    totalLabel.textContent = "$0";
+function mostrarCarrito(){
 
-    guardarCarrito();
-    actualizarContadorGlobal();
-    return;
-  }
 
-  carrito.forEach((p, index) => {
+const tabla = document.getElementById("tabla-carrito");
 
-    let subtotal = p.precio * p.cantidad;
-    total += subtotal;
+const totalLabel = document.getElementById("total");
 
-    contenedor.innerHTML += `
-      <tr>
 
-        <td class="fw-semibold">${p.nombre}</td>
+tabla.innerHTML="";
 
-        <td>$${formatoCOP(p.precio)}</td>
 
-        <td>
-          <div class="d-flex justify-content-center align-items-center gap-2">
+let total=0;
 
-            <button class="btn btn-sm color-champaña text-dark border-0"
-              onclick="cambiarCantidad(${index}, -1)">-</button>
 
-            <span class="fw-bold">${p.cantidad}</span>
 
-            <button class="btn btn-sm color-azul text-dark border-0"
-              onclick="cambiarCantidad(${index}, 1)">+</button>
 
-          </div>
-        </td>
 
-        <td class="fw-bold text-success">
-          $${formatoCOP(subtotal)}
-        </td>
+if(carrito.length===0){
 
-        <td>
-          <button class="btn btn-sm color-azuloscuro text-white border-0"
-            onclick="eliminarProducto(${index})">
-            <i class="bi bi-trash-fill"></i>
-          </button>
-        </td>
 
-      </tr>
-    `;
-  });
 
-  totalLabel.textContent = "$" + formatoCOP(total);
+tabla.innerHTML=`
 
-  guardarCarrito();
-  actualizarContadorGlobal();
+<tr>
+
+<td colspan="5" class="py-5 text-center">
+
+
+<i class="bi bi-cart-x display-1 text-secondary"></i>
+
+
+<h4 class="mt-3 text-secondary">
+
+Tu carrito está vacío
+
+</h4>
+
+
+<p class="text-muted">
+
+Agrega productos o agenda servicios.
+
+</p>
+
+
+</td>
+
+</tr>
+
+`;
+
+
+
+totalLabel.textContent="$0";
+
+
+guardarCarrito();
+
+actualizarContadorGlobal();
+
+
+return;
+
+
 }
 
-/* =========================
-   CAMBIAR CANTIDAD
-========================= */
-function cambiarCantidad(index, cambio) {
 
-  carrito[index].cantidad += cambio;
 
-  if (carrito[index].cantidad <= 0) {
-    carrito.splice(index, 1);
-  }
 
-  mostrarCarrito();
+
+
+
+carrito.forEach((item,index)=>{
+
+
+
+let subtotal = item.precio * item.cantidad;
+
+
+total += subtotal;
+
+
+
+
+
+let detalle="";
+
+
+
+
+if(item.tipo==="producto"){
+
+
+
+detalle=`
+
+<strong>
+
+${item.nombre}
+
+</strong>
+
+<br>
+
+<span class="text-muted">
+
+Producto
+
+</span>
+
+`;
+
+
+
 }
 
-/* =========================
-   ELIMINAR
-========================= */
-function eliminarProducto(index) {
+else if(item.tipo==="reserva"){
 
-  if (confirm("¿Eliminar este producto?")) {
-    carrito.splice(index, 1);
-    mostrarCarrito();
-  }
+
+
+detalle=`
+
+<strong>
+
+${item.servicio}
+
+</strong>
+
+<br>
+
+<span>
+
+📅 ${item.fecha}
+
+<br>
+
+⏰ ${item.hora}
+
+</span>
+
+`;
+
+
+
 }
 
-/* =========================
-   CONTADOR GLOBAL HEADER
-========================= */
-function actualizarContadorGlobal() {
 
-  let total = 0;
 
-  carrito.forEach(p => total += p.cantidad);
 
-  let contador = document.getElementById("contador");
 
-  if (!contador) return;
 
-  if (total > 0) {
-    contador.textContent = total;
-    contador.style.display = "inline-block";
-  } else {
-    contador.style.display = "none";
-  }
+tabla.innerHTML += `
+
+
+<tr>
+
+
+<td>
+
+${detalle}
+
+</td>
+
+
+
+
+
+<td>
+
+$${formatoCOP(item.precio)}
+
+</td>
+
+
+
+
+
+<td>
+
+${item.tipo==="producto"
+
+? item.cantidad
+
+: "1"
+
 }
 
-/* INIT */
+</td>
+
+
+
+
+
+<td class="text-success fw-bold">
+
+$${formatoCOP(subtotal)}
+
+</td>
+
+
+
+
+
+<td>
+
+
+<button
+
+class="btn btn-sm bg-white text-dark border border-dark"
+
+onclick="eliminarItem(${index})">
+
+
+<i class="bi bi-trash-fill"></i>
+
+
+</button>
+
+
+
+</td>
+
+
+
+</tr>
+
+
+
+`;
+
+
+
+});
+
+
+
+
+
+
+totalLabel.textContent="$"+formatoCOP(total);
+
+
+
+guardarCarrito();
+
+
+actualizarContadorGlobal();
+
+
+
+}
+
+
+
+
+
+
+
+function eliminarItem(index){
+
+
+if(confirm("¿Eliminar este elemento del carrito?")){
+
+
+carrito.splice(index,1);
+
+
 mostrarCarrito();
 
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+function actualizarContadorGlobal(){
+
+
+let contador=document.getElementById("contador");
+
+
+if(!contador)return;
+
+
+
+let cantidad=0;
+
+
+
+carrito.forEach(item=>{
+
+
+cantidad += item.cantidad;
+
+
+});
+
+
+
+if(cantidad>0){
+
+
+contador.textContent=cantidad;
+
+
+contador.style.display="inline-block";
+
+
+}
+
+else{
+
+
+contador.style.display="none";
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+mostrarCarrito();
+
+
+
 </script>
+
 
 {% endblock content %}

@@ -1538,3 +1538,68 @@ body.theme-light .color-champaña .dataTables_length label,
 .configuraciones-carrusel__div-3 { width: 56px; height: 56px; }
 .configuraciones-carrusel__img-4 { width: 80px; height: 60px; object-fit: cover; }
 .configuraciones-carrusel__div-5 { width:80px; height:60px; }
+
+/* ==========================================================================
+   RESPONSIVE: ASIDE MENU (Desktop sidebar + Mobile offcanvas)
+   ========================================================================== */
+
+/* En móvil (< 992px): el aside se oculta por defecto y se muestra como offcanvas */
+@media (max-width: 991.98px) {
+  .admin-aside {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 280px !important;
+    height: 100vh !important;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .admin-aside.aside-mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Backdrop oscuro detrás del menú */
+  .aside-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1049;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+  }
+
+  .aside-backdrop.aside-backdrop-show {
+    display: block;
+  }
+
+  /* Prevenir scroll del body cuando el menú está abierto */
+  body.aside-open {
+    overflow: hidden;
+  }
+}
+
+/* En desktop (>= 992px): el aside se muestra como sidebar normal */
+@media (min-width: 992px) {
+  .admin-aside {
+    position: sticky !important;
+    top: 0;
+    width: 280px !important;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .aside-backdrop {
+    display: none !important;
+  }
+}
+
+/* Ajustar hover del Dashboard link para que coincida con el estilo general */
+.partials-aside__a-2:hover {
+  background-color: rgba(34, 174, 209, 0.15) !important;
+  color: #22aed1 !important;
+  border-color: rgba(34, 174, 209, 0.3) !important;
+}
