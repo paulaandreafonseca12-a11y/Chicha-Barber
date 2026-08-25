@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-from facturas.models import Factura, DetalleFactura
 from reservas.models import Reserva, Turno
 from reservas.forms import ReservaEditarForm
 from servicios.models import Promocion, Servicios
@@ -15,6 +14,7 @@ from usuarios.models import Usuario
 from core.utils import enviar_correo_reserva
 from core.utils import enviar_correo_cancelacion_admin
 from django.shortcuts import (render,get_object_or_404,redirect)
+
 
 
 

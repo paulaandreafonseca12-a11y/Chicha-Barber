@@ -21,8 +21,7 @@ from .forms import (
 from core.utils import enviar_correo_recuperacion
 from core.validators import validar_password_fuerte
 from reservas.models import Reserva
-from productos.models import venta
-from facturas.models import Factura
+from venta.models import Venta as venta
 from datetime import datetime, timedelta
 import re
 
@@ -317,7 +316,7 @@ def perfil(request):
 
     reservas = Reserva.objects.filter(cliente=request.user).order_by('-fecha_reserva')
     ventas = venta.objects.filter(correo=request.user.email).order_by('-fecha')
-    facturas = Factura.objects.filter(cliente=request.user).order_by('-fecha_emision')
+    facturas = []
 
     context = {
         'form': form,
