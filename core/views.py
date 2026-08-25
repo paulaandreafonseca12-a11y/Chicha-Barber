@@ -11,23 +11,29 @@ from servicios.forms import ServiciosEditarForm, ServiciosForm, PromocionForm
 from servicios.models import Promocion
 from usuarios.forms import CustomLoginForm
 from usuarios.models import RolUsuario
+from configuraciones.models import Carrusel
+from servicios.models import Calificacion
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
     form_class = CustomLoginForm
-    
+    redirect_authenticated_user = True
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(
+            self.request,
+            f"¡Bienvenido de nuevo, {self.request.user.first_name}!"
+        )
+        return response
+
     def get_success_url(self):
         url = self.get_redirect_url()
         if url:
             return url
-        # Redirigir al panel si es administrador, de lo contrario al inicio
         if self.request.user.rol == RolUsuario.ADMIN:
             return reverse_lazy('inicio_admin')
         return reverse_lazy('inicio')
-
-from configuraciones.models import Carrusel
-
-from servicios.models import Calificacion
 
 def inicio(request):
     carruseles = Carrusel.objects.filter(estado=True).order_by('-fecha_modificacion')[:4]
