@@ -2611,3 +2611,8 @@ body.theme-light .admin-aside a[aria-current="page"] {
 .servicios-servicios__div-1 {
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
+
+.servicios-servicios_div-1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3) !important;
+}
