@@ -47,8 +47,7 @@ def inicio_admin(request):
     from usuarios.models import Usuario
     from servicios.models import Servicios
     from reservas.models import Reserva
-    from productos.models import Producto, existencias
-    from facturas.models import Factura
+    from catalogo.models import Producto, DetalleProducto
     from django.db.models import Sum
 
     # Estadísticas
@@ -58,13 +57,13 @@ def inicio_admin(request):
     total_productos = Producto.objects.count()
     total_reservas = Reserva.objects.exclude(estado='cancelada').count()
     reservas_pendientes = Reserva.objects.filter(estado='reservada').count()
-    total_ingresos = Factura.objects.filter(estado='pagada').aggregate(total=Sum('total_pagado'))['total'] or 0
-    total_facturas = Factura.objects.count()
+    total_ingresos = 0
+    total_facturas = 0
 
     # Listas
     reservas_recientes = Reserva.objects.all().order_by('-id')[:5]
-    facturas_recientes = Factura.objects.all().order_by('-fecha_emision')[:5]
-    productos_bajo_bitacora = existencias.objects.filter(cantidad_actual__lt=15).select_related('codigo_producto')[:5]
+    facturas_recientes = []
+    productos_bajo_bitacora = DetalleProducto.objects.filter(cantidad_actual__lt=15).select_related('codigo_producto')[:5]
 
     context = {
         'nombre': request.user.first_name or request.user.username,
