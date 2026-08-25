@@ -23,8 +23,6 @@ urlpatterns = [
     # Inicio / Registro
     path('registro/', views.registro_view, name='registro'),
 
-    # LOGIN: Usamos la vista integrada de Django para evitar errores
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     
     # LOGOUT: También es importante tenerlo
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
