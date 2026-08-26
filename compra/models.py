@@ -7,7 +7,7 @@ from catalogo.models import Proveedor, Producto, MovimientoProducto
 
 
 # ==========================================================
-# 1. COMPRA / ADQUISICIÓN (Cabecera)
+# 1. COMPRA / Compras (Cabecera)
 # ==========================================================
 class Compra(models.Model):
     codigo = models.AutoField(primary_key=True)
@@ -119,6 +119,18 @@ class DetalleCompra(models.Model):
 
         # 3. Recalcular el total general de la compra
         self.codigo_compra.actualizar_total()
+
+    @property
+    def codigo_proveedor(self):
+        return self.codigo_compra.codigo_proveedor if self.codigo_compra else None
+
+    @property
+    def fecha(self):
+        return self.codigo_compra.fecha if self.codigo_compra else None
+
+    @property
+    def total(self):
+        return self.subtotal
 
     def __str__(self):
         return f"Detalle #{self.codigo} - {self.codigo_producto.nombre} x {self.cantidad}"

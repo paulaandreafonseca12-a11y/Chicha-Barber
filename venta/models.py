@@ -79,6 +79,10 @@ class Venta(models.Model):
         self.total_compra = sum(detalle.subtotal for detalle in self.detalles.all())
         self.save(update_fields=["total_compra"])
 
+    @property
+    def fecha_venta(self):
+        return self.fecha
+
     def __str__(self):
         return f"Venta #{self.codigo_venta} - {self.nombre_cliente}"
 
@@ -126,6 +130,10 @@ class DetalleVenta(models.Model):
         default=0,
         verbose_name="Subtotal"
     )
+
+    @property
+    def producto(self):
+        return self.codigo_producto
 
     def save(self, *args, **kwargs):
         # 1. Obtener la referencia a DetalleProducto
@@ -197,5 +205,51 @@ def notificar_venta(sender, instance, created, **kwargs):
             usuario=admin,
             tipo="venta",
             mensaje=f"Nueva venta a {instance.nombre_cliente} por ${instance.total_compra:.2f}.",
-            url="/ventas/"
+            url="/ventas/historial/"
         )
+
+
+# ==========================================================
+# 4. DATOS DE TRANSFERENCIA BANCARIA
+# ==========================================================
+class DatosTransferencia(models.Model):
+    banco = models.CharField(
+        max_length=100,
+        default="Banco por definir",
+        verbose_name="Banco"
+    )
+    tipo_cuenta = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name="Tipo de Cuenta"
+    )
+    numero_cuenta = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name="Número de Cuenta"
+    )
+    titular = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Titular"
+    )
+    instrucciones = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Instrucciones"
+    )
+
+    @classmethod
+    def get_solo(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return f"Datos de Transferencia - {self.banco}"
+
+    class Meta:
+        verbose_name = "Datos de Transferencia"
+        verbose_name_plural = "Datos de Transferencia"

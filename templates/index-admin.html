@@ -66,44 +66,8 @@
        ===================================================== -->
   <div class="row g-4 mb-4">
 
-    <!-- INGRESOS -->
-    <div class="col-xl-3 col-md-6">
-
-      <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
-
-        <div class="card-body d-flex flex-row align-items-center flex-nowrap py-3">
-
-          <!-- ICONO -->
-          <div class="bg-success bg-opacity-25 rounded-circle
-                      d-flex align-items-center justify-content-center
-                      flex-shrink-0 me-3 templates-index-admin__div-3">
-
-            <i class="bi bi-currency-dollar fs-3 text-success"></i>
-
-          </div>
-
-          <!-- INFORMACIÓN -->
-          <div class="d-flex align-items-center flex-nowrap">
-
-            <span class="text-dark fw-bold me-2 text-nowrap">
-              Ingresos -
-            </span>
-
-            <h3 class="fw-bold mb-0 text-success text-nowrap">
-              ${{ total_ingresos|floatformat:2 }}
-            </h3>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
     <!-- RESERVAS -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-4 col-md-6">
 
       <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
 
@@ -147,7 +111,7 @@
 
 
     <!-- CLIENTES -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-4 col-md-6">
 
       <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
 
@@ -183,7 +147,7 @@
 
 
     <!-- PRODUCTOS -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-4 col-md-6">
 
       <div class="card color-champaña text-dark border-0 h-100 shadow-sm">
 
@@ -520,226 +484,6 @@
               </div>
 
             {% endif %}
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
-       COMPROBANTES Y VENTAS RECIENTES
-       ===================================================== -->
-  <div class="row">
-
-    <div class="col-12">
-
-      <div class="card border-0 rounded-4 shadow-sm color-blanco templates-index-admin__div-22">
-
-        <!-- CABECERA -->
-        <div class="card-header bg-transparent border-bottom border-secondary p-4
-                    d-flex justify-content-between align-items-center">
-
-          <h5 class="fw-bold mb-0 text-black">
-
-            <i class="bi bi-receipt me-2 text-warning"></i>
-
-            Comprobantes y Ventas Recientes
-
-          </h5>
-
-          <a href="{% url 'factura_adm' %}"
-             class="btn btn-sm rounded-pill px-3 templates-index-admin__a-23">
-
-            Ver todas
-
-          </a>
-
-        </div>
-
-
-        <!-- TABLA -->
-        <div class="card-body p-0">
-
-          <div class="table-responsive">
-
-            <table class="table table-hover table-dark table-borderless
-                          align-middle mb-0 templates-index-admin__table-24">
-
-              <thead>
-
-                <tr class="text-muted border-bottom border-secondary templates-index-admin__tr-25">
-
-                  <th class="ps-4 py-3">
-                    N° Factura
-                  </th>
-
-                  <th class="py-3">
-                    Cliente
-                  </th>
-
-                  <th class="py-3">
-                    Fecha Emisión
-                  </th>
-
-                  <th class="py-3">
-                    Método Pago
-                  </th>
-
-                  <th class="py-3">
-                    Monto Total
-                  </th>
-
-                  <th class="py-3">
-                    Estado
-                  </th>
-
-                  <th class="py-3 text-end pe-4">
-                    Acción
-                  </th>
-
-                </tr>
-
-              </thead>
-
-
-              <tbody>
-
-                {% if facturas_recientes %}
-
-                  {% for factura in facturas_recientes %}
-
-                    <tr class="border-bottom border-secondary border-opacity-25">
-
-                      <!-- FACTURA -->
-                      <td class="ps-4 py-3 fw-bold text-warning">
-
-                        #{{ factura.id }}
-
-                      </td>
-
-
-                      <!-- CLIENTE -->
-                      <td class="py-3">
-
-                        <div class="fw-semibold text-white">
-
-                          {{ factura.nombre_cliente|default:factura.cliente.get_full_name|default:factura.cliente.username|default:"General" }}
-
-                        </div>
-
-                        <small class="text-white-50 templates-index-admin__small-26">
-
-                          {{ factura.correo_cliente|default:factura.cliente.email|default:"Sin correo" }}
-
-                        </small>
-
-                      </td>
-
-
-                      <!-- FECHA -->
-                      <td class="py-3">
-
-                        {{ factura.fecha_emision|date:"d M Y, h:i A" }}
-
-                      </td>
-
-
-                      <!-- MÉTODO DE PAGO -->
-                      <td class="py-3">
-
-                        <span class="text-uppercase small fw-bold px-2 py-1
-                                     bg-secondary bg-opacity-25 text-white rounded">
-
-                          {{ factura.get_metodo_pago_display|default:factura.metodo_pago }}
-
-                        </span>
-
-                      </td>
-
-
-                      <!-- TOTAL -->
-                      <td class="py-3 fw-bold text-success">
-
-                        ${{ factura.total_pagado|floatformat:2 }}
-
-                      </td>
-
-
-                      <!-- ESTADO -->
-                      <td class="py-3">
-
-                        {% if factura.estado == 'pagada' %}
-
-                          <span class="badge bg-success rounded-pill px-2.5 py-1.5">
-
-                            <i class="bi bi-check-circle me-1"></i>
-                            Pagada
-
-                          </span>
-
-                        {% elif factura.estado == 'pendiente' %}
-
-                          <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1.5">
-
-                            <i class="bi bi-hourglass-split me-1"></i>
-                            Pendiente
-
-                          </span>
-
-                        {% else %}
-
-                          <span class="badge bg-danger rounded-pill px-2.5 py-1.5">
-
-                            <i class="bi bi-x-circle me-1"></i>
-                            Cancelada
-
-                          </span>
-
-                        {% endif %}
-
-                      </td>
-
-
-                      <!-- ACCIÓN -->
-                      <td class="py-3 text-end pe-4">
-
-                        <a href="{% url 'factura_adm' %}"
-                           class="btn btn-sm btn-outline-light rounded-pill px-3 py-1">
-
-                          Ver detalles
-
-                        </a>
-
-                      </td>
-
-                    </tr>
-
-                  {% endfor %}
-
-                {% else %}
-
-                  <tr>
-
-                    <td colspan="7"
-                        class="text-center py-4 text-muted">
-
-                      No hay transacciones registradas.
-
-                    </td>
-
-                  </tr>
-
-                {% endif %}
-
-              </tbody>
-
-            </table>
 
           </div>
 

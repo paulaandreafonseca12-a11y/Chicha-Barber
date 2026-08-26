@@ -17,8 +17,13 @@ urlpatterns = [
     path('servicios/', include('servicios.urls')),
     path('reservas/', include('reservas.urls')),
     path('usuarios/', include('usuarios.urls')),
+    path('catalogo/', include('catalogo.urls')),
+    path('productos/', include('catalogo.urls')),  # Compatibilidad
+    path('compras/', include('compra.urls')),
+    path('ventas/', include('venta.urls')),
+    path('historial/', include('historial.urls')),
     path('configuracion/', include('configuraciones.urls')),
-    
+    path('', include('venta.urls')),  # Carrito, pago y checkout directo
 
     path('panel/', inicio_admin, name='inicio_admin'),
 

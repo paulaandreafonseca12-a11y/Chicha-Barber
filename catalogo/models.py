@@ -181,6 +181,22 @@ class Producto(models.Model):
             return adquisicion.precio_compra
         return 0
 
+    @classmethod
+    def total_productos(cls):
+        return cls.objects.count()
+
+    @classmethod
+    def total_activos(cls):
+        return cls.objects.filter(estado=True).count()
+
+    @classmethod
+    def total_inactivos(cls):
+        return cls.objects.filter(estado=False).count()
+
+    @property
+    def precio_venta(self):
+        return self.precio_venta_actual
+
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"
 
@@ -265,6 +281,14 @@ class MovimientoProducto(models.Model):
         blank=True,
         verbose_name="Observación"
     )
+
+    @property
+    def producto(self):
+        return self.codigo_producto
+
+    @property
+    def motivo(self):
+        return self.observacion
 
     def __str__(self):
         return f"{self.codigo_producto.codigo} - {self.tipo} {self.cantidad}"

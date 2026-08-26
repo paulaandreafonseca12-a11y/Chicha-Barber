@@ -62,10 +62,6 @@ from productos.models import (
     PromocionProducto,
 )
 
-from facturas.models import (
-    Factura,
-    DetalleFactura,
-)
 
 
 # ==========================================================
