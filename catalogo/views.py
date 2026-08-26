@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Q
 
-from .models import Producto, Categoria, Proveedor, Marca, DetalleProducto
+from .models import Producto, Categoria, Proveedor, Marca, DetalleProducto, MovimientoProducto
 from .forms import ProductoForm, CategoriaForm, ProveedorForm, MarcaForm, DetalleProductoForm
 
 
@@ -373,3 +374,189 @@ def eliminar_marca(request, id):
             'marca': marca,
         }
     )
+
+
+# ==========================================================
+# 📦 EXISTENCIAS / DETALLE DE PRODUCTOS
+# ==========================================================
+
+@login_required
+def lista_existencias(request):
+    existenciass = DetalleProducto.objects.select_related(
+        'codigo_producto__codigo_categoria'
+    ).all().order_by('codigo_producto__nombre')
+
+    total_existencias = existenciass.count()
+    stock_total = sum(e.cantidad_actual for e in existenciass)
+    stock_bajo = existenciass.filter(cantidad_actual__lte=10).count()
+
+    context = {
+        'titulo': 'Detalle de Productos',
+        'existenciass': existenciass,
+        'total_existencias': total_existencias,
+        'stock_total': stock_total,
+        'stock_bajo': stock_bajo,
+    }
+
+    return render(
+        request,
+        'catalogo/detalle_producto/detalle_producto.html',
+        context
+    )
+
+
+@login_required
+def editar_existencias(request, pk):
+    detalle = get_object_or_404(DetalleProducto, pk=pk)
+
+    if request.method == 'POST':
+        form = DetalleProductoForm(request.POST, instance=detalle)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Existencias de '{detalle.codigo_producto.nombre}' actualizadas correctamente.")
+            return redirect('lista_existencias')
+    else:
+        form = DetalleProductoForm(instance=detalle)
+
+    ultima_adquisicion = detalle.codigo_producto.adquisiciones.order_by('-codigo').first()
+
+    return render(
+        request,
+        'catalogo/detalle_producto/editar_detalle_producto.html',
+        {
+            'titulo': 'Editar Existencias',
+            'form': form,
+            'existencias': detalle,
+            'ultima_adquisicion': ultima_adquisicion,
+        }
+    )
+
+
+# ==========================================================
+# 🔄 MOVIMIENTOS DE EXISTENCIAS
+# ==========================================================
+
+@login_required
+def lista_movimientos_existencias(request):
+    movimientos = MovimientoProducto.objects.select_related(
+        'codigo_producto'
+    ).order_by('-fecha')
+
+    total_movimientos = movimientos.count()
+    total_entradas = movimientos.filter(tipo='entrada').count()
+    total_salidas = movimientos.filter(tipo='salida').count()
+
+    context = {
+        'titulo': 'Movimientos de productos',
+        'movimientos': movimientos,
+        'total_movimientos': total_movimientos,
+        'total_entradas': total_entradas,
+        'total_salidas': total_salidas,
+    }
+
+    return render(
+        request,
+        'catalogo/detalle_producto/movimiento_producto.html',
+        context
+    )
+
+
+@login_required
+def registrar_movimiento_existencias(request):
+    if request.method == 'POST':
+        producto_id = request.POST.get('producto_id')
+        tipo = request.POST.get('tipo')
+        cantidad_str = request.POST.get('cantidad', '1')
+        motivo = request.POST.get('motivo', '').strip()
+
+        try:
+            cantidad = int(cantidad_str)
+        except (ValueError, TypeError):
+            messages.error(request, "La cantidad ingresada no es válida.")
+            return redirect('registrar_movimiento_existencias')
+
+        if cantidad <= 0:
+            messages.error(request, "La cantidad debe ser mayor a cero.")
+            return redirect('registrar_movimiento_existencias')
+
+        if tipo not in ['entrada', 'salida']:
+            messages.error(request, "Tipo de movimiento inválido.")
+            return redirect('registrar_movimiento_existencias')
+
+        producto = get_object_or_404(Producto, codigo_producto=producto_id)
+
+        with transaction.atomic():
+            detalle, _ = DetalleProducto.objects.get_or_create(
+                codigo_producto=producto,
+                defaults={'cantidad_actual': 0, 'stock_min': 0, 'stock_max': 0}
+            )
+
+            if tipo == 'salida' and detalle.cantidad_actual < cantidad:
+                messages.error(request, f"Stock insuficiente. Stock actual: {detalle.cantidad_actual}")
+                return redirect('registrar_movimiento_existencias')
+
+            if tipo == 'entrada':
+                detalle.cantidad_actual += cantidad
+            else:
+                detalle.cantidad_actual -= cantidad
+            detalle.save(update_fields=['cantidad_actual', 'fecha_actualizacion'])
+
+            MovimientoProducto.objects.create(
+                codigo_producto=producto,
+                tipo=tipo,
+                cantidad=cantidad,
+                observacion=motivo or ('Entrada manual' if tipo == 'entrada' else 'Salida manual')
+            )
+
+        messages.success(request, f"Movimiento de {tipo} ({cantidad} unidades) registrado con éxito.")
+        return redirect('lista_movimientos_existencias')
+
+    productos = Producto.objects.filter(estado=True).order_by('nombre')
+
+    return render(
+        request,
+        'catalogo/detalle_producto/movimiento_producto_registar.html',
+        {
+            'titulo': 'Registrar Movimiento',
+            'productos': productos,
+        }
+    )
+
+
+@login_required
+def eliminar_movimiento_existencias(request, pk):
+    movimiento = get_object_or_404(MovimientoProducto, pk=pk)
+
+    if request.method == 'POST':
+        with transaction.atomic():
+            detalle, _ = DetalleProducto.objects.get_or_create(
+                codigo_producto=movimiento.codigo_producto,
+                defaults={'cantidad_actual': 0}
+            )
+
+            if movimiento.tipo == 'entrada':
+                if detalle.cantidad_actual < movimiento.cantidad:
+                    messages.error(
+                        request,
+                        "No se puede revertir este movimiento porque el stock actual es menor a la cantidad a restar."
+                    )
+                    return redirect('lista_movimientos_existencias')
+                detalle.cantidad_actual -= movimiento.cantidad
+            elif movimiento.tipo == 'salida':
+                detalle.cantidad_actual += movimiento.cantidad
+
+            detalle.save(update_fields=['cantidad_actual', 'fecha_actualizacion'])
+            movimiento.delete()
+
+        messages.success(request, "Movimiento eliminado y stock ajustado correctamente.")
+        return redirect('lista_movimientos_existencias')
+
+    return render(
+        request,
+        'catalogo/detalle_producto/movimiento_producto_eliminar.html',
+        {
+            'titulo': 'Eliminar Movimiento',
+            'movimiento': movimiento,
+        }
+    )
+

@@ -41,6 +41,26 @@ class Bitacora(models.Model):
         verbose_name="Fecha y Hora"
     )
 
+    @property
+    def hora(self):
+        return self.fecha
+
+    @property
+    def tipo_cambio(self):
+        if 'entrada' in self.accion.lower():
+            return 'entrada'
+        if 'salida' in self.accion.lower():
+            return 'salida'
+        return self.accion
+
+    @property
+    def motivo(self):
+        return self.descripcion
+
+    @property
+    def observaciones(self):
+        return self.descripcion
+
     def __str__(self):
         usuario_str = self.codigo_usuario.username if self.codigo_usuario else "Sistema/Anonimo"
         return f"[{self.fecha.strftime('%Y-%m-%d %H:%M')}] {usuario_str} - {self.accion}"
@@ -49,6 +69,7 @@ class Bitacora(models.Model):
         verbose_name = "Bitácora"
         verbose_name_plural = "Bitácoras"
         ordering = ["-fecha"]
+
 
 
 # ==========================================================

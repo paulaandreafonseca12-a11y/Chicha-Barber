@@ -38,4 +38,18 @@ urlpatterns = [
     path('marca/crear/', views.crear_marca, name='crear_marca'),
     path('marcas/editar/<int:id>/', views.editar_marca, name='editar_marca'),
     path('marcas/eliminar/<int:id>/', views.eliminar_marca, name='eliminar_marca'),
+
+    # =========================
+    # 📦 EXISTENCIAS / STOCK
+    # =========================
+    path('existencias/', views.lista_existencias, name='lista_existencias'),
+    path('existencias/editar/<int:pk>/', views.editar_existencias, name='editar_existencias'),
+
+    # =========================
+    # 🔄 MOVIMIENTOS DE EXISTENCIAS
+    # =========================
+    path('movimientos-existencias/', views.lista_movimientos_existencias, name='lista_movimientos_existencias'),
+    path('movimientos-existencias/registrar/', views.registrar_movimiento_existencias, name='registrar_movimiento_existencias'),
+    path('movimientos-existencias/eliminar/<int:pk>/', views.eliminar_movimiento_existencias, name='eliminar_movimiento_existencias'),
 ]
+
