@@ -1,312 +1,564 @@
-import re
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.db.models import Q
 
-from django import forms
-
-from .models import (
-    Producto,
-    Categoria,
-    Proveedor,
-    Marca,
-    DetalleProducto,
-    Promocion,
-)
+from .models import Producto, Categoria, Proveedor, Marca, DetalleProducto, MovimientoProducto
+from .forms import ProductoForm, CategoriaForm, ProveedorForm, MarcaForm, DetalleProductoForm
 
 
 # ==========================================================
-# VALIDACIONES GENERALES
+# 🟢 CLIENTE - GALERÍA DE PRODUCTOS
 # ==========================================================
 
-def validar_texto(valor, campo):
-    if not valor:
-        raise forms.ValidationError(
-            f'El campo {campo} es obligatorio.'
+def productos_galeria(request):
+    buscar = request.GET.get('buscar', '').strip()
+    categoria_id = request.GET.get('categoria', '').strip()
+    marca_id = request.GET.get('marca', '').strip()
+
+    productos = Producto.objects.filter(
+        estado=True
+    ).select_related(
+        'codigo_categoria',
+        'codigo_marca',
+        'codigo_detalle_producto'
+    )
+
+    if buscar:
+        productos = productos.filter(
+            Q(nombre__icontains=buscar) |
+            Q(descripcion__icontains=buscar) |
+            Q(codigo_categoria__nombre__icontains=buscar) |
+            Q(codigo_marca__nombre__icontains=buscar)
         )
 
-    valor = valor.strip()
-
-    if not re.fullmatch(
-        r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
-        valor
-    ):
-        raise forms.ValidationError(
-            f'El campo {campo} solo puede contener letras, números y espacios.'
+    if categoria_id and categoria_id.isdigit():
+        productos = productos.filter(
+            codigo_categoria_id=int(categoria_id)
         )
 
-    return valor
-
-
-def validar_descripcion(valor, campo):
-    if not valor:
-        return valor
-
-    valor = valor.strip()
-
-    if not re.fullmatch(
-        r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,#*/()_-]+',
-        valor
-    ):
-        raise forms.ValidationError(
-            f'El campo {campo} contiene caracteres no permitidos.'
+    if marca_id and marca_id.isdigit():
+        productos = productos.filter(
+            codigo_marca_id=int(marca_id)
         )
 
-    return valor
+    context = {
+        'titulo': 'Galería de Productos',
+        'productos': productos,
+        'categorias': Categoria.objects.all().order_by('nombre'),
+        'marcas': Marca.objects.filter(estado=True).order_by('nombre'),
+        'categoria_seleccionada': int(categoria_id) if categoria_id and categoria_id.isdigit() else None,
+        'marca_seleccionada': int(marca_id) if marca_id and marca_id.isdigit() else None,
+        'buscar': buscar,
+    }
+
+    return render(
+        request,
+        'catalogo/productos/Productos_galeria.html',
+        context
+    )
 
 
 # ==========================================================
-# FORMULARIO PRODUCTO
+# 🔵 ADMIN - GESTIÓN DE PRODUCTOS
 # ==========================================================
 
-class ProductoForm(forms.ModelForm):
+@login_required
+def lista_productos_admin(request):
+    productos = Producto.objects.select_related(
+        'codigo_categoria',
+        'codigo_marca',
+        'codigo_detalle_producto'
+    ).all().order_by('-codigo_producto')
 
-    class Meta:
-        model = Producto
+    total_productos = Producto.objects.count()
+    activos = Producto.objects.filter(estado=True).count()
+    inactivos = Producto.objects.filter(estado=False).count()
 
-        fields = [
-            'nombre',
-            'descripcion',
-            'codigo_categoria',
-            'codigo_marca',
-            'precio',
-            'imagen',
-            'estado',
-        ]
+    context = {
+        'titulo': 'Lista de Productos',
+        'productos': productos,
+        'total_productos': total_productos,
+        'activos': activos,
+        'inactivos': inactivos,
+    }
 
-        widgets = {
+    return render(
+        request,
+        'catalogo/productos/productos_admin.html',
+        context
+    )
 
-            'nombre': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre del producto',
-                    'pattern': r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$',
-                    'title': 'El nombre solo puede contener letras, números y espacios.',
-                }
-            ),
 
-            'descripcion': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'rows': 3,
-                    'placeholder': 'Descripción del producto',
-                }
-            ),
+@login_required
+def crear_producto(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, request.FILES)
+        if form.is_valid():
+            producto = form.save()
+            messages.success(request, f"Producto '{producto.nombre}' creado correctamente.")
+            return redirect('lista_productos_admin')
+    else:
+        form = ProductoForm()
 
-            'codigo_categoria': forms.Select(
-                attrs={
-                    'class': 'form-select',
-                }
-            ),
-
-            'codigo_marca': forms.Select(
-                attrs={
-                    'class': 'form-select',
-                }
-            ),
-
-            'precio': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'min': '0',
-                    'step': '0.01',
-                    'placeholder': 'Precio',
-                }
-            ),
-
-            'imagen': forms.ClearableFileInput(
-                attrs={
-                    'class': 'form-control',
-                }
-            ),
-
-            'estado': forms.CheckboxInput(
-                attrs={
-                    'class': 'form-check-input',
-                }
-            ),
+    return render(
+        request,
+        'catalogo/productos/crear_producto.html',
+        {
+            'titulo': 'Crear Producto',
+            'form': form
         }
+    )
 
-        labels = {
-            'nombre': 'Nombre del Producto',
-            'descripcion': 'Descripción',
-            'codigo_categoria': 'Categoría',
-            'codigo_marca': 'Marca',
-            'precio': 'Precio',
-            'imagen': 'Imagen',
-            'estado': 'Activo',
+
+@login_required
+def editar_producto(request, pk):
+    producto = get_object_or_404(Producto, codigo_producto=pk)
+
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, request.FILES, instance=producto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Producto '{producto.nombre}' actualizado correctamente.")
+            return redirect('lista_productos_admin')
+    else:
+        form = ProductoForm(instance=producto)
+
+    return render(
+        request,
+        'catalogo/productos/editar_producto.html',
+        {
+            'titulo': 'Editar Producto',
+            'form': form,
+            'producto': producto
         }
+    )
 
-    def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
 
-        return validar_texto(
-            nombre,
-            'nombre del producto'
-        )
+@login_required
+def eliminar_producto(request, pk):
+    producto = get_object_or_404(Producto, codigo_producto=pk)
+    nombre = producto.nombre
+    producto.delete()
+    messages.success(request, f"Producto '{nombre}' eliminado correctamente.")
+    return redirect('lista_productos_admin')
 
-    def clean_descripcion(self):
-        descripcion = self.cleaned_data.get('descripcion')
 
-        return validar_descripcion(
-            descripcion,
-            'descripción'
-        )
+# ==========================================================
+# 🟣 CATEGORÍAS
+# ==========================================================
 
-    def clean_precio(self):
-        precio = self.cleaned_data.get('precio')
+@login_required
+def lista_categorias(request):
+    categorias = Categoria.objects.all().order_by('nombre')
+    return render(
+        request,
+        'catalogo/categorias/lista_categoria.html',
+        {
+            'titulo': 'Categorías',
+            'categorias': categorias
+        }
+    )
 
-        if precio is not None and precio < 0:
-            raise forms.ValidationError(
-                'El precio no puede ser negativo.'
+
+@login_required
+def crear_categoria(request):
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            categoria = form.save()
+            messages.success(request, f"Categoría '{categoria.nombre}' creada correctamente.")
+            return redirect('lista_categorias')
+    else:
+        form = CategoriaForm()
+
+    return render(
+        request,
+        'catalogo/categorias/crear_categoria.html',
+        {
+            'titulo': 'Crear Categoría',
+            'form': form
+        }
+    )
+
+
+@login_required
+def editar_categoria(request, id):
+    categoria = get_object_or_404(Categoria, codigo=id)
+
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Categoría '{categoria.nombre}' actualizada correctamente.")
+            return redirect('lista_categorias')
+    else:
+        form = CategoriaForm(instance=categoria)
+
+    return render(
+        request,
+        'catalogo/categorias/editar_categoria.html',
+        {
+            'titulo': 'Editar Categoría',
+            'form': form,
+            'categoria': categoria
+        }
+    )
+
+
+@login_required
+def eliminar_categoria(request, id):
+    categoria = get_object_or_404(Categoria, codigo=id)
+    nombre = categoria.nombre
+    categoria.delete()
+    messages.success(request, f"Categoría '{nombre}' eliminada correctamente.")
+    return redirect('lista_categorias')
+
+
+# ==========================================================
+# 🟣 PROVEEDORES
+# ==========================================================
+
+@login_required
+def lista_proveedores(request):
+    proveedores = Proveedor.objects.all().order_by('nombre')
+    return render(
+        request,
+        'catalogo/proveedores/lista_proveedores.html',
+        {
+            'titulo': 'Proveedores',
+            'proveedores': proveedores
+        }
+    )
+
+
+@login_required
+def crear_proveedor(request):
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST)
+        if form.is_valid():
+            proveedor = form.save()
+            messages.success(request, f"Proveedor '{proveedor.nombre}' creado correctamente.")
+            return redirect('lista_proveedores')
+    else:
+        form = ProveedorForm()
+
+    return render(
+        request,
+        'catalogo/proveedores/crear_proveedor.html',
+        {
+            'titulo': 'Crear Proveedor',
+            'form': form
+        }
+    )
+
+
+@login_required
+def editar_proveedor(request, id):
+    proveedor = get_object_or_404(Proveedor, codigo=id)
+
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST, instance=proveedor)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Proveedor '{proveedor.nombre}' actualizado correctamente.")
+            return redirect('lista_proveedores')
+    else:
+        form = ProveedorForm(instance=proveedor)
+
+    return render(
+        request,
+        'catalogo/proveedores/editar_proveedor.html',
+        {
+            'titulo': 'Editar Proveedor',
+            'form': form,
+            'proveedor': proveedor
+        }
+    )
+
+
+@login_required
+def eliminar_proveedor(request, id):
+    proveedor = get_object_or_404(Proveedor, codigo=id)
+    nombre = proveedor.nombre
+    proveedor.delete()
+    messages.success(request, f"Proveedor '{nombre}' eliminado correctamente.")
+    return redirect('lista_proveedores')
+
+
+# ==========================================================
+# 🏷️ MARCAS
+# ==========================================================
+
+@login_required
+def lista_marcas(request):
+    marcas = Marca.objects.all().prefetch_related('productos').order_by('nombre')
+    total_marcas = Marca.objects.count()
+    marcas_activas = Marca.objects.filter(estado=True).count()
+    marcas_inactivas = Marca.objects.filter(estado=False).count()
+
+    return render(
+        request,
+        'catalogo/marca/marca.html',
+        {
+            'titulo': 'Marcas',
+            'marcas': marcas,
+            'total_marcas': total_marcas,
+            'marcas_activas': marcas_activas,
+            'marcas_inactivas': marcas_inactivas,
+        }
+    )
+
+
+@login_required
+def crear_marca(request):
+    if request.method == 'POST':
+        form = MarcaForm(request.POST)
+        if form.is_valid():
+            marca = form.save()
+            messages.success(request, f"Marca '{marca.nombre}' creada correctamente.")
+            return redirect('lista_marcas')
+    else:
+        form = MarcaForm()
+
+    return render(
+        request,
+        'catalogo/marca/crear_marca.html',
+        {
+            'titulo': 'Crear Marca',
+            'form': form,
+        }
+    )
+
+
+@login_required
+def editar_marca(request, id):
+    marca = get_object_or_404(Marca, codigo=id)
+
+    if request.method == 'POST':
+        form = MarcaForm(request.POST, instance=marca)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Marca '{marca.nombre}' actualizada correctamente.")
+            return redirect('lista_marcas')
+    else:
+        form = MarcaForm(instance=marca)
+
+    return render(
+        request,
+        'catalogo/marca/editar_marca.html',
+        {
+            'titulo': 'Editar Marca',
+            'form': form,
+            'marca': marca,
+        }
+    )
+
+
+@login_required
+def eliminar_marca(request, id):
+    marca = get_object_or_404(Marca, codigo=id)
+
+    if request.method == 'POST':
+        nombre = marca.nombre
+        marca.delete()
+        messages.success(request, f"Marca '{nombre}' eliminada correctamente.")
+        return redirect('lista_marcas')
+
+    return render(
+        request,
+        'catalogo/marca/eliminar_marca.html',
+        {
+            'titulo': 'Eliminar Marca',
+            'marca': marca,
+        }
+    )
+
+
+# ==========================================================
+# 📦 EXISTENCIAS / DETALLE DE PRODUCTOS
+# ==========================================================
+
+@login_required
+def lista_existencias(request):
+    existenciass = DetalleProducto.objects.select_related(
+        'codigo_producto__codigo_categoria'
+    ).all().order_by('codigo_producto__nombre')
+
+    total_existencias = existenciass.count()
+    stock_total = sum(e.cantidad_actual for e in existenciass)
+    stock_bajo = existenciass.filter(cantidad_actual__lte=10).count()
+
+    context = {
+        'titulo': 'Detalle de Productos',
+        'existenciass': existenciass,
+        'total_existencias': total_existencias,
+        'stock_total': stock_total,
+        'stock_bajo': stock_bajo,
+    }
+
+    return render(
+        request,
+        'catalogo/detalle_producto/detalle_producto.html',
+        context
+    )
+
+
+@login_required
+def editar_existencias(request, pk):
+    detalle = get_object_or_404(DetalleProducto, pk=pk)
+
+    if request.method == 'POST':
+        form = DetalleProductoForm(request.POST, instance=detalle)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Existencias de '{detalle.codigo_producto.nombre}' actualizadas correctamente.")
+            return redirect('lista_existencias')
+    else:
+        form = DetalleProductoForm(instance=detalle)
+
+    ultima_adquisicion = detalle.codigo_producto.adquisiciones.order_by('-codigo').first()
+
+    return render(
+        request,
+        'catalogo/detalle_producto/editar_detalle_producto.html',
+        {
+            'titulo': 'Editar Existencias',
+            'form': form,
+            'existencias': detalle,
+            'ultima_adquisicion': ultima_adquisicion,
+        }
+    )
+
+
+# ==========================================================
+# 🔄 MOVIMIENTOS DE EXISTENCIAS
+# ==========================================================
+
+@login_required
+def lista_movimientos_existencias(request):
+    movimientos = MovimientoProducto.objects.select_related(
+        'codigo_producto'
+    ).order_by('-fecha')
+
+    total_movimientos = movimientos.count()
+    total_entradas = movimientos.filter(tipo='entrada').count()
+    total_salidas = movimientos.filter(tipo='salida').count()
+
+    context = {
+        'titulo': 'Movimientos de productos',
+        'movimientos': movimientos,
+        'total_movimientos': total_movimientos,
+        'total_entradas': total_entradas,
+        'total_salidas': total_salidas,
+    }
+
+    return render(
+        request,
+        'catalogo/detalle_producto/movimiento_producto.html',
+        context
+    )
+
+
+@login_required
+def registrar_movimiento_existencias(request):
+    if request.method == 'POST':
+        producto_id = request.POST.get('producto_id')
+        tipo = request.POST.get('tipo')
+        cantidad_str = request.POST.get('cantidad', '1')
+        motivo = request.POST.get('motivo', '').strip()
+
+        try:
+            cantidad = int(cantidad_str)
+        except (ValueError, TypeError):
+            messages.error(request, "La cantidad ingresada no es válida.")
+            return redirect('registrar_movimiento_existencias')
+
+        if cantidad <= 0:
+            messages.error(request, "La cantidad debe ser mayor a cero.")
+            return redirect('registrar_movimiento_existencias')
+
+        if tipo not in ['entrada', 'salida']:
+            messages.error(request, "Tipo de movimiento inválido.")
+            return redirect('registrar_movimiento_existencias')
+
+        producto = get_object_or_404(Producto, codigo_producto=producto_id)
+
+        with transaction.atomic():
+            detalle, _ = DetalleProducto.objects.get_or_create(
+                codigo_producto=producto,
+                defaults={'cantidad_actual': 0, 'stock_min': 0, 'stock_max': 0}
             )
 
-        return precio
+            if tipo == 'salida' and detalle.cantidad_actual < cantidad:
+                messages.error(request, f"Stock insuficiente. Stock actual: {detalle.cantidad_actual}")
+                return redirect('registrar_movimiento_existencias')
 
+            if tipo == 'entrada':
+                detalle.cantidad_actual += cantidad
+            else:
+                detalle.cantidad_actual -= cantidad
+            detalle.save(update_fields=['cantidad_actual', 'fecha_actualizacion'])
 
-# ==========================================================
-# FORMULARIO DETALLE PRODUCTO
-# STOCK / EXISTENCIAS
-# ==========================================================
+            MovimientoProducto.objects.create(
+                codigo_producto=producto,
+                tipo=tipo,
+                cantidad=cantidad,
+                observacion=motivo or ('Entrada manual' if tipo == 'entrada' else 'Salida manual')
+            )
 
-class DetalleProductoForm(forms.ModelForm):
+        messages.success(request, f"Movimiento de {tipo} ({cantidad} unidades) registrado con éxito.")
+        return redirect('lista_movimientos_existencias')
 
-    class Meta:
-        model = DetalleProducto
+    productos = Producto.objects.filter(estado=True).order_by('nombre')
 
-        fields = [
-            'cantidad_actual',
-            'stock_min',
-            'stock_max',
-            'observaciones',
-        ]
-
-        widgets = {
-
-            'cantidad_actual': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'min': '0',
-                    'step': '1',
-                }
-            ),
-
-            'stock_min': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'min': '0',
-                    'step': '1',
-                }
-            ),
-
-            'stock_max': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'min': '0',
-                    'step': '1',
-                }
-            ),
-
-            'observaciones': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'rows': 3,
-                    'placeholder': 'Observaciones',
-                }
-            ),
+    return render(
+        request,
+        'catalogo/detalle_producto/movimiento_producto_registar.html',
+        {
+            'titulo': 'Registrar Movimiento',
+            'productos': productos,
         }
+    )
 
-        labels = {
-            'cantidad_actual': 'Cantidad Actual',
-            'stock_min': 'Stock Mínimo',
-            'stock_max': 'Stock Máximo',
-            'observaciones': 'Observaciones',
+
+@login_required
+def eliminar_movimiento_existencias(request, pk):
+    movimiento = get_object_or_404(MovimientoProducto, pk=pk)
+
+    if request.method == 'POST':
+        with transaction.atomic():
+            detalle, _ = DetalleProducto.objects.get_or_create(
+                codigo_producto=movimiento.codigo_producto,
+                defaults={'cantidad_actual': 0}
+            )
+
+            if movimiento.tipo == 'entrada':
+                if detalle.cantidad_actual < movimiento.cantidad:
+                    messages.error(
+                        request,
+                        "No se puede revertir este movimiento porque el stock actual es menor a la cantidad a restar."
+                    )
+                    return redirect('lista_movimientos_existencias')
+                detalle.cantidad_actual -= movimiento.cantidad
+            elif movimiento.tipo == 'salida':
+                detalle.cantidad_actual += movimiento.cantidad
+
+            detalle.save(update_fields=['cantidad_actual', 'fecha_actualizacion'])
+            movimiento.delete()
+
+        messages.success(request, "Movimiento eliminado y stock ajustado correctamente.")
+        return redirect('lista_movimientos_existencias')
+
+    return render(
+        request,
+        'catalogo/detalle_producto/movimiento_producto_eliminar.html',
+        {
+            'titulo': 'Eliminar Movimiento',
+            'movimiento': movimiento,
         }
-
-    def clean_cantidad_actual(self):
-        cantidad = self.cleaned_data.get(
-            'cantidad_actual'
-        )
-
-        if cantidad is not None and cantidad < 0:
-            raise forms.ValidationError(
-                'La cantidad actual no puede ser negativa.'
-            )
-
-        return cantidad
-
-    def clean_stock_min(self):
-        stock_min = self.cleaned_data.get(
-            'stock_min'
-        )
-
-        if stock_min is not None and stock_min < 0:
-            raise forms.ValidationError(
-                'El stock mínimo no puede ser negativo.'
-            )
-
-        return stock_min
-
-    def clean_stock_max(self):
-        stock_max = self.cleaned_data.get(
-            'stock_max'
-        )
-
-        if stock_max is not None and stock_max < 0:
-            raise forms.ValidationError(
-                'El stock máximo no puede ser negativo.'
-            )
-
-        return stock_max
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        stock_min = cleaned_data.get('stock_min')
-        stock_max = cleaned_data.get('stock_max')
-
-        if (
-            stock_min is not None
-            and stock_max is not None
-            and stock_max < stock_min
-        ):
-            raise forms.ValidationError(
-                'El stock máximo no puede ser menor que el stock mínimo.'
-            )
-
-        return cleaned_data
-
-
-# ==========================================================
-# FORMULARIO CATEGORÍA
-# ==========================================================
-
-class CategoriaForm(forms.ModelForm):
-
-    class Meta:
-        model = Categoria
-
-        fields = [
-            'nombre',
-            'descripcion',
-        ]
-
-        widgets = {
-
-            'nombre': forms.TextInput(
-                attrs={
-                    'class': 'form-control border-secondary',
-                    'placeholder': 'Ingrese el nombre de la categoría',
-                    'pattern': r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$',
-                    'title': 'Solo se permiten letras, números y espacios.',
-                }
-            ),
-
-            'descripcion': forms.Textarea(
-                attrs={
-                    'class': 'form-control border-secondary',
-                    'placeholder': 'Descripción de la categoría',
-                    'rows': 4,
-                }
-            ),
-        }
+    )
 
 from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
@@ -315,595 +567,87 @@ from django.urls import reverse
 from django.contrib import messages # type: ignore
 from django.core.mail import send_mail
 
-def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
-
-        return validar_texto(
-            nombre,
-            'nombre de la categoría'
-        )
-
-def clean_descripcion(self):
-        descripcion = self.cleaned_data.get('descripcion')
-
-        return validar_descripcion(
-            descripcion,
-            'descripción'
-        )
-
-
-# ==========================================================
-# FORMULARIO PROVEEDOR
-# ==========================================================
-
-class ProveedorForm(forms.ModelForm):
-
-    class Meta:
-        model = Proveedor
-
-        fields = [
-            'nombre',
-            'telefono',
-            'correo',
-            'direccion',
-        ]
-
-        widgets = {
-
-            'nombre': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre del proveedor',
-                    'pattern': r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$',
-                    'title': 'Solo se permiten letras, números y espacios.',
-                }
-            ),
-
-            'telefono': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': '3001234567',
-                    'pattern': r'^[0-9]+$',
-                    'inputmode': 'numeric',
-                    'title': 'El teléfono solo puede contener números.',
-                }
-            ),
-
-            'correo': forms.EmailInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'correo@ejemplo.com',
-                }
-            ),
-
-            'direccion': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Calle 10 # 20-30',
-                }
-            ),
-        }
-
-        labels = {
-            'nombre': 'Nombre del Proveedor',
-            'telefono': 'Teléfono',
-            'correo': 'Correo Electrónico',
-            'direccion': 'Dirección',
-        }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
-
-        return validar_texto(
-            nombre,
-            'nombre del proveedor'
-        )
-
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-
-        if not telefono:
-            return telefono
-
-        telefono = telefono.strip()
-
-        if not telefono.isdigit():
-            raise forms.ValidationError(
-                'El teléfono solo puede contener números.'
-            )
-
-        if len(telefono) < 7 or len(telefono) > 15:
-            raise forms.ValidationError(
-                'El teléfono debe tener entre 7 y 15 números.'
-            )
-
-        return telefono
-
-
-# ==========================================================
-# FORMULARIO MARCA
-# ==========================================================
-
-class MarcaForm(forms.ModelForm):
-
-    class Meta:
-        model = Marca
-
-        fields = [
-            'nombre',
-            'descripcion',
-            'estado',
-        ]
-
-        widgets = {
-
-            'nombre': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre de la marca',
-                    'pattern': r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$',
-                    'title': 'El nombre solo puede contener letras, números y espacios.',
-                }
-            ),
-
-            'descripcion': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Descripción de la marca',
-                    'rows': 3,
-                }
-            ),
-
-            'estado': forms.CheckboxInput(
-                attrs={
-                    'class': 'form-check-input',
-                }
-            ),
-        }
-
-        labels = {
-            'nombre': 'Nombre de la Marca',
-            'descripcion': 'Descripción',
-            'estado': 'Activo',
-        }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
-
-        if not nombre:
-            raise forms.ValidationError(
-                'El nombre de la marca es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
-            nombre
-        ):
-            raise forms.ValidationError(
-                'El nombre solo puede contener letras, números y espacios.'
-            )
-
-        return nombre
-
-    def clean_descripcion(self):
-        descripcion = self.cleaned_data.get('descripcion')
-
-        return validar_descripcion(
-            descripcion,
-            'descripción'
-        )
-
-
-# ==========================================================
-# FORMULARIO PROMOCIÓN
-# ==========================================================
-
-class PromocionForm(forms.ModelForm):
-
-    class Meta:
-        model = Promocion
-
-        fields = [
-            'codigo_servicio',
-            'codigo_producto',
-            'nombre',
-            'porcentaje_descuento',
-            'fecha_inicio',
-            'fecha_fin',
-            'descripcion',
-            'imagen',
-            'estado',
-        ]
-
-        widgets = {
-
-            'codigo_servicio': forms.Select(
-                attrs={
-                    'class': 'form-select',
-                }
-            ),
-
-            'codigo_producto': forms.Select(
-                attrs={
-                    'class': 'form-select',
-                }
-            ),
-
-            'nombre': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Ej. Promoción de Verano',
-                    'pattern': r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$',
-                    'title': 'El nombre solo puede contener letras, números y espacios.',
-                }
-            ),
-
-            'porcentaje_descuento': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'min': '0',
-                    'max': '50',
-                    'step': '0.01',
-                    'placeholder': 'Ej. 20',
-                    'title': 'El descuento debe estar entre 0 y 50.',
-                }
-            ),
-
-            'fecha_inicio': forms.DateInput(
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date',
-                }
-            ),
-
-            'fecha_fin': forms.DateInput(
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date',
-                }
-            ),
-
-            'descripcion': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Descripción de la promoción',
-                    'rows': 3,
-                }
-            ),
-
-            'imagen': forms.ClearableFileInput(
-                attrs={
-                    'class': 'form-control',
-                }
-            ),
-
-            'estado': forms.CheckboxInput(
-                attrs={
-                    'class': 'form-check-input',
-                }
-            ),
-        }
-
-        labels = {
-            'codigo_servicio': 'Servicio Asociado',
-            'codigo_producto': 'Producto Asociado',
-            'nombre': 'Nombre de la Promoción',
-            'porcentaje_descuento': 'Porcentaje de Descuento',
-            'fecha_inicio': 'Fecha de Inicio',
-            'fecha_fin': 'Fecha de Fin',
-            'descripcion': 'Descripción',
-            'imagen': 'Imagen',
-            'estado': 'Activo',
-        }
-
-    # ------------------------------------------------------
-    # VALIDAR NOMBRE
-    # ------------------------------------------------------
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
-
-        if not nombre:
-            raise forms.ValidationError(
-                'El nombre de la promoción es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
-            nombre
-        ):
-            raise forms.ValidationError(
-                'El nombre solo puede contener letras, números y espacios.'
-            )
-
-        return nombre
-
-    # ------------------------------------------------------
-    # VALIDAR PORCENTAJE
-    # ------------------------------------------------------
-
-    def clean_porcentaje_descuento(self):
-        porcentaje = self.cleaned_data.get(
-            'porcentaje_descuento'
-        )
-
-        if porcentaje is None:
-            raise forms.ValidationError(
-                'El porcentaje de descuento es obligatorio.'
-            )
-
-        if porcentaje < 0 or porcentaje > 50:
-            raise forms.ValidationError(
-                'El porcentaje de descuento debe estar entre 0 y 50.'
-            )
-
-        return porcentaje
-
-    # ------------------------------------------------------
-    # VALIDAR DESCRIPCIÓN
-    # ------------------------------------------------------
-
-    def clean_descripcion(self):
-        descripcion = self.cleaned_data.get('descripcion')
-
-        if not descripcion:
-            return descripcion
-
-        descripcion = descripcion.strip()
-
-        if len(descripcion) < 10:
-            raise forms.ValidationError(
-                'La descripción debe tener al menos 10 caracteres.'
-            )
-
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,#*/()_-]+',
-            descripcion
-        ):
-            raise forms.ValidationError(
-                'La descripción contiene caracteres no permitidos.'
-            )
-
-        return descripcion
-
-    # ------------------------------------------------------
-    # VALIDAR FECHAS Y ASOCIACIÓN
-    # ------------------------------------------------------
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        fecha_inicio = cleaned_data.get('fecha_inicio')
-        fecha_fin = cleaned_data.get('fecha_fin')
-
-        if fecha_inicio and fecha_fin:
-
-            if fecha_fin < fecha_inicio:
-                raise forms.ValidationError(
-                    'La fecha de finalización no puede ser anterior '
-                    'a la fecha de inicio.'
-                )
-
-        codigo_producto = cleaned_data.get(
-            'codigo_producto'
-        )
-
-        codigo_servicio = cleaned_data.get(
-            'codigo_servicio'
-        )
-
-        if not codigo_producto and not codigo_servicio:
-            raise forms.ValidationError(
-                'La promoción debe estar asociada a un producto '
-                'o a un servicio.'
-            )
-
-        return cleaned_data
-
-
-# ==========================================================
-# FORMULARIO EDITAR PROMOCIÓN
-# ==========================================================
-
-class PromocionEditarForm(forms.ModelForm):
-
-    class Meta:
-        model = Promocion
-
-        fields = [
-            'codigo_servicio',
-            'codigo_producto',
-            'nombre',
-            'porcentaje_descuento',
-            'fecha_inicio',
-            'fecha_fin',
-            'descripcion',
-            'imagen',
-            'estado',
-        ]
-
-        widgets = {
-
-            'codigo_servicio': forms.Select(
-                attrs={
-                    'class': 'form-select',
-                }
-            ),
-
-            'codigo_producto': forms.Select(
-                attrs={
-                    'class': 'form-select',
-                }
-            ),
-
-            'nombre': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre de la promoción',
-                }
-            ),
-
-            'porcentaje_descuento': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'min': '0',
-                    'max': '50',
-                    'step': '0.01',
-                }
-            ),
-
-            'fecha_inicio': forms.DateInput(
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date',
-                }
-            ),
-
-            'fecha_fin': forms.DateInput(
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date',
-                }
-            ),
-
-            'descripcion': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'rows': 3,
-                    'placeholder': 'Descripción de la promoción',
-                }
-            ),
-
-            'imagen': forms.ClearableFileInput(
-                attrs={
-                    'class': 'form-control',
-                }
-            ),
-
-            'estado': forms.CheckboxInput(
-                attrs={
-                    'class': 'form-check-input',
-                }
-            ),
-        }
-
-        labels = {
-            'codigo_servicio': 'Servicio Asociado',
-            'codigo_producto': 'Producto Asociado',
-            'nombre': 'Nombre de la Promoción',
-            'porcentaje_descuento': 'Porcentaje de Descuento',
-            'fecha_inicio': 'Fecha de Inicio',
-            'fecha_fin': 'Fecha de Fin',
-            'descripcion': 'Descripción',
-            'imagen': 'Imagen',
-            'estado': 'Activo',
-        }
-
-    def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
-
-        if not nombre:
-            raise forms.ValidationError(
-                'El nombre de la promoción es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
-            nombre
-        ):
-            raise forms.ValidationError(
-                'El nombre solo puede contener letras, números y espacios.'
-            )
-
-        return nombre
-
-    def clean_porcentaje_descuento(self):
-        porcentaje = self.cleaned_data.get(
-            'porcentaje_descuento'
-        )
-
-        if porcentaje is None:
-            raise forms.ValidationError(
-                'El porcentaje de descuento es obligatorio.'
-            )
-
-        if porcentaje < 0 or porcentaje > 50:
-            raise forms.ValidationError(
-                'El porcentaje de descuento debe estar entre 0 y 50.'
-            )
-
-        return porcentaje
-
-    def clean_descripcion(self):
-        descripcion = self.cleaned_data.get('descripcion')
-
-        if not descripcion:
-            return descripcion
-
-        descripcion = descripcion.strip()
-
-        if len(descripcion) < 10:
-            raise forms.ValidationError(
-                'La descripción debe tener al menos 10 caracteres.'
-            )
-
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,#*/()_-]+',
-            descripcion
-        ):
-            raise forms.ValidationError(
-                'La descripción contiene caracteres no permitidos.'
-            )
-
-        return descripcion
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        fecha_inicio = cleaned_data.get('fecha_inicio')
-        fecha_fin = cleaned_data.get('fecha_fin')
-
-        if fecha_inicio and fecha_fin:
-
-            if fecha_fin < fecha_inicio:
-                raise forms.ValidationError(
-                    'La fecha de finalización no puede ser anterior '
-                    'a la fecha de inicio.'
-                )
-
-        codigo_producto = cleaned_data.get(
-            'codigo_producto'
-        )
-
-        codigo_servicio = cleaned_data.get(
-            'codigo_servicio'
-        )
-
-        if not codigo_producto and not codigo_servicio:
-            raise forms.ValidationError(
-                'La promoción debe estar asociada a un producto '
-                'o a un servicio.'
-            )
-
-        return cleaned_data
+from usuarios.models import  RolUsuario
+from .models import  Promocion
+from .forms import PromocionEditarForm, PromocionForm
+# Create your views here.
+
+def promocion(request):
+    promociones = Promocion.objects.all()
+    context = {
+        'titulo': 'Promociones',
+        'promociones': promociones
+    }
+    return render(request, 'servicios/promocion.html', context)
+
+def listado_promocion(request):
+    promociones = Promocion.objects.all()
+    context = {
+        'titulo': 'Listado de Promociones',
+        'promociones': promociones,
+        'total_promociones': promociones.count(),
+        'activas': promociones.filter(estado=True).count(),
+        'inactivas': promociones.filter(estado=False).count(),
+    }
+    return render(request, 'servicios/listado-promocion.html', context)
+
+
+
+def crear_promocion(request):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == RolUsuario.ADMIN):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-promocion')
+
+    # 2. Procesamiento cuando se envía el formulario (POST)
+    if request.method == 'POST':
+        # pasar request.FILES para procesar la imagen
+        form = PromocionForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            nueva_promo = form.save()  # Guarda los datos e imagen en la BD
+            messages.success(request, "Promoción creada exitosamente.")
+            return redirect('listado-promocion')
+        else:
+            messages.error(request, "Error al crear la promoción. Por favor revisa los campos.")
+    
+    
+    else:
+        form = PromocionForm()
+    
+    # 4. Renderizado del template
+    return render(request, 'servicios/agregar_promocion.html', {
+        'form': form,
+        'titulo': 'Crear Nueva Promoción'
+    })
+
+@login_required
+def editar_promocion(request, pk):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == RolUsuario.ADMIN):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-promocion')
+
+    promocion = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        form = PromocionEditarForm(request.POST, request.FILES, instance=promocion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Promoción {promocion.nombre} actualizada.")
+            return redirect('listado-promocion')
+    else:
+        # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
+        form = PromocionEditarForm(instance=promocion)
+
+    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
+
+@login_required
+def eliminar_promocion(request, pk):
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == RolUsuario.ADMIN):
+        messages.error(request, "Acceso denegado.")
+        return redirect('listado-promocion')
+
+    promocion = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        promocion.delete()
+        messages.success(request, 'Promoción eliminada.')
+        return redirect('listado-promocion')
+    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})

@@ -86,5 +86,3 @@ def inicio_admin(request):
         'productos_bajo_bitacora': productos_bajo_bitacora,
     }
     return render(request, 'index-admin.html', context)
-
-
