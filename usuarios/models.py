@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 
@@ -19,91 +19,74 @@ class RolUsuario(models.TextChoices):
     CLIENTE = 'cliente', 'Cliente'
 
 
-class UsuarioManager(UserManager):
-    def create_superuser(self, username, email=None, password=None, **extra_fields):
+class UsuarioManager(BaseUserManager):
+    """Manager personalizado: obligatorio al usar AbstractBaseUser,
+    ya que este no trae ninguno por defecto."""
+
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('El usuario debe tener un correo electrónico')
+        email = self.normalize_email(email)
+        usuario = self.model(email=email, **extra_fields)
+        usuario.set_password(password)
+        usuario.save(using=self._db)
+        return usuario
+
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('rol', RolUsuario.ADMIN)
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return super().create_superuser(username, email, password, **extra_fields)
+        usuario = self.create_user(email, password, **extra_fields)
+        return usuario
 
 
-class Usuario(AbstractUser):
+class Usuario(AbstractBaseUser):
     objects = UsuarioManager()
 
-    # --- Campos heredados de AbstractUser, re-declarados solo para
-    #     traducir el nombre de columna en MySQL (db_column) ---
-    password = models.CharField(
-        max_length=128,
-        verbose_name='Contraseña',
-        db_column='contrasena'
-    )
-    last_login = models.DateTimeField(
-        blank=True, null=True,
-        verbose_name='Último acceso',
-        db_column='ultimo_acceso'
-    )
-    is_superuser = models.BooleanField(
-        default=False,
-        verbose_name='Es superusuario',
-        db_column='es_superusuario'
-    )
-    first_name = models.CharField(
+    # --- password y last_login: AbstractBaseUser los agrega automáticamente,
+    #     no hace falta (ni se puede) volver a declararlos aquí ---
+
+    primer_nombre = models.CharField(
         max_length=150, blank=True,
         verbose_name='Primer nombre',
         db_column='primer_nombre'
     )
-    last_name = models.CharField(
+    segundo_nombre = models.CharField(
+        max_length=150, blank=True, null=True,
+        verbose_name='Segundo nombre',
+        db_column='segundo_nombre'
+    )
+    primer_apellido = models.CharField(
         max_length=150, blank=True,
         verbose_name='Primer apellido',
         db_column='primer_apellido'
     )
-    is_staff = models.BooleanField(
-        default=False,
-        verbose_name='Es staff',
-        db_column='es_staff'
-    )
-    is_active = models.BooleanField(
-        default=True,
-        verbose_name='Activo',
-        db_column='activo'
-    )
-    date_joined = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Fecha de creación de la cuenta',
-        db_column='fecha_creacion'
-    )
-
-    # El documento será el 'username' interno de Django
-    username = models.CharField(
-        max_length=20,
-        unique=True,
-        verbose_name='Número de documento',
-        db_column='numero_documento'
+    segundo_apellido = models.CharField(
+        max_length=150, blank=True, null=True,
+        verbose_name='Segundo apellido',
+        db_column='segundo_apellido'
     )
     email = models.EmailField(
         unique=True,
         verbose_name='Correo electrónico',
         db_column='correo_electronico'
     )
-
-    # segundo_nombre y segundo_apellido: AbstractUser solo trae
-    # first_name y last_name, el MER pide 4 campos de nombre.
-    segundo_nombre = models.CharField(
-        max_length=150,
-        blank=True,
-        null=True,
-        verbose_name='Segundo nombre',
-        db_column='segundo_nombre'
+    telefono = models.CharField(
+        max_length=15,
+        verbose_name='Teléfono',
+        db_column='telefono'
     )
-    segundo_apellido = models.CharField(
-        max_length=150,
-        blank=True,
-        null=True,
-        verbose_name='Segundo apellido',
-        db_column='segundo_apellido'
+    estado = models.BooleanField(
+        default=True,
+        verbose_name='Estado (activo/inactivo)',
+        db_column='estado'
+    )
+    foto_perfil = models.ImageField(
+        upload_to='usuarios/',
+        blank=True, null=True,
+        verbose_name='Foto de perfil',
+        db_column='foto_perfil'
     )
 
-    # --- Nuevo: tipo de documento ---
+    # --- Campos agregados ---
     tipo_documento = models.CharField(
         max_length=2,
         choices=TipoDocumento.choices,
@@ -111,14 +94,12 @@ class Usuario(AbstractUser):
         verbose_name='Tipo de documento',
         db_column='tipo_documento'
     )
-
-    telefono = models.CharField(
-        max_length=15,
-        verbose_name='Teléfono',
-        db_column='telefono'
+    numero_documento = models.CharField(
+        max_length=20,
+        unique=True,
+        verbose_name='Número de documento',
+        db_column='numero_documento'
     )
-
-    # --- Rol como atributo (antes era FK a una tabla aparte) ---
     rol = models.CharField(
         max_length=20,
         choices=RolUsuario.choices,
@@ -126,12 +107,13 @@ class Usuario(AbstractUser):
         verbose_name='Rol',
         db_column='rol'
     )
-
-    estado = models.BooleanField(
-        default=True,
-        verbose_name='Estado (activo/inactivo)',
-        db_column='estado'
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Fecha de creación de la cuenta',
+        db_column='fecha_creacion'
     )
+
+    # --- Campos ya en uso que se mantienen ---
     tema = models.CharField(
         max_length=10,
         default='dark',
@@ -139,33 +121,55 @@ class Usuario(AbstractUser):
         verbose_name='Tema',
         db_column='tema'
     )
-
-    # Campo específico para barberos
     especialidad = models.CharField(
         max_length=100, blank=True, null=True,
         verbose_name='Especialidad',
         db_column='especialidad'
     )
-    foto_perfil = models.ImageField(
-        upload_to='usuarios/',
-        blank=True,
-        null=True,
-        verbose_name='Foto de perfil',
-        db_column='foto_perfil'
-    )
 
-    # Configuración de Login: Entrarán con el EMAIL
+    # Configuración de login: entran con el EMAIL
     USERNAME_FIELD = 'email'
     # Campos que pide 'createsuperuser' (no incluyas EMAIL ni PASSWORD)
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-
-    def __str__(self):
-        return f"{self.get_full_name()} ({self.get_rol_display()})"
+    REQUIRED_FIELDS = ['primer_nombre', 'primer_apellido',
+                        'tipo_documento', 'numero_documento']
 
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
         db_table = 'usuarios'
+
+    def __str__(self):
+        return f"{self.get_full_name()} ({self.get_rol_display()})"
+
+    def get_full_name(self):
+        partes = [self.primer_nombre, self.segundo_nombre,
+                  self.primer_apellido, self.segundo_apellido]
+        return ' '.join(p for p in partes if p)
+
+    def get_short_name(self):
+        return self.primer_nombre
+
+    def get_rol_display(self):
+        return RolUsuario(self.rol).label
+
+    # --- Propiedades calculadas: NO generan columna en MySQL ---
+    @property
+    def is_staff(self):
+        return self.rol == RolUsuario.ADMIN
+
+    @property
+    def is_superuser(self):
+        return self.rol == RolUsuario.ADMIN
+
+    @property
+    def is_active(self):
+        return self.estado
+
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
 
 
 class RegistroActividad(models.Model):
