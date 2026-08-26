@@ -308,12 +308,14 @@ class CategoriaForm(forms.ModelForm):
             ),
         }
 
-        labels = {
-            'nombre': 'Nombre de Categoría',
-            'descripcion': 'Descripción',
-        }
+from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from django.contrib import messages # type: ignore
+from django.core.mail import send_mail
 
-    def clean_nombre(self):
+def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
 
         return validar_texto(
@@ -321,7 +323,7 @@ class CategoriaForm(forms.ModelForm):
             'nombre de la categoría'
         )
 
-    def clean_descripcion(self):
+def clean_descripcion(self):
         descripcion = self.cleaned_data.get('descripcion')
 
         return validar_descripcion(

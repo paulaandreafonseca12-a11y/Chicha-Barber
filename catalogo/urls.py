@@ -54,6 +54,9 @@ urlpatterns = [
 ]
 
 
+from django.urls import path
+from . import views
+
 
 
 path('promocion/', views.promocion, name='promocion'),
