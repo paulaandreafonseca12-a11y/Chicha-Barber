@@ -7,8 +7,8 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
 
-from servicios.forms import ServiciosEditarForm, ServiciosForm, PromocionForm
-from servicios.models import Promocion
+from servicios.forms import ServiciosEditarForm, ServiciosForm
+from catalogo.models import Promocion
 from usuarios.forms import CustomLoginForm
 from usuarios.models import RolUsuario
 from configuraciones.models import Carrusel
@@ -88,12 +88,3 @@ def inicio_admin(request):
     return render(request, 'index-admin.html', context)
 
 
-def crear_promocion(request):
-    if request.method == 'POST':
-        form = PromocionForm(request.POST, request.FILES)
-        if form.is_valid():
-            promocion = form.save()
-            messages.success(request, 'Promoción creada exitosamente.')
-            return redirect('crear_promocion')
-        else:
-            messages.error(request, 'Error al crear la promoción. Por favor, inténtalo de nuevo.')
