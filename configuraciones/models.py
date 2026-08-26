@@ -4,6 +4,8 @@ from django.db import models
 from django.utils.text import slugify
 from PIL import Image
 
+from usuarios.models import Usuario
+
 
 # ============================================================
 # CARRUSEL
@@ -14,6 +16,7 @@ from PIL import Image
 def carrusel_view(instance, filename):
     ext = filename.split('.')[-1]
     nombre_limpio = slugify(instance.nombre)
+
     return os.path.join(
         'carrusel/',
         f'{nombre_limpio}_{instance.pk}.{ext}'
@@ -21,6 +24,7 @@ def carrusel_view(instance, filename):
 
 
 class Carrusel(models.Model):
+
     fecha_creacion = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Fecha de creación'
@@ -67,6 +71,7 @@ class Carrusel(models.Model):
         # Guardar primero para obtener el ID
         # necesario para construir el nombre de la imagen.
         if self.pk is None and self.imagen:
+
             imagen_temporal = self.imagen
             self.imagen = None
 
@@ -74,11 +79,13 @@ class Carrusel(models.Model):
 
             self.imagen = imagen_temporal
             super().save(update_fields=['imagen'])
+
         else:
             super().save(*args, **kwargs)
 
         # Mantener máximo 4 carruseles activos
         if self.estado:
+
             carruseles_activos = (
                 Carrusel.objects
                 .filter(estado=True)
@@ -88,6 +95,7 @@ class Carrusel(models.Model):
             cantidad = carruseles_activos.count()
 
             if cantidad > 4:
+
                 ids_desactivar = list(
                     carruseles_activos
                     .exclude(pk=self.pk)
@@ -95,18 +103,22 @@ class Carrusel(models.Model):
                 )
 
                 if ids_desactivar:
+
                     Carrusel.objects.filter(
                         pk__in=ids_desactivar
                     ).update(estado=False)
 
         # Redimensionar imagen
         if self.imagen:
+
             try:
+
                 img = Image.open(self.imagen.path)
 
                 target_size = (1200, 500)
 
                 if img.size != target_size:
+
                     from PIL import ImageOps
 
                     if hasattr(Image, 'Resampling'):
@@ -131,6 +143,7 @@ class Carrusel(models.Model):
                     img.save(self.imagen.path)
 
             except Exception as e:
+
                 print(
                     f'Error al redimensionar la imagen: {e}'
                 )
@@ -139,12 +152,30 @@ class Carrusel(models.Model):
 # ============================================================
 # CONFIGURACIÓN
 # Corresponde a la entidad "configuracion" del MER.
+# Relacionada con Usuario.
 # ============================================================
 
 class Configuracion(models.Model):
+
     codigo = models.AutoField(
         primary_key=True,
         verbose_name='Código'
+    )
+
+    # --------------------------------------------------------
+    # RELACIÓN CON USUARIO
+    # Un usuario puede tener una configuración.
+    # La configuración pertenece a un usuario.
+    # --------------------------------------------------------
+
+    usuario = models.OneToOneField(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='configuracion',
+        null=True,
+        blank=True,
+        verbose_name='Usuario',
+        db_column='usuario_id'
     )
 
     fecha_realizacion = models.DateTimeField(
@@ -180,6 +211,7 @@ class Configuracion(models.Model):
 # ============================================================
 
 def imagen_upload_path(instance, filename):
+
     ext = filename.split('.')[-1]
     nombre_limpio = slugify(instance.nombre)
 
@@ -190,19 +222,26 @@ def imagen_upload_path(instance, filename):
 
 
 class Imagen(models.Model):
+
     codigo = models.AutoField(
         primary_key=True,
         verbose_name='Código'
     )
 
-    # Corrección: FK que faltaba según el MER ("imagen pertenece a configuracion")
+    # --------------------------------------------------------
+    # RELACIÓN:
+    # Una configuración puede tener varias imágenes.
+    # Una imagen pertenece a una configuración.
+    # --------------------------------------------------------
+
     configuracion = models.ForeignKey(
         Configuracion,
         on_delete=models.CASCADE,
         related_name='imagenes',
         null=True,
         blank=True,
-        verbose_name='Configuración'
+        verbose_name='Configuración',
+        db_column='configuracion_id'
     )
 
     nombre = models.CharField(
@@ -234,6 +273,7 @@ class Imagen(models.Model):
 # ============================================================
 
 def eliminar_carrusel(instance, filename):
+
     ext = filename.split('.')[-1]
     nombre_limpio = slugify(instance.nombre)
 
@@ -244,6 +284,7 @@ def eliminar_carrusel(instance, filename):
 
 
 def editar_carrusel(instance, filename):
+
     ext = filename.split('.')[-1]
     nombre_limpio = slugify(instance.nombre)
 
