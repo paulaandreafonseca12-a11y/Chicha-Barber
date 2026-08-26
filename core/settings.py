@@ -1,44 +1,34 @@
 import os
 from pathlib import Path
+# pyrefly: ignore [missing-import]
 from decouple import config
-import certifi
+import certifi 
 
 # ======================================================
 # BASE DIR
 # ======================================================
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ======================================================
 # SECURITY
 # ======================================================
-
 SECRET_KEY = config("SECRET_KEY")
-
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-# Nota: Recuerda agregar tus dominios aquí si dejas DEBUG en False en producción
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=lambda v: [s.strip() for s in v.split(",") if s.strip()]) if not DEBUG else ["*"]
-
 
 # ======================================================
 # APPLICATIONS
 # ======================================================
-
 INSTALLED_APPS = [
-    # DJANGO
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # CRISPY
     'crispy_forms',
     'crispy_bootstrap5',
-
-    # APPS
     'servicios',
     'reservas',
     'usuarios',
@@ -54,11 +44,9 @@ INSTALLED_APPS = [
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-
 # ======================================================
 # MIDDLEWARE
 # ======================================================
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,24 +57,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 # ======================================================
 # URLS
 # ======================================================
-
 ROOT_URLCONF = 'core.urls'
-
 
 # ======================================================
 # TEMPLATES
 # ======================================================
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
-        ],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,112 +82,64 @@ TEMPLATES = [
     },
 ]
 
-
 # ======================================================
 # WSGI
 # ======================================================
-
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
 # ======================================================
-# DATABASE
+# DATABASE (CORREGIDO A SQLITE)
 # ======================================================
-
-DATABASES = {    
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bdchichabarber',
         'USER': 'root',       
-        'PASSWORD': '1234567',      
+        'PASSWORD': 'S100253726925s',      
         'HOST': '127.0.0.1',             
-        'PORT': '3306',                 
-        'OPTIONS': {
+        'PORT': '3306', 'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
 }
 
-
-
 # ======================================================
 # PASSWORD VALIDATION
 # ======================================================
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
 # ======================================================
-# LANGUAGE
+# LANGUAGE & TIME
 # ======================================================
-
 LANGUAGE_CODE = 'es-co'
-
 TIME_ZONE = 'America/Bogota'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # ======================================================
-# STATIC FILES
+# STATIC & MEDIA FILES
 # ======================================================
-
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
-
-
-# ======================================================
-# MEDIA FILES
-# ======================================================
-
+STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
 # ======================================================
-# LOGIN
+# LOGIN & USER
 # ======================================================
-
-# CUANDO EL USUARIO NO ESTÁ LOGUEADO LO ENVÍA AL REGISTRO
 LOGIN_URL = '/usuarios/registro/'
-
-# DESPUÉS DEL LOGIN
 LOGIN_REDIRECT_URL = '/'
-
-# DESPUÉS DEL LOGOUT
 LOGOUT_REDIRECT_URL = '/'
-
-
-# ======================================================
-# CUSTOM USER
-# ======================================================
-
 AUTH_USER_MODEL = 'usuarios.Usuario'
-
 
 # ======================================================
 # EMAIL
 # ======================================================
-
 os.environ["SSL_CERT_FILE"] = certifi.where()
 os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
@@ -217,21 +151,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
-
 EMAIL_TIMEOUT = 30
 
-
 # ======================================================
-# DEFAULT AUTO FIELD
+# SESSIONS & AUTO FIELD
 # ======================================================
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# ======================================================
-# SESSIONS
-# ======================================================
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_HTTPONLY = True
