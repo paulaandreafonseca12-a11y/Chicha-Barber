@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'servicios',
     'reservas',
     'usuarios',
-    'productos',
     'configuraciones',
-    'facturas',
+    'catalogo',
+    'compra',
+    'venta',
+    'historial',
     'chat_ia',
     'soporte',
 ]
