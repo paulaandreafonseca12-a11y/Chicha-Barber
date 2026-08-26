@@ -11,9 +11,8 @@
          alt="Chicha Barber"
          height="50"
          class="me-2">
-
     <span class="fs-4 fw-bold">Chicha Barber</span>
-</div>
+  </div>
   <hr class="border-secondary" />
 
   <!-- ENLACE PRINCIPAL AL DASHBOARD -->
@@ -29,7 +28,7 @@
     <!-- GESTIÓN DE SERVICIOS -->
     <div class="accordion-item bg-dark border-0">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios" {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}{% endif %}>
+        <button class="accordion-button {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios">
           <i class="bi bi-gear-wide-connected me-2"></i> Gestión de Servicios
         </button>
       </h2>
@@ -45,9 +44,9 @@
     </div>
 
     <!-- OFERTAS Y PROMOS -->
-    <div class="accordion-item bg-dark border-0 ">
+    <div class="accordion-item bg-dark border-0">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'promocion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'promocion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromos" {% if 'promocion' in request.path %}{% endif %}>
+        <button class="accordion-button {% if 'promocion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'promocion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromos">
           <i class="bi bi-megaphone me-2"></i> Ofertas y Promos
         </button>
       </h2>
@@ -63,9 +62,9 @@
     </div>
 
     <!-- CALIFICACIONES -->
-    <div class="accordion-item bg-dark border-0 ">
+    <div class="accordion-item bg-dark border-0">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'calificacion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'calificacion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCalificaciones" {% if 'calificacion' in request.path %}{% endif %}>
+        <button class="accordion-button {% if 'calificacion' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'calificacion' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCalificaciones">
           <i class="bi bi-star me-2"></i> Calificaciones
         </button>
       </h2>
@@ -81,9 +80,9 @@
     </div>
 
     <!-- RESERVAS -->
-    <div class="accordion-item bg-dark border-0 ">
+    <div class="accordion-item bg-dark border-0">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'reservas' in request.path or 'agenda' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'reservas' in request.path or 'agenda' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-9" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReservas" {% if 'reservas' in request.path or 'agenda' in request.path %}{% endif %}>
+        <button class="accordion-button {% if 'reservas' in request.path or 'agenda' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'reservas' in request.path or 'agenda' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-9" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReservas">
           <i class="bi bi-calendar-event me-2"></i> Reservas
         </button>
       </h2>
@@ -98,184 +97,103 @@
       </div>
     </div>
 
-    <!-- PRODUCTOS -->
-<div class="accordion-item bg-dark border-0">
-
-    <h2 class="accordion-header">
-
-        <button
-            class="accordion-button
-            {% if 'productos' in request.path and 'datos-banco' not in request.path %}
-            {% else %}
-            collapsed
-            {% endif %}
-            bg-dark
-            {% if 'productos' in request.path and 'datos-banco' not in request.path %}
-            text-white fw-bold
-            {% else %}
-            text-white
-            {% endif %}
-            shadow-none border-0 partials-aside__button-11"
-
-            type="button"
-
-            data-bs-toggle="collapse"
-
-            data-bs-target="#collapseProductos"
-
-            aria-expanded="{% if 'productos' in request.path and 'datos-banco' not in request.path %}true{% else %}false{% endif %}">
-            
-            <i class="bi bi-box-seam me-2"></i>
-            Productos
-
+    <!-- PRODUCTOS & INVENTARIO -->
+    <div class="accordion-item bg-dark border-0">
+      <h2 class="accordion-header">
+        <button class="accordion-button {% if 'productos' in request.path and 'datos-banco' not in request.path or 'compras' in request.path or 'ventas' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'productos' in request.path and 'datos-banco' not in request.path or 'compras' in request.path or 'ventas' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-11"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseProductos"
+                aria-expanded="{% if 'productos' in request.path and 'datos-banco' not in request.path or 'compras' in request.path or 'ventas' in request.path %}true{% else %}false{% endif %}">
+          <i class="bi bi-box-seam me-2"></i> Productos
         </button>
+      </h2>
 
-    </h2>
-
-
-    <div id="collapseProductos"
-
-         class="accordion-collapse collapse
-         {% if 'productos' in request.path and 'datos-banco' not in request.path %}
-         show
-         {% endif %}"
-
-         data-bs-parent="#sidebarAccordion">
-
+      <div id="collapseProductos"
+           class="accordion-collapse collapse {% if 'productos' in request.path and 'datos-banco' not in request.path or 'compras' in request.path or 'ventas' in request.path %}show{% endif %}"
+           data-bs-parent="#sidebarAccordion">
         <div class="accordion-body p-0">
+          <div class="list-group list-group-flush">
 
-            <div class="list-group list-group-flush">
+            <!-- LISTA PRODUCTOS -->
+            <a href="{% url 'lista_productos_admin' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_productos_admin,crear_producto,editar_producto,eliminar_producto' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_productos_admin,crear_producto,editar_producto,eliminar_producto' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-list-ul me-2"></i> Lista de Productos
+            </a>
 
+            <!-- CATEGORÍAS -->
+            <a href="{% url 'lista_categorias' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_categorias,crear_categoria,editar_categoria,eliminar_categoria' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_categorias,crear_categoria,editar_categoria,eliminar_categoria' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-grid me-2"></i> Categorías
+            </a>
 
-                <!-- ========================= -->
-                <!-- LISTA PRODUCTOS -->
-                <!-- ========================= -->
+            <!-- MARCAS -->
+            <a href="{% url 'lista_marcas' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_marcas,crear_marca,editar_marca,eliminar_marca' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_marcas,crear_marca,editar_marca,eliminar_marca' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-tags me-2"></i> Marcas
+            </a>
 
-                <a href="{% url 'lista_productos_admin' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_productos_admin' or request.resolver_match.url_name == 'crear_producto' or request.resolver_match.url_name == 'editar_producto' or request.resolver_match.url_name == 'eliminar_producto' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_productos_admin' or request.resolver_match.url_name == 'crear_producto' or request.resolver_match.url_name == 'editar_producto' or request.resolver_match.url_name == 'eliminar_producto' %}color:#22aed1;{% endif %}">
+            <!-- PROVEEDORES -->
+            <a href="{% url 'lista_proveedores' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_proveedores,crear_proveedor,editar_proveedor,eliminar_proveedor' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_proveedores,crear_proveedor,editar_proveedor,eliminar_proveedor' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-truck me-2"></i> Proveedores
+            </a>
 
-                    <i class="bi bi-list-ul me-2"></i>
-                    Lista de Productos
+            <!-- EXISTENCIAS -->
+            <a href="{% url 'lista_existencias' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_existencias,editar_existencias' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_existencias,editar_existencias' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-boxes me-2"></i> Detalle Producto
+            </a>
 
-                </a>
+            <!-- MOVIMIENTOS -->
+            <a href="{% url 'lista_movimientos_existencias' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_movimientos_existencias,registrar_movimiento_existencias,eliminar_movimiento_existencias' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_movimientos_existencias,registrar_movimiento_existencias,eliminar_movimiento_existencias' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-arrow-left-right me-2"></i> Movimiento de productos
+            </a>
 
+            <!-- BITÁCORA -->
+            <a href="{% url 'lista_bitacora' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_bitacora,editar_bitacora' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_bitacora,editar_bitacora' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-journal-text me-2"></i> Bitácora
+            </a>
 
-                <!-- ========================= -->
-                <!-- CATEGORÍAS -->
-                <!-- ========================= -->
+            <!-- COMPRAS -->
+            <a href="{% url 'lista_compras' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'lista_compras,registrar_compra,detalle_compra,editar_compra,eliminar_compra' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'lista_compras,registrar_compra,detalle_compra,editar_compra,eliminar_compra' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-box-arrow-in-down me-2"></i> Compras
+            </a>
 
-                <a href="{% url 'lista_categorias' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_categorias' or request.resolver_match.url_name == 'crear_categoria' or request.resolver_match.url_name == 'editar_categoria' or request.resolver_match.url_name == 'eliminar_categoria' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_categorias' or request.resolver_match.url_name == 'crear_categoria' or request.resolver_match.url_name == 'editar_categoria' or request.resolver_match.url_name == 'eliminar_categoria' %}color:#22aed1;{% endif %}">
+            <!-- VENTAS -->
+            <a href="{% url 'historial_ventas' %}"
+               class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name in 'historial_ventas,detalle_venta,registrar_venta' %}fw-bold{% else %}text-white-50{% endif %}"
+               style="{% if request.resolver_match.url_name in 'historial_ventas,detalle_venta,registrar_venta' %}color:#22aed1;{% endif %}">
+              <i class="bi bi-cart-check me-2"></i> Ventas
+            </a>
 
-                    <i class="bi bi-grid me-2"></i>
-                    Categorías
-
-                </a>
-
-
-                <!-- ========================= -->
-                <!-- MARCAS -->
-                <!-- ========================= -->
-
-                <a href="{% url 'lista_marcas' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_marcas' or request.resolver_match.url_name == 'crear_marca' or request.resolver_match.url_name == 'editar_marca' or request.resolver_match.url_name == 'eliminar_marca' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_marcas' or request.resolver_match.url_name == 'crear_marca' or request.resolver_match.url_name == 'editar_marca' or request.resolver_match.url_name == 'eliminar_marca' %}color:#22aed1;{% endif %}">
-
-                    <i class="bi bi-tags me-2"></i>
-                    Marcas
-
-                </a>
-
-
-
-                <!-- ========================= -->
-                <!-- PROVEEDORES -->
-                <!-- ========================= -->
-
-                <a href="{% url 'lista_proveedores' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_proveedores' or request.resolver_match.url_name == 'crear_proveedor' or request.resolver_match.url_name == 'editar_proveedor' or request.resolver_match.url_name == 'eliminar_proveedor' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_proveedores' or request.resolver_match.url_name == 'crear_proveedor' or request.resolver_match.url_name == 'editar_proveedor' or request.resolver_match.url_name == 'eliminar_proveedor' %}color:#22aed1;{% endif %}">
-
-                    <i class="bi bi-truck me-2"></i>
-                    Proveedores
-
-                </a>
-
-
-                <!-- ========================= -->
-                <!-- existencias -->
-                <!-- ========================= -->
-
-                <a href="{% url 'lista_existencias' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_existencias' or request.resolver_match.url_name == 'editar_existencias' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_existencias' or request.resolver_match.url_name == 'editar_existencias' %}color:#22aed1;{% endif %}">
-
-                    <i class="bi bi-boxes me-2"></i>
-                    existencias
-
-                </a>
-
-                <a href="{% url 'lista_movimientos_existencias' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_movimientos_existencias' or request.resolver_match.url_name == 'registrar_movimiento_existencias' or request.resolver_match.url_name == 'eliminar_movimiento_existencias' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_movimientos_existencias' or request.resolver_match.url_name == 'registrar_movimiento_existencias' or request.resolver_match.url_name == 'eliminar_movimiento_existencias' %}color:#22aed1;{% endif %}">
-                    <i class="bi bi-arrow-left-right me-2"></i>
-                    Movimiento de existencias
-                </a>
-
-                <a href="{% url 'lista_bitacora' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_bitacora' or request.resolver_match.url_name == 'editar_bitacora' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_bitacora' or request.resolver_match.url_name == 'editar_bitacora' %}color:#22aed1;{% endif %}">
-                    <i class="bi bi-journal-text me-2"></i>
-                    Bitácora
-                </a>
-
-                <!-- ========================= -->
-                <!-- ADQUISICIONES -->
-                <!-- ========================= -->
-
-                <a href="{% url 'lista_adquisiciones' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'lista_adquisiciones' or request.resolver_match.url_name == 'registrar_adquisicion' or request.resolver_match.url_name == 'editar_adquisicion' or request.resolver_match.url_name == 'eliminar_adquisicion' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'lista_adquisiciones' or request.resolver_match.url_name == 'registrar_adquisicion' or request.resolver_match.url_name == 'editar_adquisicion' or request.resolver_match.url_name == 'eliminar_adquisicion' %}color:#22aed1;{% endif %}">
-
-                    <i class="bi bi-box-arrow-in-down me-2"></i>
-                    Adquisiciones
-
-                </a>
-                <!-- ========================= -->
-                <!-- VENTAS -->
-                <!-- ========================= -->
-
-                <a href="{% url 'historial_ventas' %}"
-                   class="list-group-item list-group-item-action bg-dark border-0 ps-4 {% if request.resolver_match.url_name == 'historial_ventas' or request.resolver_match.url_name == 'detalle_venta' or request.resolver_match.url_name == 'registrar_venta' %}fw-bold{% else %}text-white-50{% endif %}"
-                   style="{% if request.resolver_match.url_name == 'historial_ventas' or request.resolver_match.url_name == 'detalle_venta' or request.resolver_match.url_name == 'registrar_venta' %}color:#22aed1;{% endif %}">
-
-                    <i class="bi bi-cart-check me-2"></i>
-                    Ventas
-
-                </a>
-
-
-            </div>
-
+          </div>
         </div>
-
+      </div>
     </div>
 
-</div>
-
     <!-- USUARIOS -->
-    <div class="accordion-item bg-dark border-0 ">
+    <div class="accordion-item bg-dark border-0">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'usuarios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'usuarios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-15" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" {% if 'usuarios' in request.path %}{% endif %}>
+        <button class="accordion-button {% if 'usuarios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'usuarios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-15" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios">
           <i class="bi bi-people me-2"></i> Usuarios
         </button>
       </h2>
       <div id="collapseUsuarios" class="accordion-collapse collapse {% if 'usuarios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
         <div class="accordion-body p-0">
           <div class="list-group list-group-flush">
-            <a href="{% url 'lista_usuarios' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'lista_usuarios' or request.resolver_match.url_name == 'crear_usuario' or request.resolver_match.url_name == 'editar_usuario' %}fw-bold{% else %}text-white-50{% endif %} border-0 ps-4" style="{% if request.resolver_match.url_name == 'lista_usuarios' or request.resolver_match.url_name == 'crear_usuario' or request.resolver_match.url_name == 'editar_usuario' %}color: #22aed1;{% endif %}">
+            <a href="{% url 'lista_usuarios' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name in 'lista_usuarios,crear_usuario,editar_usuario' %}fw-bold{% else %}text-white-50{% endif %} border-0 ps-4" style="{% if request.resolver_match.url_name in 'lista_usuarios,crear_usuario,editar_usuario' %}color: #22aed1;{% endif %}">
               <i class="bi bi-person me-2"></i> Lista de usuarios
             </a>
           </div>
@@ -284,9 +202,9 @@
     </div>
 
     <!-- CONFIGURACIÓN -->
-    <div class="accordion-item bg-dark border-0 ">
+    <div class="accordion-item bg-dark border-0">
       <h2 class="accordion-header">
-        <button class="accordion-button {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-17" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion" {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% endif %}>
+        <button class="accordion-button {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-17" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion">
           <i class="bi bi-gear me-2"></i> Configuración
         </button>
       </h2>
@@ -296,29 +214,11 @@
             <a href="{% url 'carrusel' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'carrusel' %}fw-bold{% else %}text-white-50{% endif %} border-0 ps-4" style="{% if request.resolver_match.url_name == 'carrusel' %}color: #22aed1;{% endif %}">
               <i class="bi bi-images me-2"></i> Carrusel
             </a>
-            <a href="{% url 'ver_datos_banco' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'ver_datos_banco' or request.resolver_match.url_name == 'editar_datos_banco' %}fw-bold{% else %}text-white-50{% endif %} border-0 ps-4" style="{% if request.resolver_match.url_name == 'ver_datos_banco' or request.resolver_match.url_name == 'editar_datos_banco' %}color: #22aed1;{% endif %}">
+            <a href="{% url 'ver_datos_banco' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name in 'ver_datos_banco,editar_datos_banco' %}fw-bold{% else %}text-white-50{% endif %} border-0 ps-4" style="{% if request.resolver_match.url_name in 'ver_datos_banco,editar_datos_banco' %}color: #22aed1;{% endif %}">
               <i class="bi bi-bank me-2"></i> Datos Banco
             </a>
             <a href="{% url 'testimonios_admin' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'testimonios_admin' %}fw-bold{% else %}text-white-50{% endif %} border-0 ps-4" style="{% if request.resolver_match.url_name == 'testimonios_admin' %}color: #22aed1;{% endif %}">
               <i class="bi bi-chat-quote me-2"></i> Testimonios
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FACTURAS -->
-    <div class="accordion-item bg-dark border-0 ">
-      <h2 class="accordion-header">
-        <button class="accordion-button {% if 'factura' in request.path %}{% else %}collapsed{% endif %} bg-dark {% if 'factura' in request.path %}text-white fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-21" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFacturas" {% if 'factura' in request.path %}{% endif %}>
-          <i class="bi bi-receipt me-2"></i> Comprobantes 
-        </button>
-      </h2>
-      <div id="collapseFacturas" class="accordion-collapse collapse {% if 'factura' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
-        <div class="accordion-body p-0">
-          <div class="list-group list-group-flush">
-            <a href="{% url 'factura_adm' %}" class="list-group-item list-group-item-action bg-dark {% if request.resolver_match.url_name == 'factura_adm' or request.resolver_match.url_name == 'detalle_factura' %}fw-bold{% else %}text-white-50{% endif %} border-0 ps-4" style="{% if request.resolver_match.url_name == 'factura_adm' or request.resolver_match.url_name == 'detalle_factura' %}color: #22aed1;{% endif %}">
-              <i class="bi bi-receipt-cutoff me-2"></i> Lista de comprobantes
             </a>
           </div>
         </div>

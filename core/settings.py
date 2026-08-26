@@ -32,9 +32,11 @@ INSTALLED_APPS = [
     'servicios',
     'reservas',
     'usuarios',
-    'productos',
     'configuraciones',
-    'facturas',
+    'catalogo',
+    'compra',
+    'venta',
+    'historial',
     'chat_ia',
     'soporte',
 ]
@@ -130,7 +132,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ======================================================
 # LOGIN & USER
 # ======================================================
-LOGIN_URL = '/usuarios/registro/'
+
+# CUANDO EL USUARIO NO ESTÁ LOGUEADO LO ENVÍA AL REGISTRO
+LOGIN_URL = 'login'
+
+# DESPUÉS DEL LOGIN
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'usuarios.Usuario'
