@@ -184,7 +184,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ======================================================
 
 # CUANDO EL USUARIO NO ESTÁ LOGUEADO LO ENVÍA AL REGISTRO
-LOGIN_URL = '/usuarios/registro/'
+LOGIN_URL = 'login'
 
 # DESPUÉS DEL LOGIN
 LOGIN_REDIRECT_URL = '/'
