@@ -346,7 +346,7 @@ class MarcaForm(forms.ModelForm):
 from django import forms # type: ignore
 from django.forms import ModelForm # type: ignore
 from django.contrib.admin.widgets import FilteredSelectMultiple # type: ignore
-from .models import  Promocion
+from servicios.models import Promocion
 
 class PromocionForm(ModelForm):
     class Meta:

@@ -12,18 +12,25 @@ from .forms import CrearUsuarioAdminForm
 @admin.register(Usuario)
 class UsuarioAdmin(UserAdmin):
 
+    # UsuarioAdmin ya no puede reutilizar los fieldsets/list_display
+    # por defecto de UserAdmin, porque nuestro modelo Usuario es
+    # totalmente personalizado (hereda de AbstractBaseUser, no de
+    # AbstractUser) y no tiene username, first_name, last_name,
+    # date_joined, groups ni user_permissions. is_staff/is_superuser/
+    # is_active son @property calculadas, no columnas editables.
+
+    model = Usuario
+    add_form = CrearUsuarioAdminForm
+
     # =====================================================
     # FORMULARIO PARA CREAR USUARIOS
     # =====================================================
-
-    add_form = CrearUsuarioAdminForm
 
     add_fieldsets = (
         (
             'Información de acceso',
             {
                 'fields': (
-                    'username',
                     'email',
                     'password1',
                     'password2',
@@ -36,9 +43,10 @@ class UsuarioAdmin(UserAdmin):
             {
                 'fields': (
                     'tipo_documento',
-                    'first_name',
+                    'numero_documento',
+                    'primer_nombre',
                     'segundo_nombre',
-                    'last_name',
+                    'primer_apellido',
                     'segundo_apellido',
                     'telefono',
                     'foto_perfil',
@@ -54,7 +62,6 @@ class UsuarioAdmin(UserAdmin):
                     'estado',
                     'especialidad',
                     'tema',
-                    'is_staff',
                 )
             }
         ),
@@ -65,15 +72,14 @@ class UsuarioAdmin(UserAdmin):
     # =====================================================
 
     list_display = (
-        'username',
-        'tipo_documento',
-        'first_name',
-        'last_name',
         'email',
+        'tipo_documento',
+        'primer_nombre',
+        'primer_apellido',
         'telefono',
         'rol',
         'estado',
-        'date_joined',
+        'fecha_creacion',
     )
 
     # =====================================================
@@ -84,7 +90,6 @@ class UsuarioAdmin(UserAdmin):
         'rol',
         'estado',
         'tipo_documento',
-        'is_staff',
     )
 
     # =====================================================
@@ -92,10 +97,10 @@ class UsuarioAdmin(UserAdmin):
     # =====================================================
 
     search_fields = (
-        'username',
-        'first_name',
-        'last_name',
         'email',
+        'primer_nombre',
+        'primer_apellido',
+        'numero_documento',
         'telefono',
     )
 
@@ -103,7 +108,7 @@ class UsuarioAdmin(UserAdmin):
     # ORDEN
     # =====================================================
 
-    ordering = ('-date_joined',)
+    ordering = ('-fecha_creacion',)
 
     # =====================================================
     # CAMPOS DE SOLO LECTURA
@@ -111,8 +116,12 @@ class UsuarioAdmin(UserAdmin):
 
     readonly_fields = (
         'last_login',
-        'date_joined',
+        'fecha_creacion',
     )
+
+    # Al no tener username, Django necesita saber cuál es
+    # el "identificador visual" de cada usuario en el admin.
+    filter_horizontal = ()
 
     # =====================================================
     # FORMULARIO PARA EDITAR USUARIOS
@@ -123,9 +132,10 @@ class UsuarioAdmin(UserAdmin):
             None,
             {
                 'fields': (
-                    'username',
+                    'email',
                     'password',
                     'tipo_documento',
+                    'numero_documento',
                 )
             }
         ),
@@ -134,11 +144,10 @@ class UsuarioAdmin(UserAdmin):
             'Información personal',
             {
                 'fields': (
-                    'first_name',
+                    'primer_nombre',
                     'segundo_nombre',
-                    'last_name',
+                    'primer_apellido',
                     'segundo_apellido',
-                    'email',
                     'telefono',
                     'foto_perfil',
                 )
@@ -158,24 +167,11 @@ class UsuarioAdmin(UserAdmin):
         ),
 
         (
-            'Permisos',
-            {
-                'fields': (
-                    'is_active',
-                    'is_staff',
-                    'is_superuser',
-                    'groups',
-                    'user_permissions',
-                )
-            }
-        ),
-
-        (
             'Fechas',
             {
                 'fields': (
                     'last_login',
-                    'date_joined',
+                    'fecha_creacion',
                 )
             }
         ),
@@ -186,10 +182,6 @@ class UsuarioAdmin(UserAdmin):
     # =====================================================
 
     def save_model(self, request, obj, form, change):
-        # Mantener sincronizado el estado personalizado
-        # con el estado de autenticación de Django.
-        obj.is_active = obj.estado
-
         super().save_model(request, obj, form, change)
 
 
@@ -214,7 +206,6 @@ class RegistroActividadAdmin(admin.ModelAdmin):
 
     search_fields = (
         'descripcion',
-        'usuario__username',
         'usuario__email',
     )
 
@@ -242,6 +233,5 @@ class NotificacionAdmin(admin.ModelAdmin):
 
     search_fields = (
         'mensaje',
-        'usuario__username',
         'usuario__email',
     )
