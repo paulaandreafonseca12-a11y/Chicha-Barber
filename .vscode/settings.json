@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "Registrarse"
+    ],
+    "python.analysis.extraPaths": [
+        "./venta"
     ]
 }

@@ -20,13 +20,7 @@ class ArticuloFAQ(models.Model):
     def __str__(self):
         return self.titulo
 
-class TicketSoporte(models.Model):
-    ESTADOS = [
-        ('ABIERTO', 'Abierto'),
-        ('PROCESO', 'En Proceso'),
-        ('RESUELTO', 'Resuelto'),
-    ]
-    
+
     # 2. CAMBIA ESTA LÍNEA: Usa settings.AUTH_USER_MODEL
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     categoria = models.ForeignKey(CategoriaAyuda, on_delete=models.SET_NULL, null=True)
