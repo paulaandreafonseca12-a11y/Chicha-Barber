@@ -578,7 +578,7 @@ def promocion(request):
         'titulo': 'Promociones',
         'promociones': promociones
     }
-    return render(request, 'servicios/promocion.html', context)
+    return render(request, 'catalogo/promocion/promocion.html', context)
 
 def listado_promocion(request):
     promociones = Promocion.objects.all()
@@ -589,7 +589,7 @@ def listado_promocion(request):
         'activas': promociones.filter(estado=True).count(),
         'inactivas': promociones.filter(estado=False).count(),
     }
-    return render(request, 'servicios/listado-promocion.html', context)
+    return render(request, 'catalogo/promocion/listado-promocion.html', context)
 
 
 
@@ -615,7 +615,7 @@ def crear_promocion(request):
         form = PromocionForm()
     
     # 4. Renderizado del template
-    return render(request, 'servicios/agregar_promocion.html', {
+    return render(request, 'catalogo/promocion/agregar_promocion.html', {
         'form': form,
         'titulo': 'Crear Nueva Promoción'
     })
@@ -637,7 +637,7 @@ def editar_promocion(request, pk):
         # ERROR CORREGIDO: Aquí usabas PromocionForm en lugar de Editar si correspondía
         form = PromocionEditarForm(instance=promocion)
 
-    return render(request, 'servicios/editar_promocion.html', {'form': form, 'promocion': promocion})
+    return render(request, 'catalogo/promocion/editar_promocion.html', {'form': form, 'promocion': promocion})
 
 @login_required
 def eliminar_promocion(request, pk):
@@ -650,4 +650,4 @@ def eliminar_promocion(request, pk):
         promocion.delete()
         messages.success(request, 'Promoción eliminada.')
         return redirect('listado-promocion')
-    return render(request, 'servicios/eliminar_promocion.html', {'promocion': promocion})
+    return render(request, 'catalogo/promocion/eliminar_promocion.html', {'promocion': promocion})
