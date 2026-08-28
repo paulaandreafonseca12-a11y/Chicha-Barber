@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Usuario, RegistroActividad, Notificacion
+from .models import Usuario, HistorialAccion, Notificacion
 from .forms import CrearUsuarioAdminForm
 
 
@@ -189,7 +189,7 @@ class UsuarioAdmin(UserAdmin):
 # REGISTRO DE ACTIVIDADES
 # =========================================================
 
-@admin.register(RegistroActividad)
+@admin.register(HistorialAccion)
 class RegistroActividadAdmin(admin.ModelAdmin):
 
     list_display = (
