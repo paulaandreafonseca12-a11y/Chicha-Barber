@@ -1,3 +1,5 @@
+from django.db.models import Q
+from usuarios.models import HistorialAccion
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
 from django.db import transaction
