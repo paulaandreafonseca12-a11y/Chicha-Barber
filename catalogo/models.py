@@ -2,24 +2,27 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# Importación del modelo Servicio para las promociones
 from servicios.models import Servicios
 
 
 # ==========================================================
 # 1. CATEGORÍA
 # ==========================================================
+
 class Categoria(models.Model):
+
     codigo = models.AutoField(primary_key=True)
+
     nombre = models.CharField(
         max_length=100,
         unique=True,
-        verbose_name="Nombre de la Categoría"
+        verbose_name="Nombre de la Categoría",
     )
+
     descripcion = models.TextField(
         blank=True,
         null=True,
-        verbose_name="Descripción"
+        verbose_name="Descripción",
     )
 
     def __str__(self):
@@ -33,29 +36,35 @@ class Categoria(models.Model):
 # ==========================================================
 # 2. PROVEEDOR
 # ==========================================================
+
 class Proveedor(models.Model):
+
     codigo = models.AutoField(primary_key=True)
+
     nombre = models.CharField(
         max_length=150,
         unique=True,
-        verbose_name="Nombre del Proveedor"
+        verbose_name="Nombre del Proveedor",
     )
+
     telefono = models.CharField(
         max_length=20,
         blank=True,
         null=True,
-        verbose_name="Teléfono"
+        verbose_name="Teléfono",
     )
+
     correo = models.EmailField(
         blank=True,
         null=True,
-        verbose_name="Correo Electrónico"
+        verbose_name="Correo Electrónico",
     )
+
     direccion = models.CharField(
         max_length=200,
         blank=True,
         null=True,
-        verbose_name="Dirección"
+        verbose_name="Dirección",
     )
 
     def __str__(self):
@@ -69,21 +78,26 @@ class Proveedor(models.Model):
 # ==========================================================
 # 3. MARCA
 # ==========================================================
+
 class Marca(models.Model):
+
     codigo = models.AutoField(primary_key=True)
+
     nombre = models.CharField(
         max_length=100,
         unique=True,
-        verbose_name="Nombre de la Marca"
+        verbose_name="Nombre de la Marca",
     )
+
     descripcion = models.TextField(
         blank=True,
         null=True,
-        verbose_name="Descripción"
+        verbose_name="Descripción",
     )
+
     estado = models.BooleanField(
         default=True,
-        verbose_name="Estado"
+        verbose_name="Estado",
     )
 
     def __str__(self):
@@ -97,71 +111,91 @@ class Marca(models.Model):
 # ==========================================================
 # 4. PRODUCTO
 # ==========================================================
+
 class Producto(models.Model):
-    codigo_producto = models.AutoField(primary_key=True)
+
+    codigo_producto = models.AutoField(
+        primary_key=True
+    )
+
     codigo = models.CharField(
         max_length=20,
         unique=True,
-        blank=True
+        blank=True,
     )
+
     codigo_detalle_producto = models.ForeignKey(
         "DetalleProducto",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="producto_principal",
-        verbose_name="Detalle de Producto"
+        verbose_name="Detalle de Producto",
     )
+
     nombre = models.CharField(
         max_length=100,
-        verbose_name="Nombre del Producto"
+        verbose_name="Nombre del Producto",
     )
+
     descripcion = models.TextField(
-        verbose_name="Descripción"
+        verbose_name="Descripción",
     )
+
     imagen = models.ImageField(
         upload_to="productos/",
         null=True,
         blank=True,
-        verbose_name="Imagen"
+        verbose_name="Imagen",
     )
+
     estado = models.BooleanField(
         default=True,
-        verbose_name="Activo"
+        verbose_name="Activo",
     )
+
     precio = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        verbose_name="Precio Base"
+        verbose_name="Precio Base",
     )
+
     codigo_categoria = models.ForeignKey(
         Categoria,
         on_delete=models.PROTECT,
         related_name="productos",
         null=True,
         blank=True,
-        verbose_name="Categoría"
+        verbose_name="Categoría",
     )
+
     codigo_marca = models.ForeignKey(
         Marca,
         on_delete=models.SET_NULL,
         related_name="productos",
         null=True,
         blank=True,
-        verbose_name="Marca"
+        verbose_name="Marca",
     )
 
     def save(self, *args, **kwargs):
+
         super().save(*args, **kwargs)
+
         if not self.codigo:
             self.codigo = f"PROD-{self.codigo_producto:05d}"
-            super().save(update_fields=["codigo"])
+
+            super().save(
+                update_fields=["codigo"]
+            )
 
     @property
     def stock_actual(self):
+
         if self.codigo_detalle_producto:
             return self.codigo_detalle_producto.cantidad_actual
+
         try:
             return self.detalle_producto.cantidad_actual
         except DetalleProducto.DoesNotExist:
@@ -169,17 +203,35 @@ class Producto(models.Model):
 
     @property
     def precio_venta_actual(self):
-        adquisicion = self.adquisiciones.order_by("-fecha", "-codigo").first()
+
+        adquisicion = (
+            self.adquisiciones
+            .order_by("-fecha", "-codigo")
+            .first()
+        )
+
         if adquisicion:
             return adquisicion.precio_venta
+
         return self.precio
 
     @property
     def precio_compra_actual(self):
-        adquisicion = self.adquisiciones.order_by("-fecha", "-codigo").first()
+
+        adquisicion = (
+            self.adquisiciones
+            .order_by("-fecha", "-codigo")
+            .first()
+        )
+
         if adquisicion:
             return adquisicion.precio_compra
+
         return 0
+
+    @property
+    def precio_venta(self):
+        return self.precio_venta_actual
 
     @classmethod
     def total_productos(cls):
@@ -187,15 +239,15 @@ class Producto(models.Model):
 
     @classmethod
     def total_activos(cls):
-        return cls.objects.filter(estado=True).count()
+        return cls.objects.filter(
+            estado=True
+        ).count()
 
     @classmethod
     def total_inactivos(cls):
-        return cls.objects.filter(estado=False).count()
-
-    @property
-    def precio_venta(self):
-        return self.precio_venta_actual
+        return cls.objects.filter(
+            estado=False
+        ).count()
 
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"
@@ -208,41 +260,56 @@ class Producto(models.Model):
 # ==========================================================
 # 5. DETALLE PRODUCTO
 # ==========================================================
+
 class DetalleProducto(models.Model):
-    codigo = models.AutoField(primary_key=True)
+
+    codigo = models.AutoField(
+        primary_key=True
+    )
+
     codigo_producto = models.OneToOneField(
         Producto,
         on_delete=models.CASCADE,
         related_name="detalle_producto",
         null=True,
         blank=True,
-        verbose_name="Producto"
+        verbose_name="Producto",
     )
+
     cantidad_actual = models.PositiveIntegerField(
         default=0,
-        verbose_name="Cantidad Actual"
+        verbose_name="Cantidad Actual",
     )
+
     stock_min = models.PositiveIntegerField(
         default=0,
-        verbose_name="Stock Mínimo"
+        verbose_name="Stock Mínimo",
     )
+
     stock_max = models.PositiveIntegerField(
         default=0,
-        verbose_name="Stock Máximo"
+        verbose_name="Stock Máximo",
     )
+
     fecha_actualizacion = models.DateTimeField(
         auto_now=True,
-        verbose_name="Fecha de Actualización"
+        verbose_name="Fecha de Actualización",
     )
+
     observaciones = models.TextField(
         blank=True,
         null=True,
-        verbose_name="Observaciones"
+        verbose_name="Observaciones",
     )
 
     def __str__(self):
+
         if self.codigo_producto:
-            return f"{self.codigo_producto.nombre} - Stock: {self.cantidad_actual}"
+            return (
+                f"{self.codigo_producto.nombre} "
+                f"- Stock: {self.cantidad_actual}"
+            )
+
         return f"Detalle Producto #{self.codigo}"
 
     class Meta:
@@ -254,25 +321,40 @@ class DetalleProducto(models.Model):
 # 6. MOVIMIENTO DE PRODUCTO
 # ==========================================================
 class MovimientoProducto(models.Model):
-    codigo = models.AutoField(primary_key=True)
+
+    codigo = models.AutoField(
+        primary_key=True
+    )
+
     codigo_detalle_producto = models.ForeignKey(
         DetalleProducto,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="movimientos",
+        verbose_name="Detalle de Producto"
     )
+
     TIPO_CHOICES = [
         ("entrada", "Entrada"),
         ("salida", "Salida"),
     ]
+
     tipo = models.CharField(
         max_length=10,
         choices=TIPO_CHOICES,
         verbose_name="Tipo de Movimiento"
     )
-    cantidad = models.PositiveIntegerField(verbose_name="Cantidad")
+
+    cantidad = models.PositiveIntegerField(
+        verbose_name="Cantidad"
+    )
+
     fecha = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Fecha"
     )
+
     observacion = models.CharField(
         max_length=200,
         null=True,
@@ -280,16 +362,47 @@ class MovimientoProducto(models.Model):
         verbose_name="Observación"
     )
 
+    # ======================================================
+    # PRODUCTO RELACIONADO
+    # ======================================================
+
     @property
     def producto(self):
-        return self.codigo_producto
+        if self.codigo_detalle_producto:
+            return self.codigo_detalle_producto.codigo_producto
+        return None
+
+    # ======================================================
+    # MOTIVO
+    # ======================================================
 
     @property
     def motivo(self):
         return self.observacion
 
+    # ======================================================
+    # REPRESENTACIÓN
+    # ======================================================
+
     def __str__(self):
-        return f"{self.codigo_producto.codigo} - {self.tipo} {self.cantidad}"
+
+        if (
+            self.codigo_detalle_producto
+            and self.codigo_detalle_producto.codigo_producto
+        ):
+            producto = self.codigo_detalle_producto.codigo_producto
+
+            return (
+                f"{producto.codigo} - "
+                f"{self.tipo} "
+                f"{self.cantidad}"
+            )
+
+        return (
+            f"Movimiento #{self.codigo} - "
+            f"{self.tipo} "
+            f"{self.cantidad}"
+        )
 
     class Meta:
         verbose_name = "Movimiento de Producto"
@@ -297,21 +410,35 @@ class MovimientoProducto(models.Model):
 
 
 # ==========================================================
-# 7. SEÑAL PARA CREAR DETALLE PRODUCTO AUTOMÁTICAMENTE
+# 7. CREAR DETALLE AUTOMÁTICAMENTE
 # ==========================================================
+
 @receiver(post_save, sender=Producto)
-def crear_detalle_producto(sender, instance, created, **kwargs):
+def crear_detalle_producto(
+    sender,
+    instance,
+    created,
+    **kwargs
+):
+
     if created:
-        detalle_obj, creado = DetalleProducto.objects.get_or_create(
-            codigo_producto=instance,
-            defaults={
-                "cantidad_actual": 0,
-                "stock_min": 0,
-                "stock_max": 0,
-            }
+
+        detalle_obj, creado = (
+            DetalleProducto.objects.get_or_create(
+                codigo_producto=instance,
+                defaults={
+                    "cantidad_actual": 0,
+                    "stock_min": 0,
+                    "stock_max": 0,
+                },
+            )
         )
+
         if not instance.codigo_detalle_producto_id:
-            Producto.objects.filter(pk=instance.pk).update(
+
+            Producto.objects.filter(
+                pk=instance.pk
+            ).update(
                 codigo_detalle_producto=detalle_obj
             )
 
@@ -319,49 +446,66 @@ def crear_detalle_producto(sender, instance, created, **kwargs):
 # ==========================================================
 # 8. PROMOCIÓN
 # ==========================================================
+
 class Promocion(models.Model):
-    codigo = models.AutoField(primary_key=True)
+
+    codigo = models.AutoField(
+        primary_key=True
+    )
+
     nombre = models.CharField(
         max_length=100,
-        verbose_name="Nombre"
+        verbose_name="Nombre",
     )
+
     porcentaje_descuento = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        verbose_name="Porcentaje de Descuento"
+        verbose_name="Porcentaje de Descuento",
     )
+
     descripcion = models.TextField(
         blank=True,
         null=True,
-        verbose_name="Descripción"
+        verbose_name="Descripción",
     )
-    fecha_inicio = models.DateField(verbose_name="Fecha de Inicio")
-    fecha_fin = models.DateField(verbose_name="Fecha de Fin")
+
+    fecha_inicio = models.DateField(
+        verbose_name="Fecha de Inicio",
+    )
+
+    fecha_fin = models.DateField(
+        verbose_name="Fecha de Fin",
+    )
+
     imagen = models.ImageField(
         upload_to="promociones/",
         blank=True,
         null=True,
-        verbose_name="Imagen"
+        verbose_name="Imagen",
     )
+
     estado = models.BooleanField(
         default=True,
-        verbose_name="Estado"
+        verbose_name="Estado",
     )
+
     codigo_producto = models.ForeignKey(
         Producto,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="promociones_directas",
-        verbose_name="Producto Asociado"
+        verbose_name="Producto Asociado",
     )
+
     codigo_servicio = models.ForeignKey(
         Servicios,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="promociones_catalogo",
-        verbose_name="Servicio Asociado"
+        verbose_name="Servicio Asociado",
     )
 
     def __str__(self):
@@ -370,4 +514,3 @@ class Promocion(models.Model):
     class Meta:
         verbose_name = "Promoción"
         verbose_name_plural = "Promociones"
-

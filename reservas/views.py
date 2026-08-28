@@ -263,22 +263,76 @@ def reserva_confirmada(request, pk):
 
 @login_required
 def cancelar_cita(request, pk):
-    cita = get_object_or_404(Reserva, pk=pk)
-    cita.estado = 'cancelada'
+
+    cita = get_object_or_404(
+        Reserva,
+        pk=pk
+    )
+
+    cita.estado = "cancelada"
     cita.save()
-    
+
+    # ======================================================
+    # NOTIFICACIÓN CLIENTE
+    # ======================================================
+
     Notificacion.objects.create(
         usuario=request.user,
-        mensaje=f'Se canceló tu cita del {cita.agenda.fecha}' # <-- Actualizado a agenda.fecha
+        reserva=cita,
+        servicio=cita.servicio,
+        tipo="reserva",
+        mensaje=(
+            f"Se canceló tu cita del "
+            f"{cita.agenda.fecha if cita.agenda else 'día seleccionado'}."
+        ),
+        url="/perfil/",
     )
-    admins = Usuario.objects.filter(rol='admin')
+
+    # ======================================================
+    # HISTORIAL
+    # ======================================================
+
+    HistorialAccion.objects.create(
+        usuario=request.user,
+        reserva=cita,
+        servicio=cita.servicio,
+        tipo="reserva",
+        accion="cancelar",
+        descripcion=(
+            f"Canceló la reserva "
+            f"de {cita.servicio.nombre}."
+        ),
+    )
+
+    # ======================================================
+    # NOTIFICAR ADMINISTRADORES
+    # ======================================================
+
+    admins = Usuario.objects.filter(
+        Q(rol="admin") |
+        Q(is_superuser=True)
+    ).distinct()
+
     for admin in admins:
+
         Notificacion.objects.create(
             usuario=admin,
-            mensaje=f'{request.user.get_full_name()} canceló una cita.'
+            reserva=cita,
+            servicio=cita.servicio,
+            tipo="reserva",
+            mensaje=(
+                f"{request.user.get_full_name()} "
+                f"canceló una cita."
+            ),
+            url="/admin-reservas/",
         )
-    messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
-    return redirect('ver_agenda')
+
+    messages.warning(
+        request,
+        f"Cita cancelada: {cita.nombre_cliente}"
+    )
+
+    return redirect("ver_agenda")
 
 
 @login_required

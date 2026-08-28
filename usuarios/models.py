@@ -1,3 +1,4 @@
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
@@ -75,15 +76,6 @@ class Usuario(AbstractBaseUser):
 
     # ======================================================
     # CAMPOS HEREDADOS DE DJANGO
-    # ======================================================
-    #
-    # Django necesita estos campos para autenticación.
-    # Se mantienen sus nombres internos:
-    #
-    # usuario.password
-    # usuario.last_login
-    #
-    # Pero en MYSQL aparecerán en español gracias a db_column.
     # ======================================================
 
     password = models.CharField(
@@ -343,6 +335,11 @@ class Notificacion(models.Model):
     TIPO_CHOICES = (
         ('venta', 'Venta'),
         ('reserva', 'Reserva'),
+        ('usuario', 'Usuario'),
+        ('producto', 'Producto'),
+        ('servicio', 'Servicio'),
+        ('promocion', 'Promoción'),
+        ('sistema', 'Sistema'),
     )
 
     usuario = models.ForeignKey(
@@ -352,6 +349,59 @@ class Notificacion(models.Model):
         verbose_name='Destinatario',
         db_column='usuario_id'
     )
+
+    # ======================================================
+    # RELACIONES CON LOS MÓDULOS
+    # ======================================================
+
+    reserva = models.ForeignKey(
+        'reservas.Reserva',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='notificaciones',
+        verbose_name='Reserva relacionada',
+    )
+
+    venta = models.ForeignKey(
+        'venta.Venta',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='notificaciones',
+        verbose_name='Venta relacionada',
+    )
+
+    producto = models.ForeignKey(
+        'catalogo.Producto',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='notificaciones',
+        verbose_name='Producto relacionado',
+    )
+
+    servicio = models.ForeignKey(
+        'servicios.Servicios',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='notificaciones',
+        verbose_name='Servicio relacionado',
+    )
+
+    usuario_afectado = models.ForeignKey(
+        Usuario,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='notificaciones_como_afectado',
+        verbose_name='Usuario afectado',
+    )
+
+    # ======================================================
+    # DATOS DE LA NOTIFICACIÓN
+    # ======================================================
 
     tipo = models.CharField(
         max_length=20,
@@ -394,7 +444,144 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return f"{self.usuario} - {self.mensaje}"
-    
-    
-    
-                
+
+
+# ==========================================================
+# HISTORIAL DE ACCIONES
+# ==========================================================
+
+class HistorialAccion(models.Model):
+
+    ACCION_CHOICES = (
+        ('crear', 'Crear'),
+        ('editar', 'Editar'),
+        ('eliminar', 'Eliminar'),
+        ('reservar', 'Reservar'),
+        ('comprar', 'Comprar'),
+        ('cancelar', 'Cancelar'),
+        ('confirmar', 'Confirmar'),
+        ('cambiar_estado', 'Cambiar Estado'),
+        ('reprogramar', 'Reprogramar'),
+        ('otro', 'Otro'),
+    )
+
+    TIPO_CHOICES = (
+        ('reserva', 'Reserva'),
+        ('venta', 'Venta'),
+        ('producto', 'Producto'),
+        ('servicio', 'Servicio'),
+        ('usuario', 'Usuario'),
+        ('promocion', 'Promoción'),
+        ('categoria', 'Categoría'),
+        ('marca', 'Marca'),
+        ('proveedor', 'Proveedor'),
+        ('agenda', 'Agenda'),
+        ('sistema', 'Sistema'),
+    )
+
+    # ======================================================
+    # USUARIO QUE REALIZÓ LA ACCIÓN
+    # ======================================================
+
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='historial_acciones',
+        verbose_name='Usuario que realizó la acción',
+    )
+
+    # ======================================================
+    # OBJETOS RELACIONADOS
+    # ======================================================
+
+    reserva = models.ForeignKey(
+        'reservas.Reserva',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='historial_acciones',
+        verbose_name='Reserva',
+    )
+
+    venta = models.ForeignKey(
+        'venta.Venta',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='historial_acciones',
+        verbose_name='Venta',
+    )
+
+    producto = models.ForeignKey(
+        'catalogo.Producto',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='historial_acciones',
+        verbose_name='Producto',
+    )
+
+    servicio = models.ForeignKey(
+        'servicios.Servicios',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='historial_acciones',
+        verbose_name='Servicio',
+    )
+
+    usuario_afectado = models.ForeignKey(
+        Usuario,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='historial_como_afectado',
+        verbose_name='Usuario afectado',
+    )
+
+    # ======================================================
+    # DATOS DE LA ACCIÓN
+    # ======================================================
+
+    tipo = models.CharField(
+        max_length=30,
+        choices=TIPO_CHOICES,
+        verbose_name='Tipo de Acción',
+    )
+
+    accion = models.CharField(
+        max_length=30,
+        choices=ACCION_CHOICES,
+        verbose_name='Acción',
+    )
+
+    descripcion = models.TextField(
+        verbose_name='Descripción',
+    )
+
+    fecha = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Fecha',
+    )
+
+    class Meta:
+        verbose_name = 'Historial de Acción'
+        verbose_name_plural = 'Historial de Acciones'
+        db_table = 'historial_acciones'
+        ordering = ['-fecha']
+
+    def __str__(self):
+
+        usuario = (
+            self.usuario.get_full_name()
+            if self.usuario
+            else 'Sistema'
+        )
+
+        return (
+            f"{usuario} - "
+            f"{self.get_accion_display()} - "
+            f"{self.fecha:%d/%m/%Y %H:%M}"
+        )
