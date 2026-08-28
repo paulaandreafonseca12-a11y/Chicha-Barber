@@ -56,22 +56,18 @@ def obtener_turnos_disponibles_json(request):
     return JsonResponse({'turnos': resultado})
 
 
-def crear_reserva(request, servicio_id=None, promocion_id=None):
+def crear_reserva(request, servicio_id=None):
     servicio = None
     factura_id = request.GET.get('factura_id') or request.POST.get('factura_id')
-    promo = None
 
     if not request.user.is_authenticated:
         login_url = reverse('login')
         return redirect(f'{login_url}?next={request.get_full_path()}')
 
-    if promocion_id is not None:
-        promo = get_object_or_404(Promocion, pk=promocion_id)
-        servicio = promo.servicio
-    elif servicio_id is not None:
+    if servicio_id is not None:
         servicio = get_object_or_404(Servicios, id=servicio_id)
     else:
-        messages.warning(request, 'Debe seleccionar un servicio o promoción.')
+        messages.warning(request, 'Debe seleccionar un servicio.')
         return redirect('inicio')
 
     if request.user.is_authenticated and 'reserva_pendiente' in request.session:
@@ -82,9 +78,6 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         try:
             agenda_obj = Agenda.objects.get(pk=turno_id, estado='disponible')
             precio = servicio.precio
-            if promo:
-                descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
-                precio = round(precio * (Decimal('1') - descuento), 2)
 
             reserva = Reserva.objects.create(
                 agenda=agenda_obj,  # <-- Actualizado de 'turno' a 'agenda'
@@ -142,11 +135,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         if t.fecha > hoy or (t.fecha == hoy and t.hora_inicio > ahora.time())
     ]
 
-    action_url = (
-        reverse('crear_reserva_promocion', args=[promo.id])
-        if promo else
-        reverse('crear_reserva', args=[servicio.id])
-    )
+    action_url = reverse('crear_reserva', args=[servicio.id])
 
     if request.method == 'POST':
         turno_id = request.POST.get('turno_id')
@@ -167,7 +156,6 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
         context_error = {
             'servicio': servicio,
-            'promo': promo,
             'barberos': barberos,
             'turnos_disponibles': turnos_disponibles,
             'action_url': action_url,
@@ -186,9 +174,6 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 agenda_obj = Agenda.objects.select_for_update().get(pk=turno_id, estado='disponible')
                 
                 precio = servicio.precio
-                if promo:
-                    descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
-                    precio = round(precio * (Decimal('1') - descuento), 2)
 
                 reserva = Reserva.objects.create(
                     agenda=agenda_obj,
@@ -197,7 +182,6 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                     observacion=observacion,
                     servicio=servicio,
                     precio_historico=precio,
-                    promocion=promo,
                 )
                 agenda_obj.estado = 'reservada'
                 agenda_obj.save()
@@ -241,7 +225,6 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
     context = {
         'servicio': servicio,
-        'promo': promo,
         'barberos': barberos,
         'turnos_disponibles': turnos_disponibles,
         'action_url': action_url,
