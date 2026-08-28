@@ -16,6 +16,13 @@ class Bitacora(models.Model):
         related_name="bitacoras",
         verbose_name="Usuario"
     )
+    codigo_producto = models.ForeignKey( 
+        Producto,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="bitacoras_producto",
+        verbose_name="Producto Asociado")
     accion = models.CharField(
         max_length=150,
         verbose_name="Acción Realizada"
