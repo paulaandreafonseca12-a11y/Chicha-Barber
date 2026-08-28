@@ -160,7 +160,7 @@ header a { transition: .3s; }
   --bg-card-dark: rgba(20, 20, 20, 0.75);       
   --bg-input-dark: rgba(255, 255, 255, 0.04);  
   --bg-input-hover: rgba(255, 255, 255, 0.08); 
-  --color-azul de marca: #22AED1;                    
+  --color-azul: #22AED1;                    
   --accent-azul: #22aed1;                       
   --accent-oscuro: #2b50aa;                     
   --text-muted: #b0a8b0;                        
@@ -172,9 +172,10 @@ body.theme-light .booking-wrap {
   --bg-card-dark: #22AED1;                       /* Fondo azul de marca de tu paleta */
   --bg-input-dark: #ffffff;                      /* Cajas internas blancas limpias */
   --bg-input-hover: rgba(34, 174, 209, 0.08); 
-  --color-azul de marca: #030301;                    /* Los títulos pasan a negro */
+  --color-azul: #030301;                    /* Los títulos pasan a negro */
   --text-muted: #8d818c;                        /* Gris de tu paleta clara */
 }
+
 
 /* ── componentes del contenedor ── */
 .booking-wrap .dark-barber-card {
@@ -206,14 +207,14 @@ body.theme-light .booking-wrap .choice-card-dark {
 .booking-wrap .choice-card-dark:hover {
   background: var(--bg-input-hover) !important;
   border-color: rgba(34, 174, 209, 0.4) !important;
-  color: var(--color-azul de marca) !important;
+  color: var(--color-azul) !important;
 }
 
 /* ── estado seleccionado (radios ocultos) ── */
 .booking-wrap .btn-check:checked + .choice-card-dark {
   background: rgba(34, 174, 209, 0.15) !important;
   border-color: var(--accent-azul) !important;
-  color: var(--color-azul de marca) !important;
+  color: var(--color-azul) !important;
   box-shadow: 0 4px 15px rgba(34, 174, 209, 0.15) !important;
 }
 body.theme-light .booking-wrap .btn-check:checked + .choice-card-dark {
@@ -223,7 +224,7 @@ body.theme-light .booking-wrap .btn-check:checked + .choice-card-dark {
 .booking-wrap .btn-check:checked + .choice-card-dark span,
 .booking-wrap .btn-check:checked + .choice-card-dark div,
 .booking-wrap .btn-check:checked + .choice-card-dark i {
-  color: var(--color-azul de marca) !important;
+  color: var(--color-azul) !important;
 }
 
 /* ── campos de entrada de texto ── */
@@ -2603,4 +2604,15 @@ body.theme-light .admin-aside a[aria-current="page"] {
 .welcome-card p,
 .welcome-card .welcome-subtitle {
     color: #cbd5e1 !important;
+}
+
+#servicios animacion al apasar el cursor 
+
+.servicios-servicios__div-1 {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.servicios-servicios_div-1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3) !important;
 }

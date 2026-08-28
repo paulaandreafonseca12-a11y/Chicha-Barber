@@ -9,8 +9,8 @@ from django.http import JsonResponse
 from django.db import transaction
 
 from catalogo.models import Producto
-from .models import Venta, DetalleVenta, DatosTransferencia
-from .forms import VentaForm, DetalleVentaForm, DatosTransferenciaForm
+from .models import Venta, DetalleVenta, DetallePagos
+from .forms import VentaForm, DetalleVentaForm, DetallePagosForm
 
 try:
     from core.utils import enviar_correo_venta
