@@ -19,7 +19,6 @@ urlpatterns = [
 
     # --- GESTIÓN DE RESERVAS (CLIENTES) ---
     path('crear/', views.crear_reserva, {'servicio_id': None}, name='crear_reserva_directa'),
-    path('crear/promocion/<int:promocion_id>/', views.crear_reserva, name='crear_reserva_promocion'),
     path('crear/<int:servicio_id>/', views.crear_reserva, name='crear_reserva'),
 
     # --- CALIFICACIONES (CLIENTES) ---
