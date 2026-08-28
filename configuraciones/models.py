@@ -1,21 +1,67 @@
+
 import os
 
 from django.db import models
 from django.utils.text import slugify
 from PIL import Image
-import configuraciones
-from usuarios.models import RegistroActividad
+
+from usuarios.models import Usuario
 
 
+# ============================================================
+# FUNCIONES PARA IMÁGENES
+# ============================================================
+
+def imagen_upload_path(instance, filename):
+    ext = filename.split('.')[-1]
+    nombre_limpio = slugify(instance.nombre)
+
+    return os.path.join(
+        'imagenes/',
+        f'{nombre_limpio}_{instance.pk}.{ext}'
+    )
+
+
+def eliminar_carrusel(instance, filename):
+    ext = filename.split('.')[-1]
+    nombre_limpio = slugify(instance.nombre)
+
+    return os.path.join(
+        'carrusel/',
+        f'{nombre_limpio}_{instance.pk}_quitar.{ext}'
+    )
+
+
+def editar_carrusel(instance, filename):
+    ext = filename.split('.')[-1]
+    nombre_limpio = slugify(instance.nombre)
+
+    return os.path.join(
+        'carrusel/',
+        f'{nombre_limpio}_{instance.pk}_editar.{ext}'
+    )
+
+
+def carrusel_view(instance, filename):
+    ext = filename.split('.')[-1]
+    nombre_limpio = slugify(instance.nombre)
+
+    return os.path.join(
+        'carrusel/',
+        f'{nombre_limpio}_{instance.pk}.{ext}'
+    )
+
+
+# ============================================================
+# 1. CARRUSEL
+# ============================================================
 
 class Carrusel(models.Model):
-    
+
     fecha_creacion = models.DateTimeField(
-    
         auto_now_add=True,
         verbose_name='Fecha de creación'
     )
-
 
     fecha_modificacion = models.DateTimeField(
         auto_now=True,
@@ -27,7 +73,8 @@ class Carrusel(models.Model):
         verbose_name='Nombre'
     )
 
-    imagen = models.ImageField( 
+    imagen = models.ImageField(
+        upload_to=carrusel_view,
         null=True,
         blank=True,
         verbose_name='Imagen del carrusel'
@@ -54,8 +101,10 @@ class Carrusel(models.Model):
 
     def save(self, *args, **kwargs):
 
+        # ------------------------------------------------------
         # Guardar primero para obtener el ID
-        # necesario para construir el nombre de la imagen.
+        # ------------------------------------------------------
+
         if self.pk is None and self.imagen:
 
             imagen_temporal = self.imagen
@@ -64,12 +113,18 @@ class Carrusel(models.Model):
             super().save(*args, **kwargs)
 
             self.imagen = imagen_temporal
-            super().save(update_fields=['imagen'])
+
+            super().save(
+                update_fields=['imagen']
+            )
 
         else:
             super().save(*args, **kwargs)
 
+        # ------------------------------------------------------
         # Mantener máximo 4 carruseles activos
+        # ------------------------------------------------------
+
         if self.estado:
 
             carruseles_activos = (
@@ -92,9 +147,14 @@ class Carrusel(models.Model):
 
                     Carrusel.objects.filter(
                         pk__in=ids_desactivar
-                    ).update(estado=False)
+                    ).update(
+                        estado=False
+                    )
 
+        # ------------------------------------------------------
         # Redimensionar imagen
+        # ------------------------------------------------------
+
         if self.imagen:
 
             try:
@@ -136,82 +196,35 @@ class Carrusel(models.Model):
 
 
 # ============================================================
-# CONFIGURACIÓN
+# 2. CONFIGURACIÓN
+# ============================================================
 # Corresponde a la entidad "configuracion" del MER.
-# Relacionada con Usuario.
+# Relacionada con Usuario y Carrusel.
 # ============================================================
 
-
-
-# ============================================================
-# IMAGEN
-# Corresponde a la entidad "imagen" identificada en el MER.
-# ============================================================
-
-def imagen_upload_path(instance, filename):
-
-    ext = filename.split('.')[-1]
-    nombre_limpio = slugify(instance.nombre)
-
-    return os.path.join(
-        'imagenes/',
-        f'{nombre_limpio}_{instance.pk}.{ext}'
-    )
-
-
-# ============================================================
-# FUNCIONES PARA ARCHIVOS DE CARRUSEL
-# ============================================================
-
-def eliminar_carrusel(instance, filename):
-
-    ext = filename.split('.')[-1]
-    nombre_limpio = slugify(instance.nombre)
-
-    return os.path.join(
-        'carrusel/',
-        f'{nombre_limpio}_{instance.pk}_quitar.{ext}'
-    )
-
-
-def editar_carrusel(instance, filename):
-
-    ext = filename.split('.')[-1]
-    nombre_limpio = slugify(instance.nombre)
-
-    return os.path.join(
-        'carrusel/',
-        f'{nombre_limpio}_{instance.pk}_editar.{ext}'
-    )
-
-def carrusel_view(instance, filename):
-    ext = filename.split('.')[-1]
-    nombre_limpio = slugify(instance.nombre)
-
-    return os.path.join(
-        'carrusel/',
-        f'{nombre_limpio}_{instance.pk}.{ext}'
-    )
-
-# ============================================================
-# CARRUSEL
-# Se conserva este modelo porque actualmente es utilizado
-# desde core/views.py
-# ============================================================
 class Configuracion(models.Model):
-    codigo = models.AutoField(primary_key=True)
-    codigo_RegistroActividad = models.ForeignKey(
-        RegistroActividad,
-            on_delete=models.CASCADE
-        )
-    codigo_carrusel=models.ForeignKey(
-        Carrusel,
-            on_delete=models.CASCADE
-        )   
 
     codigo = models.AutoField(
         primary_key=True,
         verbose_name='Código'
+    )
+
+    codigo_usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Usuario',
+        related_name='configuraciones'
+    )
+
+    codigo_carrusel = models.ForeignKey(
+        Carrusel,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Carrusel',
+        related_name='configuraciones'
     )
 
     fecha_realizacion = models.DateTimeField(
@@ -240,22 +253,3 @@ class Configuracion(models.Model):
     def __str__(self):
         return self.nombre
 
-
-# ============================================================
-# IMAGEN
-# Corresponde a la entidad "imagen" identificada en el MER.
-# ============================================================
-
-def imagen_upload_path(instance, filename):
-    ext = filename.split('.')[-1]
-    nombre_limpio = slugify(instance.nombre)
-
-    return os.path.join(
-        'imagenes/',
-        f'{nombre_limpio}_{instance.pk}.{ext}'
-    )
-
-
-# ============================================================
-# FUNCIONES PARA ARCHIVOS DE CARRUSEL
-# ============================================================
