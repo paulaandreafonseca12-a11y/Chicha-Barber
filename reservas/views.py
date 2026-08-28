@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
-from reservas.models import Agenda, Reserva
+from reservas.models import Reserva, Agenda
 from reservas.forms import ReservaEditarForm
 from servicios.models import Servicios
 from usuarios.models import Usuario, Notificacion  # <-- Importamos Notificacion
@@ -77,9 +77,9 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     if request.user.is_authenticated and 'reserva_pendiente' in request.session:
         reserva_data = request.session.pop('reserva_pendiente')
         turno_id = reserva_data.get('turno_id')
-        nombre = reserva_data.get('nombre_cliente') or request.user.get_full_name()
-        correo = reserva_data.get('correo_cliente') or request.user.email
-        telefono = reserva_data.get('telefono_cliente')
+        nombre = reserva_data.get('nombre_usuario') or request.user.get_full_name()
+        correo = reserva_data.get('correo_usuario') or request.user.email
+        telefono = reserva_data.get('telefono_usuario')
 
         try:
             agenda_obj = Agenda.objects.get(pk=turno_id, estado='disponible')
@@ -90,10 +90,10 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
             reserva = Reserva.objects.create(
                 agenda=agenda_obj,  # <-- Actualizado de 'turno' a 'agenda'
-                cliente=request.user,
-                nombre_cliente=nombre,
-                correo_cliente=correo,
-                telefono_cliente=telefono,
+                usuario=request.user,
+                nombre_usuario=nombre,
+                correo_usuario=correo,
+                telefono_usuario=telefono,
                 servicio=servicio,
                 precio_historico=precio,
             )
@@ -102,7 +102,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
             # Comentado por ahora ya que Factura no existe en los modelos actuales
             # factura = Factura.objects.create(
-            #     cliente=request.user,
+            #     usuario=request.user,
             #     total_pagado=0,
             #     metodo_pago='efectivo',
             #     estado='pendiente'
@@ -151,16 +151,16 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
     if request.method == 'POST':
         turno_id = request.POST.get('turno_id')
-        nombre = request.POST.get('nombre_cliente', '').strip()
-        correo = request.POST.get('correo_cliente', '').strip()
-        telefono = request.POST.get('telefono_cliente', '').strip()
+        nombre = request.POST.get('nombre_usuario', '').strip()
+        correo = request.POST.get('correo_usuario', '').strip()
+        telefono = request.POST.get('telefono_usuario', '').strip()
 
         if not request.user.is_authenticated:
             request.session['reserva_pendiente'] = {
                 'turno_id': turno_id,
-                'nombre_cliente': nombre,
-                'correo_cliente': correo,
-                'telefono_cliente': telefono,
+                'nombre_usuario': nombre,
+                'correo_usuario': correo,
+                'telefono_usuario': telefono,
             }
             messages.info(request, 'Por favor, regístrate o inicia sesión para confirmar tu reserva.')
             login_url = reverse('registro')
@@ -196,10 +196,10 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
                 reserva = Reserva.objects.create(
                     agenda=agenda_obj,
-                    cliente=request.user if request.user.is_authenticated else None,
-                    nombre_cliente=nombre,
-                    correo_cliente=correo,
-                    telefono_cliente=telefono,
+                    usuario=request.user if request.user.is_authenticated else None,
+                    nombre_usuario=nombre,
+                    correo_usuario=correo,
+                    telefono_usuario=telefono,
                     servicio=servicio,
                     precio_historico=precio,
                     promocion=promo,
@@ -211,7 +211,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 #     factura = get_object_or_404(Factura, id=factura_id)
                 # else:
                 #     factura = Factura.objects.create(
-                #         cliente=request.user,
+                #         usuario=request.user,
                 #         total_pagado=0,
                 #         metodo_pago='efectivo',
                 #         estado='pendiente'
@@ -277,7 +277,7 @@ def cancelar_cita(request, pk):
             usuario=admin,
             mensaje=f'{request.user.get_full_name()} canceló una cita.'
         )
-    messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
+    messages.warning(request, f'Cita cancelada: {cita.nombre_usuario}')
     return redirect('ver_agenda')
 
 
@@ -324,7 +324,7 @@ def ver_agenda(request):
         estado='cancelada'
     ).count()
 
-    lista_reservas = Reserva.objects.select_related('agenda__profesional', 'servicio', 'cliente').all().order_by('-agenda__fecha', '-agenda__hora_inicio')
+    lista_reservas = Reserva.objects.select_related('agenda__profesional', 'servicio', 'usuario').all().order_by('-agenda__fecha', '-agenda__hora_inicio')
     turnos_disponibles = Agenda.objects.select_related('profesional').filter(
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
@@ -380,9 +380,9 @@ def crear_reserva_admin(request):
     servicios = Servicios.objects.all()
 
     if request.method == 'POST':
-        nombre = request.POST.get('nombre_cliente', '').strip()
-        correo = request.POST.get('correo_cliente', '').strip()
-        telefono = request.POST.get('telefono_cliente', '').strip()
+        nombre = request.POST.get('nombre_usuario', '').strip()
+        correo = request.POST.get('correo_usuario', '').strip()
+        telefono = request.POST.get('telefono_usuario', '').strip()
         fecha_reserva_raw = request.POST.get('fecha_reserva', '').strip()
         servicio_id = request.POST.get('servicio')
         barbero_id = request.POST.get('barbero') 
@@ -410,9 +410,9 @@ def crear_reserva_admin(request):
 
                 Reserva.objects.create(
                     agenda=turno_coincidente, # <-- Actualizado
-                    nombre_cliente=nombre,
-                    correo_cliente=correo,
-                    telefono_cliente=telefono,
+                    nombre_usuario=nombre,
+                    correo_usuario=correo,
+                    telefono_usuario=telefono,
                     fecha_reserva=fecha_reserva,
                     servicio=servicio,
                 )
@@ -543,14 +543,14 @@ def desactivar_dia_agenda(request, fecha_str):
         
         try:
             enviar_correo_cancelacion_admin(
-                correo_cliente=reserva.correo_cliente,
-                nombre=reserva.nombre_cliente,
+                correo_cliente=reserva.correo_usuario,
+                nombre=reserva.nombre_usuario,
                 servicio=reserva.servicio.nombre,
                 fecha=reserva.fecha_reserva
             )
             cantidad_notificada += 1
         except Exception as e:
-            print(f"Error al notificar a {reserva.correo_cliente}: {e}")
+            print(f"Error al notificar a {reserva.correo_usuario}: {e}")
 
     Agenda.objects.filter(fecha=fecha, estado='disponible').delete()
     
