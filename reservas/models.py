@@ -136,9 +136,7 @@ class Reserva(models.Model):
         verbose_name="Servicio",
     )
 
-    # Campos para usuarios invitados o historial
-    nombre_usuario = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nombre del Usuario (Invitado)")
-    correo_usuario = models.EmailField(blank=True, null=True, verbose_name="Correo Electrónico")
+    # Campos adicionales de contacto/historial
     telefono_usuario = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
     fecha_reserva = models.DateTimeField(blank=True, null=True, verbose_name="Fecha y Hora de la Reserva")
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
@@ -174,10 +172,17 @@ class Reserva(models.Model):
 
         super().save(*args, **kwargs)
 
+    @property
+    def usuario_nombre(self):
+        return self.usuario.get_full_name() if self.usuario and hasattr(self.usuario, "get_full_name") and self.usuario.get_full_name() else str(self.usuario or "Sin usuario")
+
+    @property
+    def correo_usuario(self):
+        return self.usuario.email if self.usuario else ""
+
     def __str__(self):
-        usuario_nombre = self.nombre_usuario or (self.usuario.get_full_name() if self.usuario and hasattr(self.usuario, "get_full_name") else str(self.usuario or "Sin usuario"))
         fecha_str = self.fecha_reserva.strftime("%Y-%m-%d %H:%M") if self.fecha_reserva else (str(self.agenda.fecha) if self.agenda else "Sin fecha")
-        return f"{usuario_nombre} - {self.servicio.nombre} ({fecha_str})"
+        return f"{self.usuario_nombre} - {self.servicio.nombre} ({fecha_str})"
 
 # ==========================================================
 # 3. NOTIFICACIÓN + HISTORIAL DE RESERVA
@@ -194,7 +199,7 @@ def notificar_reserva(
     if not created:
         return
 
-    usuario_nombre = instance.nombre_usuario or (
+    usuario_nombre = (
         instance.usuario.get_full_name() if instance.usuario and hasattr(instance.usuario, "get_full_name") and instance.usuario.get_full_name() else "Usuario"
     )
 
