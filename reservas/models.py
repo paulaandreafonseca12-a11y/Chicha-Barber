@@ -8,12 +8,21 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 from servicios.models import Servicios
-from usuarios.models import Notificacion, Usuario
+from catalogo.models import Promocion
+
+from usuarios.models import (
+    Notificacion,
+    HistorialAccion,
+    Usuario,
+)
+
 
 # ==========================================================
-# 1. AGENDA (Anteriormente Turno)
+# 1. AGENDA
 # ==========================================================
+
 class Agenda(models.Model):
+
     ESTADO_CHOICES = [
         ("disponible", "Disponible"),
         ("reservada", "Reservada"),
@@ -26,17 +35,29 @@ class Agenda(models.Model):
         related_name="agendas",
         verbose_name="Profesional",
     )
-    fecha = models.DateField(verbose_name="Fecha de la Agenda")
-    hora_inicio = models.TimeField(verbose_name="Hora de Inicio")
-    hora_fin = models.TimeField(verbose_name="Hora de Fin")
+
+    fecha = models.DateField(
+        verbose_name="Fecha de la Agenda"
+    )
+
+    hora_inicio = models.TimeField(
+        verbose_name="Hora de Inicio"
+    )
+
+    hora_fin = models.TimeField(
+        verbose_name="Hora de Fin"
+    )
+
     estado = models.CharField(
         max_length=20,
         choices=ESTADO_CHOICES,
         default="disponible",
         verbose_name="Estado",
     )
+
     fecha_creacion = models.DateTimeField(
-        auto_now_add=True, verbose_name="Fecha de Creación"
+        auto_now_add=True,
+        verbose_name="Fecha de Creación",
     )
 
     class Meta:
@@ -45,31 +66,52 @@ class Agenda(models.Model):
         ordering = ["fecha", "hora_inicio"]
 
     def clean(self):
+
         super().clean()
-        if self.hora_inicio and self.hora_fin and self.hora_inicio >= self.hora_fin:
+
+        if (
+            self.hora_inicio
+            and self.hora_fin
+            and self.hora_inicio >= self.hora_fin
+        ):
             raise ValidationError({
-                "hora_fin": "La hora de fin debe ser posterior a la hora de inicio."
+                "hora_fin":
+                    "La hora de fin debe ser posterior "
+                    "a la hora de inicio."
             })
 
     def __str__(self):
-        nombre_profesional = (
+
+        nombre = (
             self.profesional.get_full_name()
-            if hasattr(self.profesional, "get_full_name") and self.profesional.get_full_name()
+            if hasattr(
+                self.profesional,
+                "get_full_name"
+            )
+            and self.profesional.get_full_name()
             else str(self.profesional)
         )
-        return f"Agenda: {nombre_profesional} - {self.fecha} ({self.hora_inicio} a {self.hora_fin}) [{self.get_estado_display()}]"
+
+        return (
+            f"Agenda: {nombre} - "
+            f"{self.fecha} "
+            f"({self.hora_inicio} a {self.hora_fin}) "
+            f"[{self.get_estado_display()}]"
+        )
+
 
 # ==========================================================
-# 2. RESERVAS
+# 2. RESERVA
 # ==========================================================
+
 class Reserva(models.Model):
+
     ESTADO_CHOICES = [
         ("reservada", "Reservada"),
         ("confirmada", "Confirmada"),
         ("cancelada", "Cancelada"),
     ]
 
-    # Relaciones principales actualizadas
     agenda = models.ForeignKey(
         Agenda,
         on_delete=models.SET_NULL,
@@ -86,6 +128,7 @@ class Reserva(models.Model):
         blank=True,
         verbose_name="Usuario",
     )
+
     servicio = models.ForeignKey(
         Servicios,
         on_delete=models.CASCADE,
@@ -109,16 +152,31 @@ class Reserva(models.Model):
     class Meta:
         verbose_name = "Reserva"
         verbose_name_plural = "Reservas"
-        ordering = ["-fecha_reserva", "-fecha_creacion"]
+        ordering = [
+            "-fecha_reserva",
+            "-fecha_creacion",
+        ]
 
     def save(self, *args, **kwargs):
-        # Asignación segura de fecha_reserva usando la Agenda en lugar de Turno
+
         if self.agenda and not self.fecha_reserva:
-            dt_naive = datetime.combine(self.agenda.fecha, self.agenda.hora_inicio)
-            if timezone.is_naive(dt_naive):
-                self.fecha_reserva = timezone.make_aware(dt_naive)
+
+            fecha_hora = datetime.combine(
+                self.agenda.fecha,
+                self.agenda.hora_inicio,
+            )
+
+            if timezone.is_naive(fecha_hora):
+
+                self.fecha_reserva = (
+                    timezone.make_aware(
+                        fecha_hora
+                    )
+                )
+
             else:
-                self.fecha_reserva = dt_naive
+                self.fecha_reserva = fecha_hora
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -127,10 +185,17 @@ class Reserva(models.Model):
         return f"{usuario_nombre} - {self.servicio.nombre} ({fecha_str})"
 
 # ==========================================================
-# 3. NOTIFICACIÓN DE RESERVA (SIGNAL)
+# 3. NOTIFICACIÓN + HISTORIAL DE RESERVA
 # ==========================================================
+
 @receiver(post_save, sender=Reserva)
-def notificar_reserva(sender, instance, created, **kwargs):
+def notificar_reserva(
+    sender,
+    instance,
+    created,
+    **kwargs
+):
+
     if not created:
         return
 
@@ -142,14 +207,41 @@ def notificar_reserva(sender, instance, created, **kwargs):
         Notificacion.objects.create(
             usuario=instance.usuario,
             tipo="reserva",
-            mensaje=f"Tu reserva de {instance.servicio.nombre} fue registrada con éxito.",
+            mensaje=(
+                f"Tu reserva de "
+                f"{instance.servicio.nombre} "
+                f"fue registrada con éxito."
+            ),
             url="/perfil/",
         )
 
-    admins = Usuario.objects.filter(Q(rol="admin") | Q(is_superuser=True)).distinct()
+        HistorialAccion.objects.create(
+            usuario=instance.cliente,
+            reserva=instance,
+            servicio=instance.servicio,
+            tipo="reserva",
+            accion="reservar",
+            descripcion=(
+                f"Realizó una reserva para "
+                f"{instance.servicio.nombre}."
+            ),
+        )
+
+    # ------------------------------------------------------
+    # ADMINISTRADORES
+    # ------------------------------------------------------
+
+    admins = Usuario.objects.filter(
+        Q(rol="admin") |
+        Q(is_superuser=True)
+    ).distinct()
+
     for admin in admins:
+
         Notificacion.objects.create(
             usuario=admin,
+            reserva=instance,
+            servicio=instance.servicio,
             tipo="reserva",
             mensaje=f"Nueva reserva de {usuario_nombre} para {instance.servicio.nombre}.",
             url="/admin-reservas/",
