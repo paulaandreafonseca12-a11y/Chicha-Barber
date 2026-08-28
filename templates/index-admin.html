@@ -270,8 +270,7 @@
                                       d-flex align-items-center justify-content-center
                                       text-white fw-bold templates-index-admin__div-12">
 
-                            {{ reserva.nombre_cliente|default:reserva.cliente.first_name|slice:":2"|upper }}
-
+                            {{ reserva.nombre_cliente|default:reserva.cliente.primer_nombre|slice:":2"|upper }}
                           </div>
 
                           <div>

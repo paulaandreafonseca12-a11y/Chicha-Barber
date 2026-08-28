@@ -37,20 +37,39 @@
 
             <div class="row g-3">
                 <div class="col-6">
-                    <label class="form-label cb-label">Nombre(s)</label>
+                    <label class="form-label cb-label">Primer nombre</label>
                     <div class="position-relative">
                         <span class="input-icon">👤</span>
-                        {{ form.first_name }}
+                        {{ form.primer_nombre }}
                     </div>
-                    <small class="form-hint text-white opacity-50">{{ form.first_name.help_text }}</small>
+                    <small class="form-hint text-white opacity-50">{{ form.primer_nombre.help_text }}</small>
                 </div>
                 <div class="col-6">
-                    <label class="form-label cb-label">Apellido(s)</label>
+                    <label class="form-label cb-label">Segundo nombre</label>
                     <div class="position-relative">
                         <span class="input-icon">👤</span>
-                        {{ form.last_name }}
+                        {{ form.segundo_nombre }}
                     </div>
-                    <small class="form-hint text-white opacity-50">{{ form.last_name.help_text }}</small>
+                    <small class="form-hint text-white opacity-50">{{ form.segundo_nombre.help_text }}</small>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <label class="form-label cb-label">Primer apellido</label>
+                    <div class="position-relative">
+                        <span class="input-icon">👤</span>
+                        {{ form.primer_apellido }}
+                    </div>
+                    <small class="form-hint text-white opacity-50">{{ form.primer_apellido.help_text }}</small>
+                </div>
+                <div class="col-6">
+                    <label class="form-label cb-label">Segundo apellido</label>
+                    <div class="position-relative">
+                        <span class="input-icon">👤</span>
+                        {{ form.segundo_apellido }}
+                    </div>
+                    <small class="form-hint text-white opacity-50">{{ form.segundo_apellido.help_text }}</small>
                 </div>
             </div>
 
@@ -66,9 +85,9 @@
                     <label class="form-label cb-label">N° Documento</label>
                     <div class="position-relative">
                         <span class="input-icon">🪪</span>
-                        {{ form.username }}
+                        {{ form.numero_documento }}
                     </div>
-                    <small class="form-hint text-white opacity-50">{{ form.username.help_text }}</small>
+                    <small class="form-hint text-white opacity-50">{{ form.numero_documento.help_text }}</small>
                 </div>
                 <div class="col-4">
                     <label class="form-label cb-label">Teléfono</label>
@@ -140,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
 
     // 1. Identificar los inputs renderizados por Django usando sus atributos "name"
-    const inputDocumento = document.querySelector('input[name="username"]');
+    const inputDocumento = document.querySelector('input[name="numero_documento"]');
     const inputTelefono = document.querySelector('input[name="telefono"]');
     const inputEmail = document.querySelector('input[name="email"]');
     const inputPassword1 = document.querySelector('input[name="password1"]');
