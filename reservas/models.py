@@ -96,9 +96,12 @@ class Reserva(models.Model):
     estado = models.CharField(
         max_length=20, choices=ESTADO_CHOICES, default="reservada", verbose_name="Estado"
     )
+    
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
 
-    # Campos adicionales de contacto/historial
+    # Campos para usuarios invitados o historial
+    nombre_usuario = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nombre del Usuario (Invitado)")
+    correo_usuario = models.EmailField(blank=True, null=True, verbose_name="Correo Electrónico")
     telefono_usuario = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
     fecha_reserva = models.DateTimeField(blank=True, null=True, verbose_name="Fecha y Hora de la Reserva")
     precio_historico = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Precio Histórico")
@@ -118,17 +121,10 @@ class Reserva(models.Model):
                 self.fecha_reserva = dt_naive
         super().save(*args, **kwargs)
 
-    @property
-    def usuario_nombre(self):
-        return self.usuario.get_full_name() if self.usuario and hasattr(self.usuario, "get_full_name") and self.usuario.get_full_name() else str(self.usuario or "Sin usuario")
-
-    @property
-    def correo_usuario(self):
-        return self.usuario.email if self.usuario else ""
-
     def __str__(self):
+        usuario_nombre = self.nombre_usuario or (self.usuario.get_full_name() if self.usuario and hasattr(self.usuario, "get_full_name") else str(self.usuario or "Sin usuario"))
         fecha_str = self.fecha_reserva.strftime("%Y-%m-%d %H:%M") if self.fecha_reserva else (str(self.agenda.fecha) if self.agenda else "Sin fecha")
-        return f"{self.usuario_nombre} - {self.servicio.nombre} ({fecha_str})"
+        return f"{usuario_nombre} - {self.servicio.nombre} ({fecha_str})"
 
 # ==========================================================
 # 3. NOTIFICACIÓN DE RESERVA (SIGNAL)
@@ -138,7 +134,7 @@ def notificar_reserva(sender, instance, created, **kwargs):
     if not created:
         return
 
-    usuario_nombre = (
+    usuario_nombre = instance.nombre_usuario or (
         instance.usuario.get_full_name() if instance.usuario and hasattr(instance.usuario, "get_full_name") and instance.usuario.get_full_name() else "Usuario"
     )
 
