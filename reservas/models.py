@@ -141,6 +141,7 @@ class Reserva(models.Model):
     correo_usuario = models.EmailField(blank=True, null=True, verbose_name="Correo Electrónico")
     telefono_usuario = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
     fecha_reserva = models.DateTimeField(blank=True, null=True, verbose_name="Fecha y Hora de la Reserva")
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
     precio_historico = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Precio Histórico")
 
     class Meta:
