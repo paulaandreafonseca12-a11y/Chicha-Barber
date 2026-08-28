@@ -262,20 +262,7 @@ class Producto(models.Model):
 # ==========================================================
 
 class DetalleProducto(models.Model):
-
-    codigo = models.AutoField(
-        primary_key=True
-    )
-
-    codigo_producto = models.OneToOneField(
-        Producto,
-        on_delete=models.CASCADE,
-        related_name="detalle_producto",
-        null=True,
-        blank=True,
-        verbose_name="Producto",
-    )
-
+    codigo = models.AutoField(primary_key=True)
     cantidad_actual = models.PositiveIntegerField(
         default=0,
         verbose_name="Cantidad Actual",

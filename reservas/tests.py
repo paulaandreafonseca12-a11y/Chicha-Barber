@@ -57,7 +57,7 @@ class ReservaModelTest(TestCase):
             rol="barbero"
         )
 
-        self.cliente = Usuario.objects.create(
+        self.usuario = Usuario.objects.create(
             username="cliente",
             email="cliente@example.com",
             first_name="Pedro",
@@ -91,12 +91,12 @@ class ReservaModelTest(TestCase):
 
         reserva = Reserva.objects.create(
             turno=self.turno,
-            cliente=self.cliente,
+            usuario=self.usuario,
             servicio=self.servicio,
             precio_historico=Decimal("25000")
         )
 
-        self.assertEqual(reserva.cliente, self.cliente)
+        self.assertEqual(reserva.usuario, self.usuario)
         self.assertEqual(reserva.estado, "reservada")
         self.assertEqual(reserva.servicio, self.servicio)
 
@@ -104,7 +104,7 @@ class ReservaModelTest(TestCase):
 
         reserva = Reserva.objects.create(
             turno=self.turno,
-            cliente=self.cliente,
+            usuario=self.usuario,
             servicio=self.servicio
         )
 
@@ -123,7 +123,7 @@ class ReservaModelTest(TestCase):
 
         reserva = Reserva.objects.create(
             turno=self.turno,
-            cliente=self.cliente,
+            usuario=self.usuario,
             servicio=self.servicio
         )
 
@@ -132,17 +132,17 @@ class ReservaModelTest(TestCase):
         self.assertIn("Pedro", texto)
         self.assertIn("Corte clásico", texto)
 
-    def test_notificacion_cliente(self):
+    def test_notificacion_usuario(self):
 
         Reserva.objects.create(
             turno=self.turno,
-            cliente=self.cliente,
+            usuario=self.usuario,
             servicio=self.servicio
         )
 
         self.assertTrue(
             Notificacion.objects.filter(
-                usuario=self.cliente,
+                usuario=self.usuario,
                 tipo="reserva"
             ).exists()
         )
@@ -151,7 +151,7 @@ class ReservaModelTest(TestCase):
 
         Reserva.objects.create(
             turno=self.turno,
-            cliente=self.cliente,
+            usuario=self.usuario,
             servicio=self.servicio
         )
 
@@ -162,23 +162,23 @@ class ReservaModelTest(TestCase):
             ).exists()
         )
 
-    def test_reserva_sin_cliente_registrado(self):
+    def test_reserva_sin_usuario_registrado(self):
 
         reserva = Reserva.objects.create(
             turno=self.turno,
-            nombre_cliente="Cliente Invitado",
-            correo_cliente="cliente@test.com",
-            telefono_cliente="3000000000",
+            nombre_usuario="Cliente Invitado",
+            correo_usuario="cliente@test.com",
+            telefono_usuario="3000000000",
             servicio=self.servicio
         )
 
-        self.assertEqual(reserva.nombre_cliente, "Cliente Invitado")
+        self.assertEqual(reserva.nombre_usuario, "Cliente Invitado")
 
     def test_estado_por_defecto(self):
 
         reserva = Reserva.objects.create(
             turno=self.turno,
-            cliente=self.cliente,
+            usuario=self.usuario,
             servicio=self.servicio
         )
 
@@ -188,7 +188,7 @@ class ReservaModelTest(TestCase):
 
         reserva = Reserva.objects.create(
             turno=self.turno,
-            cliente=self.cliente,
+            usuario=self.usuario,
             servicio=self.servicio,
             precio_historico=Decimal("30000")
         )

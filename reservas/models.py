@@ -120,14 +120,13 @@ class Reserva(models.Model):
         blank=True,
         verbose_name="Agenda",
     )
-
-    cliente = models.ForeignKey(
+    usuario = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,
-        related_name="reservas_cliente",
+        related_name="reservas_usuario",
         null=True,
         blank=True,
-        verbose_name="Cliente",
+        verbose_name="Usuario",
     )
 
     servicio = models.ForeignKey(
@@ -137,66 +136,12 @@ class Reserva(models.Model):
         verbose_name="Servicio",
     )
 
-    promocion = models.ForeignKey(
-        Promocion,
-        on_delete=models.SET_NULL,
-        related_name="reservas",
-        null=True,
-        blank=True,
-        verbose_name="Promoción",
-    )
-
-    observacion = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name="Observación",
-    )
-
-    estado = models.CharField(
-        max_length=20,
-        choices=ESTADO_CHOICES,
-        default="reservada",
-        verbose_name="Estado",
-    )
-
-    fecha_creacion = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Fecha de Creación",
-    )
-
-    nombre_cliente = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        verbose_name="Nombre del Cliente",
-    )
-
-    correo_cliente = models.EmailField(
-        blank=True,
-        null=True,
-        verbose_name="Correo Electrónico",
-    )
-
-    telefono_cliente = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True,
-        verbose_name="Teléfono",
-    )
-
-    fecha_reserva = models.DateTimeField(
-        blank=True,
-        null=True,
-        verbose_name="Fecha y Hora de la Reserva",
-    )
-
-    precio_historico = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        null=True,
-        verbose_name="Precio Histórico",
-    )
+    # Campos para usuarios invitados o historial
+    nombre_usuario = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nombre del Usuario (Invitado)")
+    correo_usuario = models.EmailField(blank=True, null=True, verbose_name="Correo Electrónico")
+    telefono_usuario = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
+    fecha_reserva = models.DateTimeField(blank=True, null=True, verbose_name="Fecha y Hora de la Reserva")
+    precio_historico = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Precio Histórico")
 
     class Meta:
         verbose_name = "Reserva"
@@ -229,43 +174,9 @@ class Reserva(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-
-        cliente_nombre = (
-            self.nombre_cliente
-            or (
-                self.cliente.get_full_name()
-                if self.cliente
-                and hasattr(
-                    self.cliente,
-                    "get_full_name"
-                )
-                else str(
-                    self.cliente
-                    or "Sin cliente"
-                )
-            )
-        )
-
-        if self.fecha_reserva:
-
-            fecha = self.fecha_reserva.strftime(
-                "%Y-%m-%d %H:%M"
-            )
-
-        elif self.agenda:
-
-            fecha = str(self.agenda.fecha)
-
-        else:
-
-            fecha = "Sin fecha"
-
-        return (
-            f"{cliente_nombre} - "
-            f"{self.servicio.nombre} "
-            f"({fecha})"
-        )
-
+        usuario_nombre = self.nombre_usuario or (self.usuario.get_full_name() if self.usuario and hasattr(self.usuario, "get_full_name") else str(self.usuario or "Sin usuario"))
+        fecha_str = self.fecha_reserva.strftime("%Y-%m-%d %H:%M") if self.fecha_reserva else (str(self.agenda.fecha) if self.agenda else "Sin fecha")
+        return f"{usuario_nombre} - {self.servicio.nombre} ({fecha_str})"
 
 # ==========================================================
 # 3. NOTIFICACIÓN + HISTORIAL DE RESERVA
@@ -282,30 +193,13 @@ def notificar_reserva(
     if not created:
         return
 
-    cliente_nombre = (
-        instance.nombre_cliente
-        or (
-            instance.cliente.get_full_name()
-            if instance.cliente
-            and hasattr(
-                instance.cliente,
-                "get_full_name"
-            )
-            and instance.cliente.get_full_name()
-            else "Cliente"
-        )
+    usuario_nombre = instance.nombre_usuario or (
+        instance.usuario.get_full_name() if instance.usuario and hasattr(instance.usuario, "get_full_name") and instance.usuario.get_full_name() else "Usuario"
     )
 
-    # ------------------------------------------------------
-    # CLIENTE
-    # ------------------------------------------------------
-
-    if instance.cliente:
-
+    if instance.usuario:
         Notificacion.objects.create(
-            usuario=instance.cliente,
-            reserva=instance,
-            servicio=instance.servicio,
+            usuario=instance.usuario,
             tipo="reserva",
             mensaje=(
                 f"Tu reserva de "
@@ -343,11 +237,6 @@ def notificar_reserva(
             reserva=instance,
             servicio=instance.servicio,
             tipo="reserva",
-            mensaje=(
-                f"Nueva reserva de "
-                f"{cliente_nombre} "
-                f"para "
-                f"{instance.servicio.nombre}."
-            ),
+            mensaje=f"Nueva reserva de {usuario_nombre} para {instance.servicio.nombre}.",
             url="/admin-reservas/",
         )
