@@ -27,7 +27,7 @@ class CustomLoginView(LoginView):
         response = super().form_valid(form)
         messages.success(
             self.request,
-            f"¡Bienvenido de nuevo, {self.request.user.first_name}!"
+            f"¡Bienvenido de nuevo, {self.request.user.primer_nombre}!"
         )
         return response
 
@@ -72,7 +72,7 @@ def inicio_admin(request):
     productos_bajo_bitacora = DetalleProducto.objects.filter(cantidad_actual__lt=15).select_related('codigo_producto')[:5]
 
     context = {
-        'nombre': request.user.first_name or request.user.username,
+        'nombre': request.user.primer_nombre or request.user.email,
         'total_clientes': total_clientes,
         'total_barberos': total_barberos,
         'total_servicios': total_servicios,

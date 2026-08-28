@@ -29,7 +29,7 @@
             {% if user.foto_perfil %}
             <img
               src="{{ user.foto_perfil.url }}"
-              alt="{{ user.username }}"
+             alt="{{ user.primer_nombre }}"
               width="28"
               height="28"
               class="rounded-circle object-fit-cover"
@@ -37,7 +37,7 @@
             {% else %}
             <i class="bi bi-person-circle fs-5"></i>
             {% endif %}
-            <span class="d-none d-md-inline">Hola, {{ user.first_name|default:user.username }}</span>
+           <span class="d-none d-md-inline">Hola, {{ user.primer_nombre|default:user.email }}</span>
           </a>
           <ul
             class="dropdown-menu dropdown-menu-custom dropdown-menu-end shadow border-0 rounded-4"

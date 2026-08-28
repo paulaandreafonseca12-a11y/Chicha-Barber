@@ -46,7 +46,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, f"¡Bienvenido de nuevo, {user.first_name}!")
+            messages.success(request, f"¡Bienvenido de nuevo, {user.primer_nombre}!")
             if next_url:
                 return redirect(next_url)
             return redirect('inicio')
@@ -110,7 +110,7 @@ def lista_usuarios(request):
     else:
         usuarios = Usuario.objects.all()
 
-    usuarios = usuarios.order_by('first_name', 'last_name')
+    usuarios = usuarios.order_by('primer_nombre', 'primer_apellido')
 
     context = {
         'usuarios': usuarios,
@@ -239,7 +239,7 @@ def recuperar_password_view(request):
             try:
                 enviar_correo_recuperacion(
                     correo_cliente=usuario.email,
-                    nombre=usuario.first_name,
+                    nombre=usuario.primer_nombre,
                     reset_url=reset_url
                 )
             except Exception:

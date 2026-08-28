@@ -230,7 +230,7 @@ def guardar_calificacion_view(request):
             if request.user.is_authenticated:
                 calificacion.cliente = request.user
                 if not calificacion.cliente_nombre:
-                    calificacion.cliente_nombre = request.user.get_full_name() or request.user.username
+                    calificacion.cliente_nombre = request.user.get_full_name() or request.user.email
 
             calificacion.save()
             messages.success(request, "✅ ¡Gracias por tu calificación!")
