@@ -4,10 +4,9 @@ from django.db import models
 from django.utils.text import slugify
 from PIL import Image
 import configuraciones
-from usuarios.models import Usuario
+from usuarios.models import RegistroActividad
 
 
-from usuarios.models import Usuario
 
 class Carrusel(models.Model):
     
@@ -201,8 +200,8 @@ def carrusel_view(instance, filename):
 # ============================================================
 class Configuracion(models.Model):
     codigo = models.AutoField(primary_key=True)
-    codigo_usuario = models.ForeignKey(
-            Usuario,
+    codigo_RegistroActividad = models.ForeignKey(
+        RegistroActividad,
             on_delete=models.CASCADE
         )
     codigo_carrusel=models.ForeignKey(
