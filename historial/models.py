@@ -62,7 +62,7 @@ class Bitacora(models.Model):
         return self.descripcion
 
     def __str__(self):
-        usuario_str = self.codigo_usuario.username if self.codigo_usuario else "Sistema/Anonimo"
+        usuario_str = self.codigo_usuario.email if self.codigo_usuario else "Sistema/Anonimo"
         return f"[{self.fecha.strftime('%Y-%m-%d %H:%M')}] {usuario_str} - {self.accion}"
 
     class Meta:

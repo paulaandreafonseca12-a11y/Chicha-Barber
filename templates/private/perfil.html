@@ -31,7 +31,7 @@
             
             <div>
               <h3 class="mb-2 fw-extrabold tracking-tight text-dark">
-                {{ user.get_full_name|default:user.username }}
+                {{ user.get_full_name|default:user.email }}
               </h3>
               <span
                 class="badge rounded-pill px-3 py-2 text-uppercase tracking-wider fw-bold fs-7 shadow-sm"
@@ -55,7 +55,7 @@
                 <small class="text-muted d-block mb-1 text-uppercase tracking-wider private-perfil__small-7">
                   <i class="bi bi-person me-1 text-secondary"></i>Nombre(s)
                 </small>
-                <span class="fs-5 fw-semibold text-dark">{{ user.first_name|default:"—" }}</span>
+                <span class="fs-5 fw-semibold text-dark">{{ user.primer_nombre|default:"—" }}</span>
               </div>
             </div>
             <div class="col-6">
@@ -63,7 +63,7 @@
                 <small class="text-muted d-block mb-1 text-uppercase tracking-wider private-perfil__small-8">
                   <i class="bi bi-person me-1 text-secondary"></i>Apellido(s)
                 </small>
-                <span class="fs-5 fw-semibold text-dark">{{ user.last_name|default:"—" }}</span>
+                <span class="fs-5 fw-semibold text-dark">{{ user.primer_apellido|default:"—" }}</span>
               </div>
             </div>
             <div class="col-6">
@@ -71,7 +71,7 @@
                 <small class="text-muted d-block mb-1 text-uppercase tracking-wider private-perfil__small-9">
                   <i class="bi bi-credit-card me-1 text-secondary"></i>Tipo y N° Documento
                 </small>
-                <span class="fs-5 fw-semibold text-dark font-monospace">{{ user.tipo_documento }} {{ user.username }}</span>
+                <span class="fs-5 fw-semibold text-dark font-monospace">{{ user.tipo_documento }} {{ user.numero_documento }}</span>
               </div>
             </div>
             <div class="col-6">
@@ -97,7 +97,7 @@
                 <small class="text-muted d-block mb-1 text-uppercase tracking-wider">
                   <i class="bi bi-calendar-plus me-1 text-secondary"></i>Cuenta creada
                 </small>
-                <span class="fs-5 fw-semibold text-dark">{{ user.date_joined|date:"d/m/Y" }}</span>
+                <span class="fs-5 fw-semibold text-dark">{{ user.fecha_creacion|date:"d/m/Y" }}</span>
               </div>
             </div>
             <div class="col-12">
@@ -162,11 +162,11 @@
       </div>
       <div class="mb-3">
         <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Nombre(s)</label>
-        {{ form.first_name }}
+        {{ form.primer_nombre }}
       </div>
       <div class="mb-3">
         <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Apellido(s)</label>
-        {{ form.last_name }}
+        {{ form.primer_apellido }}
       </div>
       <div class="mb-3">
         <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">Teléfono</label>
