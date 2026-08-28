@@ -7,8 +7,8 @@ from django.utils import timezone
 
 from usuarios.models import Usuario, Notificacion
 from servicios.models import Servicios
-from reservas.models import Turno, Reserva
-class TurnoModelTest(TestCase):
+from reservas.models import Agenda, Reserva
+class AgendaModelTest(TestCase):
 
     def setUp(self):
         self.barbero = Usuario.objects.create(
@@ -19,8 +19,8 @@ class TurnoModelTest(TestCase):
             rol="barbero"
         )
 
-    def test_crear_turno(self):
-        turno = Turno.objects.create(
+    def test_crear_agenda(self):
+        agenda = Agenda.objects.create(
             profesional=self.barbero,
             fecha=date.today(),
             hora_inicio=time(9, 0),
@@ -28,18 +28,18 @@ class TurnoModelTest(TestCase):
             estado="disponible"
         )
 
-        self.assertEqual(turno.profesional, self.barbero)
-        self.assertEqual(turno.estado, "disponible")
+        self.assertEqual(agenda.profesional, self.barbero)
+        self.assertEqual(agenda.estado, "disponible")
 
-    def test_str_turno(self):
-        turno = Turno.objects.create(
+    def test_str_agenda(self):
+        agenda = Agenda.objects.create(
             profesional=self.barbero,
             fecha=date.today(),
             hora_inicio=time(9, 0),
             hora_fin=time(10, 0)
         )
 
-        texto = str(turno)
+        texto = str(agenda)
 
         self.assertIn("Juan", texto)
         self.assertIn("09:00:00", texto)
@@ -80,7 +80,7 @@ class ReservaModelTest(TestCase):
             descripcion="Corte clásico de prueba"
         )
 
-        self.turno = Turno.objects.create(
+        self.agenda = Agenda.objects.create(
             profesional=self.barbero,
             fecha=date.today(),
             hora_inicio=time(10, 0),
@@ -90,7 +90,7 @@ class ReservaModelTest(TestCase):
     def test_crear_reserva(self):
 
         reserva = Reserva.objects.create(
-            turno=self.turno,
+            agenda=self.agenda,
             usuario=self.usuario,
             servicio=self.servicio,
             precio_historico=Decimal("25000")
@@ -103,7 +103,7 @@ class ReservaModelTest(TestCase):
     def test_fecha_reserva_automatica(self):
 
         reserva = Reserva.objects.create(
-            turno=self.turno,
+            agenda=self.agenda,
             usuario=self.usuario,
             servicio=self.servicio
         )
@@ -112,8 +112,8 @@ class ReservaModelTest(TestCase):
 
         fecha_esperada = timezone.make_aware(
             timezone.datetime.combine(
-                self.turno.fecha,
-                self.turno.hora_inicio
+                self.agenda.fecha,
+                self.agenda.hora_inicio
             )
         )
 
@@ -122,7 +122,7 @@ class ReservaModelTest(TestCase):
     def test_str_reserva(self):
 
         reserva = Reserva.objects.create(
-            turno=self.turno,
+            agenda=self.agenda,
             usuario=self.usuario,
             servicio=self.servicio
         )
@@ -135,7 +135,7 @@ class ReservaModelTest(TestCase):
     def test_notificacion_usuario(self):
 
         Reserva.objects.create(
-            turno=self.turno,
+            agenda=self.agenda,
             usuario=self.usuario,
             servicio=self.servicio
         )
@@ -150,7 +150,7 @@ class ReservaModelTest(TestCase):
     def test_notificacion_admin(self):
 
         Reserva.objects.create(
-            turno=self.turno,
+            agenda=self.agenda,
             usuario=self.usuario,
             servicio=self.servicio
         )
@@ -165,14 +165,13 @@ class ReservaModelTest(TestCase):
     def test_reserva_sin_usuario_registrado(self):
 
         reserva = Reserva.objects.create(
-            turno=self.turno,
-            nombre_usuario="Cliente Invitado",
-            correo_usuario="cliente@test.com",
+            agenda=self.agenda,
             telefono_usuario="3000000000",
+            observacion="Cliente Invitado sin cuenta",
             servicio=self.servicio
         )
 
-        self.assertEqual(reserva.nombre_usuario, "Cliente Invitado")
+        self.assertEqual(reserva.observacion, "Cliente Invitado sin cuenta")
 
     def test_estado_por_defecto(self):
 
@@ -187,7 +186,7 @@ class ReservaModelTest(TestCase):
     def test_precio_historico(self):
 
         reserva = Reserva.objects.create(
-            turno=self.turno,
+            agenda=self.agenda,
             usuario=self.usuario,
             servicio=self.servicio,
             precio_historico=Decimal("30000")

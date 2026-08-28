@@ -77,10 +77,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
     if request.user.is_authenticated and 'reserva_pendiente' in request.session:
         reserva_data = request.session.pop('reserva_pendiente')
         turno_id = reserva_data.get('turno_id')
-        nombre = reserva_data.get('nombre_usuario') or request.user.get_full_name()
-        correo = reserva_data.get('correo_usuario') or request.user.email
         telefono = reserva_data.get('telefono_usuario')
-
+        observacion = reserva_data.get('observacion')
         try:
             agenda_obj = Agenda.objects.get(pk=turno_id, estado='disponible')
             precio = servicio.precio
@@ -91,9 +89,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             reserva = Reserva.objects.create(
                 agenda=agenda_obj,  # <-- Actualizado de 'turno' a 'agenda'
                 usuario=request.user,
-                nombre_usuario=nombre,
-                correo_usuario=correo,
                 telefono_usuario=telefono,
+                observacion=observacion,
                 servicio=servicio,
                 precio_historico=precio,
             )
@@ -115,6 +112,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             #     subtotal=precio
             # )
 
+            correo = None
+            nombre = None
             enviar_correo_reserva(
                 correo_cliente=correo,
                 nombre=nombre,
@@ -151,23 +150,20 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
     if request.method == 'POST':
         turno_id = request.POST.get('turno_id')
-        nombre = request.POST.get('nombre_usuario', '').strip()
-        correo = request.POST.get('correo_usuario', '').strip()
         telefono = request.POST.get('telefono_usuario', '').strip()
+        observacion = request.POST.get('observacion', '').strip()
 
         if not request.user.is_authenticated:
             request.session['reserva_pendiente'] = {
                 'turno_id': turno_id,
-                'nombre_usuario': nombre,
-                'correo_usuario': correo,
                 'telefono_usuario': telefono,
+                'observacion': observacion,
             }
             messages.info(request, 'Por favor, regístrate o inicia sesión para confirmar tu reserva.')
             login_url = reverse('registro')
             return redirect(f'{login_url}?next={request.get_full_path()}')
 
-        if not nombre:
-            nombre = request.user.get_full_name()
+        # (La lógica del nombre se ha eliminado)
 
         context_error = {
             'servicio': servicio,
@@ -181,8 +177,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             messages.error(request, 'Selecciona un turno disponible.')
             return render(request, 'reservas/reservas.html', context_error)
 
-        if not (nombre and correo and telefono):
-            messages.error(request, 'Todos los campos son obligatorios.')
+        if not telefono:
+            messages.error(request, 'El teléfono es obligatorio.')
             return render(request, 'reservas/reservas.html', context_error)
 
         try:
@@ -197,9 +193,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 reserva = Reserva.objects.create(
                     agenda=agenda_obj,
                     usuario=request.user if request.user.is_authenticated else None,
-                    nombre_usuario=nombre,
-                    correo_usuario=correo,
                     telefono_usuario=telefono,
+                    observacion=observacion,
                     servicio=servicio,
                     precio_historico=precio,
                     promocion=promo,
@@ -277,7 +272,7 @@ def cancelar_cita(request, pk):
             usuario=admin,
             mensaje=f'{request.user.get_full_name()} canceló una cita.'
         )
-    messages.warning(request, f'Cita cancelada: {cita.nombre_usuario}')
+    messages.warning(request, f'Cita cancelada: {cita.usuario_nombre}')
     return redirect('ver_agenda')
 
 
@@ -380,15 +375,14 @@ def crear_reserva_admin(request):
     servicios = Servicios.objects.all()
 
     if request.method == 'POST':
-        nombre = request.POST.get('nombre_usuario', '').strip()
-        correo = request.POST.get('correo_usuario', '').strip()
         telefono = request.POST.get('telefono_usuario', '').strip()
+        observacion = request.POST.get('observacion', '').strip()
         fecha_reserva_raw = request.POST.get('fecha_reserva', '').strip()
         servicio_id = request.POST.get('servicio')
         barbero_id = request.POST.get('barbero') 
 
-        if not (nombre and correo and telefono and fecha_reserva_raw and servicio_id):
-            messages.error(request, 'Todos los campos son obligatorios.')
+        if not (telefono and fecha_reserva_raw and servicio_id):
+            messages.error(request, 'El teléfono, la fecha y el servicio son obligatorios.')
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
         
         fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
@@ -410,9 +404,9 @@ def crear_reserva_admin(request):
 
                 Reserva.objects.create(
                     agenda=turno_coincidente, # <-- Actualizado
-                    nombre_usuario=nombre,
-                    correo_usuario=correo,
+                    usuario=request.user,
                     telefono_usuario=telefono,
+                    observacion=observacion,
                     fecha_reserva=fecha_reserva,
                     servicio=servicio,
                 )
@@ -544,7 +538,7 @@ def desactivar_dia_agenda(request, fecha_str):
         try:
             enviar_correo_cancelacion_admin(
                 correo_cliente=reserva.correo_usuario,
-                nombre=reserva.nombre_usuario,
+                nombre=reserva.usuario_nombre,
                 servicio=reserva.servicio.nombre,
                 fecha=reserva.fecha_reserva
             )
