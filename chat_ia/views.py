@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from chat_ia.ai_service import obtener_respuesta_ia
-from servicios.models import Servicios, Promocion
-from catalogo.models import Producto, Categoria
+from servicios.models import Servicios
+from catalogo.models import Producto, Categoria, Promocion
 
 MENSAJE_BIENVENIDA = "¡Hola! 👋 Soy **ChichaBot**, tu asistente virtual de **Chicha Barber Studio**.\n\nEstoy aquí para ayudarte con:\n• 📅 Agendar citas\n• 🛒 ventar productos\n• 💇 Servicios disponibles\n• ❓ Cualquier duda sobre la barbería\n\n¿En qué puedo ayudarte hoy?"
 
