@@ -32,7 +32,7 @@ class VentaAdmin(admin.ModelAdmin):
         'telefono',
         'metodo_pago',
         'estado_pago',
-        'total_compra',
+        'total_venta',
         'fecha',
     ]
 
@@ -50,7 +50,7 @@ class VentaAdmin(admin.ModelAdmin):
 
     readonly_fields = [
         'codigo_venta',
-        'total_compra',
+        'total_venta',
         'fecha',
     ]
 

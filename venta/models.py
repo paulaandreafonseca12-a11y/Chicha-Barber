@@ -73,7 +73,7 @@ class Venta(models.Model):
         verbose_name="Estado del Pago"
     )
 
-    total_compra = models.DecimalField(
+    total_venta = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
@@ -130,7 +130,7 @@ class DetalleVenta(models.Model):
         verbose_name="Producto"
     )
 
-    codigo_movimiento_producto = models.ForeignKey(
+    codigo_movimientoproducto = models.ForeignKey(
         MovimientoProducto,
         on_delete=models.SET_NULL,
         null=True,

@@ -210,14 +210,6 @@ class Producto(models.Model):
 # ==========================================================
 class DetalleProducto(models.Model):
     codigo = models.AutoField(primary_key=True)
-    codigo_producto = models.OneToOneField(
-        Producto,
-        on_delete=models.CASCADE,
-        related_name="detalle_producto",
-        null=True,
-        blank=True,
-        verbose_name="Producto"
-    )
     cantidad_actual = models.PositiveIntegerField(
         default=0,
         verbose_name="Cantidad Actual"
@@ -255,16 +247,14 @@ class DetalleProducto(models.Model):
 # ==========================================================
 class MovimientoProducto(models.Model):
     codigo = models.AutoField(primary_key=True)
+    codigo_detalle_producto = models.ForeignKey(
+        DetalleProducto,
+        on_delete=models.CASCADE,
+    )
     TIPO_CHOICES = [
         ("entrada", "Entrada"),
         ("salida", "Salida"),
     ]
-    codigo_producto = models.ForeignKey(
-        Producto,
-        on_delete=models.CASCADE,
-        related_name="movimientos",
-        verbose_name="Producto"
-    )
     tipo = models.CharField(
         max_length=10,
         choices=TIPO_CHOICES,
@@ -373,44 +363,3 @@ class Promocion(models.Model):
         verbose_name = "Promoción"
         verbose_name_plural = "Promociones"
 
-
-# ==========================================================
-# 9. PROMOCIÓN PRODUCTO
-# ==========================================================
-class PromocionProducto(models.Model):
-    codigo = models.AutoField(primary_key=True)
-    codigo_promocion = models.ForeignKey(
-        Promocion,
-        on_delete=models.CASCADE,
-        related_name="productos_promocion",
-        verbose_name="Promoción"
-    )
-    codigo_producto = models.ForeignKey(
-        Producto,
-        on_delete=models.CASCADE,
-        related_name="promociones",
-        verbose_name="Producto"
-    )
-    precio = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        verbose_name="Precio"
-    )
-    estado = models.BooleanField(
-        default=True,
-        verbose_name="Estado"
-    )
-    valor_con_descuento = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        verbose_name="Valor con Descuento"
-    )
-
-    def __str__(self):
-        return f"{self.codigo_producto.nombre} - {self.codigo_promocion.nombre}"
-
-    class Meta:
-        verbose_name = "Promoción de Producto"
-        verbose_name_plural = "Promociones de Productos"

@@ -1,6 +1,6 @@
 from django.db import models
 from usuarios.models import Usuario
-from catalogo.models import Producto, MovimientoProducto
+from catalogo.models import DetalleProducto  
 
 
 # ==========================================================
@@ -16,6 +16,13 @@ class Bitacora(models.Model):
         related_name="bitacoras",
         verbose_name="Usuario"
     )
+    codigo_detalle_producto = models.ForeignKey( 
+        DetalleProducto,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="bitacoras_producto",
+        verbose_name="Producto Asociado")
     accion = models.CharField(
         max_length=150,
         verbose_name="Acción Realizada"
@@ -62,7 +69,7 @@ class Bitacora(models.Model):
         return self.descripcion
 
     def __str__(self):
-        usuario_str = self.codigo_usuario.username if self.codigo_usuario else "Sistema/Anonimo"
+        usuario_str = self.codigo_usuario.email if self.codigo_usuario else "Sistema/Anonimo"
         return f"[{self.fecha.strftime('%Y-%m-%d %H:%M')}] {usuario_str} - {self.accion}"
 
     class Meta:
@@ -72,49 +79,5 @@ class Bitacora(models.Model):
 
 
 
-# ==========================================================
-# 2. HISTORIAL AUDITADO DE STOCK
-# ==========================================================
-class HistorialStock(models.Model):
-    codigo = models.AutoField(primary_key=True)
-    codigo_producto = models.ForeignKey(
-        Producto,
-        on_delete=models.CASCADE,
-        related_name="historiales_stock",
-        verbose_name="Producto"
-    )
-    codigo_movimiento = models.ForeignKey(
-        MovimientoProducto,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="historiales",
-        verbose_name="Movimiento Asociado"
-    )
-    stock_anterior = models.PositiveIntegerField(
-        verbose_name="Stock Anterior"
-    )
-    cantidad_cambio = models.IntegerField(
-        verbose_name="Cantidad Modificada"
-    )
-    stock_nuevo = models.PositiveIntegerField(
-        verbose_name="Stock Resultante"
-    )
-    motivo = models.CharField(
-        max_length=200,
-        blank=True,
-        null=True,
-        verbose_name="Motivo / Justificación"
-    )
-    fecha = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Fecha de Registro"
-    )
 
-    def __str__(self):
-        return f"{self.codigo_producto.nombre}: {self.stock_anterior} -> {self.stock_nuevo}"
 
-    class Meta:
-        verbose_name = "Historial de Stock"
-        verbose_name_plural = "Historiales de Stock"
-        ordering = ["-fecha"]

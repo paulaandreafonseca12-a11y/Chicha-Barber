@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 
 from usuarios.forms import RegistroForm
 from usuarios.models import Usuario, RolUsuario
-from .models import Servicios, Promocion, Calificacion
+from .models import Servicios, Calificacion
 from .forms import ServiciosForm, ServiciosEditarForm, CalificacionForm, ResponderCalificacionForm
 
 def servicios(request):
@@ -230,7 +230,7 @@ def guardar_calificacion_view(request):
             if request.user.is_authenticated:
                 calificacion.cliente = request.user
                 if not calificacion.cliente_nombre:
-                    calificacion.cliente_nombre = request.user.get_full_name() or request.user.username
+                    calificacion.cliente_nombre = request.user.get_full_name() or request.user.email
 
             calificacion.save()
             messages.success(request, "✅ ¡Gracias por tu calificación!")

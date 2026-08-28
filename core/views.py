@@ -7,12 +7,16 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
 
-from servicios.forms import ServiciosEditarForm, ServiciosForm
-from catalogo.models import Promocion
+#from servicios.forms import ServiciosEditarForm, ServiciosForm
 from usuarios.forms import CustomLoginForm
 from usuarios.models import RolUsuario
 from configuraciones.models import Carrusel
 from servicios.models import Calificacion
+from usuarios.models import Usuario
+from servicios.models import Servicios
+from reservas.models import Reserva
+from catalogo.models import Producto, DetalleProducto
+#from django.db.models import Sum
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
@@ -23,7 +27,7 @@ class CustomLoginView(LoginView):
         response = super().form_valid(form)
         messages.success(
             self.request,
-            f"¡Bienvenido de nuevo, {self.request.user.first_name}!"
+            f"¡Bienvenido de nuevo, {self.request.user.primer_nombre}!"
         )
         return response
 
@@ -50,11 +54,7 @@ def inicio_admin(request):
     if not request.user.is_authenticated or request.user.rol not in (RolUsuario.ADMIN, RolUsuario.BARBERO):
         return redirect('login')
         
-    from usuarios.models import Usuario
-    from servicios.models import Servicios
-    from reservas.models import Reserva
-    from catalogo.models import Producto, DetalleProducto
-    from django.db.models import Sum
+
 
     # Estadísticas
     total_clientes = Usuario.objects.filter(rol=RolUsuario.CLIENTE).count()
@@ -72,7 +72,7 @@ def inicio_admin(request):
     productos_bajo_bitacora = DetalleProducto.objects.filter(cantidad_actual__lt=15).select_related('codigo_producto')[:5]
 
     context = {
-        'nombre': request.user.first_name or request.user.username,
+        'nombre': request.user.primer_nombre or request.user.email,
         'total_clientes': total_clientes,
         'total_barberos': total_barberos,
         'total_servicios': total_servicios,
@@ -86,5 +86,3 @@ def inicio_admin(request):
         'productos_bajo_bitacora': productos_bajo_bitacora,
     }
     return render(request, 'index-admin.html', context)
-
-
