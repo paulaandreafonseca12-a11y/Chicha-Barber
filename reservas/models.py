@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-from servicios.models import Promocion, Servicios
+from servicios.models import Servicios
 from usuarios.models import Notificacion, Usuario
 
 # ==========================================================
@@ -104,14 +104,6 @@ class Reserva(models.Model):
     telefono_usuario = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
     fecha_reserva = models.DateTimeField(blank=True, null=True, verbose_name="Fecha y Hora de la Reserva")
     precio_historico = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Precio Histórico")
-    promocion = models.ForeignKey(
-        Promocion,
-        on_delete=models.SET_NULL,
-        related_name="reservas",
-        null=True,
-        blank=True,
-        verbose_name="Promoción Aplicada",
-    )
 
     class Meta:
         verbose_name = "Reserva"
