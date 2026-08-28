@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 
 from usuarios.forms import RegistroForm
 from usuarios.models import Usuario, RolUsuario
-from .models import Servicios, Promocion, Calificacion
+from .models import Servicios, Calificacion
 from .forms import ServiciosForm, ServiciosEditarForm, CalificacionForm, ResponderCalificacionForm
 
 def servicios(request):
