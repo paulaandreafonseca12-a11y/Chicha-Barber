@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
-from reservas.models import Reserva, Agenda
+from reservas.models import Agenda, Reserva
 from reservas.forms import ReservaEditarForm
 from servicios.models import Promocion, Servicios
 from usuarios.models import Usuario, Notificacion  # <-- Importamos Notificacion
@@ -100,19 +100,20 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             agenda_obj.estado = 'reservada'
             agenda_obj.save()
 
-            factura = Factura.objects.create(
-                cliente=request.user,
-                total_pagado=0,
-                metodo_pago='efectivo',
-                estado='pendiente'
-            )
-            DetalleFactura.objects.create(
-                factura=factura,
-                reserva=reserva,
-                cantidad=1,
-                precio_unitario=precio,
-                subtotal=precio
-            )
+            # Comentado por ahora ya que Factura no existe en los modelos actuales
+            # factura = Factura.objects.create(
+            #     cliente=request.user,
+            #     total_pagado=0,
+            #     metodo_pago='efectivo',
+            #     estado='pendiente'
+            # )
+            # DetalleFactura.objects.create(
+            #     factura=factura,
+            #     reserva=reserva,
+            #     cantidad=1,
+            #     precio_unitario=precio,
+            #     subtotal=precio
+            # )
 
             enviar_correo_reserva(
                 correo_cliente=correo,
@@ -121,7 +122,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 fecha=datetime.combine(agenda_obj.fecha, agenda_obj.hora_inicio),
             )
             messages.success(request, '¡Te has registrado con éxito y tu reserva ha sido confirmada!')
-            return redirect(f"{reverse('carrito')}?reserva_id={reserva.id}&reserva_servicio={reserva.servicio.nombre}&reserva_fecha={agenda_obj.fecha.isoformat()}&reserva_hora={agenda_obj.hora_inicio.strftime('%H:%M')}&reserva_precio={float(reserva.precio_historico or precio)}&factura_id={factura.id}")
+            return redirect(f"{reverse('carrito')}?reserva_id={reserva.id}&reserva_servicio={reserva.servicio.nombre}&reserva_fecha={agenda_obj.fecha.isoformat()}&reserva_hora={agenda_obj.hora_inicio.strftime('%H:%M')}&reserva_precio={float(reserva.precio_historico or precio)}")
         except Agenda.DoesNotExist:
             messages.error(request, 'El turno que habías seleccionado ya no está disponible.')
         except Exception as e:
@@ -206,23 +207,23 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 agenda_obj.estado = 'reservada'
                 agenda_obj.save()
 
-                if factura_id:
-                    factura = get_object_or_404(Factura, id=factura_id)
-                else:
-                    factura = Factura.objects.create(
-                        cliente=request.user,
-                        total_pagado=0,
-                        metodo_pago='efectivo',
-                        estado='pendiente'
-                    )
+                # if factura_id:
+                #     factura = get_object_or_404(Factura, id=factura_id)
+                # else:
+                #     factura = Factura.objects.create(
+                #         cliente=request.user,
+                #         total_pagado=0,
+                #         metodo_pago='efectivo',
+                #         estado='pendiente'
+                #     )
 
-                DetalleFactura.objects.create(
-                    factura=factura,
-                    reserva=reserva,
-                    cantidad=1,
-                    precio_unitario=precio,
-                    subtotal=precio
-                )
+                # DetalleFactura.objects.create(
+                #     factura=factura,
+                #     reserva=reserva,
+                #     cantidad=1,
+                #     precio_unitario=precio,
+                #     subtotal=precio
+                # )
 
             try:
                 enviar_correo_reserva(
@@ -234,7 +235,7 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             except Exception as mail_error:
                 print(f"Error al enviar correo de reserva: {mail_error}")
 
-            return redirect(f"{reverse('carrito')}?reserva_id={reserva.id}&reserva_servicio={reserva.servicio.nombre}&reserva_fecha={agenda_obj.fecha.isoformat()}&reserva_hora={agenda_obj.hora_inicio.strftime('%H:%M')}&reserva_precio={float(reserva.precio_historico or precio)}&factura_id={factura.id}")
+            return redirect(f"{reverse('carrito')}?reserva_id={reserva.id}&reserva_servicio={reserva.servicio.nombre}&reserva_fecha={agenda_obj.fecha.isoformat()}&reserva_hora={agenda_obj.hora_inicio.strftime('%H:%M')}&reserva_precio={float(reserva.precio_historico or precio)}")
         except Agenda.DoesNotExist:
             reserva_existente = Reserva.objects.filter(agenda_id=turno_id).first()
             if reserva_existente:
