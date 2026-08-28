@@ -11,14 +11,7 @@ class CategoriaAyuda(models.Model):
     def __str__(self):
         return self.nombre
 
-class ArticuloFAQ(models.Model):
-    categoria = models.ForeignKey(CategoriaAyuda, on_delete=models.CASCADE, related_name='articulos')
-    titulo = models.CharField(max_length=200)
-    contenido = models.TextField()
-    visitas = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return self.titulo
+class TicketSoporte(models.Model):
 
 
     # 2. CAMBIA ESTA LÍNEA: Usa settings.AUTH_USER_MODEL
@@ -26,8 +19,8 @@ class ArticuloFAQ(models.Model):
     categoria = models.ForeignKey(CategoriaAyuda, on_delete=models.SET_NULL, null=True)
     asunto = models.CharField(max_length=200)
     descripcion = models.TextField()
-    estado = models.CharField(max_length=10, choices=ESTADOS, default='ABIERTO')
+    estado = models.CharField(max_length=10, choices=[('ABIERTO', 'Abierto'), ('CERRADO', 'Cerrado')], default='ABIERTO')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self):  
         return f"Ticket #{self.id} - {self.asunto}"

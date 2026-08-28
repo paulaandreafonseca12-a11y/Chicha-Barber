@@ -7,12 +7,16 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
 
-from servicios.forms import ServiciosEditarForm, ServiciosForm
-from catalogo.models import Promocion
+#from servicios.forms import ServiciosEditarForm, ServiciosForm
 from usuarios.forms import CustomLoginForm
 from usuarios.models import RolUsuario
 from configuraciones.models import Carrusel
 from servicios.models import Calificacion
+from usuarios.models import Usuario
+from servicios.models import Servicios
+from reservas.models import Reserva
+from catalogo.models import Producto, DetalleProducto
+#from django.db.models import Sum
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
@@ -50,11 +54,7 @@ def inicio_admin(request):
     if not request.user.is_authenticated or request.user.rol not in (RolUsuario.ADMIN, RolUsuario.BARBERO):
         return redirect('login')
         
-    from usuarios.models import Usuario
-    from servicios.models import Servicios
-    from reservas.models import Reserva
-    from catalogo.models import Producto, DetalleProducto
-    from django.db.models import Sum
+
 
     # Estadísticas
     total_clientes = Usuario.objects.filter(rol=RolUsuario.CLIENTE).count()
