@@ -271,59 +271,6 @@ class Usuario(AbstractBaseUser):
         return self.is_superuser
 
 
-# ==========================================================
-# REGISTRO DE ACTIVIDAD
-# ==========================================================
-
-class RegistroActividad(models.Model):
-
-    TIPO_CHOICES = (
-        ('usuario', 'Usuario'),
-        ('producto', 'Producto'),
-        ('servicio', 'Servicio'),
-        ('reserva', 'Reserva'),
-        ('promocion', 'Promoción'),
-        ('sesion', 'Sesión'),
-    )
-
-    usuario = models.ForeignKey(
-        Usuario,
-        on_delete=models.CASCADE,
-        related_name='actividades',
-        verbose_name='Usuario que realizó la acción',
-        db_column='usuario_id'
-    )
-
-    tipo = models.CharField(
-        max_length=20,
-        choices=TIPO_CHOICES,
-        verbose_name='Tipo',
-        db_column='tipo'
-    )
-
-    descripcion = models.CharField(
-        max_length=255,
-        verbose_name='Descripción',
-        db_column='descripcion'
-    )
-
-    fecha = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Fecha',
-        db_column='fecha'
-    )
-
-    class Meta:
-        verbose_name = 'Registro de actividad'
-        verbose_name_plural = 'Registros de actividad'
-        db_table = 'registros_actividad'
-        ordering = ['-fecha']
-
-    def __str__(self):
-        return (
-            f"{self.usuario} - {self.descripcion} "
-            f"({self.fecha:%d/%m/%Y %H:%M})"
-        )
 
 
 # ==========================================================

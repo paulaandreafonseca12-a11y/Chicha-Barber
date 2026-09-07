@@ -11,7 +11,7 @@ import re
 
 from .models import (
     Usuario,
-    RegistroActividad,
+    HistorialAccion,
     Notificacion,
     RolUsuario,
 )
@@ -139,7 +139,7 @@ def registro_view(request):
             user.save()
 
             # Registrar la acción
-            RegistroActividad.objects.create(
+            HistorialAccion.objects.create(
                 usuario=user,
                 tipo='usuario',
                 descripcion='Creó su cuenta'
@@ -267,7 +267,7 @@ def crear_usuario_admin(request):
 
             user.save()
 
-            RegistroActividad.objects.create(
+            HistorialAccion.objects.create(
                 usuario=request.user,
                 tipo='usuario',
                 descripcion=(
@@ -355,7 +355,7 @@ def editar_usuario(request, pk):
 
             form.save()
 
-            RegistroActividad.objects.create(
+            HistorialAccion.objects.create(
                 usuario=request.user,
                 tipo='usuario',
                 descripcion=(
@@ -522,7 +522,7 @@ def perfil(request):
 
                 form.save()
 
-                RegistroActividad.objects.create(
+                HistorialAccion.objects.create(
                     usuario=request.user,
                     tipo='usuario',
                     descripcion='Actualizó su perfil'
@@ -597,7 +597,7 @@ def perfil(request):
                         request.user
                     )
 
-                    RegistroActividad.objects.create(
+                    HistorialAccion.objects.create(
                         usuario=request.user,
                         tipo='sesion',
                         descripcion='Cambió su contraseña'
@@ -619,20 +619,9 @@ def perfil(request):
                             f"❌ {error}"
                         )
 
-    # ======================================================
-    # HISTORIAL DEL PERFIL
-    # ======================================================
-    #
-    # IMPORTANTE:
-    # AQUÍ NO USAMOS HistorialAccion.
-    #
-    # El historial de acciones del sistema se maneja con
-    # RegistroActividad dentro de usuarios.
-    #
-    # RegistroActividad utiliza el campo "fecha".
-    # ======================================================
+    
 
-    actividades = RegistroActividad.objects.all().order_by(
+    actividades = HistorialAccion.objects.all().order_by(
         '-fecha'
     )[:20]
 
