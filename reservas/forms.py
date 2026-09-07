@@ -10,14 +10,14 @@ class ReservaForm(forms.ModelForm):
         model = Reserva
         # Se especifican explícitamente los campos del modelo que se van a exponer.
         # Esto evita exponer campos internos como 'estado' de forma accidental.
-        fields = ['nombre_usuario', 'correo_usuario', 'telefono_usuario']
+        fields = ['telefono_usuario', 'observacion']
 
 class ReservaFormCompleto(forms.ModelForm):
     class Meta:
         model = Reserva
-        fields = ['nombre_usuario', 'correo_usuario', 'telefono_usuario', 'fecha_reserva', 'servicio']
+        fields = ['telefono_usuario', 'observacion', 'fecha_reserva', 'servicio']
 
 class ReservaEditarForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        fields = ['nombre_usuario', 'correo_usuario', 'telefono_usuario', 'fecha_reserva', 'estado']
+        fields = ['telefono_usuario', 'observacion', 'fecha_reserva', 'estado']

@@ -1,3 +1,5 @@
+from django.db.models import Q
+from usuarios.models import HistorialAccion
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
 from django.db import transaction
@@ -56,44 +58,34 @@ def obtener_turnos_disponibles_json(request):
     return JsonResponse({'turnos': resultado})
 
 
-def crear_reserva(request, servicio_id=None, promocion_id=None):
+def crear_reserva(request, servicio_id=None):
     servicio = None
     factura_id = request.GET.get('factura_id') or request.POST.get('factura_id')
-    promo = None
 
     if not request.user.is_authenticated:
         login_url = reverse('login')
         return redirect(f'{login_url}?next={request.get_full_path()}')
 
-    if promocion_id is not None:
-        promo = get_object_or_404(Promocion, pk=promocion_id)
-        servicio = promo.servicio
-    elif servicio_id is not None:
+    if servicio_id is not None:
         servicio = get_object_or_404(Servicios, id=servicio_id)
     else:
-        messages.warning(request, 'Debe seleccionar un servicio o promoción.')
+        messages.warning(request, 'Debe seleccionar un servicio.')
         return redirect('inicio')
 
     if request.user.is_authenticated and 'reserva_pendiente' in request.session:
         reserva_data = request.session.pop('reserva_pendiente')
         turno_id = reserva_data.get('turno_id')
-        nombre = reserva_data.get('nombre_usuario') or request.user.get_full_name()
-        correo = reserva_data.get('correo_usuario') or request.user.email
         telefono = reserva_data.get('telefono_usuario')
-
+        observacion = reserva_data.get('observacion')
         try:
             agenda_obj = Agenda.objects.get(pk=turno_id, estado='disponible')
             precio = servicio.precio
-            if promo:
-                descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
-                precio = round(precio * (Decimal('1') - descuento), 2)
 
             reserva = Reserva.objects.create(
                 agenda=agenda_obj,  # <-- Actualizado de 'turno' a 'agenda'
                 usuario=request.user,
-                nombre_usuario=nombre,
-                correo_usuario=correo,
                 telefono_usuario=telefono,
+                observacion=observacion,
                 servicio=servicio,
                 precio_historico=precio,
             )
@@ -115,6 +107,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             #     subtotal=precio
             # )
 
+            correo = None
+            nombre = None
             enviar_correo_reserva(
                 correo_cliente=correo,
                 nombre=nombre,
@@ -143,35 +137,27 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
         if t.fecha > hoy or (t.fecha == hoy and t.hora_inicio > ahora.time())
     ]
 
-    action_url = (
-        reverse('crear_reserva_promocion', args=[promo.id])
-        if promo else
-        reverse('crear_reserva', args=[servicio.id])
-    )
+    action_url = reverse('crear_reserva', args=[servicio.id])
 
     if request.method == 'POST':
         turno_id = request.POST.get('turno_id')
-        nombre = request.POST.get('nombre_usuario', '').strip()
-        correo = request.POST.get('correo_usuario', '').strip()
         telefono = request.POST.get('telefono_usuario', '').strip()
+        observacion = request.POST.get('observacion', '').strip()
 
         if not request.user.is_authenticated:
             request.session['reserva_pendiente'] = {
                 'turno_id': turno_id,
-                'nombre_usuario': nombre,
-                'correo_usuario': correo,
                 'telefono_usuario': telefono,
+                'observacion': observacion,
             }
             messages.info(request, 'Por favor, regístrate o inicia sesión para confirmar tu reserva.')
             login_url = reverse('registro')
             return redirect(f'{login_url}?next={request.get_full_path()}')
 
-        if not nombre:
-            nombre = request.user.get_full_name()
+        # (La lógica del nombre se ha eliminado)
 
         context_error = {
             'servicio': servicio,
-            'promo': promo,
             'barberos': barberos,
             'turnos_disponibles': turnos_disponibles,
             'action_url': action_url,
@@ -181,8 +167,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             messages.error(request, 'Selecciona un turno disponible.')
             return render(request, 'reservas/reservas.html', context_error)
 
-        if not (nombre and correo and telefono):
-            messages.error(request, 'Todos los campos son obligatorios.')
+        if not telefono:
+            messages.error(request, 'El teléfono es obligatorio.')
             return render(request, 'reservas/reservas.html', context_error)
 
         try:
@@ -190,19 +176,14 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 agenda_obj = Agenda.objects.select_for_update().get(pk=turno_id, estado='disponible')
                 
                 precio = servicio.precio
-                if promo:
-                    descuento = Decimal(promo.porcentaje_descuento) / Decimal('100')
-                    precio = round(precio * (Decimal('1') - descuento), 2)
 
                 reserva = Reserva.objects.create(
                     agenda=agenda_obj,
                     usuario=request.user if request.user.is_authenticated else None,
-                    nombre_usuario=nombre,
-                    correo_usuario=correo,
                     telefono_usuario=telefono,
+                    observacion=observacion,
                     servicio=servicio,
                     precio_historico=precio,
-                    promocion=promo,
                 )
                 agenda_obj.estado = 'reservada'
                 agenda_obj.save()
@@ -246,7 +227,6 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
     context = {
         'servicio': servicio,
-        'promo': promo,
         'barberos': barberos,
         'turnos_disponibles': turnos_disponibles,
         'action_url': action_url,
@@ -326,7 +306,7 @@ def cancelar_cita(request, pk):
             ),
             url="/admin-reservas/",
         )
-    messages.warning(request, f'Cita cancelada: {cita.nombre_usuario}')
+    messages.warning(request, f'Cita cancelada: {cita.usuario_nombre}')
     return redirect('ver_agenda')
 
 
@@ -429,15 +409,14 @@ def crear_reserva_admin(request):
     servicios = Servicios.objects.all()
 
     if request.method == 'POST':
-        nombre = request.POST.get('nombre_usuario', '').strip()
-        correo = request.POST.get('correo_usuario', '').strip()
         telefono = request.POST.get('telefono_usuario', '').strip()
+        observacion = request.POST.get('observacion', '').strip()
         fecha_reserva_raw = request.POST.get('fecha_reserva', '').strip()
         servicio_id = request.POST.get('servicio')
         barbero_id = request.POST.get('barbero') 
 
-        if not (nombre and correo and telefono and fecha_reserva_raw and servicio_id):
-            messages.error(request, 'Todos los campos son obligatorios.')
+        if not (telefono and fecha_reserva_raw and servicio_id):
+            messages.error(request, 'El teléfono, la fecha y el servicio son obligatorios.')
             return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
         
         fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
@@ -459,9 +438,9 @@ def crear_reserva_admin(request):
 
                 Reserva.objects.create(
                     agenda=turno_coincidente, # <-- Actualizado
-                    nombre_usuario=nombre,
-                    correo_usuario=correo,
+                    usuario=request.user,
                     telefono_usuario=telefono,
+                    observacion=observacion,
                     fecha_reserva=fecha_reserva,
                     servicio=servicio,
                 )
@@ -593,7 +572,7 @@ def desactivar_dia_agenda(request, fecha_str):
         try:
             enviar_correo_cancelacion_admin(
                 correo_cliente=reserva.correo_usuario,
-                nombre=reserva.nombre_usuario,
+                nombre=reserva.usuario_nombre,
                 servicio=reserva.servicio.nombre,
                 fecha=reserva.fecha_reserva
             )

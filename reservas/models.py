@@ -135,6 +135,12 @@ class Reserva(models.Model):
         related_name="reservas",
         verbose_name="Servicio",
     )
+    observacion = models.TextField(blank=True, null=True, verbose_name="Observación")
+    estado = models.CharField(
+        max_length=20, choices=ESTADO_CHOICES, default="reservada", verbose_name="Estado"
+    )
+    
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
 
     # Campos para usuarios invitados o historial
     nombre_usuario = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nombre del Usuario (Invitado)")
