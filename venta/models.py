@@ -103,8 +103,6 @@ class Venta(models.Model):
             for detalle in self.detalles.all()
         )
 
-        self.total_compra = total
-
         self.save(
             update_fields=["total_venta"]
         )
@@ -208,13 +206,13 @@ class DetalleVenta(models.Model):
 
         if not self.pk:
 
-            if self.cantidad > detalle_producto.cantidad_actual:
+            if self.cantidad > detalle_prod_obj.cantidad_actual:
 
                 raise ValueError(
                     f"Stock insuficiente para "
                     f"'{self.codigo_producto.nombre}'. "
                     f"Disponible: "
-                    f"{detalle_producto.cantidad_actual}"
+                    f"{detalle_prod_obj.cantidad_actual}"
                 )
 
         # --------------------------------------------------
@@ -246,29 +244,30 @@ class DetalleVenta(models.Model):
                     f"Salida por Venta "
                     f"#{self.codigo_venta.codigo_venta}"
                 )
+            )
 
-                self.codigo_movimiento_producto = movimiento
+            self.codigo_movimiento_producto = movimiento
 
-                super().save(
-                    update_fields=[
-                        "codigo_movimiento_producto"
-                    ]
-                )
+            super().save(
+                update_fields=[
+                    "codigo_movimiento_producto"
+                ]
+            )
 
-                # ------------------------------------------
-                # DESCONTAR STOCK
-                # ------------------------------------------
+            # ------------------------------------------
+            # DESCONTAR STOCK
+            # ------------------------------------------
 
-                detalle_producto.cantidad_actual -= (
-                    self.cantidad
-                )
+            detalle_prod_obj.cantidad_actual -= (
+                self.cantidad
+            )
 
-                detalle_producto.save(
-                    update_fields=[
-                        "cantidad_actual",
-                        "fecha_actualizacion",
-                    ]
-                )
+            detalle_prod_obj.save(
+                update_fields=[
+                    "cantidad_actual",
+                    "fecha_actualizacion",
+                ]
+            )
 
             # ----------------------------------------------
             # ACTUALIZAR TOTAL
