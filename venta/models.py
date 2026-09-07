@@ -106,7 +106,6 @@ class Venta(models.Model):
 
         self.save(
             update_fields=["total_venta"]
-            update_fields=["total_venta"]
         )
 
     @property
@@ -117,13 +116,7 @@ class Venta(models.Model):
     def total_compra(self, value):
         self.total_venta = value
 
-    @property
-    def total_compra(self):
-        return self.total_venta
 
-    @total_compra.setter
-    def total_compra(self, value):
-        self.total_venta = value
 
     @property
     def fecha_venta(self):
@@ -165,7 +158,6 @@ class DetalleVenta(models.Model):
         verbose_name="Producto",
     )
 
-    codigo_movimiento_producto = models.ForeignKey(
     codigo_movimiento_producto = models.ForeignKey(
         MovimientoProducto,
         on_delete=models.SET_NULL,
@@ -217,13 +209,13 @@ class DetalleVenta(models.Model):
 
         if not self.pk:
 
-            if self.cantidad > detalle_prod_obj.cantidad_actual:
+            if self.cantidad > detalle_producto.cantidad_actual:
 
                 raise ValueError(
                     f"Stock insuficiente para "
                     f"'{self.codigo_producto.nombre}'. "
                     f"Disponible: "
-                    f"{detalle_prod_obj.cantidad_actual}"
+                    f"{detalle_producto.cantidad_actual}"
                 )
 
         # --------------------------------------------------
@@ -264,7 +256,6 @@ class DetalleVenta(models.Model):
                         ),
                     )
                 )
-            )
 
             self.codigo_movimiento_producto = movimiento
 
@@ -278,11 +269,11 @@ class DetalleVenta(models.Model):
             # DESCONTAR STOCK
             # ------------------------------------------
 
-            detalle_prod_obj.cantidad_actual -= (
+            detalle_producto.cantidad_actual -= (
                 self.cantidad
             )
 
-            detalle_prod_obj.save(
+            detalle_producto.save(
                 update_fields=[
                     "cantidad_actual",
                     "fecha_actualizacion",
@@ -369,22 +360,10 @@ class DetallePagos(models.Model):
         }
         return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
 
-    @classmethod
-    def get_or_create_para_venta(cls, venta, **kwargs):
-        """Obtiene o crea el detalle de pago para una venta específica."""
-        defaults = {
-            'banco': kwargs.get('banco', 'Bancolombia'),
-            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
-            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
-            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
-            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
-        }
-        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
+
 
     @classmethod
     def get_solo(cls):
-        """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
-        return cls.objects.first()
         """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
         return cls.objects.first()
 
@@ -463,7 +442,6 @@ def notificar_venta(
             mensaje=(
                 f"Nueva venta de "
                 f"{instance.nombre_cliente} "
-                f"por ${instance.total_venta:.2f}."
                 f"por ${instance.total_venta:.2f}."
             ),
             url="/ventas/historial/",
