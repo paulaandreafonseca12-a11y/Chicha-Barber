@@ -155,7 +155,7 @@ class UsuarioAdmin(UserAdmin):
         ),
 
         (
-            'Rol y estado',
+            'Rol y configuración',
             {
                 'fields': (
                     'rol',

@@ -1,11 +1,10 @@
-
 import os
 
 from django.db import models
 from django.utils.text import slugify
 from PIL import Image
 
-from usuarios.models import HistorialAccion, Usuario
+from usuarios.models import Usuario, HistorialAccion
 
 
 # ============================================================
@@ -203,24 +202,15 @@ class Carrusel(models.Model):
 # ============================================================
 
 class Configuracion(models.Model):
+
     codigo = models.AutoField(
         primary_key=True,
         verbose_name='Código'
     )
+
     codigo_usuario = models.ForeignKey(
         Usuario,
-        on_delete=models.CASCADE
-    )
-    codigo_carrusel = models.ForeignKey(
-        Carrusel,
-        on_delete=models.CASCADE
-    )
-
-    codigo_RegistroActividad = models.ForeignKey(
-        HistorialAccion,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
         verbose_name='Usuario',
         related_name='configuraciones'
     )
@@ -231,6 +221,15 @@ class Configuracion(models.Model):
         null=True,
         blank=True,
         verbose_name='Carrusel',
+        related_name='configuraciones'
+    )
+
+    codigo_historial = models.ForeignKey(
+        HistorialAccion,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Historial de acción',
         related_name='configuraciones'
     )
 
@@ -259,4 +258,3 @@ class Configuracion(models.Model):
 
     def __str__(self):
         return self.nombre
-
