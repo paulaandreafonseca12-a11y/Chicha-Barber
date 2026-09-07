@@ -244,7 +244,27 @@ def notificar_reserva(
             url="/perfil/",
         )
 
-    admins = Usuario.objects.filter(rol="admin")
+        HistorialAccion.objects.create(
+            usuario=instance.cliente,
+            reserva=instance,
+            servicio=instance.servicio,
+            tipo="reserva",
+            accion="reservar",
+            descripcion=(
+                f"Realizó una reserva para "
+                f"{instance.servicio.nombre}."
+            ),
+        )
+
+    # ------------------------------------------------------
+    # ADMINISTRADORES
+    # ------------------------------------------------------
+
+    admins = Usuario.objects.filter(
+        Q(rol="admin") |
+        Q(is_superuser=True)
+    ).distinct()
+
     for admin in admins:
 
         Notificacion.objects.create(
