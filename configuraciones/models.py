@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 from PIL import Image
 
-from usuarios.models import Usuario
+from usuarios.models import RegistroActividad
 
 
 # ============================================================
@@ -209,8 +209,8 @@ class Configuracion(models.Model):
         verbose_name='Código'
     )
 
-    codigo_usuario = models.ForeignKey(
-        Usuario,
+    codigo_RegistroActividad = models.ForeignKey(
+        RegistroActividad,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
