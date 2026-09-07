@@ -180,17 +180,15 @@ class Producto(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        es_nuevo = self.pk is None
-        if not self.codigo:
-            ultimo = Producto.objects.order_by("-codigo_producto").first()
-            siguiente_id = (ultimo.codigo_producto + 1) if ultimo else 1
-            self.codigo = f"PROD-{siguiente_id:05d}"
+
         super().save(*args, **kwargs)
-        if es_nuevo and self.codigo.startswith("PROD-"):
-            codigo_real = f"PROD-{self.codigo_producto:05d}"
-            if self.codigo != codigo_real:
-                self.codigo = codigo_real
-                super().save(update_fields=["codigo"])
+
+        if not self.codigo:
+            self.codigo = f"PROD-{self.codigo_producto:05d}"
+
+            super().save(
+                update_fields=["codigo"]
+            )
 
     @property
     def stock_actual(self):
@@ -496,4 +494,3 @@ def auditar_movimiento_inventario(sender, instance, created, **kwargs):
             )
         except Exception:
             pass
-
