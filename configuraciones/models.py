@@ -203,10 +203,21 @@ class Carrusel(models.Model):
 # ============================================================
 
 class Configuracion(models.Model):
+<<<<<<< HEAD
 
+=======
+>>>>>>> Valentina
     codigo = models.AutoField(
         primary_key=True,
         verbose_name='Código'
+    )
+    codigo_usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE
+    )
+    codigo_carrusel = models.ForeignKey(
+        Carrusel,
+        on_delete=models.CASCADE
     )
 
     codigo_usuario = models.ForeignKey(

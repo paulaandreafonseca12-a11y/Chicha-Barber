@@ -178,6 +178,34 @@ class Reserva(models.Model):
         fecha_str = self.fecha_reserva.strftime("%Y-%m-%d %H:%M") if self.fecha_reserva else (str(self.agenda.fecha) if self.agenda else "Sin fecha")
         return f"{usuario_nombre} - {self.servicio.nombre} ({fecha_str})"
 
+    @property
+    def cliente(self):
+        return self.usuario
+
+    @property
+    def nombre_cliente(self):
+        if self.nombre_usuario:
+            return self.nombre_usuario
+        if self.usuario and hasattr(self.usuario, "get_full_name") and self.usuario.get_full_name():
+            return self.usuario.get_full_name()
+        return self.nombre_usuario or (self.usuario.email if self.usuario else "Sin cliente")
+
+    @property
+    def telefono_cliente(self):
+        if self.telefono_usuario:
+            return self.telefono_usuario
+        if self.usuario and hasattr(self.usuario, "telefono"):
+            return self.usuario.telefono
+        return ""
+
+    @property
+    def correo_cliente(self):
+        if self.correo_usuario:
+            return self.correo_usuario
+        if self.usuario and hasattr(self.usuario, "email"):
+            return self.usuario.email
+        return ""
+
 # ==========================================================
 # 3. NOTIFICACIÓN + HISTORIAL DE RESERVA
 # ==========================================================
@@ -209,6 +237,7 @@ def notificar_reserva(
             url="/perfil/",
         )
 
+<<<<<<< HEAD
         HistorialAccion.objects.create(
             usuario=instance.cliente,
             reserva=instance,
@@ -230,6 +259,9 @@ def notificar_reserva(
         Q(is_superuser=True)
     ).distinct()
 
+=======
+    admins = Usuario.objects.filter(rol="admin")
+>>>>>>> Valentina
     for admin in admins:
 
         Notificacion.objects.create(

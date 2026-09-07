@@ -1,4 +1,4 @@
-﻿from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -153,8 +153,21 @@ def procesar_pago_cliente(request):
 
                 total_general += detalle.subtotal
 
-            nueva_venta.total_compra = total_general
-            nueva_venta.save(update_fields=['total_compra'])
+            nueva_venta.total_venta = total_general
+            nueva_venta.save(update_fields=['total_venta'])
+
+            # Registrar comprobante en DetallePagos si es transferencia
+            if metodo_pago == 'transferencia':
+                DetallePagos.objects.get_or_create(
+                    codigo_venta=nueva_venta,
+                    defaults={
+                        'banco': request.POST.get('banco', 'Bancolombia'),
+                        'tipo_cuenta': request.POST.get('tipo_cuenta', 'Ahorros'),
+                        'numero_cuenta': request.POST.get('numero_cuenta', '123-456789-01'),
+                        'titular': request.POST.get('titular', 'Chicha Barber Studio SAS'),
+                        'instrucciones': request.POST.get('instrucciones', 'Comprobante registrado en proceso de verificación.')
+                    }
+                )
 
             # Limpiar sesión del carrito
             if 'carrito' in request.session:

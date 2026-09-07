@@ -46,7 +46,7 @@
 
 
         <!-- ==================================================
-             TITULO
+             TITULO PRINCIPAL
         =================================================== -->
 
         <div class="text-center mb-5">
@@ -65,7 +65,9 @@
         </div>
 
 
-        
+        <!-- ==================================================
+             BUSCADOR
+        =================================================== -->
 
         <div class="row justify-content-center mb-5">
 
@@ -101,8 +103,9 @@
         </div>
 
 
-       
-     
+        <!-- ==================================================
+             FILTROS (CATEGORÍAS Y MARCAS)
+        =================================================== -->
 
         <div class="d-flex flex-column align-items-center mb-5 gap-3">
 
@@ -127,8 +130,6 @@
             {% if marcas %}
             <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
 
-            
-
                 <a href="{% url 'productos_galeria' %}{% if categoria_seleccionada %}?categoria={{ categoria_seleccionada }}{% endif %}"
                    class="btn btn-sm rounded-pill px-3 py-1 {% if not marca_seleccionada %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
                     Todas las marcas
@@ -148,7 +149,7 @@
 
 
         <!-- ==================================================
-             LISTADO DE PRODUCTOS
+             LISTADO DE PRODUCTOS (GRID UNIFORME)
         =================================================== -->
 
         <div
@@ -156,32 +157,25 @@
             id="lista-productos"
         >
 
-
             {% for producto in productos %}
 
-
                 <!-- ==================================================
-                     PRODUCTO
+                     PRODUCTO CARD
                 ================================================== -->
 
                 <div
-                    class="col-12 col-md-6 col-lg-4 d-flex justify-content-center product-card-item  servicios-servicios__div-1 "
+                    class="col-12 col-md-6 col-lg-4 d-flex justify-content-center product-card-item servicios-servicios__div-1"
                     data-product-card
                     data-id="{{ producto.codigo_producto }}"
                 >
 
-
                     <div
-                        class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden w-100"
+                        class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden w-100 d-flex flex-column"
                         style="border: 1px solid rgba(34, 174, 209, 0.25) !important;"
                     >
 
-
-                        <!-- ==================================================
-                             IMAGEN
-                        ================================================== -->
-
-                        <div class="position-relative overflow-hidden" style="height: 260px;">
+                        <!-- IMAGEN -->
+                        <div class="position-relative overflow-hidden flex-shrink-0" style="height: 260px;">
 
                             <img
                                 src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'img/Aceite.jpg' %}{% endif %}"
@@ -191,101 +185,68 @@
                                 alt="{{ producto.nombre }}"
                             >
 
-
                         </div>
 
+                        <!-- INFORMACION DEL PRODUCTO -->
+                        <div class="card-body d-flex flex-column text-center p-4">
 
-                        <!-- ==================================================
-                             INFORMACION
-                        ================================================== -->
-
-                        <div
-                            class="card-body d-flex flex-column text-center p-4"
-                        >
-
-
-                            <!-- NOMBRE -->
-
-                            <h4
-                                class="fw-bold mb-2 producto-nombre"
-                            >
-
-                                {{ producto.nombre }}
-
-                            </h4>
-
+                            <!-- NOMBRE (ALTURA FIJA PARA EVITAR DESALINEACIÓN) -->
+                            <div class="d-flex align-items-center justify-content-center mb-2" style="height: 60px;">
+                                <h4
+                                    class="fw-bold m-0 producto-nombre fs-5 text-black"
+                                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2;"
+                                >
+                                    {{ producto.nombre }}
+                                </h4>
+                            </div>
 
                             <!-- CATEGORIA Y MARCA -->
-
-                            <div class="d-flex justify-content-center gap-2 flex-wrap mb-3">
+                            <div class="d-flex justify-content-center gap-2 flex-wrap mb-3" style="min-height: 32px;">
 
                                 {% if producto.codigo_categoria %}
-
-                                    <span
-                                        class="badge color-azul text-white producto-categoria shadow-sm"
-                                    >
-
+                                    <span class="badge color-azul text-white producto-categoria shadow-sm">
                                         <i class="bi bi-grid me-1"></i>{{ producto.codigo_categoria.nombre }}
-
                                     </span>
-
                                 {% endif %}
 
                                 {% if producto.codigo_marca %}
-
                                     <span
                                         class="badge producto-marca"
                                         style="background-color: rgba(34, 174, 209, 0.15); border: 1px solid #22aed1; color: #22aed1 !important;"
                                     >
-
                                         <i class="bi bi-tag-fill me-1"></i>{{ producto.codigo_marca.nombre }}
-
                                     </span>
-
                                 {% endif %}
 
                             </div>
 
+                            <!-- DESCRIPCION (ALTURA FIJA CON PUNTOS SUSPENSIVOS) -->
+                            <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 75px;">
+                                <p
+                                    class="text-black m-0 producto-descripcion text-start w-100"
+                                    style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35;"
+                                >
+                                    {{ producto.descripcion }}
+                                </p>
+                            </div>
 
-                            <!-- DESCRIPCION -->
-
-                            <p
-                                class="text-body-secondary text-start flex-grow-1 producto-descripcion"
-                            >
-
-                                {{ producto.descripcion|truncatechars:80 }}
-
-                            </p>
-
-
-                            <!-- ==================================================
-                                 PRECIO DE VENTA
-                            ================================================== -->
-
-                            <div class="mb-3">
+                            <!-- PRECIO DE VENTA -->
+                            <div class="mb-3 mt-auto">
 
                                 <small class="text-body-secondary d-block">
-
                                     Precio de venta
-
                                 </small>
 
                                 <h3
                                     class="fw-bold mb-0 producto-precio"
                                     style="color: #22aed1;"
                                 >
-
                                     ${{ producto.precio_venta_actual|floatformat:0 }}
-
                                 </h3>
 
                             </div>
 
-
-                            <!-- ==================================================
-                                 BOTON CARRITO
-                            ================================================== -->
-
+                            <!-- BOTON CARRITO (ORIGINAL) -->
                             <button
                                 type="button"
                                 class="btn color-azul text-white rounded-pill w-100 fw-bold shadow-sm py-2"
@@ -296,13 +257,9 @@
                                     {{ producto.precio_venta_actual|floatformat:0 }}
                                 )"
                             >
-
                                 <i class="bi bi-cart-plus me-2"></i>
-
                                 AGREGAR AL CARRITO
-
                             </button>
-
 
                         </div>
 
@@ -310,9 +267,7 @@
 
                 </div>
 
-
             {% empty %}
-
 
                 <!-- ==================================================
                      NO HAY PRODUCTOS
@@ -320,9 +275,7 @@
 
                 <div class="col-12 col-md-8">
 
-                    <div
-                        class="card shadow rounded-4 text-center p-5"
-                    >
+                    <div class="card shadow rounded-4 text-center p-5">
 
                         <i
                             class="bi bi-basket display-1"
@@ -330,27 +283,20 @@
                         ></i>
 
                         <h3 class="fw-bold mt-3">
-
                             No hay productos disponibles
-
                         </h3>
 
                         <p class="text-body-secondary">
-
                             Actualmente no tenemos productos disponibles.
-
                         </p>
 
                     </div>
 
                 </div>
 
-
             {% endfor %}
 
-
         </div>
-
 
     </div>
 
@@ -363,696 +309,216 @@
 
 <script>
 
-
 /* ==========================================================
-   BUSCADOR
+   BUSCADOR DE PRODUCTOS
 ========================================================== */
 
 function filtrarProductos() {
 
-    const input =
-        document.getElementById(
-            "buscador-productos"
-        );
+    const input = document.getElementById("buscador-productos");
+    const resultados = document.getElementById("resultados-busqueda");
 
-    const resultados =
-        document.getElementById(
-            "resultados-busqueda"
-        );
+    if (!input || !resultados) return;
 
-    if (!input || !resultados) {
-
-        return;
-
-    }
-
-
-    const texto =
-        input.value
-            .trim()
-            .toLowerCase();
-
-
-    const productos =
-        document.querySelectorAll(
-            "[data-product-card]"
-        );
-
-
-    /* ======================================================
-       LIMPIAR RESULTADOS
-    ====================================================== */
+    const texto = input.value.trim().toLowerCase();
+    const productos = document.querySelectorAll("[data-product-card]");
 
     resultados.innerHTML = "";
 
-
-    /* ======================================================
-       BUSCADOR VACIO
-    ====================================================== */
-
     if (texto === "") {
-
-        productos.forEach(
-            card => {
-
-                card.classList.remove("d-none");
-
-            }
-        );
-
+        productos.forEach(card => card.classList.remove("d-none"));
         resultados.classList.add("d-none");
-
         return;
-
     }
-
 
     let encontrados = 0;
 
+    productos.forEach(card => {
 
-    /* ======================================================
-       RECORRER PRODUCTOS
-    ====================================================== */
+        const nombre = card.querySelector(".producto-nombre")?.textContent.trim() || "";
+        const descripcion = card.querySelector(".producto-descripcion")?.textContent.trim() || "";
+        const categoria = card.querySelector(".producto-categoria")?.textContent.trim() || "";
+        const marca = card.querySelector(".producto-marca")?.textContent.trim() || "";
+        const imagen = card.querySelector("img")?.src || "";
+        const precio = card.querySelector(".producto-precio")?.textContent.trim() || "";
 
-    productos.forEach(
-        card => {
+        const coincide =
+            nombre.toLowerCase().includes(texto) ||
+            descripcion.toLowerCase().includes(texto) ||
+            categoria.toLowerCase().includes(texto) ||
+            marca.toLowerCase().includes(texto);
 
+        if (coincide) {
 
-            const nombre =
-                card.querySelector(
-                    ".producto-nombre"
-                )?.textContent
-                .trim() || "";
+            card.classList.remove("d-none");
+            encontrados++;
 
+            const resultado = document.createElement("button");
+            resultado.type = "button";
+            resultado.className = "list-group-item list-group-item-action";
 
-            const descripcion =
-                card.querySelector(
-                    ".producto-descripcion"
-                )?.textContent
-                .trim() || "";
-
-
-            const categoria =
-                card.querySelector(
-                    ".producto-categoria"
-                )?.textContent
-                .trim() || "";
-
-
-            const marca =
-                card.querySelector(
-                    ".producto-marca"
-                )?.textContent
-                .trim() || "";
-
-
-            const imagen =
-                card.querySelector(
-                    "img"
-                )?.src || "";
-
-
-            const precio =
-                card.querySelector(
-                    ".producto-precio"
-                )?.textContent
-                .trim() || "";
-
-
-            /* ==================================================
-               COMPROBAR COINCIDENCIA
-            ================================================== */
-
-            const coincide =
-
-                nombre
-                    .toLowerCase()
-                    .includes(texto)
-
-                ||
-
-                descripcion
-                    .toLowerCase()
-                    .includes(texto)
-
-                ||
-
-                categoria
-                    .toLowerCase()
-                    .includes(texto)
-
-                ||
-
-                marca
-                    .toLowerCase()
-                    .includes(texto);
-
-
-            /* ==================================================
-               SI COINCIDE
-            ================================================== */
-
-            if (coincide) {
-
-                card.classList.remove("d-none");
-
-                encontrados++;
-
-
-                /* ==================================================
-                   CREAR SUGERENCIA BOOTSTRAP
-                ================================================== */
-
-                const resultado =
-                    document.createElement("button");
-
-
-                resultado.type = "button";
-
-
-                resultado.className =
-                    "list-group-item list-group-item-action";
-
-
-                resultado.innerHTML = `
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <img
-                            src="${imagen}"
-                            alt="${nombre}"
-                            class="rounded"
-                            width="55"
-                            height="55"
-                            style="object-fit: cover;"
-                        >
-
-                        <div class="flex-grow-1 text-start">
-
-                            <div class="fw-bold">
-
-                                ${nombre}
-
-                            </div>
-
-                            <div class="d-flex gap-1 flex-wrap my-1">
-
-                                ${
-                                    categoria
-                                    ?
-                                    `
-                                    <span class="badge color-azul text-white small">
-
-                                        ${categoria}
-
-                                    </span>
-                                    `
-                                    :
-                                    ""
-                                }
-
-                                ${
-                                    marca
-                                    ?
-                                    `
-                                    <span class="badge small" style="background-color: rgba(34, 174, 209, 0.2); border: 1px solid #22aed1; color: #22aed1 !important;">
-
-                                        ${marca}
-
-                                    </span>
-                                    `
-                                    :
-                                    ""
-                                }
-
-                            </div>
-
-                            <div class="small fw-bold" style="color: #22aed1;">
-
-                                ${precio}
-
-                            </div>
-
+            resultado.innerHTML = `
+                <div class="d-flex align-items-center gap-3">
+                    <img
+                        src="${imagen}"
+                        alt="${nombre}"
+                        class="rounded"
+                        width="55"
+                        height="55"
+                        style="object-fit: cover;"
+                    >
+                    <div class="flex-grow-1 text-start">
+                        <div class="fw-bold">${nombre}</div>
+                        <div class="d-flex gap-1 flex-wrap my-1">
+                            ${categoria ? `<span class="badge color-azul text-white small">${categoria}</span>` : ""}
+                            ${marca ? `<span class="badge small" style="background-color: rgba(34, 174, 209, 0.2); border: 1px solid #22aed1; color: #22aed1 !important;">${marca}</span>` : ""}
                         </div>
-
-                        <i class="bi bi-arrow-right text-secondary"></i>
-
+                        <div class="small fw-bold" style="color: #22aed1;">${precio}</div>
                     </div>
+                    <i class="bi bi-arrow-right text-secondary"></i>
+                </div>
+            `;
 
-                `;
+            resultado.addEventListener("click", function() {
 
+                input.value = nombre;
+                productos.forEach(producto => producto.classList.add("d-none"));
+                card.classList.remove("d-none");
+                resultados.classList.add("d-none");
 
-                /* ==================================================
-                   SELECCIONAR PRODUCTO
-                ================================================== */
+                setTimeout(function() {
+                    card.scrollIntoView({ behavior: "smooth", block: "center" });
+                }, 50);
 
-                resultado.addEventListener(
-                    "click",
-                    function() {
+                card.style.outline = "3px solid #22aed1";
+                card.style.boxShadow = "0 0 25px rgba(34, 174, 209, 0.5)";
 
+                setTimeout(function() {
+                    card.style.outline = "";
+                    card.style.boxShadow = "";
+                }, 1500);
 
-                        /* ======================================
-                           PONER NOMBRE EN BUSCADOR
-                        ======================================= */
+            });
 
-                        input.value =
-                            nombre;
+            resultados.appendChild(resultado);
 
-
-                        /* ======================================
-                           OCULTAR TODOS
-                        ======================================= */
-
-                        productos.forEach(
-                            producto => {
-
-                                producto.classList.add(
-                                    "d-none"
-                                );
-
-                            }
-                        );
-
-
-                        /* ======================================
-                           MOSTRAR SELECCIONADO
-                        ======================================= */
-
-                        card.classList.remove(
-                            "d-none"
-                        );
-
-
-                        /* ======================================
-                           OCULTAR SUGERENCIAS
-                        ======================================= */
-
-                        resultados.classList.add(
-                            "d-none"
-                        );
-
-
-                        /* ======================================
-                           SCROLL
-                        ======================================= */
-
-                        setTimeout(
-                            function() {
-
-                                card.scrollIntoView({
-
-                                    behavior: "smooth",
-
-                                    block: "center"
-
-                                });
-
-                            },
-                            50
-                        );
-
-
-                        /* ======================================
-                           RESALTAR
-                        ======================================= */
-
-                        card.style.outline = "3px solid #22aed1";
-                        card.style.boxShadow = "0 0 25px rgba(34, 174, 209, 0.5)";
-
-
-                        setTimeout(
-                            function() {
-
-                                card.style.outline = "";
-                                card.style.boxShadow = "";
-
-                            },
-                            1500
-                        );
-
-                    }
-                );
-
-
-                resultados.appendChild(
-                    resultado
-                );
-
-            }
-
-            else {
-
-                card.classList.add(
-                    "d-none"
-                );
-
-            }
-
+        } else {
+            card.classList.add("d-none");
         }
-    );
 
-
-    /* ======================================================
-       NO HAY RESULTADOS
-    ====================================================== */
+    });
 
     if (encontrados === 0) {
-
         resultados.innerHTML = `
-
             <div class="list-group-item text-center py-4">
-
                 <i class="bi bi-search fs-3" style="color: #22aed1;"></i>
-
                 <div class="text-body-secondary mt-2">
-
                     No encontramos productos que coincidan con tu búsqueda
-
                 </div>
-
             </div>
-
         `;
-
     }
 
-
-    /* ======================================================
-       MOSTRAR RESULTADOS
-    ====================================================== */
-
-    resultados.classList.remove(
-        "d-none"
-    );
+    resultados.classList.remove("d-none");
 
 }
 
 
 /* ==========================================================
-   CERRAR RESULTADOS AL HACER CLICK AFUERA
+   EVENTOS DE CIERRE DEL BUSCADOR
 ========================================================== */
 
-document.addEventListener(
-    "click",
-    function(event) {
+document.addEventListener("click", function(event) {
+    const buscador = document.getElementById("buscador-productos");
+    const resultados = document.getElementById("resultados-busqueda");
 
-        const buscador =
-            document.getElementById(
-                "buscador-productos"
-            );
-
-        const resultados =
-            document.getElementById(
-                "resultados-busqueda"
-            );
-
-
-        if (
-            buscador &&
-            resultados &&
-            !buscador.contains(event.target) &&
-            !resultados.contains(event.target)
-        ) {
-
-            resultados.classList.add(
-                "d-none"
-            );
-
-        }
-
+    if (buscador && resultados && !buscador.contains(event.target) && !resultados.contains(event.target)) {
+        resultados.classList.add("d-none");
     }
-);
+});
 
-
-/* ==========================================================
-   CERRAR CON ESC
-========================================================== */
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Escape"
-        ) {
-
-            const resultados =
-                document.getElementById(
-                    "resultados-busqueda"
-                );
-
-
-            if (resultados) {
-
-                resultados.classList.add(
-                    "d-none"
-                );
-
-            }
-
-        }
-
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        const resultados = document.getElementById("resultados-busqueda");
+        if (resultados) resultados.classList.add("d-none");
     }
-);
+});
 
 
 /* ==========================================================
    DOM READY
 ========================================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
+document.addEventListener("DOMContentLoaded", function() {
 
+    actualizarContador();
 
-        /* ==============================================
-           CONTADOR CARRITO
-        =============================================== */
-
-        actualizarContador();
-
-
-        /* ==============================================
-           BUSCADOR
-        =============================================== */
-
-        const input =
-            document.getElementById(
-                "buscador-productos"
-            );
-
-
-        if (input) {
-
-            input.addEventListener(
-                "input",
-                filtrarProductos
-            );
-
-        }
-
+    const input = document.getElementById("buscador-productos");
+    if (input) {
+        input.addEventListener("input", filtrarProductos);
     }
-);
+
+});
 
 
 /* ==========================================================
    AGREGAR AL CARRITO
 ========================================================== */
 
-function agregarCarrito(
-    event,
-    id,
-    nombre,
-    precio
-) {
+function agregarCarrito(event, id, nombre, precio) {
 
-
-    let carrito =
-        JSON.parse(
-            localStorage.getItem(
-                "carrito"
-            )
-        ) || [];
-
-
-    /* ======================================================
-       BUSCAR PRODUCTO EXISTENTE
-    ====================================================== */
-
-    let productoExistente =
-        carrito.find(
-            p => p.id === id
-        );
-
-
-    /* ======================================================
-       AUMENTAR CANTIDAD
-    ====================================================== */
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let productoExistente = carrito.find(p => p.id === id);
 
     if (productoExistente) {
-
         productoExistente.cantidad++;
-
-    }
-
-
-    /* ======================================================
-       AGREGAR PRODUCTO
-    ====================================================== */
-
-    else {
-
+    } else {
         carrito.push({
-
             id: id,
-
             nombre: nombre,
-
             precio: precio,
-
             cantidad: 1,
-
             tipo: "producto"
-
         });
-
     }
 
-
-    /* ======================================================
-       GUARDAR
-    ====================================================== */
-
-    localStorage.setItem(
-        "carrito",
-        JSON.stringify(carrito)
-    );
-
-
-    /* ======================================================
-       ACTUALIZAR CONTADOR
-    ====================================================== */
-
+    localStorage.setItem("carrito", JSON.stringify(carrito));
     actualizarContador();
 
+    const btn = event.target.closest("button");
+    if (!btn) return;
 
-    /* ======================================================
-       BOTON
-    ====================================================== */
+    const contenidoOriginal = btn.innerHTML;
+    btn.innerHTML = "<i class='bi bi-check-circle me-2'></i>AGREGADO";
+    btn.classList.remove("color-azul");
+    btn.classList.add("btn-success");
 
-    const btn =
-        event.target.closest(
-            "button"
-        );
-
-
-    if (!btn) {
-
-        return;
-
-    }
-
-
-    const contenidoOriginal =
-        btn.innerHTML;
-
-
-    btn.innerHTML =
-        "<i class='bi bi-check-circle me-2'></i>AGREGADO";
-
-
-    btn.classList.remove(
-        "color-azul"
-    );
-
-
-    btn.classList.add(
-        "btn-success"
-    );
-
-
-    setTimeout(
-        function() {
-
-
-            btn.innerHTML =
-                contenidoOriginal;
-
-
-            btn.classList.remove(
-                "btn-success"
-            );
-
-
-            btn.classList.add(
-                "color-azul"
-            );
-
-
-        },
-        1000
-    );
+    setTimeout(function() {
+        btn.innerHTML = contenidoOriginal;
+        btn.classList.remove("btn-success");
+        btn.classList.add("color-azul");
+    }, 1000);
 
 }
 
 
 /* ==========================================================
-   ACTUALIZAR CONTADOR
+   ACTUALIZAR CONTADOR CARRITO
 ========================================================== */
 
 function actualizarContador() {
 
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let total = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
+    const contador = document.getElementById("contador");
 
-    let carrito =
-        JSON.parse(
-            localStorage.getItem(
-                "carrito"
-            )
-        ) || [];
-
-
-    let total =
-        carrito.reduce(
-            (acc, producto) => {
-
-                return acc +
-                    producto.cantidad;
-
-            },
-            0
-        );
-
-
-    const contador =
-        document.getElementById(
-            "contador"
-        );
-
-
-    if (!contador) {
-
-        return;
-
-    }
-
+    if (!contador) return;
 
     if (total > 0) {
-
-        contador.textContent =
-            total;
-
-        contador.classList.remove(
-            "d-none"
-        );
-
-    }
-
-    else {
-
-        contador.classList.add(
-            "d-none"
-        );
-
+        contador.textContent = total;
+        contador.classList.remove("d-none");
+    } else {
+        contador.classList.add("d-none");
     }
 
 }
