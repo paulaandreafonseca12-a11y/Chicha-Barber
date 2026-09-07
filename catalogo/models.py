@@ -153,30 +153,34 @@ class Producto(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        es_nuevo = self.pk is None
         if not self.codigo:
-            self.codigo = f"PROD-{self.codigo_producto:05d}"
-            super().save(update_fields=["codigo"])
+            ultimo = Producto.objects.order_by("-codigo_producto").first()
+            siguiente_id = (ultimo.codigo_producto + 1) if ultimo else 1
+            self.codigo = f"PROD-{siguiente_id:05d}"
+        super().save(*args, **kwargs)
+        if es_nuevo and self.codigo.startswith("PROD-"):
+            codigo_real = f"PROD-{self.codigo_producto:05d}"
+            if self.codigo != codigo_real:
+                self.codigo = codigo_real
+                super().save(update_fields=["codigo"])
 
     @property
     def stock_actual(self):
         if self.codigo_detalle_producto:
             return self.codigo_detalle_producto.cantidad_actual
-        try:
-            return self.detalle_producto.cantidad_actual
-        except DetalleProducto.DoesNotExist:
-            return 0
+        return 0
 
     @property
     def precio_venta_actual(self):
-        adquisicion = self.adquisiciones.order_by("-fecha", "-codigo").first()
+        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
         if adquisicion:
             return adquisicion.precio_venta
         return self.precio
 
     @property
     def precio_compra_actual(self):
-        adquisicion = self.adquisiciones.order_by("-fecha", "-codigo").first()
+        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
         if adquisicion:
             return adquisicion.precio_compra
         return 0
@@ -198,7 +202,8 @@ class Producto(models.Model):
         return self.precio_venta_actual
 
     def __str__(self):
-        return f"{self.codigo} - {self.nombre}"
+        marca_str = f" ({self.codigo_marca.nombre})" if self.codigo_marca else ""
+        return f"{self.codigo} - {self.nombre}{marca_str}"
 
     class Meta:
         verbose_name = "Producto"
@@ -232,9 +237,14 @@ class DetalleProducto(models.Model):
         verbose_name="Observaciones"
     )
 
+    @property
+    def codigo_producto(self):
+        return self.producto_principal.first()
+
     def __str__(self):
-        if self.codigo_producto:
-            return f"{self.codigo_producto.nombre} - Stock: {self.cantidad_actual}"
+        prod = self.producto_principal.first()
+        if prod:
+            return f"{prod.nombre} - Stock: {self.cantidad_actual}"
         return f"Detalle Producto #{self.codigo}"
 
     class Meta:
@@ -274,14 +284,18 @@ class MovimientoProducto(models.Model):
 
     @property
     def producto(self):
-        return self.codigo_producto
+        if self.codigo_detalle_producto:
+            return self.codigo_detalle_producto.producto_principal.first()
+        return None
 
     @property
     def motivo(self):
         return self.observacion
 
     def __str__(self):
-        return f"{self.codigo_producto.codigo} - {self.tipo} {self.cantidad}"
+        prod = self.producto
+        codigo_str = prod.codigo if prod else f"Detalle #{self.codigo_detalle_producto_id}"
+        return f"{codigo_str} - {self.tipo} {self.cantidad}"
 
     class Meta:
         verbose_name = "Movimiento de Producto"
@@ -293,19 +307,16 @@ class MovimientoProducto(models.Model):
 # ==========================================================
 @receiver(post_save, sender=Producto)
 def crear_detalle_producto(sender, instance, created, **kwargs):
-    if created:
-        detalle_obj, creado = DetalleProducto.objects.get_or_create(
-            codigo_producto=instance,
-            defaults={
-                "cantidad_actual": 0,
-                "stock_min": 0,
-                "stock_max": 0,
-            }
+    if created and not instance.codigo_detalle_producto_id:
+        detalle_obj = DetalleProducto.objects.create(
+            cantidad_actual=0,
+            stock_min=0,
+            stock_max=0,
         )
-        if not instance.codigo_detalle_producto_id:
-            Producto.objects.filter(pk=instance.pk).update(
-                codigo_detalle_producto=detalle_obj
-            )
+        Producto.objects.filter(pk=instance.pk).update(
+            codigo_detalle_producto=detalle_obj
+        )
+        instance.codigo_detalle_producto = detalle_obj
 
 
 # ==========================================================
@@ -362,4 +373,28 @@ class Promocion(models.Model):
     class Meta:
         verbose_name = "Promoción"
         verbose_name_plural = "Promociones"
+
+
+# ==========================================================
+# 9. SEÑAL DE AUDITORÍA AUTOMÁTICA EN BITÁCORA
+# ==========================================================
+@receiver(post_save, sender=MovimientoProducto)
+def auditar_movimiento_inventario(sender, instance, created, **kwargs):
+    if created:
+        try:
+            from historial.models import Bitacora
+            tipo_str = "Entrada" if instance.tipo == "entrada" else "Salida"
+            prod = instance.producto
+            prod_nom = prod.nombre if prod else f"Detalle #{instance.codigo_detalle_producto_id}"
+            obs = f" - {instance.observacion}" if instance.observacion else ""
+
+            Bitacora.objects.create(
+                codigo_detalle_producto=instance.codigo_detalle_producto,
+                accion=f"{tipo_str} de Inventario",
+                modulo="catalogo",
+                descripcion=f"{tipo_str} de {instance.cantidad} unidad(es) de '{prod_nom}'{obs}.",
+                ip_origen="127.0.0.1"
+            )
+        except Exception:
+            pass
 

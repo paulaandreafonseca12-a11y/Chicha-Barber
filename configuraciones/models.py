@@ -200,19 +200,17 @@ def carrusel_view(instance, filename):
 # desde core/views.py
 # ============================================================
 class Configuracion(models.Model):
-    codigo = models.AutoField(primary_key=True)
-    codigo_usuario = models.ForeignKey(
-            Usuario,
-            on_delete=models.CASCADE
-        )
-    codigo_carrusel=models.ForeignKey(
-        Carrusel,
-            on_delete=models.CASCADE
-        )   
-
     codigo = models.AutoField(
         primary_key=True,
         verbose_name='Código'
+    )
+    codigo_usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE
+    )
+    codigo_carrusel = models.ForeignKey(
+        Carrusel,
+        on_delete=models.CASCADE
     )
 
     fecha_realizacion = models.DateTimeField(

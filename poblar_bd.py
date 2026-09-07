@@ -1,2045 +1,1001 @@
+"""
+==============================================================================
+CHICHA BARBER STUDIO - SCRIPT DE POBLACIÓN DE BASE DE DATOS
+==============================================================================
+Este script puebla la base de datos de Chicha Barber con datos coherentes,
+realistas y completamente alineados con la arquitectura actual de modelos:
+  - usuarios: Usuario, RegistroActividad, Notificacion
+  - servicios: Servicios, Calificacion
+  - reservas: Agenda, Reserva
+  - catalogo: Categoria, Marca, Proveedor, DetalleProducto, Producto,
+              MovimientoProducto, Promocion
+  - compra: Compra, DetalleCompra
+  - venta: Venta, DetalleVenta, DetallePagos
+  - configuraciones: Carrusel, Configuracion
+  - historial: Bitacora
+  - soporte: CategoriaAyuda, TicketSoporte
+==============================================================================
+"""
+
 import os
 import sys
-import django
 import random
-import requests
+from decimal import Decimal
+from datetime import date, time, timedelta
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from decimal import Decimal
-from datetime import date, time, timedelta
-
+import requests
 from django.core.files.base import ContentFile
+from django.utils import timezone
 
 
-
-# ==========================================================
-# 1. CONFIGURAR DJANGO
-# ==========================================================
-
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE",
-    "core.settings"
-)
-
+# ============================================================================
+# 1. CONFIGURACIÓN DE DJANGO
+# ============================================================================
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
+import django
 django.setup()
 
 
-# ==========================================================
-# 2. IMPORTAR MODELOS
-# ==========================================================
-
-from usuarios.models import Usuario
-
-import servicios.models
-
-from servicios.models import (
-    Servicios,
-    Promocion,
-    Calificacion,
-)
-
-from reservas.models import (
-    Reserva,
-    Turno,
-)
-
-from productos.models import (
-    Producto,
-    existencias,
-    Bitacora,
-    Movimientoexistencias,
-    Adquisicion,
-    venta,
-    detalleventa,
+# ============================================================================
+# 2. IMPORTACIÓN DE MODELOS
+# ============================================================================
+from usuarios.models import Usuario, RegistroActividad, Notificacion, RolUsuario, TipoDocumento
+from servicios.models import Servicios, Calificacion
+from reservas.models import Agenda, Reserva
+from catalogo.models import (
     Categoria,
-    Proveedor,
     Marca,
-    Promocion as ProductoPromocion,
-    PromocionProducto,
+    Proveedor,
+    DetalleProducto,
+    Producto,
+    MovimientoProducto,
+    Promocion,
 )
+from compra.models import Compra, DetalleCompra
+from venta.models import Venta, DetalleVenta, DetallePagos
+from configuraciones.models import Carrusel, Configuracion
+from historial.models import Bitacora
+from soporte.models import CategoriaAyuda, TicketSoporte
 
 
-
-# ==========================================================
-# 3. LIMPIAR DATOS
-# ==========================================================
-
+# ============================================================================
+# 3. LIMPIEZA DE DATOS (ORDEN ESTRICTO DE INTEGRIDAD REFERENCIAL)
+# ============================================================================
 def limpiar_datos():
-
-    print("\n==========================================")
-    print("LIMPIANDO DATOS ANTERIORES")
-    print("==========================================")
+    print("\n" + "=" * 60)
+    print(" 1. LIMPIEZA DE BASE DE DATOS")
+    print("=" * 60)
 
     try:
+        # Soporte
+        TicketSoporte.objects.all().delete()
+        CategoriaAyuda.objects.all().delete()
+        print("  ✓ Tablas de Soporte limpiadas.")
 
-        # ----------------------------------------------
-        # FACTURAS
-        # ----------------------------------------------
-
-        DetalleFactura.objects.all().delete()
-        Factura.objects.all().delete()
-
-        # ----------------------------------------------
-        # VENTAS
-        # ----------------------------------------------
-
-        detalleventa.objects.all().delete()
-        venta.objects.all().delete()
-
-        # ----------------------------------------------
-        # existencias
-        # ----------------------------------------------
-
-        Movimientoexistencias.objects.all().delete()
+        # Historial
         Bitacora.objects.all().delete()
-        Adquisicion.objects.all().delete()
+        print("  ✓ Bitácora limpiada.")
 
-        # ----------------------------------------------
-        # PRODUCTOS
-        # ----------------------------------------------
+        # Configuraciones
+        Configuracion.objects.all().delete()
+        Carrusel.objects.all().delete()
+        print("  ✓ Configuraciones y Carrusel limpiados.")
 
-        PromocionProducto.objects.all().delete()
-        ProductoPromocion.objects.all().delete()
+        # Ventas
+        DetallePagos.objects.all().delete()
+        DetalleVenta.objects.all().delete()
+        Venta.objects.all().delete()
+        print("  ✓ Ventas, detalles y pagos limpiados.")
 
-        existencias.objects.all().delete()
+        # Compras
+        DetalleCompra.objects.all().delete()
+        Compra.objects.all().delete()
+        print("  ✓ Compras y detalles limpiados.")
+
+        # Catálogo
+        Promocion.objects.all().delete()
+        MovimientoProducto.objects.all().delete()
         Producto.objects.all().delete()
-
-        Categoria.objects.all().delete()
-        Proveedor.objects.all().delete()
+        DetalleProducto.objects.all().delete()
         Marca.objects.all().delete()
+        Proveedor.objects.all().delete()
+        Categoria.objects.all().delete()
+        print("  ✓ Catálogo de productos e inventario limpiados.")
 
-        # ----------------------------------------------
-        # SERVICIOS
-        # ----------------------------------------------
-
-        servicios.models.Calificacion.objects.all().delete()
+        # Reservas y Servicios
         Reserva.objects.all().delete()
-        Turno.objects.all().delete()
+        Agenda.objects.all().delete()
+        Calificacion.objects.all().delete()
+        Servicios.objects.all().delete()
+        print("  ✓ Reservas, agendas, calificaciones y servicios limpiados.")
 
-        servicios.models.Promocion.objects.all().delete()
-        servicios.models.Servicios.objects.all().delete()
+        # Notificaciones y Actividades
+        Notificacion.objects.all().delete()
+        RegistroActividad.objects.all().delete()
 
-        # ----------------------------------------------
-        # USUARIOS
-        # ----------------------------------------------
+        # Usuarios de prueba (conservar solo si se desea el admin personalizado)
+        Usuario.objects.exclude(email="a@b.com").delete()
+        print("  ✓ Usuarios anteriores limpiados.")
 
-        Usuario.objects.exclude(
-            is_superuser=True
-        ).delete()
-
-        print("✓ Datos anteriores eliminados correctamente.")
+        print("=> Base de datos preparada para inserción limpia.")
 
     except Exception as e:
+        print(f"⚠️ Error limpiando datos: {e}")
+        import traceback
+        traceback.print_exc()
 
-        print(
-            f"⚠️ Error limpiando datos: {e}"
-        )
 
-
-# ==========================================================
-# 4. DESCARGAR AVATAR
-# ==========================================================
-
-def descargar_avatar(
-    nombre_completo,
-    email
-):
-
-    """
-    Descarga un avatar de ejemplo
-    usando UI Avatars.
-    """
-
+# ============================================================================
+# 4. UTILIDAD PARA AVATARES
+# ============================================================================
+def descargar_avatar(nombre_completo, email):
+    """Descarga un avatar ilustrativo para los perfiles."""
     try:
-
         url = (
-            "https://ui-avatars.com/api/"
-            f"?name={nombre_completo.replace(' ', '+')}"
-            "&background=random"
-            "&size=200"
+            f"https://ui-avatars.com/api/?name={nombre_completo.replace(' ', '+')}"
+            f"&background=111827&color=fbbf24&size=200&bold=true"
         )
-
-        response = requests.get(
-            url,
-            timeout=5
-        )
-
-        if response.status_code == 200:
-
-            filename = (
-                f"barbero_"
-                f"{email.split('@')[0]}"
-                f"_avatar.png"
-            )
-
-            return (
-                filename,
-                ContentFile(response.content)
-            )
-
-        print(
-            f"⚠️ No se pudo descargar avatar "
-            f"para {nombre_completo}"
-        )
-
-        return None, None
-
-    except Exception as e:
-
-        print(
-            f"⚠️ Error descargando avatar "
-            f"para {nombre_completo}: {e}"
-        )
-
-        return None, None
+        resp = requests.get(url, timeout=3)
+        if resp.status_code == 200:
+            nombre_archivo = f"avatar_{email.split('@')[0]}.png"
+            return nombre_archivo, ContentFile(resp.content)
+    except Exception:
+        pass
+    return None, None
 
 
-# ==========================================================
-# 5. POBLAR USUARIOS
-# ==========================================================
-
+# ============================================================================
+# 5. POBLAR USUARIOS, REGISTROS DE ACTIVIDAD Y NOTIFICACIONES
+# ============================================================================
 def poblar_usuarios():
+    print("\n" + "=" * 60)
+    print(" 2. POBLANDO USUARIOS Y PERFILES")
+    print("=" * 60)
 
-    print("\n==========================================")
-    print("POBLANDO USUARIOS")
-    print("==========================================")
+    # ------------------------------------------------------------------------
+    # 5.1 Administrador Principal
+    # ------------------------------------------------------------------------
+    admin, created = Usuario.objects.get_or_create(
+        email="a@b.com",
+        defaults={
+            "primer_nombre": "Admin",
+            "segundo_nombre": "Principal",
+            "primer_apellido": "Chicha",
+            "segundo_apellido": "Barber",
+            "telefono": "3000000000",
+            "tipo_documento": TipoDocumento.CC,
+            "numero_documento": "1000000000",
+            "rol": RolUsuario.ADMIN,
+            "estado": True,
+        }
+    )
+    admin.set_password("@dmin123")
+    admin.save()
+    print(f"  ✓ Administrador principal configurado: {admin.email} / @dmin123")
 
-    nombres_barberos = [
-        "Carlos López",
-        "Juan García",
+    # ------------------------------------------------------------------------
+    # 5.2 Barberos Profesionales
+    # ------------------------------------------------------------------------
+    barberos_data = [
+        {
+            "primer_nombre": "Carlos",
+            "segundo_nombre": "Andrés",
+            "primer_apellido": "López",
+            "segundo_apellido": "Gómez",
+            "email": "barbero1@ejemplo.com",
+            "telefono": "3101234561",
+            "tipo_documento": TipoDocumento.CC,
+            "numero_documento": "2000000001",
+            "rol": RolUsuario.BARBERO,
+        },
+        {
+            "primer_nombre": "Juan",
+            "segundo_nombre": "David",
+            "primer_apellido": "García",
+            "segundo_apellido": "Mendoza",
+            "email": "barbero2@ejemplo.com",
+            "telefono": "3101234562",
+            "tipo_documento": TipoDocumento.CC,
+            "numero_documento": "2000000002",
+            "rol": RolUsuario.BARBERO,
+        },
+        {
+            "primer_nombre": "Andrés",
+            "segundo_nombre": "Felipe",
+            "primer_apellido": "Martínez",
+            "segundo_apellido": "Silva",
+            "email": "barbero3@ejemplo.com",
+            "telefono": "3101234563",
+            "tipo_documento": TipoDocumento.CC,
+            "numero_documento": "2000000003",
+            "rol": RolUsuario.BARBERO,
+        },
     ]
 
-    # ----------------------------------------------
-    # BARBEROS
-    # ----------------------------------------------
-
-    for idx, nombre_completo in enumerate(
-        nombres_barberos[:2]
-    ):
-
-        partes = nombre_completo.split()
-
-        nombre = partes[0]
-        apellido = partes[-1]
-
-        email = (
-            f"barbero{idx + 1}"
-            "@ejemplo.com"
+    barberos = []
+    for b_data in barberos_data:
+        b_usuario, _ = Usuario.objects.get_or_create(
+            email=b_data["email"],
+            defaults=b_data
         )
+        b_usuario.set_password("Password123!")
+        nombre_completo = b_usuario.get_full_name()
+        fn, cont = descargar_avatar(nombre_completo, b_usuario.email)
+        if fn and cont:
+            b_usuario.foto_perfil.save(fn, cont, save=False)
+        b_usuario.save()
+        barberos.append(b_usuario)
+        print(f"  ✓ Barbero registrado: {nombre_completo} ({b_usuario.email})")
 
-        if not Usuario.objects.filter(
-            email=email
-        ).exists():
-
-            usuario = Usuario.objects.create_user(
-
-                username=(
-                    f"200000000"
-                    f"{idx + 1}"
-                ),
-
-                email=email,
-
-                password="Password123!",
-
-                first_name=nombre,
-
-                last_name=apellido,
-
-                telefono=(
-                    f"310123456{idx}"
-                ),
-
-                rol="barbero",
-
-                is_staff=True
-            )
-
-            filename, content = (
-                descargar_avatar(
-                    nombre_completo,
-                    email
-                )
-            )
-
-            if filename and content:
-
-                usuario.foto_perfil.save(
-                    filename,
-                    content,
-                    save=True
-                )
-
-                print(
-                    f"✓ Avatar asignado a "
-                    f"{nombre_completo}"
-                )
-
-            else:
-
-                print(
-                    f"⚠️ No se pudo asignar "
-                    f"avatar a {nombre_completo}"
-                )
-
-    # ----------------------------------------------
-    # CLIENTES Y ADMINS
-    # ----------------------------------------------
-
-    for i in range(1, 7):
-
-        email = (
-            f"usuario{i}"
-            "@ejemplo.com"
-        )
-
-        if not Usuario.objects.filter(
-            email=email
-        ).exists():
-
-            rol_asignado = (
-                "cliente"
-                if i < 5
-                else "admin"
-            )
-
-            Usuario.objects.create_user(
-
-                username=(
-                    f"100000000{i}"
-                ),
-
-                email=email,
-
-                password="Password123!",
-
-                first_name=(
-                    f"NombrePrueba{i}"
-                ),
-
-                last_name=(
-                    f"ApellidoPrueba{i}"
-                ),
-
-                telefono=(
-                    f"30012345{i:02d}"
-                ),
-
-                rol=rol_asignado,
-
-                is_staff=(
-                    rol_asignado == "admin"
-                ),
-
-                is_superuser=(
-                    rol_asignado == "admin"
-                )
-            )
-
-    # ----------------------------------------------
-    # ADMIN ESPECÍFICO
-    # ----------------------------------------------
-
-    email_custom = "a@b.com"
-    username_custom = "0000000000"
-
-    if (
-        not Usuario.objects.filter(
-            email=email_custom
-        ).exists()
-        and
-        not Usuario.objects.filter(
-            username=username_custom
-        ).exists()
-    ):
-
-        Usuario.objects.create_user(
-
-            username=username_custom,
-
-            email=email_custom,
-
-            password="@dmin123",
-
-            first_name="Admin",
-
-            last_name="Chicha",
-
-            telefono="3000000000",
-
-            rol="admin",
-
-            is_staff=True,
-
-            is_superuser=True
-        )
-
-    print("✓ Usuarios creados.")
-
-
-# ==========================================================
-# 6. POBLAR SERVICIOS
-# ==========================================================
-
-def poblar_servicios():
-
-    print("\n==========================================")
-    print("POBLANDO SERVICIOS")
-    print("==========================================")
-
-    nombres_servicios = [
-
-        "Corte Clásico",
-
-        "Degradado (Fade)",
-
-        "Arreglo de Barba",
-
-        "Corte + Barba",
-
-        "Tinte Capilar",
-
-        "Perfilado de Cejas",
-
-        "Corte Niño",
-
-        "Masaje Facial",
-
-        "Tratamiento Capilar",
-
-        "Limpieza Facial",
+    # ------------------------------------------------------------------------
+    # 5.3 Clientes Registrados
+    # ------------------------------------------------------------------------
+    clientes_data = [
+        ("Mateo", "Valencia", "Rojas", "cliente1@ejemplo.com", "3001234501", "1000000001"),
+        ("Sebastián", "Hernández", "Castro", "cliente2@ejemplo.com", "3001234502", "1000000002"),
+        ("Daniel", "Ortiz", "Navarro", "cliente3@ejemplo.com", "3001234503", "1000000003"),
+        ("Alejandro", "Morales", "Pérez", "cliente4@ejemplo.com", "3001234504", "1000000004"),
+        ("Camilo", "Ramírez", "Díaz", "cliente5@ejemplo.com", "3001234505", "1000000005"),
+        ("Nicolás", "Vargas", "Torres", "cliente6@ejemplo.com", "3001234506", "1000000006"),
     ]
 
-    for nombre in nombres_servicios:
-
-        Servicios.objects.get_or_create(
-
-            nombre=nombre,
-
+    clientes = []
+    for p_nom, p_ape, s_ape, em, tel, doc in clientes_data:
+        c_usuario, _ = Usuario.objects.get_or_create(
+            email=em,
             defaults={
-
-                "precio": (
-                    random.randint(
-                        20,
-                        50
-                    ) * 1000
-                ),
-
-                "duracion": random.choice(
-                    [30, 45, 60, 90]
-                ),
-
-                "descripcion": (
-                    "Descripción detallada "
-                    "y profesional para el "
-                    f"servicio de {nombre}."
-                ),
+                "primer_nombre": p_nom,
+                "primer_apellido": p_ape,
+                "segundo_apellido": s_ape,
+                "email": em,
+                "telefono": tel,
+                "tipo_documento": TipoDocumento.CC,
+                "numero_documento": doc,
+                "rol": RolUsuario.CLIENTE,
+                "estado": True,
             }
         )
+        c_usuario.set_password("Password123!")
+        c_usuario.save()
+        clientes.append(c_usuario)
+        print(f"  ✓ Cliente registrado: {c_usuario.get_full_name()} ({em})")
 
-    print("✓ Servicios creados.")
-
-
-# ==========================================================
-# 7. POBLAR PROMOCIONES DE SERVICIOS
-# ==========================================================
-
-def poblar_promociones():
-
-    print("\n==========================================")
-    print("POBLANDO PROMOCIONES")
-    print("==========================================")
-
-    lista_servicios = list(
-        Servicios.objects.all()
+    # ------------------------------------------------------------------------
+    # 5.4 Actividad Inicial y Notificaciones
+    # ------------------------------------------------------------------------
+    RegistroActividad.objects.create(
+        usuario=admin,
+        tipo="sesion",
+        descripcion="Inicio de sesión administrativo inicial"
+    )
+    RegistroActividad.objects.create(
+        usuario=admin,
+        tipo="usuario",
+        descripcion="Configuración general del personal de barberos"
     )
 
-    if not lista_servicios:
-
-        print(
-            "⚠️ No hay servicios "
-            "para crear promociones."
+    for c in clientes[:3]:
+        Notificacion.objects.create(
+            usuario=c,
+            tipo="reserva",
+            mensaje="¡Bienvenido a Chicha Barber! Ya puedes agendar tu turno.",
+            url="/reservas/",
+            leida=False
         )
 
-        return
+    return admin, barberos, clientes
 
-    for i in range(1, 11):
 
-        Promocion.objects.get_or_create(
+# ============================================================================
+# 6. POBLAR SERVICIOS Y CALIFICACIONES
+# ============================================================================
+def poblar_servicios(clientes):
+    print("\n" + "=" * 60)
+    print(" 3. POBLANDO SERVICIOS Y CALIFICACIONES")
+    print("=" * 60)
 
-            nombre=f"Promo Especial {i}",
+    servicios_data = [
+        {
+            "nombre": "Corte Clásico Caballero",
+            "precio": Decimal("25000.00"),
+            "duracion": 30,
+            "descripcion": "Corte tradicional a tijera o máquina con acabado limpio, lavado rápido y peinado profesional.",
+        },
+        {
+            "nombre": "Degradado / Fade Urbano",
+            "precio": Decimal("30000.00"),
+            "duracion": 45,
+            "descripcion": "Degradado de alta precisión (Low, Mid, High Fade) con navaja y perfilado milimétrico.",
+        },
+        {
+            "nombre": "Arreglo y Perfilado de Barba",
+            "precio": Decimal("20000.00"),
+            "duracion": 30,
+            "descripcion": "Diseño y definición de líneas con toalla caliente, aceite hidratante y bálsamo premium.",
+        },
+        {
+            "nombre": "Combo Chicha Premium (Corte + Barba)",
+            "precio": Decimal("48000.00"),
+            "duracion": 60,
+            "descripcion": "La experiencia completa: corte personalizado, perfilado de barba, toalla caliente y tónico facial.",
+        },
+        {
+            "nombre": "Perfilado de Cejas con Navaja",
+            "precio": Decimal("10000.00"),
+            "duracion": 15,
+            "descripcion": "Limpieza y arqueo natural de cejas masculinas con navaja desechable higienizada.",
+        },
+        {
+            "nombre": "Tinte y Camuflaje de Canas",
+            "precio": Decimal("50000.00"),
+            "duracion": 60,
+            "descripcion": "Colorimetría capilar para cobertura de canas o cambio de tono natural con productos sin amoniaco.",
+        },
+        {
+            "nombre": "Limpieza Facial Black Mask",
+            "precio": Decimal("35000.00"),
+            "duracion": 40,
+            "descripcion": "Exfoliación facial, vapor de ozono, extracción de impurezas y mascarilla negra purificante.",
+        },
+        {
+            "nombre": "Corte Infantil (Niños)",
+            "precio": Decimal("22000.00"),
+            "duracion": 30,
+            "descripcion": "Atención paciente y divertida para los más pequeños, con diseños o cortes modernos a su gusto.",
+        },
+        {
+            "nombre": "Masaje Capilar y Tratamiento Anticaída",
+            "precio": Decimal("28000.00"),
+            "duracion": 25,
+            "descripcion": "Terapia estimulante del cuero cabelludo con tónico mentolado y masaje relajante.",
+        },
+        {
+            "nombre": "Afeitado Tradicional Toalla Caliente",
+            "precio": Decimal("26000.00"),
+            "duracion": 35,
+            "descripcion": "Ritual clásico con espuma cremosa al calor, doble toalla caliente y aftershave refrescante.",
+        },
+    ]
 
+    servicios_creados = []
+    for s_item in servicios_data:
+        serv, _ = Servicios.objects.get_or_create(
+            nombre=s_item["nombre"],
             defaults={
-
-                "servicio": random.choice(
-                    lista_servicios
-                ),
-
-                "porcentaje_descuento": (
-                    random.choice(
-                        [10, 15, 20, 25, 50]
-                    )
-                ),
-
-                "duracion": (
-                    f"{random.choice([1, 2, 3])} "
-                    "Semanas"
-                ),
-
-                "descripcion": (
-                    "Aprovecha esta increíble "
-                    f"promoción número {i} "
-                    "por tiempo limitado."
-                ),
+                "precio": s_item["precio"],
+                "duracion": s_item["duracion"],
+                "descripcion": s_item["descripcion"],
+                "estado": True,
             }
         )
+        servicios_creados.append(serv)
+        print(f"  ✓ Servicio creado: {serv.nombre} (${serv.precio:,.0f} - {serv.duracion} min)")
 
-    print("✓ Promociones creadas.")
+    # ------------------------------------------------------------------------
+    # Calificaciones de los Servicios
+    # ------------------------------------------------------------------------
+    testimonios = [
+        (5, "¡El mejor corte que me han hecho en la ciudad! Atención impecable."),
+        (5, "El arreglo de barba con toalla caliente es una experiencia de otro nivel."),
+        (4, "Excelente técnica con la navaja y el degradado quedó perfecto."),
+        (5, "Ambiente agradable, buena música y puntualidad con el turno."),
+        (4, "Muy profesionales, usan productos de alta gama que dejan el cabello impecable."),
+        (5, "Recomiendo totalmente el Combo Chicha. Vale cada peso."),
+    ]
+
+    for idx, serv in enumerate(servicios_creados):
+        for _ in range(random.randint(1, 3)):
+            cliente_azar = random.choice(clientes)
+            punt, comen = random.choice(testimonios)
+            Calificacion.objects.create(
+                servicio=serv,
+                cliente=cliente_azar,
+                cliente_nombre=cliente_azar.get_full_name(),
+                puntuacion=punt,
+                comentario=comen,
+                mostrar_en_inicio=(punt == 5 and random.choice([True, False]))
+            )
+
+    print(f"  ✓ Calificaciones generadas para todos los servicios.")
+    return servicios_creados
 
 
-# ==========================================================
-# 8. POBLAR TURNOS
-# ==========================================================
+# ============================================================================
+# 7. POBLAR AGENDAS Y RESERVAS
+# ============================================================================
+def poblar_agendas_y_reservas(barberos, clientes, servicios):
+    print("\n" + "=" * 60)
+    print(" 4. POBLANDO AGENDAS Y RESERVAS")
+    print("=" * 60)
 
-def poblar_turnos_disponibles():
+    horarios = [
+        (time(8, 0), time(9, 0)),
+        (time(9, 0), time(10, 0)),
+        (time(10, 0), time(11, 0)),
+        (time(11, 0), time(12, 0)),
+        (time(14, 0), time(15, 0)),
+        (time(15, 0), time(16, 0)),
+        (time(16, 0), time(17, 0)),
+        (time(17, 0), time(18, 0)),
+    ]
 
-    print("\n==========================================")
-    print("POBLANDO TURNOS")
-    print("==========================================")
+    total_agendas = 0
+    total_reservas = 0
+    hoy = date.today()
 
-    barberos = list(
-        Usuario.objects.filter(
-            rol="barbero"
-        )
-    )
-
-    if not barberos:
-
-        print(
-            "⚠️ No hay barberos registrados."
-        )
-
-        return
-
-    for i in range(1, 15):
-
-        fecha_turno = (
-            date.today()
-            + timedelta(days=i)
-        )
-
-        # Domingo
-        if fecha_turno.weekday() == 6:
+    # Generar agendas para los próximos 10 días
+    for d in range(1, 11):
+        dia_fecha = hoy + timedelta(days=d)
+        if dia_fecha.weekday() == 6:  # Omitir domingos
             continue
 
         for barbero in barberos:
+            for h_ini, h_fin in horarios:
+                # 70% disponible, 30% reservada
+                es_reservada = random.random() < 0.35
+                estado_agenda = "reservada" if es_reservada else "disponible"
 
-            for _ in range(5):
-
-                hora_inicio_int = random.randint(
-                    8,
-                    17
-                )
-
-                minuto = random.choice(
-                    [0, 30]
-                )
-
-                hora_inicio = time(
-                    hour=hora_inicio_int,
-                    minute=minuto
-                )
-
-                hora_fin_int = (
-                    hora_inicio_int + 1
-                )
-
-                if hora_fin_int > 23:
-                    continue
-
-                hora_fin = time(
-                    hour=hora_fin_int,
-                    minute=minuto
-                )
-
-                Turno.objects.get_or_create(
-
+                agenda = Agenda.objects.create(
                     profesional=barbero,
-
-                    fecha=fecha_turno,
-
-                    hora_inicio=hora_inicio,
-
-                    hora_fin=hora_fin,
-
-                    defaults={
-                        "estado": "disponible"
-                    }
+                    fecha=dia_fecha,
+                    hora_inicio=h_ini,
+                    hora_fin=h_fin,
+                    estado=estado_agenda,
                 )
-
-    print("✓ Turnos creados.")
-
-
-# ==========================================================
-# 9. POBLAR RESERVAS
-# ==========================================================
-
-def poblar_reservas():
-
-    print("\n==========================================")
-    print("POBLANDO RESERVAS")
-    print("==========================================")
-
-    estados_reserva = [
-        "reservada",
-        "confirmada",
-        "cancelada"
-    ]
-
-    estados_turno = [
-        "disponible",
-        "reservado",
-        "cancelado"
-    ]
-
-    servicios_disponibles = list(
-        Servicios.objects.all()
-    )
-
-    barberos = list(
-        Usuario.objects.filter(
-            rol="barbero"
-        )
-    )
-
-    clientes = list(
-        Usuario.objects.filter(
-            rol="cliente"
-        )
-    )
-
-    if not servicios_disponibles:
-
-        print(
-            "⚠️ No hay servicios."
-        )
-
-        return
-
-    if not barberos or not clientes:
-
-        print(
-            "⚠️ Faltan barberos o clientes."
-        )
-
-        return
-
-    for i in range(1, 6):
-
-        dias_adelante = random.randint(
-            1,
-            7
-        )
-
-        fecha_turno = (
-            date.today()
-            + timedelta(
-                days=dias_adelante
-            )
-        )
-
-        hora_inicio = time(
-            hour=random.randint(
-                8,
-                17
-            ),
-            minute=0
-        )
-
-        hora_fin = time(
-            hour=(
-                min(
-                    hora_inicio.hour + 1,
-                    23
-                )
-            ),
-            minute=0
-        )
-
-        turno = Turno.objects.create(
-
-            profesional=random.choice(
-                barberos
-            ),
-
-            fecha=fecha_turno,
-
-            hora_inicio=hora_inicio,
-
-            hora_fin=hora_fin,
-
-            estado=random.choice(
-                estados_turno
-            )
-        )
-
-        servicio_asignado = (
-            random.choice(
-                servicios_disponibles
-            )
-        )
-
-        Reserva.objects.create(
-
-            turno=turno,
-
-            cliente=random.choice(
-                clientes
-            ),
-
-            servicio=servicio_asignado,
-
-            precio_historico=(
-                servicio_asignado.precio
-            ),
-
-            estado=random.choice(
-                estados_reserva
-            )
-        )
-
-    print("✓ Reservas creadas.")
-
-
-# ==========================================================
-# 10. CALIFICACIONES DE SERVICIOS
-# ==========================================================
-
-def poblar_calificaciones_servicios():
-
-    print("\n==========================================")
-    print("POBLANDO CALIFICACIONES DE SERVICIOS")
-    print("==========================================")
-
-    servicios_disponibles = list(
-        Servicios.objects.all()
-    )
-
-    clientes = list(
-        Usuario.objects.filter(
-            rol="cliente"
-        )
-    )
-
-    comentarios = [
-
-        "Excelente servicio, muy profesional.",
-
-        "Me gustó mucho el corte, volveré.",
-
-        "Un poco demorado pero el resultado fue genial.",
-
-        "La mejor barbería de la ciudad.",
-
-        "Muy buena atención al cliente.",
-    ]
-
-    for servicio in servicios_disponibles:
-
-        for _ in range(
-            random.randint(1, 3)
-        ):
-
-            cliente_obj = random.choice(clientes) if clientes else None
-            nombre_str = (
-                cliente_obj.get_full_name()
-                or cliente_obj.username
-            ) if cliente_obj else "Cliente Anónimo"
-
-            Calificacion.objects.create(
-
-                servicio=servicio,
-
-                cliente=cliente_obj,
-
-                cliente_nombre=nombre_str,
-
-                puntuacion=random.randint(
-                    3,
-                    5
-                ),
-
-                comentario=random.choice(
-                    comentarios
-                )
-            )
-
-    print(
-        "✓ Calificaciones de servicios creadas."
-    )
-
-
-
-# ==========================================================
-# 11. PRODUCTOS, existencias Y BITÁCORA
-# ==========================================================
-
-def poblar_productos_y_bitacora():
-
-    print("\n==========================================")
-    print("POBLANDO PRODUCTOS E existencias")
-    print("==========================================")
-
-    # ----------------------------------------------
-    # CATEGORÍAS
-    # ----------------------------------------------
-
+                total_agendas += 1
+
+                if es_reservada:
+                    cliente_res = random.choice(clientes)
+                    servicio_res = random.choice(servicios)
+                    dt_reserva = timezone.make_aware(
+                        timezone.datetime.combine(dia_fecha, h_ini)
+                    )
+
+                    Reserva.objects.create(
+                        agenda=agenda,
+                        usuario=cliente_res,
+                        servicio=servicio_res,
+                        observacion="Cliente solicitó puntualidad y peinado con cera mate.",
+                        estado=random.choice(["confirmada", "reservada"]),
+                        nombre_usuario=cliente_res.get_full_name(),
+                        correo_usuario=cliente_res.email,
+                        telefono_usuario=cliente_res.telefono,
+                        fecha_reserva=dt_reserva,
+                        precio_historico=servicio_res.precio,
+                    )
+                    total_reservas += 1
+
+    print(f"  ✓ {total_agendas} bloques de Agenda creados.")
+    print(f"  ✓ {total_reservas} Reservas asociadas y confirmadas creadas.")
+
+
+# ============================================================================
+# 8. POBLAR CATÁLOGO (CATEGORÍAS, MARCAS, PROVEEDORES, PRODUCTOS, EXISTENCIAS)
+# ============================================================================
+def poblar_catalogo(servicios):
+    print("\n" + "=" * 60)
+    print(" 5. POBLANDO CATÁLOGO, PRODUCTOS E INVENTARIO")
+    print("=" * 60)
+
+    # ------------------------------------------------------------------------
+    # 8.1 Categorías
+    # ------------------------------------------------------------------------
     categorias_data = [
-
-        {
-            "nombre": "Cuidado Capilar",
-            "descripcion": (
-                "Productos para el "
-                "cuidado del cabello"
-            )
-        },
-
-        {
-            "nombre": "Barba y Afeitado",
-            "descripcion": (
-                "Productos para barba "
-                "y afeitado profesional"
-            )
-        },
-
-        {
-            "nombre": "Accesorios",
-            "descripcion": (
-                "Peines, brochas y "
-                "otros accesorios"
-            )
-        },
+        ("Cuidado Capilar", "Ceras, pomadas, geles y champús de alto rendimiento."),
+        ("Cuidado de Barba", "Aceites nutritivos, bálsamos estilizadores y tónicos para vello facial."),
+        ("Afeitado Clásico", "Espumas, lociones aftershave y cremas para corte tradicional."),
+        ("Herramientas y Accesorios", "Navajas shavette, peines de madera antiestática y brochas."),
+        ("Cuidado Facial", "Exfoliantes, mascarillas limpiadoras y geles hidratantes masculinos."),
     ]
-
     categorias = []
-
-    for cat_data in categorias_data:
-
+    for nom, desc in categorias_data:
         cat, _ = Categoria.objects.get_or_create(
-
-            nombre=cat_data["nombre"],
-
-            defaults=cat_data
+            nombre=nom,
+            defaults={"descripcion": desc}
         )
-
         categorias.append(cat)
+        print(f"  ✓ Categoría: {cat.nombre}")
 
-    # ----------------------------------------------
-    # MARCAS
-    # ----------------------------------------------
-
+    # ------------------------------------------------------------------------
+    # 8.2 Marcas
+    # ------------------------------------------------------------------------
     marcas_data = [
-        {
-            "nombre": "Clubman Pinaud",
-            "descripcion": "Marca clásica de barbería tradicional y lociones aftershave.",
-            "estado": True,
-        },
-        {
-            "nombre": "Suavecito Pomade",
-            "descripcion": "Famosa marca de pomadas, ceras y fijadores de alto rendimiento.",
-            "estado": True,
-        },
-        {
-            "nombre": "Wahl Professional",
-            "descripcion": "Líder mundial en máquinas de corte, navajas y accesorios profesionales.",
-            "estado": True,
-        },
-        {
-            "nombre": "Elegance",
-            "descripcion": "Productos profesionales para estilismo capilar, geles y cuidado facial.",
-            "estado": True,
-        },
-        {
-            "nombre": "Reuzel",
-            "descripcion": "Gama holandesa de pomadas, champús y tónicos capilares premium.",
-            "estado": True,
-        },
-        {
-            "nombre": "American Crew",
-            "descripcion": "Línea premium de cuidado personal y estilo masculino.",
-            "estado": True,
-        },
+        ("Suavecito Pomade", "Marca icónica estadounidense de pomadas al agua y fijadores clásicos.", True),
+        ("Wahl Professional", "Referente global de máquinas y navajas profesionales de corte.", True),
+        ("Clubman Pinaud", "Línea histórica de barbería tradicional y aftershaves reconocidos.", True),
+        ("Elegance Studio", "Productos modernos para estilismo, gel fijador y cuidado facial.", True),
+        ("Reuzel Holland", "Gama premium de pomadas y bálsamos fundada por Schorem en Róterdam.", True),
+        ("American Crew", "Cuidado personal de alta gama para el hombre contemporáneo.", True),
     ]
-
     marcas = []
-    for m_data in marcas_data:
+    for nom, desc, est in marcas_data:
         m, _ = Marca.objects.get_or_create(
-            nombre=m_data["nombre"],
-            defaults=m_data
+            nombre=nom,
+            defaults={"descripcion": desc, "estado": est}
         )
         marcas.append(m)
+        print(f"  ✓ Marca: {m.nombre}")
 
-    # ----------------------------------------------
-    # PROVEEDORES
-    # ----------------------------------------------
-
+    # ------------------------------------------------------------------------
+    # 8.3 Proveedores
+    # ------------------------------------------------------------------------
     proveedores_data = [
-
-        {
-            "nombre": "Distribuidora Barber Pros",
-            "telefono": "3112345678",
-            "correo": "ventas@barberpros.com",
-            "direccion": "Cra 45 # 20-30"
-        },
-
-        {
-            "nombre": "Suministros Estilo Total",
-            "telefono": "3223456789",
-            "correo": "info@estilototal.com",
-            "direccion": "Cll 10 # 5-40"
-        },
+        ("Distribuidora Barber Pros", "3112345678", "ventas@barberpros.com", "Cra 45 # 20-30, Bogotá"),
+        ("Suministros Estilo Total", "3223456789", "info@estilototal.com", "Cll 10 # 5-40, Medellín"),
+        ("Importadora Barbershop SAS", "3009876543", "contacto@barbersas.com", "Av 68 # 72-15, Cali"),
     ]
-
-    for prov_data in proveedores_data:
-
-        Proveedor.objects.get_or_create(
-
-            nombre=prov_data["nombre"],
-
-            defaults=prov_data
+    proveedores = []
+    for nom, tel, cor, dir_p in proveedores_data:
+        prov, _ = Proveedor.objects.get_or_create(
+            nombre=nom,
+            defaults={
+                "telefono": tel,
+                "correo": cor,
+                "direccion": dir_p,
+            }
         )
+        proveedores.append(prov)
+        print(f"  ✓ Proveedor: {prov.nombre}")
 
-    # ----------------------------------------------
-    # PRODUCTOS
-    # ----------------------------------------------
-
-    nombres_productos = [
-
-        "Cera Moldeadora",
-
-        "Aceite para Barba",
-
-        "Gel Fijador",
-
-        "Shampoo de Cuidado",
-
-        "Navaja Profesional",
-
-        "Brocha de Afeitar",
-
-        "Tónico Capilar",
-
-        "Peine de Madera",
-
-        "Bálsamo Hidratante",
-
-        "Aftershave",
+    # ------------------------------------------------------------------------
+    # 8.4 Productos y Detalle de Stock
+    # ------------------------------------------------------------------------
+    productos_info = [
+        {
+            "nombre": "Pomada Suavecito",
+            "categoria": "Cuidado Capilar",
+            "marca": "Suavecito Pomade",
+            "precio": Decimal("65000.00"),
+            "stock": 35,
+            "min": 5,
+            "max": 80,
+            "desc": "Pomada soluble en agua con fijación extra firme y aroma característico suave.",
+        },
+        {
+            "nombre": "Cera Mate Fijación Media Elegance",
+            "categoria": "Cuidado Capilar",
+            "marca": "Elegance Studio",
+            "precio": Decimal("45000.00"),
+            "stock": 40,
+            "min": 8,
+            "max": 90,
+            "desc": "Acabado mate sin brillo, excelente textura y moldeado natural todo el día.",
+        },
+        {
+            "nombre": "Aceite Nutritivo para Barba Clubman",
+            "categoria": "Cuidado de Barba",
+            "marca": "Clubman Pinaud",
+            "precio": Decimal("42000.00"),
+            "stock": 25,
+            "min": 5,
+            "max": 50,
+            "desc": "Mezcla de aceites de macadamia y kukui que hidratan la piel y suavizan la barba.",
+        },
+        {
+            "nombre": "Bálsamo Hidratante Reuzel Wood & Spice",
+            "categoria": "Cuidado de Barba",
+            "marca": "Reuzel Holland",
+            "precio": Decimal("58000.00"),
+            "stock": 30,
+            "min": 5,
+            "max": 60,
+            "desc": "Formulado con manteca de karité y aceite de argán para domar y dar cuerpo a la barba.",
+        },
+        {
+            "nombre": "Loción After Shave Clásica Clubman",
+            "categoria": "Afeitado Clásico",
+            "marca": "Clubman Pinaud",
+            "precio": Decimal("48000.00"),
+            "stock": 28,
+            "min": 6,
+            "max": 60,
+            "desc": "La loción clásica que refresca, calma la piel tras el afeitado y previene la irritación.",
+        },
+        {
+            "nombre": "Navaja Shavette Profesional Wahl",
+            "categoria": "Herramientas y Accesorios",
+            "marca": "Wahl Professional",
+            "precio": Decimal("35000.00"),
+            "stock": 20,
+            "min": 4,
+            "max": 40,
+            "desc": "Navaja de acero inoxidable con seguro de cuchilla para perfilados y afeitados limpios.",
+        },
+        {
+            "nombre": "Brocha de Afeitar Cerda Natural Wahl",
+            "categoria": "Herramientas y Accesorios",
+            "marca": "Wahl Professional",
+            "precio": Decimal("32000.00"),
+            "stock": 18,
+            "min": 4,
+            "max": 35,
+            "desc": "Brocha densa que genera abundante espuma y masajea suavemente la piel del rostro.",
+        },
+        {
+            "nombre": "Gel Exfoliante Facial Carbón Activado",
+            "categoria": "Cuidado Facial",
+            "marca": "Elegance Studio",
+            "precio": Decimal("38000.00"),
+            "stock": 30,
+            "min": 5,
+            "max": 50,
+            "desc": "Elimina células muertas y puntos negros dejando la piel suave y renovada.",
+        },
+        {
+            "nombre": "Champú Anticaspa Revitalizante American Crew",
+            "categoria": "Cuidado Capilar",
+            "marca": "American Crew",
+            "precio": Decimal("52000.00"),
+            "stock": 22,
+            "min": 5,
+            "max": 50,
+            "desc": "Fórmula con piritionato de zinc que combate la caspa y regula el cuero cabelludo.",
+        },
+        {
+            "nombre": "Tónico Capilar Refrescante Reuzel Grooming",
+            "categoria": "Cuidado Capilar",
+            "marca": "Reuzel Holland",
+            "precio": Decimal("46000.00"),
+            "stock": 26,
+            "min": 5,
+            "max": 50,
+            "desc": "Tónico fijador suave con romero y hamamelis para preparar el peinado con secador.",
+        },
     ]
+
+    cat_map = {c.nombre: c for c in categorias}
+    marca_map = {m.nombre: m for m in marcas}
 
     productos_creados = []
+    for item in productos_info:
+        cat_obj = cat_map[item["categoria"]]
+        marca_obj = marca_map[item["marca"]]
 
-    for nombre in nombres_productos:
-
-        producto, created = (
-            Producto.objects.get_or_create(
-
-                nombre=nombre,
-
-                defaults={
-
-                    "descripcion": (
-                        "Producto de alta calidad "
-                        "para barbería: "
-                        f"{nombre}."
-                    ),
-
-                    "codigo_categoria": (
-                        random.choice(
-                            categorias
-                        )
-                    ),
-
-                    "codigo_marca": (
-                        random.choice(
-                            marcas
-                        )
-                    ),
-
-                    "estado": True,
-
-                    "precio": (
-                        Decimal(
-                            str(
-                                random.randint(
-                                    15000,
-                                    120000
-                                )
-                            )
-                        )
-                    ),
-                }
-            )
+        # 1. Crear producto (la señal post_save crea el DetalleProducto inicial)
+        prod = Producto.objects.create(
+            nombre=item["nombre"],
+            descripcion=item["desc"],
+            precio=item["precio"],
+            codigo_categoria=cat_obj,
+            codigo_marca=marca_obj,
+            estado=True,
         )
 
-        if not producto.codigo_categoria_id:
+        # 2. Configurar inventario inicial en DetalleProducto
+        detalle = prod.codigo_detalle_producto
+        if not detalle:
+            detalle = DetalleProducto.objects.create(
+                cantidad_actual=item["stock"],
+                stock_min=item["min"],
+                stock_max=item["max"],
+                observaciones="Inventario inicial cargado por script de población."
+            )
+            prod.codigo_detalle_producto = detalle
+            prod.save(update_fields=["codigo_detalle_producto"])
+        else:
+            detalle.cantidad_actual = item["stock"]
+            detalle.stock_min = item["min"]
+            detalle.stock_max = item["max"]
+            detalle.observaciones = "Inventario inicial configurado correctamente."
+            detalle.save()
 
-            producto.codigo_categoria = (
-                random.choice(
-                    categorias
+        # 3. Registrar movimiento de entrada inicial
+        MovimientoProducto.objects.create(
+            codigo_detalle_producto=detalle,
+            tipo="entrada",
+            cantidad=item["stock"],
+            observacion=f"Carga inicial de inventario para {prod.nombre}"
+        )
+
+        productos_creados.append(prod)
+        print(f"  ✓ Producto: [{prod.codigo}] {prod.nombre} | Stock: {detalle.cantidad_actual} | Precio: ${prod.precio:,.0f}")
+
+    # ------------------------------------------------------------------------
+    # 8.5 Promociones (Catálogo)
+    # ------------------------------------------------------------------------
+    # Promoción para productos
+    for i, prod in enumerate(productos_creados[:3]):
+        Promocion.objects.create(
+            nombre=f"Super Promo {prod.nombre.split()[0]}",
+            porcentaje_descuento=Decimal(str(random.choice([10, 15, 20]))),
+            descripcion=f"Aprovecha un gran descuento por tiempo limitado en {prod.nombre}.",
+            fecha_inicio=date.today() - timedelta(days=2),
+            fecha_fin=date.today() + timedelta(days=20),
+            estado=True,
+            codigo_producto=prod,
+            codigo_servicio=None,
+        )
+
+    # Promoción para servicios
+    for i, serv in enumerate(servicios[:2]):
+        Promocion.objects.create(
+            nombre=f"Semana Especial: {serv.nombre}",
+            porcentaje_descuento=Decimal(str(random.choice([15, 20, 25]))),
+            descripcion=f"Descuento exclusivo en el servicio de {serv.nombre}.",
+            fecha_inicio=date.today() - timedelta(days=1),
+            fecha_fin=date.today() + timedelta(days=15),
+            estado=True,
+            codigo_producto=None,
+            codigo_servicio=serv,
+        )
+
+    print(f"  ✓ Promociones directas de productos y servicios creadas.")
+    return proveedores, productos_creados
+
+
+# ============================================================================
+# 9. POBLAR COMPRAS (CON REABASTECIMIENTO Y MOVIMIENTOS)
+# ============================================================================
+def poblar_compras(proveedores, productos):
+    print("\n" + "=" * 60)
+    print(" 6. POBLANDO ÓRDENES DE COMPRA A PROVEEDORES")
+    print("=" * 60)
+
+    for i in range(1, 4):
+        prov = random.choice(proveedores)
+        compra = Compra.objects.create(
+            codigo_proveedor=prov,
+            observaciones=f"Reabastecimiento quincenal lote #{i:03d}."
+        )
+
+        prods_seleccionados = random.sample(productos, k=3)
+        for prod in prods_seleccionados:
+            cant = random.randint(10, 20)
+            precio_costo = (prod.precio * Decimal("0.55")).quantize(Decimal("0.01"))
+
+            DetalleCompra.objects.create(
+                codigo_compra=compra,
+                codigo_producto=prod,
+                cantidad=cant,
+                precio_compra=precio_costo,
+                precio_venta=prod.precio,
+            )
+
+        print(f"  ✓ Compra #{compra.codigo} a {prov.nombre} registrada por Total: ${compra.total:,.0f}")
+
+
+# ============================================================================
+# 10. POBLAR VENTAS Y DETALLES DE PAGO
+# ============================================================================
+def poblar_ventas(clientes, productos):
+    print("\n" + "=" * 60)
+    print(" 7. POBLANDO VENTAS Y REGISTROS DE PAGO")
+    print("=" * 60)
+
+    metodos = ["efectivo", "tarjeta", "transferencia"]
+
+    for i in range(1, 8):
+        cliente = random.choice(clientes)
+        metodo = random.choice(metodos)
+        estado = "completado"
+
+        venta = Venta.objects.create(
+            codigo_usuario=cliente,
+            nombre_cliente=cliente.get_full_name(),
+            correo=cliente.email,
+            telefono=cliente.telefono,
+            direccion="Calle 45 # 12-34, Apto 201",
+            metodo_pago=metodo,
+            estado_pago=estado,
+            total_venta=Decimal("0.00")
+        )
+
+        # Seleccionar 1 o 2 productos con stock suficiente
+        prods_venta = random.sample(productos, k=random.randint(1, 2))
+        for p in prods_venta:
+            if p.codigo_detalle_producto and p.codigo_detalle_producto.cantidad_actual > 5:
+                cant = random.randint(1, 2)
+                DetalleVenta.objects.create(
+                    codigo_venta=venta,
+                    codigo_producto=p,
+                    cantidad=cant,
+                    valor_descuento=Decimal("0.00")
                 )
+
+        if metodo == "transferencia":
+            DetallePagos.objects.create(
+                codigo_venta=venta,
+                banco="Bancolombia",
+                tipo_cuenta="Ahorros",
+                numero_cuenta="123-456789-01",
+                titular="Chicha Barber Studio SAS",
+                instrucciones="Comprobante verificado exitosamente vía transferencia directa."
             )
 
-            producto.save(
-                update_fields=[
-                    "codigo_categoria"
-                ]
-            )
+        print(f"  ✓ Venta #{venta.codigo_venta} a {venta.nombre_cliente} | Método: {metodo} | Total: ${venta.total_venta:,.0f}")
 
-        if not producto.codigo_marca_id:
 
-            producto.codigo_marca = (
-                random.choice(
-                    marcas
-                )
-            )
+# ============================================================================
+# 11. POBLAR CONFIGURACIONES Y CARRUSEL
+# ============================================================================
+def poblar_configuraciones(admin):
+    print("\n" + "=" * 60)
+    print(" 8. POBLANDO CONFIGURACIONES Y CARRUSEL")
+    print("=" * 60)
 
-            producto.save(
-                update_fields=[
-                    "codigo_marca"
-                ]
-            )
+    slides = [
+        {
+            "nombre": "Estilo Clásico & Tradición",
+            "texto": "Cortes y afeitados tradicionales con toalla caliente por los mejores barberos.",
+            "estado": True,
+        },
+        {
+            "nombre": "Degradados Urbanos & Tendencia",
+            "texto": "Las últimas técnicas en degradados y diseño moderno para cabello y barba.",
+            "estado": True,
+        },
+        {
+            "nombre": "Cuidado Premium Masculino",
+            "texto": "Productos exclusivos de las marcas líderes para mantener tu estilo en casa.",
+            "estado": True,
+        },
+    ]
 
-        if not producto.precio:
-
-            producto.precio = Decimal(
-                str(
-                    random.randint(
-                        15000,
-                        120000
-                    )
-                )
-            )
-
-            producto.save(
-                update_fields=[
-                    "precio"
-                ]
-            )
-
-        # ------------------------------------------
-        # existencias
-        # ------------------------------------------
-
-        stock_obj, _ = (
-            existencias.objects.get_or_create(
-
-                codigo_producto=producto,
-
-                defaults={
-
-                    "cantidad_actual": random.randint(
-                        15,
-                        50
-                    ),
-
-                    "stock_min": random.randint(
-                        5,
-                        10
-                    ),
-
-                    "stock_max": random.randint(
-                        40,
-                        80
-                    ),
-
-                    "observaciones": (
-                        "existencias cargado "
-                        "automáticamente."
-                    ),
-                }
-            )
+    carruseles = []
+    for s in slides:
+        carr = Carrusel.objects.create(
+            nombre=s["nombre"],
+            texto=s["texto"],
+            estado=s["estado"]
         )
+        carruseles.append(carr)
+        print(f"  ✓ Slide de carrusel: {carr.nombre}")
 
-        stock_obj.cantidad_actual = random.randint(
-            15,
-            60
+    if carruseles:
+        Configuracion.objects.create(
+            codigo_usuario=admin,
+            codigo_carrusel=carruseles[0],
+            fecha_realizacion=timezone.now(),
+            nombre="Configuración General Barbería",
+            descripcion="Ajustes de visualización para la portada web de Chicha Barber.",
+            estado=True
         )
+        print("  ✓ Registro de Configuración general asociado al administrador.")
 
-        stock_obj.stock_min = random.randint(
-            5,
-            10
-        )
 
-        stock_obj.stock_max = random.randint(
-            50,
-            100
-        )
+# ============================================================================
+# 12. POBLAR HISTORIAL (BITÁCORA)
+# ============================================================================
+def poblar_historial(admin, productos):
+    print("\n" + "=" * 60)
+    print(" 9. POBLANDO BITÁCORA DE HISTORIAL")
+    print("=" * 60)
 
-        stock_obj.save(
-            update_fields=[
-                "cantidad_actual",
-                "stock_min",
-                "stock_max",
-                "fecha_actualizacion"
-            ]
-        )
+    eventos = [
+        ("Entrada de Inventario", "catalogo", "Ingreso de lote de productos por reabastecimiento general"),
+        ("Ajuste de Stock", "catalogo", "Verificación física y cuadre de existencias en estantería"),
+        ("Actualización de Tarifa", "servicios", "Revisión periódica de precios de servicios de barbería"),
+        ("Apertura de Agenda", "reservas", "Generación de nuevos turnos semanales para profesionales"),
+        ("Cierre de Caja", "venta", "Consolidación de transacciones y ventas del turno matutino"),
+    ]
 
-        # ------------------------------------------
-        # RELACIÓN PRODUCTO → existencias
-        # ------------------------------------------
-
-        if not producto.codigo_existencias_id:
-
-            producto.codigo_existencias = (
-                stock_obj
-            )
-
-            producto.save(
-                update_fields=[
-                    "codigo_existencias"
-                ]
-            )
-
-        # ------------------------------------------
-        # BITÁCORA
-        # ------------------------------------------
+    for acc, mod, desc in eventos:
+        prod_ref = random.choice(productos) if productos else None
+        det_ref = prod_ref.codigo_detalle_producto if prod_ref else None
 
         Bitacora.objects.create(
-
-            codigo_existencias=stock_obj,
-
-            codigo_producto=producto,
-
-            codigo_usuario=None,
-
-            tipo_cambio="entrada",
-
-            campo_actualizado="cantidad_actual",
-
-            valor_anterior="0",
-
-            valor_actual=str(
-                stock_obj.cantidad_actual
-            ),
-
-            motivo="Carga inicial",
-
-            observaciones=(
-                "Registro generado "
-                "por poblar_bd."
-            )
+            codigo_usuario=admin,
+            codigo_detalle_producto=det_ref,
+            accion=acc,
+            modulo=mod,
+            descripcion=desc,
+            ip_origen="127.0.0.1"
         )
 
-        productos_creados.append(
-            producto
-        )
-
-    print(
-        f"✓ {len(productos_creados)} "
-        "productos creados."
-    )
-
-    # ----------------------------------------------
-    # PROMOCIONES DE PRODUCTOS
-    # ----------------------------------------------
-
-    if productos_creados:
-
-        for i in range(1, 4):
-
-            promocion, _ = (
-                ProductoPromocion.objects
-                .get_or_create(
-
-                    nombre=(
-                        f"Promo Producto {i}"
-                    ),
-
-                    defaults={
-
-                        "porcentaje_descuento": (
-                            Decimal(
-                                str(
-                                    random.choice(
-                                        [
-                                            10,
-                                            15,
-                                            20,
-                                            25
-                                        ]
-                                    )
-                                )
-                            )
-                        ),
-
-                        "descripcion": (
-                            "Promoción automática "
-                            "para productos."
-                        ),
-
-                        "fecha_inicio": (
-                            date.today()
-                        ),
-
-                        "fecha_fin": (
-                            date.today()
-                            + timedelta(
-                                days=30
-                            )
-                        ),
-
-                        "estado": True,
-                    }
-                )
-            )
-
-            producto = random.choice(
-                productos_creados
-            )
-
-            # Precio base del producto
-            precio = Decimal(
-                str(producto.precio)
-            )
-
-            porcentaje = Decimal(
-                str(
-                    promocion.porcentaje_descuento
-                )
-            )
-
-            valor_con_descuento = (
-                precio
-                *
-                (
-                    Decimal("1")
-                    -
-                    (
-                        porcentaje
-                        / Decimal("100")
-                    )
-                )
-            ).quantize(
-                Decimal("0.01")
-            )
-
-            PromocionProducto.objects.create(
-
-                codigo_promocion=promocion,
-
-                codigo_producto=producto,
-
-                precio=precio,
-
-                valor_con_descuento=(
-                    valor_con_descuento
-                ),
-
-                estado=True
-            )
-
-    print(
-        "✓ Promociones de productos creadas."
-    )
-
-
-# ==========================================================
-# 12. POBLAR ADQUISICIONES
-# ==========================================================
-
-def poblar_adquisiciones():
-
-    print("\n==========================================")
-    print("POBLANDO ADQUISICIONES")
-    print("==========================================")
-
-    try:
-
-        productos = list(
-            Producto.objects.all()
-        )
-
-        proveedores = list(
-            Proveedor.objects.all()
-        )
-
-        if not productos or not proveedores:
-
-            print(
-                "⚠️ No hay productos o "
-                "proveedores suficientes."
-            )
-
-            return
-
-        for i in range(1, 16):
-
-            producto = random.choice(
-                productos
-            )
-
-            proveedor = random.choice(
-                proveedores
-            )
-
-            # ------------------------------------------
-            # CANTIDAD COMPRADA
-            # ------------------------------------------
-
-            cantidad = random.randint(
-                10,
-                40
-            )
-
-            # ------------------------------------------
-            # PRECIO DE COMPRA
-            # ------------------------------------------
-
-            precio_compra = Decimal(
-                str(
-                    random.randint(
-                        8000,
-                        35000
-                    )
-                )
-            )
-
-            # ------------------------------------------
-            # MARGEN
-            # ------------------------------------------
-
-            margen = Decimal(
-                str(
-                    random.choice(
-                        [
-                            "1.25",
-                            "1.30",
-                            "1.35",
-                            "1.40",
-                            "1.50"
-                        ]
-                    )
-                )
-            )
-
-            # ------------------------------------------
-            # PRECIO DE VENTA
-            # ------------------------------------------
-
-            precio_venta = (
-                precio_compra * margen
-            ).quantize(
-                Decimal("0.01")
-            )
-
-            # ------------------------------------------
-            # CANTIDAD DISPONIBLE PARA VENTA
-            # ------------------------------------------
-
-            cantidad_venta = cantidad
-
-            # ------------------------------------------
-            # TOTAL
-            # ------------------------------------------
-
-            total = (
-                precio_compra * cantidad
-            ).quantize(
-                Decimal("0.01")
-            )
-
-            # ------------------------------------------
-            # CREAR ADQUISICIÓN
-            # ------------------------------------------
-
-            adquisicion = (
-                Adquisicion.objects.create(
-
-                    codigo_proveedor=proveedor,
-
-                    codigo_producto=producto,
-
-                    cantidad=cantidad,
-
-                    cantidad_venta=(
-                        cantidad_venta
-                    ),
-
-                    precio_compra=(
-                        precio_compra
-                    ),
-
-                    precio_venta=(
-                        precio_venta
-                    ),
-
-                    total=total,
-                )
-            )
-
-            print(
-
-                f"✓ Adquisición "
-                f"#{adquisicion.codigo} | "
-
-                f"{producto.nombre} | "
-
-                f"Cantidad: {cantidad} | "
-
-                f"Compra: "
-                f"${precio_compra:,.0f} | "
-
-                f"Venta: "
-                f"${precio_venta:,.0f} | "
-
-                f"Total: "
-                f"${total:,.0f}"
-            )
-
-        print(
-            "✓ Adquisiciones creadas correctamente."
-        )
-
-    except Exception as e:
-
-        print(
-            f"⚠️ Error al poblar adquisiciones: {e}"
-        )
-
-
-# ==========================================================
-# 13. OBTENER ÚLTIMA ADQUISICIÓN
-# ==========================================================
-
-def obtener_ultima_adquisicion(producto):
-
-    return (
-        Adquisicion.objects
-        .filter(
-            codigo_producto=producto
-        )
-        .order_by(
-            "-fecha",
-            "-codigo"
-        )
-        .first()
-    )
-
-
-# ==========================================================
-# 14. POBLAR VENTAS
-# ==========================================================
-
-def poblar_ventas():
-
-    print("\n==========================================")
-    print("POBLANDO VENTAS")
-    print("==========================================")
-
-    try:
-
-        productos = list(
-            Producto.objects.all()
-        )
-
-        clientes = list(
-            Usuario.objects.filter(
-                rol="cliente"
-            )
-        )
-
-        if not productos:
-
-            print(
-                "⚠️ No hay productos."
-            )
-
-            return
-
-        if not clientes:
-
-            print(
-                "⚠️ No hay clientes."
-            )
-
-            return
-
-        # ------------------------------------------
-        # PRODUCTOS CON ADQUISICIÓN
-        # ------------------------------------------
-
-        productos_con_precio = []
-
-        for producto in productos:
-
-            adquisicion = (
-                obtener_ultima_adquisicion(
-                    producto
-                )
-            )
-
-            if adquisicion:
-
-                productos_con_precio.append(
-                    producto
-                )
-
-        if not productos_con_precio:
-
-            print(
-                "⚠️ No hay productos "
-                "con precio de venta."
-            )
-
-            return
-
-        # ------------------------------------------
-        # CREAR 10 VENTAS
-        # ------------------------------------------
-
-        for i in range(1, 11):
-
-            # Buscar producto con stock
-            producto = None
-
-            productos_barajados = (
-                productos_con_precio.copy()
-            )
-
-            random.shuffle(
-                productos_barajados
-            )
-
-            for candidato in (
-                productos_barajados
-            ):
-
-                try:
-
-                    stock_candidato = (
-                        candidato.existencias
-                    )
-
-                except existencias.DoesNotExist:
-
-                    continue
-
-                if (
-                    stock_candidato
-                    and
-                    stock_candidato.cantidad_actual > 0
-                ):
-
-                    producto = candidato
-
-                    break
-
-            if not producto:
-
-                print(
-                    "⚠️ No hay stock disponible."
-                )
-
-                break
-
-            stock_prod = (
-                producto.existencias
-            )
-
-            # ------------------------------------------
-            # CANTIDAD
-            # ------------------------------------------
-
-            cantidad_maxima = min(
-                3,
-                stock_prod.cantidad_actual
-            )
-
-            cantidad = random.randint(
-                1,
-                cantidad_maxima
-            )
-
-            cliente = random.choice(
-                clientes
-            )
-
-            # ------------------------------------------
-            # CREAR VENTA
-            # ------------------------------------------
-
-            venta_obj = venta.objects.create(
-
-                codigo_usuario=cliente,
-
-                nombre_cliente=(
-                    cliente.get_full_name()
-                    or cliente.username
-                ),
-
-                correo=cliente.email,
-
-                telefono=getattr(
-                    cliente,
-                    "telefono",
-                    ""
-                ),
-
-                direccion=(
-                    "Dirección de prueba"
-                ),
-
-                metodo_pago=random.choice(
-                    [
-                        "persona",
-                        "contraentrega",
-                        "transferencia"
-                    ]
-                ),
-
-                estado_pago="completado",
-            )
-
-            # ------------------------------------------
-            # CREAR DETALLE
-            # ------------------------------------------
-
-            detalle = (
-                detalleventa.objects.create(
-
-                    codigo_venta=venta_obj,
-
-                    codigo_producto=producto,
-
-                    cantidad=cantidad,
-
-                    valor_descuento=(
-                        Decimal("0")
-                    )
-                )
-            )
-
-            # ------------------------------------------
-            # ACTUALIZAR TOTAL
-            # ------------------------------------------
-
-            venta_obj.actualizar_total()
-
-            print(
-
-                f"✓ Venta "
-                f"#{venta_obj.codigo_venta} | "
-
-                f"{producto.nombre} | "
-
-                f"Cantidad: {cantidad} | "
-
-                f"Subtotal: "
-                f"${detalle.subtotal:,.0f}"
-            )
-
-        print(
-            "✓ Ventas creadas."
-        )
-
-    except Exception as e:
-
-        print(
-            f"⚠️ Error al poblar ventas: {e}"
-        )
-
-
-# ==========================================================
-# 15. CALIFICACIONES DE USUARIOS
-# ==========================================================
-
-def poblar_calificaciones():
-
-    print("\n==========================================")
-    print("POBLANDO CALIFICACIONES")
-    print("==========================================")
-
-    servicios_disponibles = list(
-        Servicios.objects.all()
-    )
-
-    clientes_disponibles = list(
-        Usuario.objects.filter(
-            rol="cliente"
-        )
-    )
-
-    if not servicios_disponibles:
-
-        print(
-            "⚠️ No hay servicios."
-        )
-
-        return
-
-    if not clientes_disponibles:
-
-        print(
-            "⚠️ No hay clientes."
-        )
-
-        return
-
-    comentarios_ejemplo = [
-
-        "Excelente servicio, muy profesional.",
-
-        "Me encantó el resultado, volveré pronto.",
-
-        "Buen trabajo, pero la espera fue un poco larga.",
-
-        "Muy amable el personal.",
-
-        "Increíble experiencia, 5 estrellas!",
-
-        "Rápido y eficiente.",
-
-        "El lugar es muy agradable.",
-
-        "Podría mejorar la atención al cliente.",
-
-        "Relación calidad-precio muy buena.",
-
-        "No estoy del todo satisfecho con el corte.",
+    print(f"  ✓ {len(eventos)} registros de auditoría insertados en Bitácora.")
+
+
+# ============================================================================
+# 13. POBLAR SOPORTE Y TICKETS
+# ============================================================================
+def poblar_soporte(clientes):
+    print("\n" + "=" * 60)
+    print(" 10. POBLANDO CATEGORÍAS DE AYUDA Y TICKETS DE SOPORTE")
+    print("=" * 60)
+
+    categorias_ayuda_data = [
+        ("Reservas y Citas", "bi-calendar-check", "reservas-citas", "Consultas y cancelaciones de turnos agendados."),
+        ("Compras y Envíos", "bi-box-seam", "compras-envios", "Estado de pedidos, productos y despacho a domicilio."),
+        ("Pagos y Facturación", "bi-credit-card", "pagos-facturacion", "Medios de pago, transferencias y comprobantes."),
+        ("Cuenta y Acceso", "bi-person-gear", "cuenta-acceso", "Restablecimiento de contraseña y actualización de datos."),
     ]
 
-    for _ in range(15):
-
-        servicio = random.choice(
-            servicios_disponibles
+    cats_soporte = []
+    for nom, ico, slug, desc in categorias_ayuda_data:
+        cat_s, _ = CategoriaAyuda.objects.get_or_create(
+            slug=slug,
+            defaults={
+                "nombre": nom,
+                "icono": ico,
+                "descripcion": desc
+            }
         )
+        cats_soporte.append(cat_s)
+        print(f"  ✓ Categoría de soporte: {cat_s.nombre}")
 
-        cliente_usuario = random.choice(
-            clientes_disponibles
-        )
-
-        puntuacion = random.randint(
-            1,
-            5
-        )
-
-        comentario = random.choice(
-            comentarios_ejemplo
-        )
-
-        Calificacion.objects.create(
-
-            servicio=servicio,
-
-            cliente=cliente_usuario,
-
-            cliente_nombre=(
-                cliente_usuario.get_full_name()
-                or cliente_usuario.username
-            ),
-
-            puntuacion=puntuacion,
-
-            comentario=comentario
-        )
-
-    print(
-        "✓ Calificaciones creadas."
-    )
-
-
-# ==========================================================
-# 16. POBLAR FACTURAS
-# ==========================================================
-
-def poblar_facturas():
-
-    print("\n==========================================")
-    print("POBLANDO FACTURAS")
-    print("==========================================")
-
-    reservas = list(
-        Reserva.objects.all()
-    )
-
-    productos = list(
-        Producto.objects.all()
-    )
-
-    clientes = list(
-        Usuario.objects.filter(
-            rol="cliente"
-        )
-    )
-
-    metodos = [
-        "efectivo",
-        "nequi",
-        "daviplata",
-        "tarjeta"
+    tickets_data = [
+        ("¿Cómo puedo reprogramar mi cita?", "Necesito cambiar mi reserva para la próxima semana a la misma hora.", "ABIERTO"),
+        ("Duda con el pago por transferencia", "Ya envié el comprobante bancario, deseo confirmar la aprobación de mi compra.", "CERRADO"),
+        ("Disponibilidad de pomada Suavecito", "Quisiera saber si tienen stock disponible para recoger directamente en la barbería.", "ABIERTO"),
     ]
 
-    # ----------------------------------------------
-    # VALIDACIÓN
-    # ----------------------------------------------
-
-    if not reservas and not productos:
-
-        print(
-            "⚠️ No hay datos suficientes "
-            "para generar facturas."
+    for asunto, desc, est in tickets_data:
+        TicketSoporte.objects.create(
+            usuario=random.choice(clientes),
+            categoria=random.choice(cats_soporte),
+            asunto=asunto,
+            descripcion=desc,
+            estado=est
         )
 
-        return
-
-    # ==================================================
-    # FACTURAS DE RESERVAS
-    # ==================================================
-
-    for reserva in reservas:
-
-        cliente = reserva.cliente
-
-        if not cliente and clientes:
-
-            cliente = random.choice(
-                clientes
-            )
-
-        factura = Factura.objects.create(
-
-            cliente=cliente,
-
-            total_pagado=float(
-                reserva.precio_historico
-            ),
-
-            metodo_pago=random.choice(
-                metodos
-            ),
-
-            estado=(
-                "pagada"
-                if reserva.estado == "confirmada"
-                else "pendiente"
-            )
-        )
-
-        DetalleFactura.objects.create(
-
-            factura=factura,
-
-            reserva=reserva,
-
-            cantidad=1,
-
-            precio_unitario=(
-                reserva.precio_historico
-            ),
-
-            subtotal=(
-                reserva.precio_historico
-            )
-        )
-
-    # ==================================================
-    # FACTURAS DE PRODUCTOS
-    # ==================================================
-
-    for i in range(5):
-
-        cliente = (
-            random.choice(clientes)
-            if clientes
-            else None
-        )
-
-        factura = Factura.objects.create(
-
-            cliente=cliente,
-
-            total_pagado=0,
-
-            metodo_pago=random.choice(
-                metodos
-            ),
-
-            estado="pagada"
-        )
-
-        total_acumulado = Decimal("0")
-
-        productos_disponibles = []
-
-        for producto in productos:
-
-            adquisicion = (
-                obtener_ultima_adquisicion(
-                    producto
-                )
-            )
-
-            if adquisicion:
-
-                productos_disponibles.append(
-                    producto
-                )
-
-        if not productos_disponibles:
-
-            factura.delete()
-
-            continue
-
-        for _ in range(
-            random.randint(1, 3)
-        ):
-
-            prod = random.choice(
-                productos_disponibles
-            )
-
-            adquisicion = (
-                obtener_ultima_adquisicion(
-                    prod
-                )
-            )
-
-            if not adquisicion:
-
-                continue
-
-            # ------------------------------------------
-            # PRECIO REAL DE VENTA
-            # ------------------------------------------
-
-            precio_venta = (
-                adquisicion.precio_venta
-            )
-
-            # ------------------------------------------
-            # CANTIDAD
-            # ------------------------------------------
-
-            cant = random.randint(
-                1,
-                2
-            )
-
-            sub = (
-                precio_venta * cant
-            )
-
-            # ------------------------------------------
-            # DETALLE FACTURA
-            # ------------------------------------------
-
-            DetalleFactura.objects.create(
-
-                factura=factura,
-
-                producto=prod,
-
-                cantidad=cant,
-
-                precio_unitario=(
-                    precio_venta
-                ),
-
-                subtotal=sub
-            )
-
-            total_acumulado += sub
-
-        # ------------------------------------------
-        # TOTAL FACTURA
-        # ------------------------------------------
-
-        factura.total_pagado = (
-            total_acumulado
-        )
-
-        factura.save(
-            update_fields=[
-                "total_pagado"
-            ]
-        )
-
-    print(
-        "✓ Facturas creadas."
-    )
+    print("  ✓ Tickets de soporte iniciales creados.")
 
 
-# ==========================================================
-# 17. EJECUCIÓN PRINCIPAL
-# ==========================================================
-
+# ============================================================================
+# 14. EJECUCIÓN PRINCIPAL
+# ============================================================================
 if __name__ == "__main__":
-
     print("\n")
-    print("==============================================")
-    print("   CHICHA BARBER STUDIO")
-    print("   CARGA DE DATOS DE PRUEBA")
-    print("==============================================")
+    print("=" * 65)
+    print("      CHICHA BARBER STUDIO - CARGA COMPLETA DE BASE DE DATOS")
+    print("=" * 65)
 
+    # 1. Limpieza total
     limpiar_datos()
 
-    # ----------------------------------------------
-    # USUARIOS
-    # ----------------------------------------------
+    # 2. Usuarios, barberos y clientes
+    admin, barberos, clientes = poblar_usuarios()
 
-    poblar_usuarios()
+    # 3. Servicios y calificaciones
+    servicios = poblar_servicios(clientes)
 
-    # ----------------------------------------------
-    # SERVICIOS
-    # ----------------------------------------------
+    # 4. Agendas y reservas
+    poblar_agendas_y_reservas(barberos, clientes, servicios)
 
-    poblar_servicios()
+    # 5. Catálogo de productos e inventario
+    proveedores, productos = poblar_catalogo(servicios)
 
-    poblar_turnos_disponibles()
+    # 6. Órdenes de compra a proveedores
+    poblar_compras(proveedores, productos)
 
-    poblar_promociones()
+    # 7. Ventas y detalles de pago
+    poblar_ventas(clientes, productos)
 
-    poblar_reservas()
+    # 8. Configuraciones y carrusel
+    poblar_configuraciones(admin)
 
-    
+    # 9. Bitácora de historial
+    poblar_historial(admin, productos)
 
-    # ----------------------------------------------
-    # PRODUCTOS
-    # ----------------------------------------------
+    # 10. Soporte técnico
+    poblar_soporte(clientes)
 
-    poblar_productos_y_bitacora()
-
-    # ----------------------------------------------
-    # ADQUISICIONES
-    # IMPORTANTE: ANTES DE VENTAS
-    # ----------------------------------------------
-
-    poblar_adquisiciones()
-
-    # ----------------------------------------------
-    # VENTAS
-    # ----------------------------------------------
-
-    poblar_ventas()
-
-    # ----------------------------------------------
-    # FACTURAS
-    # ----------------------------------------------
-
-    poblar_facturas()
-
-    # ----------------------------------------------
-    # CALIFICACIONES
-    # ----------------------------------------------
-
-    poblar_calificaciones()
-
-    print("\n")
-    print("==============================================")
-    print("✅ ¡BASE DE DATOS POBLADA CON ÉXITO!")
-    print("==============================================")
+    print("\n" + "=" * 65)
+    print("   ¡BASE DE DATOS POBLADA EXITOSAMENTE AL 100%!")
+    print("=" * 65)
+    print(f"  • Usuarios registrados:      {Usuario.objects.count()}")
+    print(f"  • Servicios disponibles:     {Servicios.objects.count()}")
+    print(f"  • Calificaciones:            {Calificacion.objects.count()}")
+    print(f"  • Agendas de barberos:       {Agenda.objects.count()}")
+    print(f"  • Reservas de clientes:      {Reserva.objects.count()}")
+    print(f"  • Categorías de productos:   {Categoria.objects.count()}")
+    print(f"  • Marcas aliadas:            {Marca.objects.count()}")
+    print(f"  • Proveedores:               {Proveedor.objects.count()}")
+    print(f"  • Productos activos:         {Producto.objects.count()}")
+    print(f"  • Movimientos de stock:      {MovimientoProducto.objects.count()}")
+    print(f"  • Promociones vigentes:      {Promocion.objects.count()}")
+    print(f"  • Órdenes de compra:         {Compra.objects.count()}")
+    print(f"  • Ventas completadas:        {Venta.objects.count()}")
+    print(f"  • Registros en bitácora:     {Bitacora.objects.count()}")
+    print(f"  • Slides de carrusel:        {Carrusel.objects.count()}")
+    print(f"  • Tickets de soporte:        {TicketSoporte.objects.count()}")
+    print("-" * 65)
+    print("  Credenciales de Administrador:")
+    print("  Usuario:  a@b.com")
+    print("  Clave:    @dmin123")
+    print("=" * 65 + "\n")
