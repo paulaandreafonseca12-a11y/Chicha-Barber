@@ -213,6 +213,34 @@ class Reserva(models.Model):
             return self.usuario.email
         return ""
 
+    @property
+    def cliente(self):
+        return self.usuario
+
+    @property
+    def nombre_cliente(self):
+        if self.nombre_usuario:
+            return self.nombre_usuario
+        if self.usuario and hasattr(self.usuario, "get_full_name") and self.usuario.get_full_name():
+            return self.usuario.get_full_name()
+        return self.nombre_usuario or (self.usuario.email if self.usuario else "Sin cliente")
+
+    @property
+    def telefono_cliente(self):
+        if self.telefono_usuario:
+            return self.telefono_usuario
+        if self.usuario and hasattr(self.usuario, "telefono"):
+            return self.usuario.telefono
+        return ""
+
+    @property
+    def correo_cliente(self):
+        if self.correo_usuario:
+            return self.correo_usuario
+        if self.usuario and hasattr(self.usuario, "email"):
+            return self.usuario.email
+        return ""
+
 # ==========================================================
 # 3. NOTIFICACIÓN + HISTORIAL DE RESERVA
 # ==========================================================

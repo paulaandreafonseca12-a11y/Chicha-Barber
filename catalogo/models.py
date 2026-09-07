@@ -209,7 +209,13 @@ class Producto(models.Model):
 
     @property
     def precio_compra_actual(self):
-        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
+
+        adquisicion = (
+            self.adquisiciones
+            .order_by("-fecha", "-codigo")
+            .first()
+        )
+
         if adquisicion:
             return adquisicion.precio_compra
 
@@ -236,6 +242,8 @@ class Producto(models.Model):
         ).count()
 
     def __str__(self):
+        marca_str = f" ({self.codigo_marca.nombre})" if self.codigo_marca else ""
+        return f"{self.codigo} - {self.nombre}{marca_str}"
         marca_str = f" ({self.codigo_marca.nombre})" if self.codigo_marca else ""
         return f"{self.codigo} - {self.nombre}{marca_str}"
 
@@ -275,6 +283,10 @@ class DetalleProducto(models.Model):
         null=True,
         verbose_name="Observaciones",
     )
+
+    @property
+    def codigo_producto(self):
+        return self.producto_principal.first()
 
     @property
     def codigo_producto(self):
@@ -345,6 +357,10 @@ class MovimientoProducto(models.Model):
         if self.codigo_detalle_producto:
             return self.codigo_detalle_producto.producto_principal.first()
         return None
+
+    # ======================================================
+    # MOTIVO
+    # ======================================================
 
     @property
     def motivo(self):
@@ -452,6 +468,9 @@ class Promocion(models.Model):
 
     class Meta:
         verbose_name = "Promoción"
+
+        verbose_name_plural = "Promociones"
+
         verbose_name_plural = "Promociones"
 
 
