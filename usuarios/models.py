@@ -248,6 +248,30 @@ class Usuario(AbstractBaseUser):
     def get_rol_display(self):
         return RolUsuario(self.rol).label
 
+    @property
+    def username(self):
+        return self.email
+
+    @username.setter
+    def username(self, value):
+        self.email = value
+
+    @property
+    def first_name(self):
+        return self.primer_nombre
+
+    @first_name.setter
+    def first_name(self, value):
+        self.primer_nombre = value
+
+    @property
+    def last_name(self):
+        return self.primer_apellido
+
+    @last_name.setter
+    def last_name(self, value):
+        self.primer_apellido = value
+
     # ======================================================
     # PROPIEDADES DE AUTENTICACIÓN
     # ======================================================

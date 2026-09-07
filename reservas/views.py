@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from reservas.models import Reserva, Agenda
 from reservas.forms import ReservaEditarForm
 from servicios.models import Servicios
+from catalogo.models import Promocion
 from usuarios.models import Usuario, Notificacion  # <-- Importamos Notificacion
 from core.utils import enviar_correo_reserva, enviar_correo_cancelacion_admin
 

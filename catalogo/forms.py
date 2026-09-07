@@ -150,6 +150,12 @@ class ProductoForm(forms.ModelForm):
             'estado': 'Activo',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'codigo_marca' in self.fields:
+            self.fields['codigo_marca'].queryset = Marca.objects.filter(estado=True).order_by('nombre')
+            self.fields['codigo_marca'].empty_label = "Seleccione una marca (opcional)"
+
     # ------------------------------------------------------
     # VALIDAR NOMBRE
     # ------------------------------------------------------

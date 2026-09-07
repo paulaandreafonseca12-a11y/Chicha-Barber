@@ -100,8 +100,17 @@ class DetalleCompra(models.Model):
 
         # 2. Registrar movimiento de Entrada y actualizar Stock al crear
         if es_nuevo and not self.codigo_movimiento_producto:
+            detalle_prod = self.codigo_producto.codigo_detalle_producto
+            if not detalle_prod:
+                from catalogo.models import DetalleProducto
+                detalle_prod = DetalleProducto.objects.create(
+                    cantidad_actual=0, stock_min=0, stock_max=0
+                )
+                self.codigo_producto.codigo_detalle_producto = detalle_prod
+                self.codigo_producto.save(update_fields=["codigo_detalle_producto"])
+
             movimiento = MovimientoProducto.objects.create(
-                codigo_producto=self.codigo_producto,
+                codigo_detalle_producto=detalle_prod,
                 tipo="entrada",
                 cantidad=self.cantidad,
                 observacion=f"Entrada por Compra #{self.codigo_compra.codigo}"
@@ -110,12 +119,8 @@ class DetalleCompra(models.Model):
             super().save(update_fields=["codigo_movimiento_producto"])
 
             # Sumar al stock actual en la app catalogo
-            try:
-                detalle_prod = self.codigo_producto.detalle_producto
-                detalle_prod.cantidad_actual += self.cantidad
-                detalle_prod.save(update_fields=["cantidad_actual", "fecha_actualizacion"])
-            except Exception:
-                pass
+            detalle_prod.cantidad_actual += self.cantidad
+            detalle_prod.save(update_fields=["cantidad_actual", "fecha_actualizacion"])
 
         # 3. Recalcular el total general de la compra
         self.codigo_compra.actualizar_total()

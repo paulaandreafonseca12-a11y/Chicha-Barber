@@ -98,8 +98,7 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-
-        total = sum(
+        self.total_venta = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
@@ -107,8 +106,16 @@ class Venta(models.Model):
         self.total_compra = total
 
         self.save(
-            update_fields=["total_compra"]
+            update_fields=["total_venta"]
         )
+
+    @property
+    def total_compra(self):
+        return self.total_venta
+
+    @total_compra.setter
+    def total_compra(self, value):
+        self.total_venta = value
 
     @property
     def fecha_venta(self):
@@ -150,7 +157,7 @@ class DetalleVenta(models.Model):
         verbose_name="Producto",
     )
 
-    codigo_movimientoproducto = models.ForeignKey(
+    codigo_movimiento_producto = models.ForeignKey(
         MovimientoProducto,
         on_delete=models.SET_NULL,
         null=True,
@@ -184,11 +191,11 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
-        try:
-            detalle_producto = (
-                self.codigo_producto.detalle_producto
-            )
-        except Exception:
+        # ==================================================
+        # OBTENER STOCK
+        # ==================================================
+        detalle_prod_obj = self.codigo_producto.codigo_detalle_producto
+        if not detalle_prod_obj:
             raise ValueError(
                 f"El producto "
                 f"'{self.codigo_producto.nombre}' "
@@ -231,22 +238,13 @@ class DetalleVenta(models.Model):
 
             super().save(*args, **kwargs)
 
-            # ----------------------------------------------
-            # CREAR MOVIMIENTO
-            # ----------------------------------------------
-
-            if not self.codigo_movimiento_producto:
-
-                movimiento = (
-                    MovimientoProducto.objects.create(
-                        codigo_detalle_producto=detalle_producto,
-                        tipo="salida",
-                        cantidad=self.cantidad,
-                        observacion=(
-                            f"Salida por Venta "
-                            f"#{self.codigo_venta.codigo_venta}"
-                        ),
-                    )
+            movimiento = MovimientoProducto.objects.create(
+                codigo_detalle_producto=detalle_prod_obj,
+                tipo="salida",
+                cantidad=self.cantidad,
+                observacion=(
+                    f"Salida por Venta "
+                    f"#{self.codigo_venta.codigo_venta}"
                 )
 
                 self.codigo_movimiento_producto = movimiento
@@ -341,13 +339,21 @@ class DetallePagos(models.Model):
     )
 
     @classmethod
+    def get_or_create_para_venta(cls, venta, **kwargs):
+        """Obtiene o crea el detalle de pago para una venta específica."""
+        defaults = {
+            'banco': kwargs.get('banco', 'Bancolombia'),
+            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
+            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
+            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
+            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
+        }
+        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
+
+    @classmethod
     def get_solo(cls):
-
-        obj, created = cls.objects.get_or_create(
-            pk=1
-        )
-
-        return obj
+        """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
+        return cls.objects.first()
 
     def __str__(self):
 
@@ -424,7 +430,7 @@ def notificar_venta(
             mensaje=(
                 f"Nueva venta de "
                 f"{instance.nombre_cliente} "
-                f"por ${instance.total_compra:.2f}."
+                f"por ${instance.total_venta:.2f}."
             ),
             url="/ventas/historial/",
         )

@@ -69,7 +69,7 @@ def inicio_admin(request):
     # Listas
     reservas_recientes = Reserva.objects.all().order_by('-id')[:5]
     facturas_recientes = []
-    productos_bajo_bitacora = DetalleProducto.objects.filter(cantidad_actual__lt=15).select_related('codigo_producto')[:5]
+    productos_bajo_bitacora = DetalleProducto.objects.filter(cantidad_actual__lt=15).prefetch_related('producto_principal')[:5]
 
     context = {
         'nombre': request.user.primer_nombre or request.user.email,
