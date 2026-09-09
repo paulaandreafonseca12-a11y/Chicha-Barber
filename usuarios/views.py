@@ -304,14 +304,15 @@ def crear_usuario_admin(request):
 # ==========================================================
 # CAMBIAR TEMA
 # ==========================================================
-#
-# IMPORTANTE:
-# Tu modelo Usuario actual NO tiene campo "tema".
-# Por eso no intentamos guardar user.tema.
-# ==========================================================
-
 @login_required
 def cambiar_tema(request):
+
+    if request.user.tema == 'dark':
+        request.user.tema = 'light'
+    else:
+        request.user.tema = 'dark'
+
+    request.user.save(update_fields=['tema'])
 
     return redirect(
         request.META.get(
@@ -319,7 +320,6 @@ def cambiar_tema(request):
             'inicio'
         )
     )
-
 
 # ==========================================================
 # EDITAR USUARIO
@@ -630,7 +630,7 @@ def perfil(request):
     # ======================================================
 
     reservas = Reserva.objects.filter(
-        cliente=request.user
+        usuario=request.user
     ).order_by(
         '-fecha_reserva'
     )

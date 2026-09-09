@@ -226,7 +226,6 @@ class DetalleVenta(models.Model):
             # ----------------------------------------------
 
             if not self.codigo_movimiento_producto:
-
                 movimiento = (
                     MovimientoProducto.objects.create(
                         codigo_detalle_producto=detalle_producto,
@@ -238,9 +237,17 @@ class DetalleVenta(models.Model):
                         ),
                     )
                 )
-            
 
-            self.codigo_movimiento_producto = movimiento
+            movimiento = MovimientoProducto.objects.create(
+                codigo_detalle_producto=detalle_prod_obj,
+                tipo="salida",
+                cantidad=self.cantidad,
+                observacion=(
+                    f"Salida por Venta "
+                    f"#{self.codigo_venta.codigo_venta}"
+
+                )
+                self.codigo_movimiento_producto = movimiento
 
             super().save(
                 update_fields=[
@@ -256,13 +263,13 @@ class DetalleVenta(models.Model):
                 self.cantidad
             )
 
-            detalle_producto.save(
-                update_fields=[
-                    "cantidad_actual",
-                    "fecha_actualizacion",
-                ]
+                detalle_producto.save(
+                    update_fields=[
+                        "cantidad_actual",
+                        "fecha_actualizacion",
+                    ]
+                )
             )
-
             # ----------------------------------------------
             # ACTUALIZAR TOTAL
             # ----------------------------------------------
