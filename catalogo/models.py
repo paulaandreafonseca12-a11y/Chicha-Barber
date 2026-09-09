@@ -180,6 +180,7 @@ class Producto(models.Model):
     )
 
     def save(self, *args, **kwargs):
+<<<<<<< HEAD
 
         super().save(*args, **kwargs)
 
@@ -189,12 +190,26 @@ class Producto(models.Model):
             super().save(
                 update_fields=["codigo"]
             )
+=======
+        es_nuevo = self.pk is None
+        if not self.codigo:
+            ultimo = Producto.objects.order_by("-codigo_producto").first()
+            siguiente_id = (ultimo.codigo_producto + 1) if ultimo else 1
+            self.codigo = f"PROD-{siguiente_id:05d}"
+        super().save(*args, **kwargs)
+        if es_nuevo and self.codigo.startswith("PROD-"):
+            codigo_real = f"PROD-{self.codigo_producto:05d}"
+            if self.codigo != codigo_real:
+                self.codigo = codigo_real
+                super().save(update_fields=["codigo"])
+>>>>>>> Valentina
 
     @property
     def stock_actual(self):
 
         if self.codigo_detalle_producto:
             return self.codigo_detalle_producto.cantidad_actual
+<<<<<<< HEAD
 
         try:
             return self.detalle_producto.cantidad_actual
@@ -210,6 +225,13 @@ class Producto(models.Model):
             .first()
         )
 
+=======
+        return 0
+
+    @property
+    def precio_venta_actual(self):
+        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
+>>>>>>> Valentina
         if adquisicion:
             return adquisicion.precio_venta
 
@@ -217,6 +239,7 @@ class Producto(models.Model):
 
     @property
     def precio_compra_actual(self):
+<<<<<<< HEAD
 
         adquisicion = (
             self.adquisiciones
@@ -224,6 +247,9 @@ class Producto(models.Model):
             .first()
         )
 
+=======
+        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
+>>>>>>> Valentina
         if adquisicion:
             return adquisicion.precio_compra
 
@@ -250,7 +276,8 @@ class Producto(models.Model):
         ).count()
 
     def __str__(self):
-        return f"{self.codigo} - {self.nombre}"
+        marca_str = f" ({self.codigo_marca.nombre})" if self.codigo_marca else ""
+        return f"{self.codigo} - {self.nombre}{marca_str}"
 
     class Meta:
         verbose_name = "Producto"
@@ -289,7 +316,12 @@ class DetalleProducto(models.Model):
         verbose_name="Observaciones",
     )
 
+    @property
+    def codigo_producto(self):
+        return self.producto_principal.first()
+
     def __str__(self):
+<<<<<<< HEAD
 
         if self.codigo_producto:
             return (
@@ -297,6 +329,11 @@ class DetalleProducto(models.Model):
                 f"- Stock: {self.cantidad_actual}"
             )
 
+=======
+        prod = self.producto_principal.first()
+        if prod:
+            return f"{prod.nombre} - Stock: {self.cantidad_actual}"
+>>>>>>> Valentina
         return f"Detalle Producto #{self.codigo}"
 
     class Meta:
@@ -356,12 +393,17 @@ class MovimientoProducto(models.Model):
     @property
     def producto(self):
         if self.codigo_detalle_producto:
+<<<<<<< HEAD
             return self.codigo_detalle_producto.codigo_producto
         return None
 
     # ======================================================
     # MOTIVO
     # ======================================================
+=======
+            return self.codigo_detalle_producto.producto_principal.first()
+        return None
+>>>>>>> Valentina
 
     @property
     def motivo(self):
@@ -372,6 +414,7 @@ class MovimientoProducto(models.Model):
     # ======================================================
 
     def __str__(self):
+<<<<<<< HEAD
 
         if (
             self.codigo_detalle_producto
@@ -390,6 +433,11 @@ class MovimientoProducto(models.Model):
             f"{self.tipo} "
             f"{self.cantidad}"
         )
+=======
+        prod = self.producto
+        codigo_str = prod.codigo if prod else f"Detalle #{self.codigo_detalle_producto_id}"
+        return f"{codigo_str} - {self.tipo} {self.cantidad}"
+>>>>>>> Valentina
 
     class Meta:
         verbose_name = "Movimiento de Producto"
@@ -401,6 +449,7 @@ class MovimientoProducto(models.Model):
 # ==========================================================
 
 @receiver(post_save, sender=Producto)
+<<<<<<< HEAD
 def crear_detalle_producto(
     sender,
     instance,
@@ -428,6 +477,19 @@ def crear_detalle_producto(
             ).update(
                 codigo_detalle_producto=detalle_obj
             )
+=======
+def crear_detalle_producto(sender, instance, created, **kwargs):
+    if created and not instance.codigo_detalle_producto_id:
+        detalle_obj = DetalleProducto.objects.create(
+            cantidad_actual=0,
+            stock_min=0,
+            stock_max=0,
+        )
+        Producto.objects.filter(pk=instance.pk).update(
+            codigo_detalle_producto=detalle_obj
+        )
+        instance.codigo_detalle_producto = detalle_obj
+>>>>>>> Valentina
 
 
 # ==========================================================
@@ -500,4 +562,33 @@ class Promocion(models.Model):
 
     class Meta:
         verbose_name = "Promoción"
+<<<<<<< HEAD
         verbose_name_plural = "Promociones"
+=======
+        verbose_name_plural = "Promociones"
+
+
+# ==========================================================
+# 9. SEÑAL DE AUDITORÍA AUTOMÁTICA EN BITÁCORA
+# ==========================================================
+@receiver(post_save, sender=MovimientoProducto)
+def auditar_movimiento_inventario(sender, instance, created, **kwargs):
+    if created:
+        try:
+            from historial.models import Bitacora
+            tipo_str = "Entrada" if instance.tipo == "entrada" else "Salida"
+            prod = instance.producto
+            prod_nom = prod.nombre if prod else f"Detalle #{instance.codigo_detalle_producto_id}"
+            obs = f" - {instance.observacion}" if instance.observacion else ""
+
+            Bitacora.objects.create(
+                codigo_detalle_producto=instance.codigo_detalle_producto,
+                accion=f"{tipo_str} de Inventario",
+                modulo="catalogo",
+                descripcion=f"{tipo_str} de {instance.cantidad} unidad(es) de '{prod_nom}'{obs}.",
+                ip_origen="127.0.0.1"
+            )
+        except Exception:
+            pass
+
+>>>>>>> Valentina
