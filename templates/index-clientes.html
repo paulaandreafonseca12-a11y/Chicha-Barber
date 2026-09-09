@@ -2,6 +2,9 @@
 {% load static %} 
 {% block content %}
 
+<!-- Estilos ligeros para integrar transiciones Bootstrap fluidas sin CSS externo pesado -->
+
+
 <section class="d-flex align-items-start pt-3">
   <div class="container">
     <!-- Branding Central Superior -->
@@ -14,8 +17,8 @@
         <!-- Importación de la fuente en el HEAD -->
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 
-        <!-- Código del título ultra-adaptable -->
-        <h1 class="display-2 fw-bold lh-sm mb-3 templates-index-clientes__h1-2">
+        <!-- Título con efecto interactivo -->
+        <h1 class="display-2 fw-bold lh-sm mb-3 templates-index-clientes__h1-2 text-glow">
           <span class="text-primary fw-normal text-capitalize templates-index-clientes__span-3">
             Potencia &amp;
           </span>
@@ -30,14 +33,14 @@
         </p>
       </div>
 
-      <!-- Tarjeta Flotante Glassmorphism -->
-      <div class="col-lg-5 offset-lg-1 d-flex justify-content-end mt-4 mt-lg-0 ">
-        <div class="card border-0 rounded-4 shadow-lg p-4 text-white w-100 templates-index-clientes__div-6 servicios-servicios__div-1"" 
+      <!-- Tarjeta Flotante Glassmorphism con Animación Elevada -->
+      <div class="col-lg-5 offset-lg-1 d-flex justify-content-end mt-4 mt-lg-0">
+        <div class="card border-0 rounded-4 shadow-lg p-4 text-white w-100 hover-scale templates-index-clientes__div-6" 
              style="background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.12) !important;">
           
-          <div class="d-flex align-items-center gap-3 mb-3 fs-6">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 templates-index-clientes__div-7 servicios-servicios__div-1" " 
-                 style="width: 44px; height: 44px; background-color: rgba(43, 80, 170, 0.18); color: #2b50aa; ">
+          <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" 
+                 style="width: 44px; height: 44px; background-color: rgba(43, 80, 170, 0.18); color: #2b50aa;">
               <i class="bi bi-geo-alt-fill fs-5"></i>
             </div>
             <div>
@@ -46,8 +49,8 @@
             </div>
           </div>
 
-          <div class="d-flex align-items-center gap-3 mb-3 fs-6">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 templates-index-clientes__div-8 servicios-servicios__div-1" 
+          <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" 
                  style="width: 44px; height: 44px; background-color: rgba(43, 80, 170, 0.18); color: #2b50aa;">
               <i class="bi bi-telephone-fill fs-5"></i>
             </div>
@@ -57,8 +60,8 @@
             </div>
           </div>
 
-          <div class="d-flex align-items-center gap-3 mb-3 fs-6">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 templates-index-clientes__div-9 servicios-servicios__div-1" 
+          <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" 
                  style="width: 44px; height: 44px; background-color: rgba(43, 80, 170, 0.18); color: #2b50aa;">
               <i class="bi bi-calendar-check-fill fs-5"></i> 
             </div>
@@ -68,8 +71,8 @@
             </div>
           </div>
 
-          <div class="d-flex align-items-center gap-3 mb-0 fs-6">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 templates-index-clientes__div-10 servicios-servicios__div-1" 
+          <div class="d-flex align-items-center gap-3 mb-0 fs-6 hover-scale p-2 rounded-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm" 
                  style="width: 44px; height: 44px; background-color: rgba(43, 80, 170, 0.18); color: #2b50aa;">
               <i class="bi bi-clock-fill fs-5"></i>
             </div>
@@ -86,34 +89,27 @@
   </div>
 </section>
 
-<section class="pt-4 mt-n position-relative themed-section">
+<section class="pt-4 position-relative">
   <div class="container">
     <div class="row align-items-center">
-      <!-- CARRUSEL -->
+      <!-- CARRUSEL CON DESVANECIMIENTO SUAVE -->
       <div class="col-lg-6 mb-4">
-        <div
-          id="carouselBarber"
-          class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden"
-          data-bs-ride="carousel"
-          data-bs-interval="4500"
-          style="
-            border: 2px solid rgba(255, 193, 7, 0.3);
-            height: 420px;
-            max-height: 420px;
-          "
-        >
+        <div id="carouselBarber" 
+             class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden hover-scale" 
+             data-bs-ride="carousel" 
+             data-bs-interval="3500" 
+             style="border: 2px solid rgba(255, 193, 7, 0.3); height: 420px; max-height: 420px;">
+          
           <!-- Indicadores -->
-          <div class="carousel-indicators mb-2 templates-index-clientes__div-11">
+          <div class="carousel-indicators mb-2">
             {% if carruseles %} 
               {% for carrusel in carruseles %}
-              <button
-                type="button"
-                data-bs-target="#carouselBarber"
-                data-bs-slide-to="{{ forloop.counter0 }}"
-                class="{% if forloop.first %}active{% endif %}"
-                aria-current="{% if forloop.first %}true{% endif %}"
-                aria-label="Slide {{ forloop.counter }}"
-              ></button>
+              <button type="button" 
+                      data-bs-target="#carouselBarber" 
+                      data-bs-slide-to="{{ forloop.counter0 }}" 
+                      class="{% if forloop.first %}active{% endif %}" 
+                      aria-current="{% if forloop.first %}true{% endif %}" 
+                      aria-label="Slide {{ forloop.counter }}"></button>
               {% endfor %} 
             {% else %}
               <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -127,89 +123,92 @@
             {% if carruseles %} 
               {% for carrusel in carruseles %}
               <div class="carousel-item {% if forloop.first %}active{% endif %} h-100">
-                <img src="{% if carrusel.imagen %}{{ carrusel.imagen.url }}{% else %}{% static 'img/Fondo.png' %}{% endif %}" class="d-block w-100 h-100 templates-index-clientes__img-12" alt="{{ carrusel.texto|default:'Chicha Barber' }}" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+                <img src="{% if carrusel.imagen %}{{ carrusel.imagen.url }}{% else %}{% static 'img/Fondo.png' %}{% endif %}" class="d-block w-100 h-100 object-fit-cover" alt="{{ carrusel.texto|default:'Chicha Barber' }}" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
               </div>
               {% endfor %} 
             {% else %}
               <div class="carousel-item active h-100">
-                <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 templates-index-clientes__img-13" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+                <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
               </div>
               <div class="carousel-item h-100">
-                <img src="{% static 'img/logo.png' %}" class="d-block w-100 h-100 templates-index-clientes__img-14" alt="Logo Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+                <img src="{% static 'img/logo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Logo Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
               </div>
               <div class="carousel-item h-100">
-                <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 templates-index-clientes__img-15" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+                <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
               </div>
               <div class="carousel-item h-100">
-                <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 templates-index-clientes__img-16" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+                <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
               </div>
             {% endif %}
           </div>
 
-          <!-- Controles flotantes -->
-          <button class="carousel-control-prev templates-index-clientes__button-17" type="button" data-bs-target="#carouselBarber" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-3 shadow-sm border border-secondary templates-index-clientes__span-18" aria-hidden="true"></span>
+          <!-- Controles con interacción -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselBarber" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-3 shadow-sm border border-secondary" aria-hidden="true"></span>
             <span class="visually-hidden">Anterior</span>
           </button>
-          <button class="carousel-control-next templates-index-clientes__button-19" type="button" data-bs-target="#carouselBarber" data-bs-slide="next">
-            <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-3 shadow-sm border border-secondary templates-index-clientes__span-20" aria-hidden="true"></span>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselBarber" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-3 shadow-sm border border-secondary" aria-hidden="true"></span>
             <span class="visually-hidden">Siguiente</span>
           </button>
         </div>
       </div>
 
-      <div class="col-lg-6">
-  <div class="card text-light border border-secondary border-opacity-25 shadow-lg rounded-4 p-4 p-md-5 h-100 w-100 servicios-servicios__div-1" 
-       style="background: rgba(18, 18, 18, 0.85); backdrop-filter: blur(10px);">
-    <div class="card-body p-0">
-      <h2 class="fw-bold mb-4 text-white">Quiénes Somos</h2>
+      <!-- QUIÉNES SOMOS -->
+      <div class="col-lg-6 mb-4">
+        <div class="card text-light border border-secondary border-opacity-25 shadow-lg rounded-4 p-4 p-md-5 h-100 w-100 hover-scale" 
+             style="background: rgba(18, 18, 18, 0.85); backdrop-filter: blur(10px);">
+          <div class="card-body p-0">
+            <h2 class="fw-bold mb-4 text-white">Quiénes Somos</h2>
 
-      <p class="fs-5 ps-3 border-start border-3 border-primary templates-index-clientes__p-4 mb-4 ">
-        En <strong>Chicha Barber</strong> ofrecemos una experiencia pensada
-        para quienes buscan cuidar su imagen y disfrutar de un buen ambiente
-        al mismo tiempo. Más que una barbería, somos un espacio donde el
-        estilo y la confianza se fortalecen en cada visita, combinando
-        técnicas actuales con la esencia tradicional de la barbería.
-      </p>
+            <p class="fs-5 ps-3 border-start border-3 border-primary mb-4">
+              En <strong>Chicha Barber</strong> ofrecemos una experiencia pensada
+              para quienes buscan cuidar su imagen y disfrutar de un buen ambiente
+              al mismo tiempo. Más que una barbería, somos un espacio donde el
+              estilo y la confianza se fortalecen en cada visita, combinando
+              técnicas actuales con la esencia tradicional de la barbería.
+            </p>
 
-      <p class="fs-5 ps-3 border-start border-3 border-primary templates-index-clientes__p-4 mb-0">
-        Nos enfocamos en brindar una atención cercana y personalizada,
-        escuchando a cada cliente para lograr un resultado que se adapte a su
-        personalidad y estilo. Nuestro propósito es que cada persona viva una experiencia completa de cuidado personal.
-      </p>
+            <p class="fs-5 ps-3 border-start border-3 border-primary mb-0">
+              Nos enfocamos en brindar una atención cercana y personalizada,
+              escuchando a cada cliente para lograr un resultado que se adapte a su
+              personalidad y estilo. Nuestro propósito es que cada persona viva una experiencia completa de cuidado personal.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<section>
-  <div class="container my-5 text-light">
-    <h2 class="text-aling mb-5 fw-bold templates-index-clientes__h2-21">
+<!-- TESTIMONIOS -->
+<section class="py-5 text-light">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">
       Lo que dicen nuestros clientes
     </h2>
 
-    <section class="py-5">
-  <div class="container">
     <div class="row row-cols-1 row-cols-md-3 g-4 text-center">
       {% for testimonio in testimonios %}
       <div class="col">
-        <div class="card h-100 shadow-sm border-0 bg-light w-100 rounded-4 overflow-hidden tarjeta-animada servicios-servicios__div-1">
+        <div class="card h-100 shadow-sm border-0 bg-light w-100 rounded-4 overflow-hidden hover-scale">
           <div class="card-body p-4 d-flex flex-column align-items-center">
             
-            <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm templates-index-clientes__div-22 p-3">
-              <i class="bi bi-chat-quote-fill fs-3 text-primary templates-index-clientes__i-23"></i>
+            <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm p-3 hover-scale">
+              <i class="bi bi-chat-quote-fill fs-3 text-primary"></i>
             </div>
 
-            <h5 class="fw-bold mb-1 text-dark templates-index-clientes__h5-24">
+            <h5 class="fw-bold mb-1 text-dark">
               {{ testimonio.servicio.nombre }}
             </h5>
 
-            <div class="mb-3 templates-index-clientes__div-25">
+            <div class="mb-3">
               {% for i in "12345"|make_list %}
               <i class="bi bi-star-fill text-warning"></i>
               {% endfor %}
             </div>
 
-            <p class="fst-italic mb-4 text-dark opacity-75 templates-index-clientes__p-26">
+            <p class="fst-italic mb-4 text-dark opacity-75">
               "{{ testimonio.comentario }}"
             </p>
 
@@ -228,20 +227,19 @@
   </div>
 </section>
 
-<!-- SECCIÓN MAPA DE UBICACIÓN -->
+<!-- UBICACIÓN Y MAPA -->
 <section id="mapa-ubicacion" class="py-5">
   <div class="container text-center text-light">
-    <h2 class="mb-4 fw-bold templates-index-clientes__h2-27">
+    <h2 class="mb-4 fw-bold">
       Nuestra Ubicación
     </h2>
-    <div class="ratio ratio-21x9 rounded-4 overflow-hidden shadow-lg border border-secondary templates-index-clientes__div-28">
-      <iframe class="templates-index-clientes__iframe-29" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d992.4011169060295!2d-72.94139472437891!3d5.76991143301728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a47a8d54e652f%3A0xdc4fd5e0fc57f59e!2sCl.%206%20%2310-13%2C%20Nobsa%2C%20Boyac%C3%A1!5e0!3m2!1ses-419!2sco!4v1780588958968!5m2!1ses-419!2sco" width="100%" height="450" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="ratio ratio-21x9 rounded-4 overflow-hidden shadow-lg border border-secondary hover-scale">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d992.4011169060295!2d-72.94139472437891!3d5.76991143301728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a47a8d54e652f%3A0xdc4fd5e0fc57f59e!2sCl.%206%20%2310-13%2C%20Nobsa%2C%20Boyac%C3%A1!5e0!3m2!1ses-419!2sco!4v1780588958968!5m2!1ses-419!2sco" width="100%" height="450" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
 </section>
 
 <script>
-  // Verificación de expiración periódica
   function verificarExpiracionCarrito() {
     let expiracion = localStorage.getItem("carrito_expiracion");
     if (expiracion && Date.now() > expiracion) {
@@ -253,8 +251,7 @@
     }
   }
 
-  // Revisar cada 2 segundos para mayor precisión
   setInterval(verificarExpiracionCarrito, 2000);
   verificarExpiracionCarrito();
 </script>
-{% endblock %} 
+{% endblock %}
