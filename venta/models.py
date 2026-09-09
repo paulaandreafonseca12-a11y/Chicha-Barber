@@ -99,8 +99,12 @@ class Venta(models.Model):
 
     def actualizar_total(self):
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         total = sum(
+=======
+        self.total_venta = sum(
+>>>>>>> Valentina
 =======
         self.total_venta = sum(
 >>>>>>> Valentina
@@ -197,17 +201,23 @@ class DetalleVenta(models.Model):
     def save(self, *args, **kwargs):
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         try:
             detalle_producto = (
                 self.codigo_producto.detalle_producto
             )
         except Exception:
 =======
+=======
+>>>>>>> Valentina
         # ==================================================
         # OBTENER STOCK
         # ==================================================
         detalle_prod_obj = self.codigo_producto.codigo_detalle_producto
         if not detalle_prod_obj:
+<<<<<<< HEAD
+>>>>>>> Valentina
+=======
 >>>>>>> Valentina
             raise ValueError(
                 f"El producto "
@@ -369,6 +379,18 @@ class DetallePagos(models.Model):
         null=True,
         verbose_name="Instrucciones",
     )
+
+    @classmethod
+    def get_or_create_para_venta(cls, venta, **kwargs):
+        """Obtiene o crea el detalle de pago para una venta específica."""
+        defaults = {
+            'banco': kwargs.get('banco', 'Bancolombia'),
+            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
+            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
+            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
+            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
+        }
+        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
 
     @classmethod
     def get_or_create_para_venta(cls, venta, **kwargs):
