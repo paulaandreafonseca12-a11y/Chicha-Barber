@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<!-- ========================================================
+
 <!-- ==========================================================
      MENSAJES
 ========================================================== -->
@@ -46,14 +48,13 @@
 
 
         <!-- ==================================================
-             TITULO PRINCIPAL
+             TITULO PRINCIPAL (CON ANIMACIÓN EN PALABRAS)
         =================================================== -->
 
         <div class="text-center mb-5">
 
-            <h1 class="display-4 fw-bold text-uppercase text-white mb-3">
-                <i style="color: #22aed1;"></i>
-                Productos de Cuidado Personal
+            <h1 class="display-4 fw-bold text-uppercase text-white mb-3 titulo-animado">
+                Productos de <span style="color: #22aed1;">Cuidado Personal</span>
             </h1>
 
             <p class="text-white-50 fs-5 mb-3">
@@ -84,7 +85,7 @@
                     <input
                         id="buscador-productos"
                         type="search"
-                        class="form-control border-0 px-3"
+                        class="form-control border-0 px-3 input-buscador-animado"
                         placeholder="Buscar por producto, marca o categoría..."
                         aria-label="Buscar productos"
                         autocomplete="off"
@@ -113,13 +114,13 @@
             <div class="d-flex flex-wrap justify-content-center gap-2">
 
                 <a href="{% url 'productos_galeria' %}{% if marca_seleccionada %}?marca={{ marca_seleccionada }}{% endif %}"
-                   class="btn btn-sm rounded-pill px-3 py-2 {% if not categoria_seleccionada %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
+                   class="btn btn-sm rounded-pill px-3 py-2 badge-animado {% if not categoria_seleccionada %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
                     <i class="bi bi-grid-fill me-1"></i>Todas las categorías
                 </a>
 
                 {% for cat in categorias %}
                     <a href="{% url 'productos_galeria' %}?categoria={{ cat.codigo }}{% if marca_seleccionada %}&marca={{ marca_seleccionada }}{% endif %}"
-                       class="btn btn-sm rounded-pill px-3 py-2 {% if categoria_seleccionada == cat.codigo %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
+                       class="btn btn-sm rounded-pill px-3 py-2 badge-animado {% if categoria_seleccionada == cat.codigo %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
                         {{ cat.nombre }}
                     </a>
                 {% endfor %}
@@ -131,13 +132,13 @@
             <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
 
                 <a href="{% url 'productos_galeria' %}{% if categoria_seleccionada %}?categoria={{ categoria_seleccionada }}{% endif %}"
-                   class="btn btn-sm rounded-pill px-3 py-1 {% if not marca_seleccionada %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
+                   class="btn btn-sm rounded-pill px-3 py-1 badge-animado {% if not marca_seleccionada %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
                     Todas las marcas
                 </a>
 
                 {% for m in marcas %}
                     <a href="{% url 'productos_galeria' %}?marca={{ m.codigo }}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}"
-                       class="btn btn-sm rounded-pill px-3 py-1 {% if marca_seleccionada == m.codigo %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
+                       class="btn btn-sm rounded-pill px-3 py-1 badge-animado {% if marca_seleccionada == m.codigo %}color-azul text-white fw-bold shadow border-0{% else %}btn-outline-light border-opacity-50 text-white{% endif %}">
                         {{ m.nombre }}
                     </a>
                 {% endfor %}
@@ -149,7 +150,7 @@
 
 
         <!-- ==================================================
-             LISTADO DE PRODUCTOS (GRID UNIFORME)
+             LISTADO DE PRODUCTOS
         =================================================== -->
 
         <div
@@ -158,10 +159,6 @@
         >
 
             {% for producto in productos %}
-
-                <!-- ==================================================
-                     PRODUCTO CARD
-                ================================================== -->
 
                 <div
                     class="col-12 col-md-6 col-lg-4 d-flex justify-content-center product-card-item servicios-servicios__div-1"
@@ -179,7 +176,7 @@
 
                             <img
                                 src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'img/Aceite.jpg' %}{% endif %}"
-                                class="card-img-top w-100 h-100"
+                                class="card-img-top w-100 h-100 img-zoom"
                                 style="object-fit: cover;"
                                 loading="lazy"
                                 alt="{{ producto.nombre }}"
@@ -190,13 +187,13 @@
                         <!-- INFORMACION DEL PRODUCTO -->
                         <div class="card-body d-flex flex-column text-center p-4">
 
-                            <!-- NOMBRE (ALTURA FIJA PARA EVITAR DESALINEACIÓN) -->
+                            <!-- NOMBRE CON ANIMACIÓN AL HOVER -->
                             <div class="d-flex align-items-center justify-content-center mb-2" style="height: 60px;">
                                 <h4
                                     class="fw-bold m-0 producto-nombre fs-5 text-black"
                                     style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2;"
                                 >
-                                    {{ producto.nombre }}
+                                    <span class="producto-nombre-animado">{{ producto.nombre }}</span>
                                 </h4>
                             </div>
 
@@ -204,14 +201,14 @@
                             <div class="d-flex justify-content-center gap-2 flex-wrap mb-3" style="min-height: 32px;">
 
                                 {% if producto.codigo_categoria %}
-                                    <span class="badge color-azul text-white producto-categoria shadow-sm">
+                                    <span class="badge color-azul text-white producto-categoria shadow-sm badge-animado">
                                         <i class="bi bi-grid me-1"></i>{{ producto.codigo_categoria.nombre }}
                                     </span>
                                 {% endif %}
 
                                 {% if producto.codigo_marca %}
                                     <span
-                                        class="badge producto-marca"
+                                        class="badge producto-marca badge-animado"
                                         style="background-color: rgba(34, 174, 209, 0.15); border: 1px solid #22aed1; color: #22aed1 !important;"
                                     >
                                         <i class="bi bi-tag-fill me-1"></i>{{ producto.codigo_marca.nombre }}
@@ -220,7 +217,7 @@
 
                             </div>
 
-                            <!-- DESCRIPCION (ALTURA FIJA CON PUNTOS SUSPENSIVOS) -->
+                            <!-- DESCRIPCION -->
                             <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 75px;">
                                 <p
                                     class="text-black m-0 producto-descripcion text-start w-100"
@@ -246,7 +243,7 @@
 
                             </div>
 
-                            <!-- BOTON CARRITO (ORIGINAL) -->
+                            <!-- BOTON CARRITO -->
                             <button
                                 type="button"
                                 class="btn color-azul text-white rounded-pill w-100 fw-bold shadow-sm py-2"
@@ -268,10 +265,6 @@
                 </div>
 
             {% empty %}
-
-                <!-- ==================================================
-                     NO HAY PRODUCTOS
-                ================================================== -->
 
                 <div class="col-12 col-md-8">
 
@@ -302,16 +295,11 @@
 
 </div>
 
-
 <!-- ==========================================================
-     JAVASCRIPT
+     JAVASCRIPT (Sin cambios en tu lógica)
 ========================================================== -->
 
 <script>
-
-/* ==========================================================
-   BUSCADOR DE PRODUCTOS
-========================================================== */
 
 function filtrarProductos() {
 
@@ -423,11 +411,6 @@ function filtrarProductos() {
 
 }
 
-
-/* ==========================================================
-   EVENTOS DE CIERRE DEL BUSCADOR
-========================================================== */
-
 document.addEventListener("click", function(event) {
     const buscador = document.getElementById("buscador-productos");
     const resultados = document.getElementById("resultados-busqueda");
@@ -444,29 +427,15 @@ document.addEventListener("keydown", function(event) {
     }
 });
 
-
-/* ==========================================================
-   DOM READY
-========================================================== */
-
 document.addEventListener("DOMContentLoaded", function() {
-
     actualizarContador();
-
     const input = document.getElementById("buscador-productos");
     if (input) {
         input.addEventListener("input", filtrarProductos);
     }
-
 });
 
-
-/* ==========================================================
-   AGREGAR AL CARRITO
-========================================================== */
-
 function agregarCarrito(event, id, nombre, precio) {
-
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     let productoExistente = carrito.find(p => p.id === id);
 
@@ -498,16 +467,9 @@ function agregarCarrito(event, id, nombre, precio) {
         btn.classList.remove("btn-success");
         btn.classList.add("color-azul");
     }, 1000);
-
 }
 
-
-/* ==========================================================
-   ACTUALIZAR CONTADOR CARRITO
-========================================================== */
-
 function actualizarContador() {
-
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     let total = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
     const contador = document.getElementById("contador");
@@ -520,7 +482,6 @@ function actualizarContador() {
     } else {
         contador.classList.add("d-none");
     }
-
 }
 
 </script>

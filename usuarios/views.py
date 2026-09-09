@@ -314,7 +314,7 @@ def perfil(request):
                     for error in e.messages:
                         messages.error(request, f"❌ {error}")
 
-    reservas = Reserva.objects.filter(cliente=request.user).order_by('-fecha_reserva')
+    reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_reserva')
     ventas = venta.objects.filter(correo=request.user.email).order_by('-fecha')
     facturas = []
 

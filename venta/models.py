@@ -7,8 +7,9 @@ from catalogo.models import Producto, MovimientoProducto
 
 
 # ==========================================================
-# 1. VENTA (CABECERA)
+# 1. VENTA
 # ==========================================================
+
 class Venta(models.Model):
 
     METODO_PAGO_CHOICES = [
@@ -108,7 +109,10 @@ class Venta(models.Model):
         return self.fecha
 
     def __str__(self):
-        return f"Venta #{self.codigo_venta} - {self.nombre_cliente}"
+        return (
+            f"Venta #{self.codigo_venta} - "
+            f"{self.nombre_cliente}"
+        )
 
     class Meta:
         verbose_name = "Venta"
@@ -118,6 +122,7 @@ class Venta(models.Model):
 # ==========================================================
 # 2. DETALLE DE VENTA
 # ==========================================================
+
 class DetalleVenta(models.Model):
 
     codigo_detalle = models.AutoField(
@@ -172,10 +177,10 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # ==================================================
-        # OBTENER STOCK
-        # ==================================================
-        detalle_prod_obj = self.codigo_producto.codigo_detalle_producto
+        detalle_prod_obj = (
+            self.codigo_producto.codigo_detalle_producto
+        )
+
         if not detalle_prod_obj:
             raise ValueError(
                 f"El producto "
@@ -183,9 +188,7 @@ class DetalleVenta(models.Model):
                 f"no tiene detalle ni stock registrado."
             )
 
-        # ==================================================
-        # VALIDAR STOCK AL CREAR
-        # ==================================================
+        # Validar stock únicamente al crear
         if not self.pk:
 
             if self.cantidad > detalle_prod_obj.cantidad_actual:
@@ -197,9 +200,6 @@ class DetalleVenta(models.Model):
                     f"{detalle_prod_obj.cantidad_actual}"
                 )
 
-        # ==================================================
-        # CALCULAR SUBTOTAL
-        # ==================================================
         precio_venta = (
             self.codigo_producto.precio_venta_actual
         )
@@ -215,18 +215,18 @@ class DetalleVenta(models.Model):
 
         super().save(*args, **kwargs)
 
-        # ==================================================
-        # CREAR MOVIMIENTO DE SALIDA
-        # ==================================================
+        # Crear movimiento de salida solamente una vez
         if not self.codigo_movimiento_producto:
 
-            movimiento = MovimientoProducto.objects.create(
-                codigo_detalle_producto=detalle_prod_obj,
-                tipo="salida",
-                cantidad=self.cantidad,
-                observacion=(
-                    f"Salida por Venta "
-                    f"#{self.codigo_venta.codigo_venta}"
+            movimiento = (
+                MovimientoProducto.objects.create(
+                    codigo_detalle_producto=detalle_prod_obj,
+                    tipo="salida",
+                    cantidad=self.cantidad,
+                    observacion=(
+                        f"Salida por Venta #"
+                        f"{self.codigo_venta.codigo_venta}"
+                    )
                 )
             )
 
@@ -238,10 +238,9 @@ class DetalleVenta(models.Model):
                 ]
             )
 
-            # ==============================================
-            # DESCONTAR STOCK
-            # ==============================================
-            detalle_prod_obj.cantidad_actual -= self.cantidad
+            detalle_prod_obj.cantidad_actual -= (
+                self.cantidad
+            )
 
             detalle_prod_obj.save(
                 update_fields=[
@@ -250,9 +249,6 @@ class DetalleVenta(models.Model):
                 ]
             )
 
-        # ==================================================
-        # ACTUALIZAR TOTAL DE VENTA
-        # ==================================================
         self.codigo_venta.actualizar_total()
 
     def __str__(self):
@@ -267,17 +263,17 @@ class DetalleVenta(models.Model):
 
 
 # ==========================================================
-# 3. DETALLE DE PAGO
+# 3. DETALLE DE PAGOS
 # ==========================================================
+
 class DetallePagos(models.Model):
 
     codigo_detalle_pago = models.AutoField(
         primary_key=True
     )
 
-    # ======================================================
-    # RELACIÓN CON LA VENTA
-    # ======================================================
+    # IMPORTANTE:
+    # Cada venta puede tener UN solo detalle de pago.
     codigo_venta = models.OneToOneField(
         Venta,
         on_delete=models.CASCADE,
@@ -319,31 +315,57 @@ class DetallePagos(models.Model):
     )
 
     # ======================================================
-    # OBTENER DATOS DE TRANSFERENCIA
+    # CREAR / OBTENER PAGO DE UNA VENTA ESPECÍFICA
     # ======================================================
-    @classmethod
-    def get_or_create_para_venta(cls, venta, **kwargs):
-        """Obtiene o crea el detalle de pago para una venta específica."""
-        defaults = {
-            'banco': kwargs.get('banco', 'Bancolombia'),
-            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
-            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
-            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
-            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
-        }
-        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
 
     @classmethod
-    def get_solo(cls):
-        """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
-        return cls.objects.first()
+    def get_or_create_para_venta(
+        cls,
+        venta,
+        **kwargs
+    ):
+        """
+        Obtiene o crea el detalle de pago
+        correspondiente a una venta específica.
+        """
+
+        defaults = {
+            "banco": kwargs.get(
+                "banco",
+                "Bancolombia"
+            ),
+
+            "tipo_cuenta": kwargs.get(
+                "tipo_cuenta",
+                "Ahorros"
+            ),
+
+            "numero_cuenta": kwargs.get(
+                "numero_cuenta",
+                "123-456789-01"
+            ),
+
+            "titular": kwargs.get(
+                "titular",
+                "Chicha Barber Studio SAS"
+            ),
+
+            "instrucciones": kwargs.get(
+                "instrucciones",
+                "Comprobante registrado en proceso de verificación."
+            ),
+        }
+
+        return cls.objects.get_or_create(
+            codigo_venta=venta,
+            defaults=defaults
+        )
 
     def __str__(self):
-
         return (
-            f"Pago de Venta "
-            f"#{self.codigo_venta.codigo_venta} "
-            f"- {self.banco}"
+            f"Pago de Venta #"
+            f"{self.codigo_venta.codigo_venta} - "
+            f"{self.banco}"
         )
 
     class Meta:
@@ -352,8 +374,9 @@ class DetallePagos(models.Model):
 
 
 # ==========================================================
-# 4. NOTIFICACIONES DE VENTA
+# 4. NOTIFICACIÓN DE VENTA
 # ==========================================================
+
 @receiver(post_save, sender=Venta)
 def notificar_venta(
     sender,
@@ -365,25 +388,20 @@ def notificar_venta(
     if not created:
         return
 
-    # ======================================================
-    # NOTIFICACIÓN AL CLIENTE
-    # ======================================================
+    # Notificar al cliente
     if instance.codigo_usuario:
 
         Notificacion.objects.create(
             usuario=instance.codigo_usuario,
             tipo="venta",
             mensaje=(
-                f"Tu compra "
-                f"#{instance.codigo_venta} "
+                f"Tu compra #{instance.codigo_venta} "
                 f"fue registrada con éxito."
             ),
             url="/perfil/"
         )
 
-    # ======================================================
-    # NOTIFICACIÓN A ADMINISTRADORES
-    # ======================================================
+    # Notificar administradores
     admins = Usuario.objects.filter(
         rol="admin"
     )
