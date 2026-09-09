@@ -505,7 +505,3 @@ class Promocion(models.Model):
 
     class Meta:
         verbose_name = "Promoción"
-<<<<<<< HEAD
-        verbose_name_plural = "Promociones"
-=======
-        verbose_name_plural = "Promociones"

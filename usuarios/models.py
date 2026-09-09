@@ -73,7 +73,6 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractBaseUser):
 
     objects = UsuarioManager()
-
     # ======================================================
     # CAMPOS HEREDADOS DE DJANGO
     # ======================================================
@@ -189,7 +188,16 @@ class Usuario(AbstractBaseUser):
         verbose_name='Rol',
         db_column='rol'
     )
-
+    tema = models.CharField(
+        max_length=10,
+        choices=[
+            ('light', 'Claro'),
+            ('dark', 'Oscuro'),
+        ],
+        default='dark',
+        verbose_name='Tema',
+        db_column='tema'
+    )
     # ======================================================
     # FECHA DE CREACIÓN
     # ======================================================
