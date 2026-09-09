@@ -180,7 +180,7 @@ class Producto(models.Model):
     )
 
     def save(self, *args, **kwargs):
-<<<<<<< HEAD
+
 
         super().save(*args, **kwargs)
 
@@ -190,9 +190,8 @@ class Producto(models.Model):
             super().save(
                 update_fields=["codigo"]
             )
-=======
-        es_nuevo = self.pk is None
-        if not self.codigo:
+
+      
             ultimo = Producto.objects.order_by("-codigo_producto").first()
             siguiente_id = (ultimo.codigo_producto + 1) if ultimo else 1
             self.codigo = f"PROD-{siguiente_id:05d}"
@@ -202,14 +201,12 @@ class Producto(models.Model):
             if self.codigo != codigo_real:
                 self.codigo = codigo_real
                 super().save(update_fields=["codigo"])
->>>>>>> Valentina
 
     @property
     def stock_actual(self):
 
         if self.codigo_detalle_producto:
             return self.codigo_detalle_producto.cantidad_actual
-<<<<<<< HEAD
 
         try:
             return self.detalle_producto.cantidad_actual
@@ -225,13 +222,19 @@ class Producto(models.Model):
             .first()
         )
 
-=======
+
         return 0
 
     @property
     def precio_venta_actual(self):
         adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
->>>>>>> Valentina
+
+        return 0
+
+    @property
+    def precio_venta_actual(self):
+        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
+
         if adquisicion:
             return adquisicion.precio_venta
 
@@ -239,7 +242,7 @@ class Producto(models.Model):
 
     @property
     def precio_compra_actual(self):
-<<<<<<< HEAD
+
 
         adquisicion = (
             self.adquisiciones
@@ -247,9 +250,12 @@ class Producto(models.Model):
             .first()
         )
 
-=======
+
         adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
->>>>>>> Valentina
+
+
+        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
+
         if adquisicion:
             return adquisicion.precio_compra
 
@@ -321,7 +327,7 @@ class DetalleProducto(models.Model):
         return self.producto_principal.first()
 
     def __str__(self):
-<<<<<<< HEAD
+
 
         if self.codigo_producto:
             return (
@@ -329,11 +335,15 @@ class DetalleProducto(models.Model):
                 f"- Stock: {self.cantidad_actual}"
             )
 
-=======
+
         prod = self.producto_principal.first()
         if prod:
             return f"{prod.nombre} - Stock: {self.cantidad_actual}"
->>>>>>> Valentina
+
+        prod = self.producto_principal.first()
+        if prod:
+            return f"{prod.nombre} - Stock: {self.cantidad_actual}"
+        
         return f"Detalle Producto #{self.codigo}"
 
     class Meta:
@@ -393,17 +403,20 @@ class MovimientoProducto(models.Model):
     @property
     def producto(self):
         if self.codigo_detalle_producto:
-<<<<<<< HEAD
+
             return self.codigo_detalle_producto.codigo_producto
         return None
 
     # ======================================================
     # MOTIVO
     # ======================================================
-=======
-            return self.codigo_detalle_producto.producto_principal.first()
+
+        return self.codigo_detalle_producto.producto_principal.first()
         return None
->>>>>>> Valentina
+
+        return self.codigo_detalle_producto.producto_principal.first()
+        return None
+
 
     @property
     def motivo(self):
@@ -414,7 +427,7 @@ class MovimientoProducto(models.Model):
     # ======================================================
 
     def __str__(self):
-<<<<<<< HEAD
+
 
         if (
             self.codigo_detalle_producto
@@ -433,11 +446,15 @@ class MovimientoProducto(models.Model):
             f"{self.tipo} "
             f"{self.cantidad}"
         )
-=======
+
         prod = self.producto
         codigo_str = prod.codigo if prod else f"Detalle #{self.codigo_detalle_producto_id}"
         return f"{codigo_str} - {self.tipo} {self.cantidad}"
->>>>>>> Valentina
+
+        prod = self.producto
+        codigo_str = prod.codigo if prod else f"Detalle #{self.codigo_detalle_producto_id}"
+        return f"{codigo_str} - {self.tipo} {self.cantidad}"
+
 
     class Meta:
         verbose_name = "Movimiento de Producto"
@@ -449,7 +466,7 @@ class MovimientoProducto(models.Model):
 # ==========================================================
 
 @receiver(post_save, sender=Producto)
-<<<<<<< HEAD
+
 def crear_detalle_producto(
     sender,
     instance,
@@ -477,7 +494,7 @@ def crear_detalle_producto(
             ).update(
                 codigo_detalle_producto=detalle_obj
             )
-=======
+
 def crear_detalle_producto(sender, instance, created, **kwargs):
     if created and not instance.codigo_detalle_producto_id:
         detalle_obj = DetalleProducto.objects.create(
@@ -485,12 +502,19 @@ def crear_detalle_producto(sender, instance, created, **kwargs):
             stock_min=0,
             stock_max=0,
         )
+
+def crear_detalle_producto(sender, instance, created, **kwargs):
+    if created and not instance.codigo_detalle_producto_id:
+        detalle_obj = DetalleProducto.objects.create(
+            cantidad_actual=0,
+            stock_min=0,
+            stock_max=0,
+        )
+
         Producto.objects.filter(pk=instance.pk).update(
             codigo_detalle_producto=detalle_obj
         )
         instance.codigo_detalle_producto = detalle_obj
->>>>>>> Valentina
-
 
 # ==========================================================
 # 8. PROMOCIÓN
@@ -562,9 +586,9 @@ class Promocion(models.Model):
 
     class Meta:
         verbose_name = "Promoción"
-<<<<<<< HEAD
+
         verbose_name_plural = "Promociones"
-=======
+
         verbose_name_plural = "Promociones"
 
 
@@ -591,4 +615,3 @@ def auditar_movimiento_inventario(sender, instance, created, **kwargs):
         except Exception:
             pass
 
->>>>>>> Valentina
