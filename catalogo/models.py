@@ -179,28 +179,6 @@ class Producto(models.Model):
         verbose_name="Marca",
     )
 
-    def save(self, *args, **kwargs):
-
-
-        super().save(*args, **kwargs)
-
-        if not self.codigo:
-            self.codigo = f"PROD-{self.codigo_producto:05d}"
-
-            super().save(
-                update_fields=["codigo"]
-            )
-
-      
-            ultimo = Producto.objects.order_by("-codigo_producto").first()
-            siguiente_id = (ultimo.codigo_producto + 1) if ultimo else 1
-            self.codigo = f"PROD-{siguiente_id:05d}"
-        super().save(*args, **kwargs)
-        if es_nuevo and self.codigo.startswith("PROD-"):
-            codigo_real = f"PROD-{self.codigo_producto:05d}"
-            if self.codigo != codigo_real:
-                self.codigo = codigo_real
-                super().save(update_fields=["codigo"])
 
     @property
     def stock_actual(self):
@@ -222,19 +200,6 @@ class Producto(models.Model):
             .first()
         )
 
-
-        return 0
-
-    @property
-    def precio_venta_actual(self):
-        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
-
-        return 0
-
-    @property
-    def precio_venta_actual(self):
-        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
-
         if adquisicion:
             return adquisicion.precio_venta
 
@@ -242,20 +207,7 @@ class Producto(models.Model):
 
     @property
     def precio_compra_actual(self):
-
-
-        adquisicion = (
-            self.adquisiciones
-            .order_by("-fecha", "-codigo")
-            .first()
-        )
-
-
         adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
-
-
-        adquisicion = self.adquisiciones.order_by("-codigo_compra__fecha", "-codigo").first()
-
         if adquisicion:
             return adquisicion.precio_compra
 
@@ -327,23 +279,9 @@ class DetalleProducto(models.Model):
         return self.producto_principal.first()
 
     def __str__(self):
-
-
-        if self.codigo_producto:
-            return (
-                f"{self.codigo_producto.nombre} "
-                f"- Stock: {self.cantidad_actual}"
-            )
-
-
         prod = self.producto_principal.first()
         if prod:
             return f"{prod.nombre} - Stock: {self.cantidad_actual}"
-
-        prod = self.producto_principal.first()
-        if prod:
-            return f"{prod.nombre} - Stock: {self.cantidad_actual}"
-        
         return f"Detalle Producto #{self.codigo}"
 
     class Meta:
@@ -586,6 +524,8 @@ class Promocion(models.Model):
 
     class Meta:
         verbose_name = "Promoción"
+
+        verbose_name_plural = "Promociones"
 
         verbose_name_plural = "Promociones"
 
