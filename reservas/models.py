@@ -269,7 +269,6 @@ def notificar_reserva(
 
     admins = Usuario.objects.filter(rol="admin")
 
-
     admins = Usuario.objects.filter(rol="admin")
 
     for admin in admins:

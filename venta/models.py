@@ -87,7 +87,7 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-        self.total_venta = sum(
+        self.total_compra = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
@@ -177,11 +177,14 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
-        detalle_prod_obj = (
-            self.codigo_producto.codigo_detalle_producto
-        )
-
-        if not detalle_prod_obj:
+        # ==================================================
+        # OBTENER STOCK
+        # ==================================================
+        try:
+            detalle_prod_obj = (
+                self.codigo_producto.detalle_producto
+            )
+        except Exception:
             raise ValueError(
                 f"El producto "
                 f"'{self.codigo_producto.nombre}' "
@@ -315,51 +318,12 @@ class DetallePagos(models.Model):
     )
 
     # ======================================================
-    # CREAR / OBTENER PAGO DE UNA VENTA ESPECÍFICA
+    # OBTENER DATOS DE TRANSFERENCIA
     # ======================================================
-
     @classmethod
-    def get_or_create_para_venta(
-        cls,
-        venta,
-        **kwargs
-    ):
-        """
-        Obtiene o crea el detalle de pago
-        correspondiente a una venta específica.
-        """
-
-        defaults = {
-            "banco": kwargs.get(
-                "banco",
-                "Bancolombia"
-            ),
-
-            "tipo_cuenta": kwargs.get(
-                "tipo_cuenta",
-                "Ahorros"
-            ),
-
-            "numero_cuenta": kwargs.get(
-                "numero_cuenta",
-                "123-456789-01"
-            ),
-
-            "titular": kwargs.get(
-                "titular",
-                "Chicha Barber Studio SAS"
-            ),
-
-            "instrucciones": kwargs.get(
-                "instrucciones",
-                "Comprobante registrado en proceso de verificación."
-            ),
-        }
-
-        return cls.objects.get_or_create(
-            codigo_venta=venta,
-            defaults=defaults
-        )
+    def get_solo(cls):
+        """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
+        return cls.objects.first()
 
     def __str__(self):
         return (

@@ -180,26 +180,17 @@ class Producto(models.Model):
     )
 
 
+
     @property
     def stock_actual(self):
 
         if self.codigo_detalle_producto:
             return self.codigo_detalle_producto.cantidad_actual
-
-        try:
-            return self.detalle_producto.cantidad_actual
-        except DetalleProducto.DoesNotExist:
-            return 0
+        return 0
 
     @property
     def precio_venta_actual(self):
-
-        adquisicion = (
-            self.adquisiciones
-            .order_by("-fecha", "-codigo")
-            .first()
-        )
-
+        adquisicion = self.adquisiciones.order_by("-codigo_compra__codigo_compra__fecha", "-codigo").first()
         if adquisicion:
             return adquisicion.precio_venta
 
@@ -278,6 +269,10 @@ class DetalleProducto(models.Model):
     def codigo_producto(self):
         return self.producto_principal.first()
 
+    @property
+    def codigo_producto(self):
+        return self.producto_principal.first()
+
     def __str__(self):
         prod = self.producto_principal.first()
         if prod:
@@ -340,21 +335,7 @@ class MovimientoProducto(models.Model):
 
     @property
     def producto(self):
-        if self.codigo_detalle_producto:
-
-            return self.codigo_detalle_producto.codigo_producto
-        return None
-
-    # ======================================================
-    # MOTIVO
-    # ======================================================
-
-        return self.codigo_detalle_producto.producto_principal.first()
-        return None
-
-        return self.codigo_detalle_producto.producto_principal.first()
-        return None
-
+        return self.codigo_producto
 
     @property
     def motivo(self):
@@ -365,34 +346,7 @@ class MovimientoProducto(models.Model):
     # ======================================================
 
     def __str__(self):
-
-
-        if (
-            self.codigo_detalle_producto
-            and self.codigo_detalle_producto.codigo_producto
-        ):
-            producto = self.codigo_detalle_producto.codigo_producto
-
-            return (
-                f"{producto.codigo} - "
-                f"{self.tipo} "
-                f"{self.cantidad}"
-            )
-
-        return (
-            f"Movimiento #{self.codigo} - "
-            f"{self.tipo} "
-            f"{self.cantidad}"
-        )
-
-        prod = self.producto
-        codigo_str = prod.codigo if prod else f"Detalle #{self.codigo_detalle_producto_id}"
-        return f"{codigo_str} - {self.tipo} {self.cantidad}"
-
-        prod = self.producto
-        codigo_str = prod.codigo if prod else f"Detalle #{self.codigo_detalle_producto_id}"
-        return f"{codigo_str} - {self.tipo} {self.cantidad}"
-
+        return f"{self.codigo_producto.codigo} - {self.tipo} {self.cantidad}"
 
     class Meta:
         verbose_name = "Movimiento de Producto"
@@ -404,55 +358,21 @@ class MovimientoProducto(models.Model):
 # ==========================================================
 
 @receiver(post_save, sender=Producto)
-
-def crear_detalle_producto(
-    sender,
-    instance,
-    created,
-    **kwargs
-):
-
+def crear_detalle_producto(sender, instance, created, **kwargs):
     if created:
-
-        detalle_obj, creado = (
-            DetalleProducto.objects.get_or_create(
-                codigo_producto=instance,
-                defaults={
-                    "cantidad_actual": 0,
-                    "stock_min": 0,
-                    "stock_max": 0,
-                },
-            )
+        detalle_obj, creado = DetalleProducto.objects.get_or_create(
+            codigo_producto=instance,
+            defaults={
+                "cantidad_actual": 0,
+                "stock_min": 0,
+                "stock_max": 0,
+            }
         )
-
         if not instance.codigo_detalle_producto_id:
-
-            Producto.objects.filter(
-                pk=instance.pk
-            ).update(
+            Producto.objects.filter(pk=instance.pk).update(
                 codigo_detalle_producto=detalle_obj
             )
 
-def crear_detalle_producto(sender, instance, created, **kwargs):
-    if created and not instance.codigo_detalle_producto_id:
-        detalle_obj = DetalleProducto.objects.create(
-            cantidad_actual=0,
-            stock_min=0,
-            stock_max=0,
-        )
-
-def crear_detalle_producto(sender, instance, created, **kwargs):
-    if created and not instance.codigo_detalle_producto_id:
-        detalle_obj = DetalleProducto.objects.create(
-            cantidad_actual=0,
-            stock_min=0,
-            stock_max=0,
-        )
-
-        Producto.objects.filter(pk=instance.pk).update(
-            codigo_detalle_producto=detalle_obj
-        )
-        instance.codigo_detalle_producto = detalle_obj
 
 # ==========================================================
 # 8. PROMOCIÓN
