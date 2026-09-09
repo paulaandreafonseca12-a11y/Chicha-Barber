@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 from PIL import Image
 
-from usuarios.models import RegistroActividad
+from usuarios.models import HistorialAccion
 
 
 # ============================================================
@@ -209,12 +209,12 @@ class Configuracion(models.Model):
         verbose_name='Código'
     )
 
-    codigo_RegistroActividad = models.ForeignKey(
-        RegistroActividad,
+    codigo_historialAccion = models.ForeignKey(
+        HistorialAccion,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        verbose_name='Usuario',
+        verbose_name='Historial de acción',
         related_name='configuraciones'
     )
 
