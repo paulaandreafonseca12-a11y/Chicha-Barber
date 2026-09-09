@@ -244,7 +244,6 @@ class DetalleVenta(models.Model):
             # ----------------------------------------------
 
             if not self.codigo_movimiento_producto:
-
                 movimiento = (
                     MovimientoProducto.objects.create(
                         codigo_detalle_producto=detalle_producto,
@@ -257,6 +256,15 @@ class DetalleVenta(models.Model):
                     )
                 )
 
+            movimiento = MovimientoProducto.objects.create(
+                codigo_detalle_producto=detalle_prod_obj,
+                tipo="salida",
+                cantidad=self.cantidad,
+                observacion=(
+                    f"Salida por Venta "
+                    f"#{self.codigo_venta.codigo_venta}"
+
+                )
                 self.codigo_movimiento_producto = movimiento
 
                 super().save(
@@ -279,7 +287,7 @@ class DetalleVenta(models.Model):
                         "fecha_actualizacion",
                     ]
                 )
-
+            )
             # ----------------------------------------------
             # ACTUALIZAR TOTAL
             # ----------------------------------------------
@@ -345,21 +353,12 @@ class DetallePagos(models.Model):
     instrucciones = models.TextField(
         blank=True,
         null=True,
-        verbose_name="Instrucciones",
+        verbose_name="Instrucciones"
     )
 
-    @classmethod
-    def get_or_create_para_venta(cls, venta, **kwargs):
-        """Obtiene o crea el detalle de pago para una venta específica."""
-        defaults = {
-            'banco': kwargs.get('banco', 'Bancolombia'),
-            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
-            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
-            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
-            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
-        }
-        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
-
+    # ======================================================
+    # OBTENER DATOS DE TRANSFERENCIA
+    # ======================================================
     @classmethod
     def get_solo(cls):
         """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
