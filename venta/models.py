@@ -105,6 +105,8 @@ class Venta(models.Model):
     def total_compra(self, value):
         self.total_venta = value
 
+
+
     @property
     def fecha_venta(self):
         return self.fecha
@@ -246,18 +248,26 @@ class DetalleVenta(models.Model):
                 ]
             )
 
-            detalle_prod_obj.cantidad_actual -= (
+            # ------------------------------------------
+            # DESCONTAR STOCK
+            # ------------------------------------------
+
+            detalle_producto.cantidad_actual -= (
                 self.cantidad
             )
 
-            detalle_prod_obj.save(
+            detalle_producto.save(
                 update_fields=[
                     "cantidad_actual",
-                    "fecha_actualizacion"
+                    "fecha_actualizacion",
                 ]
             )
 
-        self.codigo_venta.actualizar_total()
+            # ----------------------------------------------
+            # ACTUALIZAR TOTAL
+            # ----------------------------------------------
+
+            self.codigo_venta.actualizar_total()
 
     def __str__(self):
         return (
@@ -322,9 +332,20 @@ class DetallePagos(models.Model):
         verbose_name="Instrucciones"
     )
 
-    # ======================================================
-    # OBTENER DATOS DE TRANSFERENCIA
-    # ======================================================
+    @classmethod
+    def get_or_create_para_venta(cls, venta, **kwargs):
+        """Obtiene o crea el detalle de pago para una venta específica."""
+        defaults = {
+            'banco': kwargs.get('banco', 'Bancolombia'),
+            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
+            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
+            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
+            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
+        }
+        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
+
+
+
     @classmethod
     def get_solo(cls):
         """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
