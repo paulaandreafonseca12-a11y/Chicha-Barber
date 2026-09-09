@@ -87,7 +87,8 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-        self.total_compra = sum(
+
+        total = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
@@ -177,11 +178,8 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # ==================================================
-        # OBTENER STOCK
-        # ==================================================
         try:
-            detalle_prod_obj = (
+            detalle_producto = (
                 self.codigo_producto.detalle_producto
             )
         except Exception:
@@ -221,14 +219,21 @@ class DetalleVenta(models.Model):
         # Crear movimiento de salida solamente una vez
         if not self.codigo_movimiento_producto:
 
-            movimiento = (
-                MovimientoProducto.objects.create(
-                    codigo_detalle_producto=detalle_prod_obj,
-                    tipo="salida",
-                    cantidad=self.cantidad,
-                    observacion=(
-                        f"Salida por Venta #"
-                        f"{self.codigo_venta.codigo_venta}"
+            # ----------------------------------------------
+            # CREAR MOVIMIENTO
+            # ----------------------------------------------
+
+            if not self.codigo_movimiento_producto:
+
+                movimiento = (
+                    MovimientoProducto.objects.create(
+                        codigo_detalle_producto=detalle_producto,
+                        tipo="salida",
+                        cantidad=self.cantidad,
+                        observacion=(
+                            f"Salida por Venta "
+                            f"#{self.codigo_venta.codigo_venta}"
+                        ),
                     )
                 )
             )

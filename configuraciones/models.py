@@ -208,6 +208,7 @@ class Configuracion(models.Model):
         primary_key=True,
         verbose_name='Código'
     )
+
     codigo_usuario = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE
@@ -215,6 +216,24 @@ class Configuracion(models.Model):
     codigo_carrusel = models.ForeignKey(
         Carrusel,
         on_delete=models.CASCADE
+    )
+
+    codigo_RegistroActividad = models.ForeignKey(
+        RegistroActividad,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Usuario',
+        related_name='configuraciones'
+    )
+
+    codigo_carrusel = models.ForeignKey(
+        Carrusel,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Carrusel',
+        related_name='configuraciones'
     )
 
     fecha_realizacion = models.DateTimeField(
