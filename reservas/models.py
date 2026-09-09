@@ -244,7 +244,7 @@ def notificar_reserva(
             url="/perfil/",
         )
 
-<<<<<<< HEAD
+
         HistorialAccion.objects.create(
             usuario=instance.cliente,
             reserva=instance,
@@ -266,9 +266,11 @@ def notificar_reserva(
         Q(is_superuser=True)
     ).distinct()
 
-=======
+
     admins = Usuario.objects.filter(rol="admin")
->>>>>>> Valentina
+
+    admins = Usuario.objects.filter(rol="admin")
+
     for admin in admins:
 
         Notificacion.objects.create(

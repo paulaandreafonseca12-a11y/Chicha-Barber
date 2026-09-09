@@ -203,10 +203,7 @@ class Carrusel(models.Model):
 # ============================================================
 
 class Configuracion(models.Model):
-<<<<<<< HEAD
 
-=======
->>>>>>> Valentina
     codigo = models.AutoField(
         primary_key=True,
         verbose_name='Código'
@@ -218,24 +215,6 @@ class Configuracion(models.Model):
     codigo_carrusel = models.ForeignKey(
         Carrusel,
         on_delete=models.CASCADE
-    )
-
-    codigo_historialAccion = models.ForeignKey(
-        HistorialAccion,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        verbose_name='Historial de acción',
-        related_name='configuraciones'
-    )
-
-    codigo_carrusel = models.ForeignKey(
-        Carrusel,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        verbose_name='Carrusel',
-        related_name='configuraciones'
     )
 
     fecha_realizacion = models.DateTimeField(
