@@ -238,7 +238,7 @@ class DetalleVenta(models.Model):
                         ),
                     )
                 )
-            )
+            
 
             self.codigo_movimiento_producto = movimiento
 

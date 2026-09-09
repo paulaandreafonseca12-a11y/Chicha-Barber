@@ -44,7 +44,7 @@ django.setup()
 # ============================================================================
 # 2. IMPORTACIÓN DE MODELOS
 # ============================================================================
-from usuarios.models import Usuario, RegistroActividad, Notificacion, RolUsuario, TipoDocumento
+from usuarios.models import Usuario, HistorialAccion, Notificacion, RolUsuario, TipoDocumento
 from servicios.models import Servicios, Calificacion
 from reservas.models import Agenda, Reserva
 from catalogo.models import (
@@ -116,7 +116,7 @@ def limpiar_datos():
 
         # Notificaciones y Actividades
         Notificacion.objects.all().delete()
-        RegistroActividad.objects.all().delete()
+        HistorialAccion.objects.all().delete()
 
         # Usuarios de prueba (conservar solo si se desea el admin personalizado)
         Usuario.objects.exclude(email="a@b.com").delete()
@@ -268,12 +268,12 @@ def poblar_usuarios():
     # ------------------------------------------------------------------------
     # 5.4 Actividad Inicial y Notificaciones
     # ------------------------------------------------------------------------
-    RegistroActividad.objects.create(
+    HistorialAccion.objects.create(
         usuario=admin,
         tipo="sesion",
         descripcion="Inicio de sesión administrativo inicial"
     )
-    RegistroActividad.objects.create(
+    HistorialAccion.objects.create(
         usuario=admin,
         tipo="usuario",
         descripcion="Configuración general del personal de barberos"
