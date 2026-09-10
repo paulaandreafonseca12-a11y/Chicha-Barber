@@ -606,7 +606,7 @@ def perfil(request):
 
     reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_reserva')
     ventas = Venta.objects.filter(correo=request.user.email).order_by('-fecha')
-
+    actividades = HistorialAccion.objects.filter(usuario=request.user).order_by('-fecha') [:10]
     context = {
 
         'form': form,
