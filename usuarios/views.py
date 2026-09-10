@@ -602,7 +602,6 @@ def perfil(request):
                         tipo='sesion',
                         descripcion='Cambió su contraseña'
                     )
-                except ValidationError as e: messages.error( request, f"❌ {e}" )
 
                     messages.success(
                         request,
@@ -619,8 +618,6 @@ def perfil(request):
                             request,
                             f"❌ {error}"
                         )
-
-    
 
     actividades = HistorialAccion.objects.all().order_by(
         '-fecha'
@@ -781,7 +778,7 @@ def detalle_notificacion(request, pk):
 
                 objeto_relacionado = Reserva.objects.get(
                     pk=rel_id,
-                    cliente=request.user
+                    usuario=request.user
                 )
 
         except (
