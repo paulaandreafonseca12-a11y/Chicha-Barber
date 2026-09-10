@@ -1,7 +1,6 @@
-from django.db import models
+from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.db import transaction
 
 from usuarios.models import (
     Usuario,
@@ -98,13 +97,12 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-
         total = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
 
-        self.total_compra = total
+        self.total_venta = total
 
         self.save(
             update_fields=["total_venta"]
@@ -192,10 +190,15 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
+        # --------------------------------------------------
+        # OBTENER INFORMACIÓN DEL PRODUCTO
+        # --------------------------------------------------
+
         try:
             detalle_producto = (
                 self.codigo_producto.detalle_producto
             )
+
         except Exception:
             raise ValueError(
                 f"El producto "
@@ -235,36 +238,30 @@ class DetalleVenta(models.Model):
             0
         )
 
+        # --------------------------------------------------
+        # GUARDAR Y ACTUALIZAR STOCK
+        # --------------------------------------------------
+
         with transaction.atomic():
 
             super().save(*args, **kwargs)
 
             # ----------------------------------------------
-            # CREAR MOVIMIENTO
+            # CREAR MOVIMIENTO DE SALIDA
             # ----------------------------------------------
 
             if not self.codigo_movimiento_producto:
-                movimiento = (
-                    MovimientoProducto.objects.create(
-                        codigo_detalle_producto=detalle_producto,
-                        tipo="salida",
-                        cantidad=self.cantidad,
-                        observacion=(
-                            f"Salida por Venta "
-                            f"#{self.codigo_venta.codigo_venta}"
-                        ),
-                    )
+
+                movimiento = MovimientoProducto.objects.create(
+                    codigo_detalle_producto=detalle_producto,
+                    tipo="salida",
+                    cantidad=self.cantidad,
+                    observacion=(
+                        f"Salida por Venta "
+                        f"#{self.codigo_venta.codigo_venta}"
+                    ),
                 )
 
-            movimiento = MovimientoProducto.objects.create(
-                codigo_detalle_producto=detalle_prod_obj,
-                tipo="salida",
-                cantidad=self.cantidad,
-                observacion=(
-                    f"Salida por Venta "
-                    f"#{self.codigo_venta.codigo_venta}"
-
-                )
                 self.codigo_movimiento_producto = movimiento
 
                 super().save(
@@ -287,15 +284,14 @@ class DetalleVenta(models.Model):
                         "fecha_actualizacion",
                     ]
                 )
-            )
+
             # ----------------------------------------------
-            # ACTUALIZAR TOTAL
+            # ACTUALIZAR TOTAL DE LA VENTA
             # ----------------------------------------------
 
             self.codigo_venta.actualizar_total()
 
     def __str__(self):
-
         return (
             f"{self.codigo_producto.nombre} "
             f"x {self.cantidad}"
@@ -359,13 +355,16 @@ class DetallePagos(models.Model):
     # ======================================================
     # OBTENER DATOS DE TRANSFERENCIA
     # ======================================================
+
     @classmethod
     def get_solo(cls):
-        """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
+        """
+        Retorna el primer detalle de pago registrado
+        como referencia sin forzar pk=1.
+        """
         return cls.objects.first()
 
     def __str__(self):
-
         return (
             f"Pago de Venta "
             f"#{self.codigo_venta.codigo_venta} "
