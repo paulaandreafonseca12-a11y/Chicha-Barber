@@ -60,8 +60,6 @@ class UsuarioAdmin(UserAdmin):
                 'fields': (
                     'rol',
                     'estado',
-                    'especialidad',
-                    'tema',
                 )
             }
         ),
@@ -155,13 +153,11 @@ class UsuarioAdmin(UserAdmin):
         ),
 
         (
-            'Rol y estado',
+            'Rol y configuración',
             {
                 'fields': (
                     'rol',
                     'estado',
-                    'especialidad',
-                    'tema',
                 )
             }
         ),
