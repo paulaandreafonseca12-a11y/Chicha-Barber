@@ -87,8 +87,7 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-
-        total = sum(
+        self.total_venta = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
@@ -104,8 +103,6 @@ class Venta(models.Model):
     @total_compra.setter
     def total_compra(self, value):
         self.total_venta = value
-
-
 
     @property
     def fecha_venta(self):
@@ -233,7 +230,14 @@ class DetalleVenta(models.Model):
                 )
             )
 
-    
+            movimiento = MovimientoProducto.objects.create(
+                codigo_detalle_producto=detalle_prod_obj,
+                tipo="salida",
+                cantidad=self.cantidad,
+                observacion=(
+                    f"Salida por Venta "
+                    f"#{self.codigo_venta.codigo_venta}"
+
             self.codigo_movimiento_producto = movimiento
 
             super().save(
@@ -246,8 +250,11 @@ class DetalleVenta(models.Model):
                 self.cantidad
             )
 
-            detalle_producto.cantidad_actual -= (
-                self.cantidad
+            detalle_prod_obj.save(
+                update_fields=[
+                    "cantidad_actual",
+                    "fecha_actualizacion"
+                ]
             )
 
         self.codigo_venta.actualizar_total()
@@ -318,8 +325,6 @@ class DetallePagos(models.Model):
     # ======================================================
     # CREAR / OBTENER PAGO DE UNA VENTA ESPECÍFICA
     # ======================================================
-
-
 
     @classmethod
     def get_or_create_para_venta(
