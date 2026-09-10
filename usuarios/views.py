@@ -602,10 +602,10 @@ def perfil(request):
                         tipo='sesion',
                         descripcion='Cambió su contraseña'
                     )
+                except ValidationError as e: messages.error( request, f"❌ {e}" )
 
     reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_reserva')
-    ventas = venta.objects.filter(correo=request.user.email).order_by('-fecha')
-    facturas = []
+    ventas = Venta.objects.filter(correo=request.user.email).order_by('-fecha')
 
     context = {
 
