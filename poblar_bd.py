@@ -95,6 +95,7 @@ def limpiar_datos():
 
         # Catálogo
     Promocion.objects.all().delete()
+<<<<<<< Updated upstream
     MovimientoProducto.objects.all().delete()
     Producto.objects.all().delete()
     DetalleProducto.objects.all().delete()
@@ -102,6 +103,15 @@ def limpiar_datos():
     Proveedor.objects.all().delete()
     Categoria.objects.all().delete()
     print("  ✓ Catálogo de productos e inventario limpiados.")
+=======
+        MovimientoProducto.objects.all().delete()
+        Producto.objects.all().delete()
+        DetalleProducto.objects.all().delete()
+        Marca.objects.all().delete()
+        Proveedor.objects.all().delete()
+        Categoria.objects.all().delete()
+        print("  ✓ Catálogo de productos e inventario limpiados.")
+>>>>>>> Stashed changes
 
         # Reservas y Servicios
     Reserva.objects.all().delete()
