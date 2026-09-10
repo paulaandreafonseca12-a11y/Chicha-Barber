@@ -1641,8 +1641,6 @@ body.theme-light .chat-input:focus {
 .templates-base-clientes__button-3 { bottom: 20px; right: 20px; z-index: 9998; border-radius: 50%; width: 60px; height: 60px; border: none; }
 .templates-base-clientes__div-4 { background-color:#2b50aa; color:white; max-width:80%; }
 .templates-base-clientes__div-5 { background-color:#22AED1; color:black; max-width:80%; font-weight:bold; }
-.soporte-ayuda-home__p-1 { max-width: 600px; }
-.soporte-ayuda-home__div-2 { top: 2rem; }
 .servicios-servicios__div-1 { width: 18rem; }
 .servicios-servicios__img-2 { height: 300px; object-fit: cover; }
 .servicios-servicios__img-3 { height: 300px; object-fit: cover; }
@@ -2691,3 +2689,6 @@ body.theme-light .admin-aside a[aria-current="page"] {
 .badge-animado:hover {
     transform: translateY(-2px) scale(1.05);
 }
+
+
+    
