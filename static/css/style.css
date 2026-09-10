@@ -1762,47 +1762,6 @@ body.theme-light .chat-input:focus {
 .productos-editar-producto__img-1 { max-width:180px; }
 .productos-confirmar-eliminar__div-1 { background-color: #1a1d20; min-height: 100vh; }
 .productos-confirmar-eliminar__div-2 { max-width: 500px; }
-.facturas-factura__span-1 { font-size: 0.65rem; }
-.facturas-factura-adm__div-1 { width: 56px; height: 56px; }
-.facturas-factura-adm__div-2 { width: 56px; height: 56px; }
-.facturas-factura-adm__div-3 { width: 56px; height: 56px; }
-.facturas-factura-adm__div-4 { width: 56px; height: 56px; }
-.facturas-factura-adm__table-5 { font-size: 0.98rem; }
-.facturas-factura-adm__th-6 { font-size: 0.85rem; width: 5%; }
-.facturas-factura-adm__th-7 { font-size: 0.85rem; width: 20%; }
-.facturas-factura-adm__th-8 { font-size: 0.85rem; width: 25%; }
-.facturas-factura-adm__th-9 { font-size: 0.85rem; width: 10%; }
-.facturas-factura-adm__th-10 { font-size: 0.85rem; width: 10%; }
-.facturas-factura-adm__th-11 { font-size: 0.85rem; width: 10%; }
-.facturas-factura-adm__th-12 { font-size: 0.85rem; width: 5%; }
-.facturas-factura-adm__th-13 { font-size: 0.85rem; width: 10%; }
-.facturas-factura-adm__th-14 { font-size: 0.85rem; width: 15%; }
-.facturas-factura-adm__tr-15 { transition: background-color 0.2s ease; }
-.facturas-factura-adm__small-16 { font-size: 0.82rem; }
-.facturas-factura-adm__div-17 { font-size: 0.88rem; }
-.facturas-factura-adm__span-18 { max-width: 250px; }
-.facturas-factura-adm__div-19 { font-size: 0.88rem; }
-.facturas-factura-adm__div-20 { font-size: 0.88rem; }
-.facturas-factura-adm__div-21 { font-size: 0.78rem; }
-.facturas-factura-adm__select-22 { border-radius: 6px; cursor: pointer; }
-.facturas-factura-adm__select-23 { border-radius: 6px; cursor: pointer; }
-.facturas-factura-adm__img-24 { width: 46px; height: 46px; object-fit: cover; }
-.facturas-factura-adm__div-25 { font-size: 0.75rem; line-height: 1; }
-.facturas-factura-adm__label-26 { font-size: 0.75rem; }
-.facturas-factura-adm__span-27 { cursor: pointer; }
-.facturas-factura-adm__td-28 { font-size: 1.08rem; }
-.facturas-factura-adm__button-29 { width: 38px; height: 38px; border-radius: 8px; }
-.facturas-factura-adm__a-30 { width: 38px; height: 38px; border-radius: 8px; }
-.facturas-factura-adm__a-31 { width: 38px; height: 38px; border-radius: 8px; }
-.facturas-factura-adm__a-32 { width: 38px; height: 38px; border-radius: 8px; }
-.facturas-factura-adm__button-33 { width: 38px; height: 38px; border-radius: 8px; opacity: 0.25; }
-.facturas-factura-adm__small-34 { font-size: 0.75rem; }
-.facturas-detalle-factura__select-1 { max-width: 250px; }
-.facturas-detalle-factura__select-2 { max-width: 250px; }
-.facturas-detalle-factura__div-3 { width: 100px; }
-.facturas-detalle-factura__div-4 { width: 120px; height: 120px; cursor: pointer; }
-.facturas-detalle-factura__img-5 { object-fit: cover; }
-.facturas-detalle-factura__img-6 { max-height: 80vh; width: auto; }
 .configuraciones-testimonios__td-1 { max-width: 300px; }
 .configuraciones-editar-carrusel__img-1 { width: 150px; height: 100px; object-fit: cover; }
 .configuraciones-carrusel__div-1 { width: 56px; height: 56px; }
