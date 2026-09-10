@@ -93,6 +93,8 @@ class Venta(models.Model):
             for detalle in self.detalles.all()
         )
 
+        self.total_venta = total
+
         self.save(
             update_fields=["total_venta"]
         )
@@ -104,8 +106,6 @@ class Venta(models.Model):
     @total_compra.setter
     def total_compra(self, value):
         self.total_venta = value
-
-
 
     @property
     def fecha_venta(self):
@@ -194,13 +194,13 @@ class DetalleVenta(models.Model):
         # Validar stock únicamente al crear
         if not self.pk:
 
-            if self.cantidad > detalle_prod_obj.cantidad_actual:
+            if self.cantidad > detalle_producto.cantidad_actual:
 
                 raise ValueError(
                     f"Stock insuficiente para "
                     f"'{self.codigo_producto.nombre}'. "
                     f"Disponible: "
-                    f"{detalle_prod_obj.cantidad_actual}"
+                    f"{detalle_producto.cantidad_actual}"
                 )
 
         precio_venta = (
@@ -221,32 +221,16 @@ class DetalleVenta(models.Model):
         # Crear movimiento de salida solamente una vez
         if not self.codigo_movimiento_producto:
 
-            # ----------------------------------------------
-            # CREAR MOVIMIENTO
-            # ----------------------------------------------
-
-            if not self.codigo_movimiento_producto:
-                movimiento = (
-                    MovimientoProducto.objects.create(
-                        codigo_detalle_producto=detalle_producto,
-                        tipo="salida",
-                        cantidad=self.cantidad,
-                        observacion=(
-                            f"Salida por Venta "
-                            f"#{self.codigo_venta.codigo_venta}"
-                        ),
-                    )
-                )
-
             movimiento = MovimientoProducto.objects.create(
-                codigo_detalle_producto=detalle_prod_obj,
+                codigo_detalle_producto=detalle_producto,
                 tipo="salida",
                 cantidad=self.cantidad,
                 observacion=(
                     f"Salida por Venta "
                     f"#{self.codigo_venta.codigo_venta}"
+                ),
+            )
 
-    
             self.codigo_movimiento_producto = movimiento
 
             super().save(
@@ -263,13 +247,13 @@ class DetalleVenta(models.Model):
                 self.cantidad
             )
 
-                detalle_producto.save(
-                    update_fields=[
-                        "cantidad_actual",
-                        "fecha_actualizacion",
-                    ]
-                )
+            detalle_producto.save(
+                update_fields=[
+                    "cantidad_actual",
+                    "fecha_actualizacion",
+                ]
             )
+
             # ----------------------------------------------
             # ACTUALIZAR TOTAL
             # ----------------------------------------------
@@ -338,20 +322,6 @@ class DetallePagos(models.Model):
         null=True,
         verbose_name="Instrucciones"
     )
-
-    @classmethod
-    def get_or_create_para_venta(cls, venta, **kwargs):
-        """Obtiene o crea el detalle de pago para una venta específica."""
-        defaults = {
-            'banco': kwargs.get('banco', 'Bancolombia'),
-            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
-            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
-            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
-            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
-        }
-        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
-
-
 
     @classmethod
     def get_or_create_para_venta(
