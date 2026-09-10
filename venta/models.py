@@ -180,11 +180,11 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
-        try:
-            detalle_producto = (
-                self.codigo_producto.detalle_producto
-            )
-        except Exception:
+        detalle_prod_obj = (
+            self.codigo_producto.codigo_detalle_producto
+        )
+
+        if not detalle_prod_obj:
             raise ValueError(
                 f"El producto "
                 f"'{self.codigo_producto.nombre}' "
@@ -221,30 +221,17 @@ class DetalleVenta(models.Model):
         # Crear movimiento de salida solamente una vez
         if not self.codigo_movimiento_producto:
 
-            # ----------------------------------------------
-            # CREAR MOVIMIENTO
-            # ----------------------------------------------
-
-            if not self.codigo_movimiento_producto:
-                movimiento = (
-                    MovimientoProducto.objects.create(
-                        codigo_detalle_producto=detalle_producto,
-                        tipo="salida",
-                        cantidad=self.cantidad,
-                        observacion=(
-                            f"Salida por Venta "
-                            f"#{self.codigo_venta.codigo_venta}"
-                        ),
+            movimiento = (
+                MovimientoProducto.objects.create(
+                    codigo_detalle_producto=detalle_prod_obj,
+                    tipo="salida",
+                    cantidad=self.cantidad,
+                    observacion=(
+                        f"Salida por Venta #"
+                        f"{self.codigo_venta.codigo_venta}"
                     )
                 )
-
-            movimiento = MovimientoProducto.objects.create(
-                codigo_detalle_producto=detalle_prod_obj,
-                tipo="salida",
-                cantidad=self.cantidad,
-                observacion=(
-                    f"Salida por Venta "
-                    f"#{self.codigo_venta.codigo_venta}"
+            )
 
                 )
                 self.codigo_movimiento_producto = movimiento
@@ -255,26 +242,15 @@ class DetalleVenta(models.Model):
                 ]
             )
 
-            # ------------------------------------------
-            # DESCONTAR STOCK
-            # ------------------------------------------
+            detalle_prod_obj.cantidad_actual -= (
+                self.cantidad
+            )
 
             detalle_producto.cantidad_actual -= (
                 self.cantidad
             )
 
-                detalle_producto.save(
-                    update_fields=[
-                        "cantidad_actual",
-                        "fecha_actualizacion",
-                    ]
-                )
-            )
-            # ----------------------------------------------
-            # ACTUALIZAR TOTAL
-            # ----------------------------------------------
-
-            self.codigo_venta.actualizar_total()
+        self.codigo_venta.actualizar_total()
 
     def __str__(self):
         return (
@@ -339,24 +315,54 @@ class DetallePagos(models.Model):
         verbose_name="Instrucciones"
     )
 
+    # ======================================================
+    # CREAR / OBTENER PAGO DE UNA VENTA ESPECÍFICA
+    # ======================================================
+
+
+
     @classmethod
-    def get_or_create_para_venta(cls, venta, **kwargs):
-        """Obtiene o crea el detalle de pago para una venta específica."""
+    def get_or_create_para_venta(
+        cls,
+        venta,
+        **kwargs
+    ):
+        """
+        Obtiene o crea el detalle de pago
+        correspondiente a una venta específica.
+        """
+
         defaults = {
-            'banco': kwargs.get('banco', 'Bancolombia'),
-            'tipo_cuenta': kwargs.get('tipo_cuenta', 'Ahorros'),
-            'numero_cuenta': kwargs.get('numero_cuenta', '123-456789-01'),
-            'titular': kwargs.get('titular', 'Chicha Barber Studio SAS'),
-            'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
+            "banco": kwargs.get(
+                "banco",
+                "Bancolombia"
+            ),
+
+            "tipo_cuenta": kwargs.get(
+                "tipo_cuenta",
+                "Ahorros"
+            ),
+
+            "numero_cuenta": kwargs.get(
+                "numero_cuenta",
+                "123-456789-01"
+            ),
+
+            "titular": kwargs.get(
+                "titular",
+                "Chicha Barber Studio SAS"
+            ),
+
+            "instrucciones": kwargs.get(
+                "instrucciones",
+                "Comprobante registrado en proceso de verificación."
+            ),
         }
-        return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
 
-
-
-    @classmethod
-    def get_solo(cls):
-        """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
-        return cls.objects.first()
+        return cls.objects.get_or_create(
+            codigo_venta=venta,
+            defaults=defaults
+        )
 
     def __str__(self):
         return (
