@@ -87,8 +87,7 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-
-        total = sum(
+        self.total_venta = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
@@ -104,8 +103,6 @@ class Venta(models.Model):
     @total_compra.setter
     def total_compra(self, value):
         self.total_venta = value
-
-
 
     @property
     def fecha_venta(self):
@@ -246,8 +243,7 @@ class DetalleVenta(models.Model):
                     f"Salida por Venta "
                     f"#{self.codigo_venta.codigo_venta}"
 
-                )
-                self.codigo_movimiento_producto = movimiento
+            self.codigo_movimiento_producto = movimiento
 
             super().save(
                 update_fields=[
@@ -259,8 +255,11 @@ class DetalleVenta(models.Model):
             # DESCONTAR STOCK
             # ------------------------------------------
 
-            detalle_producto.cantidad_actual -= (
-                self.cantidad
+            detalle_prod_obj.save(
+                update_fields=[
+                    "cantidad_actual",
+                    "fecha_actualizacion"
+                ]
             )
 
                 detalle_producto.save(
@@ -350,8 +349,6 @@ class DetallePagos(models.Model):
             'instrucciones': kwargs.get('instrucciones', 'Comprobante verificado.'),
         }
         return cls.objects.get_or_create(codigo_venta=venta, defaults=defaults)
-
-
 
     @classmethod
     def get_or_create_para_venta(
