@@ -603,51 +603,9 @@ def perfil(request):
                         descripcion='Cambió su contraseña'
                     )
 
-                    messages.success(
-                        request,
-                        "✅ Contraseña actualizada."
-                    )
-
-                    return redirect('perfil')
-
-                except ValidationError as e:
-
-                    for error in e.messages:
-
-                        messages.error(
-                            request,
-                            f"❌ {error}"
-                        )
-
-    
-
-    actividades = HistorialAccion.objects.all().order_by(
-        '-fecha'
-    )[:20]
-
-    # ======================================================
-    # RESERVAS DEL USUARIO
-    # ======================================================
-
-    reservas = Reserva.objects.filter(
-        usuario=request.user
-    ).order_by(
-        '-fecha_reserva'
-    )
-
-    # ======================================================
-    # VENTAS DEL USUARIO
-    # ======================================================
-
-    ventas = Venta.objects.filter(
-        correo=request.user.email
-    ).order_by(
-        '-fecha'
-    )
-
-    # ======================================================
-    # CONTEXTO
-    # ======================================================
+    reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_reserva')
+    ventas = venta.objects.filter(correo=request.user.email).order_by('-fecha')
+    facturas = []
 
     context = {
 

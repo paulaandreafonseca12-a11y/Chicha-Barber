@@ -354,9 +354,47 @@ class DetallePagos(models.Model):
 
 
     @classmethod
-    def get_solo(cls):
-        """Retorna el primer detalle de pago registrado como referencia sin forzar pk=1."""
-        return cls.objects.first()
+    def get_or_create_para_venta(
+        cls,
+        venta,
+        **kwargs
+    ):
+        """
+        Obtiene o crea el detalle de pago
+        correspondiente a una venta específica.
+        """
+
+        defaults = {
+            "banco": kwargs.get(
+                "banco",
+                "Bancolombia"
+            ),
+
+            "tipo_cuenta": kwargs.get(
+                "tipo_cuenta",
+                "Ahorros"
+            ),
+
+            "numero_cuenta": kwargs.get(
+                "numero_cuenta",
+                "123-456789-01"
+            ),
+
+            "titular": kwargs.get(
+                "titular",
+                "Chicha Barber Studio SAS"
+            ),
+
+            "instrucciones": kwargs.get(
+                "instrucciones",
+                "Comprobante registrado en proceso de verificación."
+            ),
+        }
+
+        return cls.objects.get_or_create(
+            codigo_venta=venta,
+            defaults=defaults
+        )
 
     def __str__(self):
         return (
