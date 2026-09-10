@@ -246,8 +246,8 @@ class DetalleVenta(models.Model):
                     f"Salida por Venta "
                     f"#{self.codigo_venta.codigo_venta}"
 
-                )
-                self.codigo_movimiento_producto = movimiento
+    
+            self.codigo_movimiento_producto = movimiento
 
             super().save(
                 update_fields=[

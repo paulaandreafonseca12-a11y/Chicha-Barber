@@ -13,7 +13,7 @@ realistas y completamente alineados con la arquitectura actual de modelos:
   - venta: Venta, DetalleVenta, DetallePagos
   - configuraciones: Carrusel, Configuracion
   - historial: Bitacora
-  - soporte: CategoriaAyuda, TicketSoporte
+ 
 ==============================================================================
 """
 
@@ -60,7 +60,7 @@ from compra.models import Compra, DetalleCompra
 from venta.models import Venta, DetalleVenta, DetallePagos
 from configuraciones.models import Carrusel, Configuracion
 from historial.models import Bitacora
-from soporte.models import CategoriaAyuda, TicketSoporte
+
 
 
 # ============================================================================
@@ -71,63 +71,56 @@ def limpiar_datos():
     print(" 1. LIMPIEZA DE BASE DE DATOS")
     print("=" * 60)
 
-    try:
-        # Soporte
-        TicketSoporte.objects.all().delete()
-        CategoriaAyuda.objects.all().delete()
-        print("  ✓ Tablas de Soporte limpiadas.")
+    
 
         # Historial
-        Bitacora.objects.all().delete()
-        print("  ✓ Bitácora limpiada.")
+    Bitacora.objects.all().delete()
+    print("  ✓ Bitácora limpiada.")
 
         # Configuraciones
-        Configuracion.objects.all().delete()
-        Carrusel.objects.all().delete()
-        print("  ✓ Configuraciones y Carrusel limpiados.")
+    Configuracion.objects.all().delete()
+    Carrusel.objects.all().delete()
+    print("  ✓ Configuraciones y Carrusel limpiados.")
 
         # Ventas
-        DetallePagos.objects.all().delete()
-        DetalleVenta.objects.all().delete()
-        Venta.objects.all().delete()
-        print("  ✓ Ventas, detalles y pagos limpiados.")
+    DetallePagos.objects.all().delete()
+    DetalleVenta.objects.all().delete()
+    Venta.objects.all().delete()
+    print("  ✓ Ventas, detalles y pagos limpiados.")
 
         # Compras
-        DetalleCompra.objects.all().delete()
-        Compra.objects.all().delete()
-        print("  ✓ Compras y detalles limpiados.")
+    DetalleCompra.objects.all().delete()
+    Compra.objects.all().delete()
+    print("  ✓ Compras y detalles limpiados.")
 
         # Catálogo
-        Promocion.objects.all().delete()
-        MovimientoProducto.objects.all().delete()
-        Producto.objects.all().delete()
-        DetalleProducto.objects.all().delete()
-        Marca.objects.all().delete()
-        Proveedor.objects.all().delete()
-        Categoria.objects.all().delete()
-        print("  ✓ Catálogo de productos e inventario limpiados.")
+    Promocion.objects.all().delete()
+    MovimientoProducto.objects.all().delete()
+    Producto.objects.all().delete()
+    DetalleProducto.objects.all().delete()
+    Marca.objects.all().delete()
+    Proveedor.objects.all().delete()
+    Categoria.objects.all().delete()
+    print("  ✓ Catálogo de productos e inventario limpiados.")
 
         # Reservas y Servicios
-        Reserva.objects.all().delete()
-        Agenda.objects.all().delete()
-        Calificacion.objects.all().delete()
-        Servicios.objects.all().delete()
-        print("  ✓ Reservas, agendas, calificaciones y servicios limpiados.")
+    Reserva.objects.all().delete()
+    Agenda.objects.all().delete()
+    Calificacion.objects.all().delete()
+    Servicios.objects.all().delete()
+    print("  ✓ Reservas, agendas, calificaciones y servicios limpiados.")
 
         # Notificaciones y Actividades
-        Notificacion.objects.all().delete()
-        HistorialAccion.objects.all().delete()
+    Notificacion.objects.all().delete()
+    HistorialAccion.objects.all().delete()
 
         # Usuarios de prueba (conservar solo si se desea el admin personalizado)
-        Usuario.objects.exclude(email="a@b.com").delete()
-        print("  ✓ Usuarios anteriores limpiados.")
+    Usuario.objects.exclude(email="a@b.com").delete()
+    print("  ✓ Usuarios anteriores limpiados.")
 
-        print("=> Base de datos preparada para inserción limpia.")
-
-    except Exception as e:
-        print(f"⚠️ Error limpiando datos: {e}")
-        import traceback
-        traceback.print_exc()
+    print("=> Base de datos preparada para inserción limpia.")
+    
+   
 
 
 # ============================================================================
@@ -890,50 +883,9 @@ def poblar_historial(admin, productos):
     print(f"  ✓ {len(eventos)} registros de auditoría insertados en Bitácora.")
 
 
-# ============================================================================
-# 13. POBLAR SOPORTE Y TICKETS
-# ============================================================================
-def poblar_soporte(clientes):
-    print("\n" + "=" * 60)
-    print(" 10. POBLANDO CATEGORÍAS DE AYUDA Y TICKETS DE SOPORTE")
-    print("=" * 60)
 
-    categorias_ayuda_data = [
-        ("Reservas y Citas", "bi-calendar-check", "reservas-citas", "Consultas y cancelaciones de turnos agendados."),
-        ("Compras y Envíos", "bi-box-seam", "compras-envios", "Estado de pedidos, productos y despacho a domicilio."),
-        ("Pagos y Facturación", "bi-credit-card", "pagos-facturacion", "Medios de pago, transferencias y comprobantes."),
-        ("Cuenta y Acceso", "bi-person-gear", "cuenta-acceso", "Restablecimiento de contraseña y actualización de datos."),
-    ]
 
-    cats_soporte = []
-    for nom, ico, slug, desc in categorias_ayuda_data:
-        cat_s, _ = CategoriaAyuda.objects.get_or_create(
-            slug=slug,
-            defaults={
-                "nombre": nom,
-                "icono": ico,
-                "descripcion": desc
-            }
-        )
-        cats_soporte.append(cat_s)
-        print(f"  ✓ Categoría de soporte: {cat_s.nombre}")
-
-    tickets_data = [
-        ("¿Cómo puedo reprogramar mi cita?", "Necesito cambiar mi reserva para la próxima semana a la misma hora.", "ABIERTO"),
-        ("Duda con el pago por transferencia", "Ya envié el comprobante bancario, deseo confirmar la aprobación de mi compra.", "CERRADO"),
-        ("Disponibilidad de pomada Suavecito", "Quisiera saber si tienen stock disponible para recoger directamente en la barbería.", "ABIERTO"),
-    ]
-
-    for asunto, desc, est in tickets_data:
-        TicketSoporte.objects.create(
-            usuario=random.choice(clientes),
-            categoria=random.choice(cats_soporte),
-            asunto=asunto,
-            descripcion=desc,
-            estado=est
-        )
-
-    print("  ✓ Tickets de soporte iniciales creados.")
+   
 
 
 # ============================================================================
@@ -972,8 +924,8 @@ if __name__ == "__main__":
     # 9. Bitácora de historial
     poblar_historial(admin, productos)
 
-    # 10. Soporte técnico
-    poblar_soporte(clientes)
+   
+    
 
     print("\n" + "=" * 65)
     print("   ¡BASE DE DATOS POBLADA EXITOSAMENTE AL 100%!")
@@ -992,8 +944,7 @@ if __name__ == "__main__":
     print(f"  • Órdenes de compra:         {Compra.objects.count()}")
     print(f"  • Ventas completadas:        {Venta.objects.count()}")
     print(f"  • Registros en bitácora:     {Bitacora.objects.count()}")
-    print(f"  • Slides de carrusel:        {Carrusel.objects.count()}")
-    print(f"  • Tickets de soporte:        {TicketSoporte.objects.count()}")
+    print(f"  • Slides de carrusel:        {Carrusel.objects.count()}")       
     print("-" * 65)
     print("  Credenciales de Administrador:")
     print("  Usuario:  a@b.com")

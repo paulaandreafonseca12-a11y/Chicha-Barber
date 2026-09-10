@@ -221,7 +221,7 @@ def responder_calificacion(request, pk):
 
 def guardar_calificacion_view(request):
     if request.method == 'POST':
-        form = calificacionForm(request.POST)
+        form = CalificacionForm(request.POST)
         if form.is_valid():
             calificacion = form.save(commit=False)
 

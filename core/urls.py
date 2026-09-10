@@ -41,7 +41,7 @@ urlpatterns = [
     #ia - chat
    path('chat/', include('chat_ia.urls')),
    
-   path('ayuda/', include('soporte.urls')),
+   
    
  
     # ... tus otras urls
