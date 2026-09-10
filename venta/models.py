@@ -220,14 +220,16 @@ class DetalleVenta(models.Model):
         # Crear movimiento de salida solamente una vez
         if not self.codigo_movimiento_producto:
 
-            movimiento = MovimientoProducto.objects.create(
-                codigo_detalle_producto=detalle_producto,
-                tipo="salida",
-                cantidad=self.cantidad,
-                observacion=(
-                    f"Salida por Venta "
-                    f"#{self.codigo_venta.codigo_venta}"
-                ),
+            movimiento = (
+                MovimientoProducto.objects.create(
+                    codigo_detalle_producto=detalle_prod_obj,
+                    tipo="salida",
+                    cantidad=self.cantidad,
+                    observacion=(
+                        f"Salida por Venta #"
+                        f"{self.codigo_venta.codigo_venta}"
+                    )
+                )
             )
 
             self.codigo_movimiento_producto = movimiento
