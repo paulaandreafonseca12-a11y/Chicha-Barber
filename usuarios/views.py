@@ -602,6 +602,7 @@ def perfil(request):
                         tipo='sesion',
                         descripcion='Cambió su contraseña'
                     )
+                except ValidationError as e: messages.error( request, f"❌ {e}" )
 
                     messages.success(
                         request,

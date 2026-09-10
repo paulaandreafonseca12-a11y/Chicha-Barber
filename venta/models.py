@@ -87,8 +87,7 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-
-        total = sum(
+        self.total_venta = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
@@ -243,8 +242,11 @@ class DetalleVenta(models.Model):
             # DESCONTAR STOCK
             # ------------------------------------------
 
-            detalle_producto.cantidad_actual -= (
-                self.cantidad
+            detalle_prod_obj.save(
+                update_fields=[
+                    "cantidad_actual",
+                    "fecha_actualizacion"
+                ]
             )
 
             detalle_producto.save(

@@ -2689,6 +2689,9 @@ body.theme-light .admin-aside a[aria-current="page"] {
 .badge-animado:hover {
     transform: translateY(-2px) scale(1.05);
 }
+.input-buscador-animado {
+    transition: all 0.3s ease-in-out;
+}
 
 .neon-text-gold {
     color: #ffd700;
