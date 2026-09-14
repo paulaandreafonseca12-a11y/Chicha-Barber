@@ -3,150 +3,153 @@
 {% block content %}
 
 <div class="container py-5">
+  <!-- Aumentamos el contenedor a un ancho superior (col-12 col-xl-10) -->
   <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-7">
+    <div class="col-12 col-xl-10">
       
       <!-- Tarjeta Principal -->
       <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-        <!-- Encabezado -->
-        <div class="card-header color-champaña py-4 px-4 text-center border-0">
-          <h4 class="text-dark mb-1 fw-bold">
-            <i class="bi bi-shield-check me-2"></i>Finalizar Pedido
-          </h4>
-          <p class="text-muted small mb-0">Completa tus datos para confirmar la compra</p>
+        <!-- Encabezado de la Tarjeta -->
+        <div class="card-header color-champaña py-3 px-4 border-0">
+          <div class="d-flex align-items-center justify-content-between">
+            <h5 class="text-dark mb-0 fw-bold">
+              <i class="bi bi-shield-check me-2"></i>Finalizar Pedido
+            </h5>
+            <span class="badge bg-white text-dark border">Paso final</span>
+          </div>
         </div>
 
         <div class="card-body p-4 p-md-5">
           <form method="POST" action="{% url 'procesar_venta' %}" enctype="multipart/form-data" id="formventa" onsubmit="syncCarrito()">
             {% csrf_token %}
 
-            <!-- Sección: Datos Personales -->
-            <div class="mb-4">
-              <h6 class="fw-bold text-uppercase text-secondary small mb-3">
-                <i class="bi bi-person-circle me-1"></i> Información del Cliente
-              </h6>
+            <!-- Estructura en 2 Columnas Horizontales -->
+            <div class="row g-4 g-lg-5">
               
-              <!-- Form Floating: Nombre -->
-              <div class="form-floating mb-3">
-                <input type="text" name="nombre" class="form-control border-2 shadow-none" id="nombreInput" placeholder="Nombre completo"
-                  value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" required>
-                <label for="nombreInput" class="text-secondary"><i class="bi bi-person me-1"></i>Nombre completo</label>
-              </div>
+              <!-- COLUMNA IZQUIERDA: Datos + Resumen -->
+              <div class="col-12 col-lg-6 border-end-lg pe-lg-4">
+                
+                <!-- Sección 1: Datos Personales -->
+                <h6 class="fw-bold text-uppercase text-secondary small mb-3">
+                  <i class="bi bi-person-circle me-1"></i> Datos del Cliente
+                </h6>
 
-              <div class="row g-3">
-                <!-- Form Floating: Correo -->
-                <div class="col-md-6">
-                  <div class="form-floating">
-                    <input type="email" name="correo" class="form-control border-2 shadow-none" id="correoInput" placeholder="correo@ejemplo.com"
-                      value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" required>
-                    <label for="correoInput" class="text-secondary"><i class="bi bi-envelope me-1"></i>Correo electrónico</label>
+                <div class="form-floating mb-3">
+                  <input type="text" name="nombre" class="form-control border-2 shadow-none" id="nombreInput" placeholder="Nombre completo"
+                    value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" required>
+                  <label for="nombreInput" class="text-secondary">Nombre completo</label>
+                </div>
+
+                <div class="row g-2 mb-4">
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      <input type="email" name="correo" class="form-control border-2 shadow-none" id="correoInput" placeholder="Correo"
+                        value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" required>
+                      <label for="correoInput" class="text-secondary">Correo</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      <input type="text" name="telefono" class="form-control border-2 shadow-none" id="telefonoInput" placeholder="Teléfono"
+                        value="{% if request.user.is_authenticated %}{{ request.user.telefono }}{% endif %}" required>
+                      <label for="telefonoInput" class="text-secondary">Teléfono</label>
+                    </div>
                   </div>
                 </div>
 
-                <!-- Form Floating: Teléfono -->
-                <div class="col-md-6">
-                  <div class="form-floating">
-                    <input type="text" name="telefono" class="form-control border-2 shadow-none" id="telefonoInput" placeholder="Teléfono"
-                      value="{% if request.user.is_authenticated %}{{ request.user.telefono }}{% endif %}" required>
-                    <label for="telefonoInput" class="text-secondary"><i class="bi bi-telephone me-1"></i>Teléfono</label>
+                <!-- Sección 2: Resumen del Pedido -->
+                <h6 class="fw-bold text-uppercase text-secondary small mb-3">
+                  <i class="bi bi-bag-check me-1"></i> Resumen de la Compra
+                </h6>
+
+                <div class="bg-light rounded-4 p-3 border">
+                  <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
+                    <table class="table table-borderless align-middle mb-0">
+                      <thead>
+                        <tr class="text-uppercase text-muted small border-bottom">
+                          <th>Producto</th>
+                          <th class="text-center">Cant.</th>
+                          <th class="text-end">Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody id="resumenProductos"></tbody>
+                    </table>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
+                    <span class="fw-bold text-uppercase text-secondary small">Total</span>
+                    <span class="h4 fw-bold text-dark mb-0" id="montoTotalDisplay">$0</span>
                   </div>
                 </div>
+
               </div>
-            </div>
 
-            <hr class="my-4 text-secondary opacity-25" />
+              <!-- COLUMNA DERECHA: Métodos de Pago + Confirmar -->
+              <div class="col-12 col-lg-6 ps-lg-4 d-flex flex-column justify-content-between">
+                <div>
+                  <h6 class="fw-bold text-uppercase text-secondary small mb-3">
+                    <i class="bi bi-credit-card me-1"></i> Método de Pago
+                  </h6>
 
-            <!-- Sección: Resumen del Pedido -->
-            <div class="mb-4">
-              <h6 class="fw-bold text-uppercase text-secondary small mb-3">
-                <i class="bi bi-bag-check me-1"></i> Resumen del Pedido
-              </h6>
-
-              <div class="bg-light rounded-4 p-3 p-md-4 border">
-                <div class="table-responsive">
-                  <table class="table table-borderless align-middle mb-0">
-                    <thead>
-                      <tr class="text-uppercase text-muted small border-bottom">
-                        <th class="fw-semibold">Producto</th>
-                        <th class="text-center fw-semibold">Cant.</th>
-                        <th class="text-end fw-semibold">Subtotal</th>
-                      </tr>
-                    </thead>
-                    <tbody id="resumenProductos"></tbody>
-                  </table>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center pt-3 mt-2 border-top border-2">
-                  <span class="fw-bold text-uppercase text-secondary small">Total a pagar</span>
-                  <span class="h3 fw-bold text-dark mb-0" id="montoTotalDisplay">$0</span>
-                </div>
-              </div>
-            </div>
-
-            <hr class="my-4 text-secondary opacity-25" />
-
-            <!-- Sección: Método de Pago -->
-            <div class="mb-4">
-              <h6 class="fw-bold text-uppercase text-secondary small mb-3">
-                <i class="bi bi-credit-card me-1"></i> Método de Pago
-              </h6>
-
-              <div class="row g-3 mb-3">
-                <div class="col-md-6">
-                  <label class="w-100 h-100 p-3 rounded-3 border border-2 d-flex align-items-center bg-white shadow-sm pe-auto role-button">
-                    <input class="form-check-input me-3 my-0" type="radio" name="pago" value="persona"
-                      onclick="mostrarInfoPago('persona')" required>
-                    <div>
-                      <span class="d-block fw-bold text-dark">Pago en el local</span>
-                      <span class="small text-muted d-block">Paga en efectivo al recoger</span>
+                  <!-- Opciones de Pago Horizontales -->
+                  <div class="row g-2 mb-3">
+                    <div class="col-6">
+                      <label class="w-100 h-100 p-3 rounded-3 border border-2 d-flex align-items-center bg-white shadow-sm role-button">
+                        <input class="form-check-input me-2 my-0" type="radio" name="pago" value="persona"
+                          onclick="mostrarInfoPago('persona')" required>
+                        <div>
+                          <span class="d-block fw-bold text-dark small">En el local</span>
+                          <span class="small text-muted d-none d-sm-block" style="font-size: 0.75rem;">En efectivo</span>
+                        </div>
+                      </label>
                     </div>
-                  </label>
-                </div>
 
-                <div class="col-md-6">
-                  <label class="w-100 h-100 p-3 rounded-3 border border-2 d-flex align-items-center bg-white shadow-sm pe-auto role-button">
-                    <input class="form-check-input me-3 my-0" type="radio" name="pago" value="transferencia"
-                      onclick="mostrarInfoPago('transferencia')">
-                    <div>
-                      <span class="d-block fw-bold text-dark">Transferencia</span>
-                      <span class="small text-muted d-block">Nequi o Daviplata</span>
+                    <div class="col-6">
+                      <label class="w-100 h-100 p-3 rounded-3 border border-2 d-flex align-items-center bg-white shadow-sm role-button">
+                        <input class="form-check-input me-2 my-0" type="radio" name="pago" value="transferencia"
+                          onclick="mostrarInfoPago('transferencia')">
+                        <div>
+                          <span class="d-block fw-bold text-dark small">Transferencia</span>
+                          <span class="small text-muted d-none d-sm-block" style="font-size: 0.75rem;">Nequi / Daviplata</span>
+                        </div>
+                      </label>
                     </div>
-                  </label>
+                  </div>
+
+                  <!-- Campos dinámicos de transferencia -->
+                  <div id="contenedorTipoTransferencia" class="form-floating mb-3 d-none">
+                    <select name="tipo_transferencia" id="tipoTransferenciaInput" class="form-select border-2 shadow-none">
+                      <option value="" selected disabled>Selecciona una opción</option>
+                      <option value="nequi">Nequi</option>
+                      <option value="daviplata">Daviplata</option>
+                    </select>
+                    <label for="tipoTransferenciaInput" class="text-secondary">Plataforma de destino</label>
+                  </div>
+
+                  <div id="contenedorComprobante" class="mb-3 d-none">
+                    <label for="comprobanteInput" class="form-label fw-semibold text-secondary small">Comprobante de Pago</label>
+                    <input type="file" name="comprobante" id="comprobanteInput"
+                      class="form-control border-2 shadow-none"
+                      accept="image/*, application/pdf">
+                  </div>
+
+                  <div id="infoPago" class="alert rounded-3 d-none mb-3"></div>
                 </div>
+
+                <!-- Campos Ocultos y Botón -->
+                <div>
+                  <input type="hidden" name="carrito" id="carritoInput">
+                  <input type="hidden" name="factura_id" value="{{ factura_id|default:'' }}">
+
+                  <button type="submit" class="btn color-azul w-100 rounded-3 py-3 fw-bold shadow-sm text-uppercase mt-3">
+                    Confirmar Compra
+                  </button>
+                </div>
+
               </div>
 
-              <!-- Desplegable: Tipo de transferencia -->
-              <div id="contenedorTipoTransferencia" class="form-floating mb-3 d-none">
-                <select name="tipo_transferencia" id="tipoTransferenciaInput" class="form-select border-2 shadow-none">
-                  <option value="" selected disabled>Selecciona una opción</option>
-                  <option value="nequi">Nequi</option>
-                  <option value="daviplata">Daviplata</option>
-                </select>
-                <label for="tipoTransferenciaInput" class="text-secondary">Plataforma de destino</label>
-              </div>
-
-              <!-- Campo: Archivo de Comprobante -->
-              <div id="contenedorComprobante" class="mb-3 d-none">
-                <label for="comprobanteInput" class="form-label fw-semibold text-secondary small">Adjuntar comprobante (Imagen/PDF)</label>
-                <input type="file" name="comprobante" id="comprobanteInput"
-                  class="form-control form-control-lg border-2 shadow-none"
-                  accept="image/*, application/pdf">
-              </div>
-
-              <!-- Alerta Dinámica -->
-              <div id="infoPago" class="alert rounded-3 mt-3 d-none mb-0"></div>
             </div>
-
-            <!-- Inputs Ocultos -->
-            <input type="hidden" name="carrito" id="carritoInput">
-            <input type="hidden" name="factura_id" value="{{ factura_id|default:'' }}">
-
-            <!-- Botón Submit -->
-            <button type="submit" class="btn color-azul w-100 mt-3 rounded-3 py-3 fw-bold shadow-sm text-uppercase">
-              Confirmar Compra
-            </button>
-
           </form>
         </div>
 
@@ -177,9 +180,9 @@ function calcularYMostrarTotal() {
 
       tbody.innerHTML += `
         <tr class="border-bottom">
-          <td class="py-3 text-dark fw-semibold">${nombreItem}</td>
-          <td class="text-center"><span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill px-3 py-2">${item.cantidad}</span></td>
-          <td class="text-end fw-bold text-dark">$${subtotal.toLocaleString("es-CO")}</td>
+          <td class="py-2 text-dark fw-semibold small">${nombreItem}</td>
+          <td class="text-center"><span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">${item.cantidad}</span></td>
+          <td class="text-end fw-bold text-dark small">$${subtotal.toLocaleString("es-CO")}</td>
         </tr>
       `;
     });
@@ -201,15 +204,15 @@ function mostrarInfoPago(tipo) {
   info.classList.remove("d-none");
 
   if (tipo === "persona") {
-    info.className = "alert alert-info border-0 rounded-3 mt-3 mb-0";
-    info.innerHTML = "<i class='bi bi-info-circle-fill me-2'></i><strong>Pago en local:</strong> Realizarás el pago presencialmente al reclamar tu pedido.";
+    info.className = "alert alert-info border-0 rounded-3 mb-3";
+    info.innerHTML = "<i class='bi bi-info-circle-fill me-2'></i><strong>Pago en local:</strong> Pagas al recoger.";
     comp.classList.add("d-none");
     tipoDiv.classList.add("d-none");
   } else {
-    info.className = "alert alert-warning border-0 rounded-3 mt-3 mb-0";
+    info.className = "alert alert-warning border-0 rounded-3 mb-3";
     info.innerHTML = `
       <div class="d-flex align-items-center mb-1">
-        <i class="bi bi-bank me-2 fs-5"></i>
+        <i class="bi bi-bank me-2"></i>
         <strong>Datos bancarios:</strong>
       </div>
       <span class="d-block small ms-4">{{ datos_banco.banco }} — N°: <strong>{{ datos_banco.numero_cuenta }}</strong></span>
