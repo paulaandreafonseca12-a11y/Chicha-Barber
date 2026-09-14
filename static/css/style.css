@@ -2342,20 +2342,6 @@ body.theme-light .admin-aside a[aria-current="page"] {
     transition: all 0.3s ease-in-out;
 }
 
-.input-buscador-animado:focus {
-    letter-spacing: 0.5px; /* Ligero espaciado al escribir */
-    background-color: rgba(255, 255, 255, 0.98) !important;
-}
-
-/* Animación sutil para las etiquetas/badges */
-.badge-animado {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.badge-animado:hover {
-    transform: translateY(-2px) scale(1.05);
-}
-
 .neon-text-gold {
     color: #ffd700;
     text-shadow:
@@ -2397,6 +2383,3 @@ body.theme-light .admin-aside a[aria-current="page"] {
     border: 1px solid rgba(255, 215, 0, 0.4);
     box-shadow: 0 0 12px rgba(255, 193, 7, 0.2);
   }
-
-  
-

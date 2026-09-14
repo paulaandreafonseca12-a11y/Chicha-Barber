@@ -602,12 +602,51 @@ def perfil(request):
                         tipo='sesion',
                         descripcion='Cambió su contraseña'
                     )
-                except ValidationError as e: messages.error( request, f"❌ {e}" )
 
-    reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_reserva')
-    ventas = Venta.objects.filter(correo=request.user.email).order_by('-fecha')
-    actividades = HistorialAccion.objects.filter(usuario=request.user).order_by('-fecha')[:10]
-    
+                    messages.success(
+                        request,
+                        "✅ Contraseña actualizada."
+                    )
+
+                    return redirect('perfil')
+
+                except ValidationError as e:
+
+                    for error in e.messages:
+
+                        messages.error(
+                            request,
+                            f"❌ {error}"
+                        )
+
+    actividades = HistorialAccion.objects.all().order_by(
+        '-fecha'
+    )[:20]
+
+    # ======================================================
+    # RESERVAS DEL USUARIO
+    # ======================================================
+
+    reservas = Reserva.objects.filter(
+        usuario=request.user
+    ).order_by(
+        '-fecha_reserva'
+    )
+
+    # ======================================================
+    # VENTAS DEL USUARIO
+    # ======================================================
+
+    ventas = Venta.objects.filter(
+        correo=request.user.email
+    ).order_by(
+        '-fecha'
+    )
+
+    # ======================================================
+    # CONTEXTO
+    # ======================================================
+
     context = {
 
         'form': form,
@@ -739,7 +778,7 @@ def detalle_notificacion(request, pk):
 
                 objeto_relacionado = Reserva.objects.get(
                     pk=rel_id,
-                    cliente=request.user
+                    usuario=request.user
                 )
 
         except (

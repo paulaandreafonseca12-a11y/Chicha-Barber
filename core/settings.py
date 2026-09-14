@@ -90,6 +90,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # ======================================================
 # DATABASE (CORREGIDO A SQLITE)
 # ======================================================
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
