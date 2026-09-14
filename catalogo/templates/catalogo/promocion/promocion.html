@@ -12,11 +12,11 @@
         ====================================================== -->
         <div class="text-center mb-5">
 
-            <h1 class="display-4 fw-bold text-uppercase text-white mb-4">
+            <h1 class="display-4 fw-bold text-uppercase neon-text-gold  mb-3 titulo-animado">
                 Nuestras Promociones
             </h1>
 
-            <p class="fs-4 text-white opacity-75">
+            <p class="neon-text-white fs-5 mb-3">
                 Descubre nuestras ofertas especiales y ahorra en tus servicios preferidos.
             </p>
 
@@ -71,6 +71,19 @@
                     ================================================== -->
                     <div class="card-body d-flex flex-column text-center p-3">
 
+                        <!-- BADGE TIPO DE PROMOCIÓN -->
+                        <div class="mb-2">
+                            {% if promocion.codigo_servicio %}
+                                <span class="badge bg-info text-dark rounded-pill px-3 py-1 fw-semibold">
+                                    <i class="bi bi-scissors me-1"></i> Servicio
+                                </span>
+                            {% elif promocion.codigo_producto %}
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-semibold">
+                                    <i class="bi bi-bag-check me-1"></i> Producto
+                                </span>
+                            {% endif %}
+                        </div>
+
                         <!-- NOMBRE -->
                         <h5 class="card-title fw-bold mb-2 text-body-emphasis fs-4">
                             {{ promocion.nombre }}
@@ -116,9 +129,16 @@
                             <!-- DURACIÓN / INFORMACIÓN -->
                             <span class="text-body-secondary small fw-semibold d-flex align-items-center gap-1">
 
-                                <i class="bi bi-clock me-1"></i>
-
-                                {{ promocion.duracion|default:"Promoción especial" }}
+                                {% if promocion.codigo_servicio %}
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ promocion.codigo_servicio.duracion }} min
+                                {% elif promocion.codigo_producto %}
+                                    <i class="bi bi-box-seam me-1"></i>
+                                    {{ promocion.codigo_producto.nombre|truncatechars:18 }}
+                                {% else %}
+                                    <i class="bi bi-tag me-1"></i>
+                                    Promoción especial
+                                {% endif %}
 
                             </span>
 
@@ -137,7 +157,34 @@
                                  promocion.codigo
                             ================================================== -->
 
-                            {% if promocion.codigo %}
+                            {% if promocion.codigo_servicio %}
+
+                                <a
+                                    href="{% url 'crear_reserva_promocion' promocion.codigo %}"
+                                    class="btn btn-info text-white rounded-pill px-3 py-2 fw-semibold"
+                                    onclick="return gestionarSeleccion(event)"
+                                >
+
+                                    <i class="bi bi-calendar-check me-1"></i>
+
+                                    RESERVAR
+
+                                </a>
+
+                            {% elif promocion.codigo_producto %}
+
+                                <a
+                                    href="{% url 'productos_galeria' %}"
+                                    class="btn btn-primary text-white rounded-pill px-3 py-2 fw-semibold"
+                                >
+
+                                    <i class="bi bi-bag-check me-1"></i>
+
+                                    VER PRODUCTO
+
+                                </a>
+
+                            {% elif promocion.codigo %}
 
                                 <a
                                     href="{% url 'crear_reserva_promocion' promocion.codigo %}"

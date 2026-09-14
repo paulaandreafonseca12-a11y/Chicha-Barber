@@ -760,43 +760,48 @@ def poblar_promociones(productos, servicios):
         (
             "Semana del Fade",
             Decimal("15.00"),
-            "Descuento especial para servicios Fade.",
-            servicios[6],
+            "Descuento especial del 15% para servicios Fade profesionales.",
+            servicios[6] if len(servicios) > 6 else servicios[0],
             None,
+            "promociones/promo_fade.jpg",
         ),
         (
             "Barba Premium",
             Decimal("10.00"),
-            "Descuento especial para barba premium.",
-            servicios[3],
+            "Descuento especial del 10% en cuidado y perfilado de barba premium.",
+            servicios[3] if len(servicios) > 3 else servicios[0],
             None,
+            "promociones/promo_barba.jpg",
         ),
         (
-            "Promo Suavecito",
+            "Promo Suavecito Pomade",
             Decimal("12.00"),
-            "Descuento en productos Suavecito.",
+            "Descuento del 12% en pomada Suavecito Original en tienda.",
             None,
-            productos[0],
+            productos[0] if len(productos) > 0 else None,
+            "promociones/promo_suavecito.jpg",
         ),
         (
-            "Cuidado de barba",
+            "Cuidado de barba Reuzel",
             Decimal("15.00"),
-            "Descuento especial en aceite para barba.",
+            "Descuento especial del 15% en aceite nutritivo para barba Reuzel.",
             None,
-            productos[5],
+            productos[5] if len(productos) > 5 else (productos[0] if len(productos) > 0 else None),
+            "promociones/promo_aceite.jpg",
         ),
         (
-            "Styling profesional",
+            "Styling profesional Elegance",
             Decimal("10.00"),
-            "Promoción en productos de styling.",
+            "Promoción del 10% en polvo texturizador Elegance para estilizado.",
             None,
-            productos[9],
+            productos[9] if len(productos) > 9 else (productos[0] if len(productos) > 0 else None),
+            "promociones/promo_styling.jpg",
         ),
     ]
 
     promociones = []
 
-    for nombre, porcentaje, descripcion, servicio, producto in datos:
+    for nombre, porcentaje, descripcion, servicio, producto, imagen in datos:
 
         promocion = Promocion.objects.create(
             nombre=nombre,
@@ -807,6 +812,7 @@ def poblar_promociones(productos, servicios):
             estado=True,
             codigo_servicio=servicio,
             codigo_producto=producto,
+            imagen=imagen,
         )
 
         promociones.append(promocion)

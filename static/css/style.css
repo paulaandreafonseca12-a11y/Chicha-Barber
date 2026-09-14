@@ -1,10 +1,7 @@
 /* ── PALETA DE COLORES ── */
 .color-azul de marca { background-color: #22AED1 !important; }
 .color-azul  { background-color: #22aed1 !important; }
-.color-azuloscuro   { background-color: #2b50aa !important; }
-.color-negro{ background-color: #170212!important; }
 .color-blanco { background-color: #ffffff !important; }
-
 
 
 /* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
@@ -103,7 +100,6 @@ header a { transition: .3s; }
 /* ── PRODUCTOS ── */
 .color-negro-bg { background: #111; }
 .logo { font-weight: bold; font-size: 24px; }
-.titulo-productos { color: #22AED1; font-weight: bold; }
 
 /* ── CARDS ── */
 .card-body {
@@ -157,13 +153,13 @@ header a { transition: .3s; }
 
 /* ── variables base (modo oscuro predeterminado) ── */
 .booking-wrap {
-  --bg-card-dark: rgba(20, 20, 20, 0.75);       
-  --bg-input-dark: rgba(255, 255, 255, 0.04);  
-  --bg-input-hover: rgba(255, 255, 255, 0.08); 
-  --color-azul: #22AED1;                    
-  --accent-azul: #22aed1;                       
-  --accent-oscuro: #2b50aa;                     
-  --text-muted: #b0a8b0;                        
+  --bg-card-dark: rgba(20, 20, 20, 0.75);
+  --bg-input-dark: rgba(255, 255, 255, 0.04);
+  --bg-input-hover: rgba(255, 255, 255, 0.08);
+  --color-azul: #22AED1;
+  --accent-azul: #22aed1;
+  --accent-oscuro: #2b50aa;
+  --text-muted: #b0a8b0;
   font-family: 'Work Sans', sans-serif;
 }
 
@@ -171,7 +167,7 @@ header a { transition: .3s; }
 body.theme-light .booking-wrap {
   --bg-card-dark: #22AED1;                       /* Fondo azul de marca de tu paleta */
   --bg-input-dark: #ffffff;                      /* Cajas internas blancas limpias */
-  --bg-input-hover: rgba(34, 174, 209, 0.08); 
+  --bg-input-hover: rgba(34, 174, 209, 0.08);
   --color-azul: #030301;                    /* Los títulos pasan a negro */
   --text-muted: #8d818c;                        /* Gris de tu paleta clara */
 }
@@ -180,9 +176,9 @@ body.theme-light .booking-wrap {
 /* ── componentes del contenedor ── */
 .booking-wrap .dark-barber-card {
   background: var(--bg-card-dark) !important;
-  backdrop-filter: blur(14px);                  
+  backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;  
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6) !important;
   border-radius: 16px !important;
   transition: background-color 0.3s ease;
@@ -238,8 +234,8 @@ body.theme-light .booking-wrap .form-control-barber {
   border: 1px solid #ced4da !important;
   color: #030301 !important;
 }
-.booking-wrap .form-control-barber::placeholder { 
-  color: rgba(255, 255, 255, 0.30) !important; 
+.booking-wrap .form-control-barber::placeholder {
+  color: rgba(255, 255, 255, 0.30) !important;
 }
 body.theme-light .booking-wrap .form-control-barber::placeholder {
   color: #6c757d !important;
@@ -275,7 +271,6 @@ body.theme-light .booking-wrap .alert-barber {
   background: rgba(0, 0, 0, 0.03) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
-.time-slot::after { content: '•'; display: block; color: var(--cyan); font-size: .5rem; margin-top: 2px; }
 .time-slot:hover:not(.unavailable) { border-color: var(--cyan); background: var(--surface-hover); }
 .time-slot.selected  { background: var(--cyan); border-color: var(--cyan); color: #000; font-weight: 700; }
 .time-slot.selected::after { color: #000; }
@@ -651,7 +646,7 @@ body.theme-dark input.form-control,
   background-color: #ffffff !important;
 color: #1a1a1a !important;
 /* CAMBIO: Usamos un gris estándar visible (#ced4da) en lugar de blanco transparente */
-border: 1px solid #ced4da !important; 
+border: 1px solid #ced4da !important;
 border-radius: 5px;
 padding: 4px 8px;
 }
@@ -759,7 +754,6 @@ body.theme-light .dt-length label,
 body.theme-light .dataTables_length label {
   color: #030301 !important;
 }
-
 
 
 /* Botones Exportar DataTables */
@@ -1505,19 +1499,6 @@ body.theme-light .chat-input:focus {
 /* ==========================================================================
    BEM AUTO-GENERATED SELECTORS (Refactored from inline styles)
    ========================================================================== */
-
-.usuarios-lista-usuarios__div-1 { width:56px;height:56px;background-color:#22aed1; }
-.usuarios-lista-usuarios__span-2 { color:#030301; }
-.usuarios-lista-usuarios__h3-3 { color:#030301; }
-.usuarios-lista-usuarios__div-4 { width:56px;height:56px;background-color:#126782; }
-.usuarios-lista-usuarios__span-5 { color:#030301; }
-.usuarios-lista-usuarios__h3-6 { color:#030301; }
-.usuarios-lista-usuarios__div-7 { width:56px;height:56px;background-color:#28a745; }
-.usuarios-lista-usuarios__span-8 { color:#030301; }
-.usuarios-lista-usuarios__h3-9 { color:#030301; }
-.usuarios-lista-usuarios__div-10 { width:56px;height:56px;background-color:#dc3545; }
-.usuarios-lista-usuarios__span-11 { color:#030301; }
-.usuarios-lista-usuarios__h3-12 { color:#030301; }
 .usuarios-lista-usuarios__div-13 { background-color:#ffffff; }
 .usuarios-lista-usuarios__tr-14 { color:#030301; border-bottom:2px solid rgba(0,0,0,0.08); }
 .usuarios-lista-usuarios__tr-15 { color:#030301; }
@@ -1540,8 +1521,6 @@ body.theme-light .chat-input:focus {
 .private-perfil__button-14 { background: #EAF7FA; color: #4a3f35; }
 .private-perfil__i-15 { color: #22AED1 }
 .private-perfil__button-16 { background: #EAF7FA; color: #4a3f35; }
-.private-perfil__i-17 { color: #00b4d8 }
-.private-perfil__button-18 { background: #EAF7FA; color: #4a3f35; }
 .private-perfil__div-20 { width: 420px }
 .private-perfil__div-23 { width: 420px }
 .private-perfil__div-24 { background: #22AED1 }
@@ -1557,14 +1536,10 @@ body.theme-light .chat-input:focus {
 .private-perfil__div-36 { font-size: 0.8rem }
 .private-perfil__i-37 { font-size: 3rem }
 .private-perfil__a-38 { background: #007ca9 }
-.private-perfil__tr-39 { font-size: 0.75rem }
-.private-perfil__div-40 { font-size: 0.7rem }
-.private-perfil__i-41 { font-size: 3rem }
 .private-detalle-notificacion__div-1 { max-width: 700px; }
 .private-detalle-notificacion__div-2 { width:56px;height:56px; }
 .private-detalle-notificacion__div-3 { width:56px;height:56px; }
 .private-detalle-notificacion__h6-4 { letter-spacing:0.5px; }
-.partials-header__span-1 { display:none; }
 .partials-header__li-2 { background: rgba(255,255,255,0.03); }
 .partials-header__span-3 { font-size:0.65rem; letter-spacing:0.5px; }
 .partials-header__a-4 { color:#126782 !important; }
@@ -1585,34 +1560,11 @@ body.theme-light .chat-input:focus {
 .partials-aside__button-5 { background-color: #22aed1; }
 .partials-aside__button-7 { background-color: #22aed1; }
 .partials-aside__button-9 { background-color: #22aed1; }
-.partials-aside__button-11 { background-color: #22aed1; }
 .partials-aside__button-15 { background-color: #22aed1; }
 .partials-aside__button-17 { background-color: #22aed1; }
-.partials-aside__button-21 { background-color: #22aed1; }
-.templates-index-clientes__p-1 { margin-top: 6rem }
-.templates-index-clientes__h1-2 { color: var(--bs-emphasis-color); }
-.templates-index-clientes__span-3 { font-family: 'Playfair Display', serif; font-style: italic; }
-.templates-index-clientes__p-4 { color: var(--bs-secondary-color); }
-.templates-index-clientes__span-5 { color: var(--bs-emphasis-color); }
 .templates-index-clientes__div-6 { max-width: 340px; }
-.templates-index-clientes__div-7 { width: 40px; height: 40px; }
-.templates-index-clientes__div-8 { width: 40px; height: 40px; }
-.templates-index-clientes__div-9 { width: 40px; height: 40px; }
-.templates-index-clientes__div-10 { width: 40px; height: 40px; }
-.templates-index-clientes__div-11 { z-index: 3 }
-.templates-index-clientes__img-12 { object-fit: cover }
-.templates-index-clientes__img-13 { object-fit: cover }
-.templates-index-clientes__img-14 { object-fit: cover }
-.templates-index-clientes__img-15 { object-fit: cover }
-.templates-index-clientes__img-16 { object-fit: cover }
-.templates-index-clientes__button-17 { z-index: 3; width: 10% }
-.templates-index-clientes__span-18 { transition: all 0.3s ease }
-.templates-index-clientes__button-19 { z-index: 3; width: 10% }
-.templates-index-clientes__span-20 { transition: all 0.3s ease }
-.templates-index-clientes__iframe-29 { border: 0 }
 .templates-index-admin__div-1 { background: rgba(20, 24, 32, 0.85); backdrop-filter: blur(10px); }
 .templates-index-admin__span-2 { letter-spacing: 1.5px; }
-.templates-index-admin__div-3 { width: 56px; height: 56px; }
 .templates-index-admin__div-4 { width: 56px; height: 56px; }
 .templates-index-admin__span-5 { font-size: 0.75rem; }
 .templates-index-admin__div-6 { width: 56px; height: 56px; }
@@ -1631,34 +1583,13 @@ body.theme-light .chat-input:focus {
 .templates-index-admin__span-19 { font-size: 0.85rem; }
 .templates-index-admin__div-20 { font-size: 0.7rem; margin-top: 2px; }
 .templates-index-admin__div-21 { width: 70px; height: 70px; }
-.templates-index-admin__div-22 { border: 1px solid rgba(255, 255, 255, 0.07) !important; }
-.templates-index-admin__a-23 { border: 1px solid #2b50aa; color: #2b50aa; background-color: transparent; }
-.templates-index-admin__table-24 { background: transparent; }
-.templates-index-admin__tr-25 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.templates-index-admin__small-26 { font-size: 0.75rem; }
-.templates-base-clientes__div-1 { width: 350px; height: 400px; bottom: 20px; right: 20px; z-index: 9999; display: none; border-radius: 15px; overflow: hidden; transition: height 0.3s ease; }
-.templates-base-clientes__div-2 { height: 300px; overflow-y: auto; }
-.templates-base-clientes__button-3 { bottom: 20px; right: 20px; z-index: 9998; border-radius: 50%; width: 60px; height: 60px; border: none; }
-.templates-base-clientes__div-4 { background-color:#2b50aa; color:white; max-width:80%; }
-.templates-base-clientes__div-5 { background-color:#22AED1; color:black; max-width:80%; font-weight:bold; }
 .servicios-servicios__div-1 { width: 18rem; }
 .servicios-servicios__img-2 { height: 300px; object-fit: cover; }
 .servicios-servicios__img-3 { height: 300px; object-fit: cover; }
-.servicios-promocion__img-1 { height: 200px; object-fit: cover; }
-.servicios-promocion__img-2 { height: 200px; object-fit: cover; }
-.servicios-listado-promocion__div-1 { width: 56px; height: 56px; }
-.servicios-listado-promocion__div-2 { width: 56px; height: 56px; }
-.servicios-listado-promocion__div-3 { width: 56px; height: 56px; }
 .servicios-listado-promocion__img-4 { width: 50px; height: 50px; object-fit: cover; }
 .servicios-listado-promocion__div-5 { width: 50px; height: 50px; }
 .servicios-listado-carrusel__img-1 { width: 50px; height: 50px; object-fit: cover; }
 .servicios-listado-carrusel__div-2 { width: 50px; height: 50px; }
-.servicios-listado-calificacion__div-1 { width: 56px; height: 56px; }
-.servicios-listado-calificacion__div-2 { width: 56px; height: 56px; }
-.servicios-listado-calificacion__div-3 { width: 56px; height: 56px; }
-.servicios-listado-admin__div-1 { width: 56px; height: 56px; }
-.servicios-listado-admin__div-2 { width: 56px; height: 56px; }
-.servicios-listado-admin__div-3 { width: 56px; height: 56px; }
 .servicios-listado-admin__img-4 { width: 50px; height: 50px; object-fit: cover; }
 .servicios-listado-admin__div-5 { width: 50px; height: 50px; }
 .servicios-carrusel__img-1 { width: 50px; height: 50px; object-fit: cover; }
@@ -1741,23 +1672,7 @@ body.theme-light .chat-input:focus {
 .reservas-crear-cita-admin__div-1 { max-width: 700px; }
 .reservas-crear-cita-admin__div-2 { border-bottom: 1px solid rgba(0,0,0,0.08); }
 .productos-ver-datos-banco__th-1 { width: 35% }
-.productos-bitacora-admin__div-1 { width: 56px; height: 56px; }
-.productos-bitacora-admin__div-2 { width: 56px; height: 56px; }
-.productos-bitacora-admin__div-3 { width: 56px; height: 56px; }
-.productos-bitacora-admin__img-4 { width: 50px; height: 50px; object-fit: cover; }
-.productos-bitacora-admin__div-5 { width: 50px; height: 50px; }
 .productos-registrar-venta__div-1 { max-width: 700px }
-.productos-productos-galeria__div-1 { width: 18rem }
-.productos-productos-galeria__img-2 { height: 300px; object-fit: cover }
-.productos-productos-admin__div-1 { width: 56px; height: 56px; }
-.productos-productos-admin__div-2 { width: 56px; height: 56px; }
-.productos-productos-admin__div-3 { width: 56px; height: 56px; }
-.productos-productos-admin__img-4 { width: 50px; height: 50px; object-fit: cover; }
-.productos-productos-admin__div-5 { width: 50px; height: 50px; }
-.productos-historial-ventas__div-1 { width: 56px; height: 56px; }
-.productos-editar-bitacora__div-1 { max-width: 600px }
-.productos-editar-bitacora__i-2 { color: #126782 }
-.productos-editar-producto__img-1 { max-width:180px; }
 .productos-confirmar-eliminar__div-1 { background-color: #1a1d20; min-height: 100vh; }
 .productos-confirmar-eliminar__div-2 { max-width: 500px; }
 .configuraciones-testimonios__td-1 { max-width: 300px; }
@@ -1883,10 +1798,7 @@ body {
    -------------------------------------------------------------------------- */
 
 header,
-.navbar,
-.partials-header-admin,
-.admin-header,
-.top-header {
+.navbar{
   background: linear-gradient(
     90deg,
     #071525 0%,
@@ -1904,12 +1816,9 @@ header,
 header h1,
 header h2,
 header .navbar-brand,
-header .brand-title,
 .navbar h1,
 .navbar h2,
 .navbar .navbar-brand,
-.partials-header-admin h1,
-.partials-header-admin h2,
 .partials-header-admin .navbar-brand,
 .partials-header-admin__a-3 {
   color: #8CB7FF !important;
@@ -1926,14 +1835,12 @@ header .text-dark,
 
 /* Textos y enlaces del header */
 header a,
-.navbar a,
-.partials-header-admin a {
+.navbar a{
   color: #F8FAFC !important;
 }
 
 header a:hover,
-.navbar a:hover,
-.partials-header-admin a:hover {
+.navbar a:hover{
   color: #60A5FA !important;
 }
 
@@ -1964,8 +1871,7 @@ header .btn-primary:hover,
    -------------------------------------------------------------------------- */
 
 .admin-aside,
-aside.admin-aside,
-.partials-aside {
+aside.admin-aside{
   background: linear-gradient(
     180deg,
     #071525 0%,
@@ -1977,21 +1883,16 @@ aside.admin-aside,
 }
 
 .admin-aside a,
-aside.admin-aside a,
-.partials-aside a {
+aside.admin-aside a{
   color: #E5E7EB !important;
   transition: all 0.2s ease;
 }
 
 .admin-aside a:hover,
-aside.admin-aside a:hover,
-.partials-aside a:hover {
+aside.admin-aside a:hover{
   background: rgba(37, 99, 235, 0.13) !important;
   color: #60A5FA !important;
 }
-
-/* Dashboard activo */
-.nav-item-active-dorado,
 .partials-aside__a-2.active,
 .partials-aside__a-2[aria-current="page"] {
   background: linear-gradient(
@@ -2011,14 +1912,6 @@ aside.admin-aside a:hover,
   color: #60A5FA !important;
   border-color: rgba(37, 99, 235, 0.30) !important;
 }
-
-/* --------------------------------------------------------------------------
-   CONTENEDOR PRINCIPAL DEL PANEL
-   -------------------------------------------------------------------------- */
-
-.admin-content,
-.panel-content,
-.dashboard-content,
 main {
   color: var(--chicha-text);
 }
@@ -2065,115 +1958,18 @@ main {
    -------------------------------------------------------------------------- */
 
 /* Se conservan los nombres antiguos de las clases para no modificar HTML. */
-.stat-card-dorado {
-  background: linear-gradient(
-    145deg,
-    #0D1B2A 0%,
-    #0A1626 100%
-  ) !important;
-  border: 1px solid rgba(37, 99, 235, 0.62) !important;
-  border-radius: 8px !important;
-  color: #F8FAFC !important;
-  transition: all 0.25s ease !important;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.22) !important;
-}
-
-.stat-card-dorado:hover {
-  transform: translateY(-3px) !important;
-  border-color: #3B82F6 !important;
-  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.20) !important;
-}
-
-.stat-icon-dorado {
-  background: linear-gradient(
-    145deg,
-    #2563EB 0%,
-    #1E40AF 100%
-  ) !important;
-  color: #FFFFFF !important;
-  border: 1px solid rgba(147, 197, 253, 0.30) !important;
-  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.25) !important;
-}
-
-.stat-icon-dorado i {
-  color: #FFFFFF !important;
-}
-
-.stat-card-dorado .stat-label {
-  color: #F8FAFC !important;
-  font-weight: 600 !important;
-}
-
-.stat-card-dorado .stat-value {
-  color: #3B82F6 !important;
-  font-weight: 800 !important;
-}
 
 /* También cubre posibles nombres de clases usados durante el cambio */
-.stat-card-azul-premium {
-  background: linear-gradient(145deg, #0D1B2A, #0A1626) !important;
-  border: 1px solid rgba(37, 99, 235, 0.62) !important;
-  color: #F8FAFC !important;
-}
-
-.stat-icon-azul-premium {
-  background: linear-gradient(145deg, #2563EB, #1E40AF) !important;
-  color: #FFFFFF !important;
-}
 
 /* --------------------------------------------------------------------------
    BOTONES PRINCIPALES
    -------------------------------------------------------------------------- */
 
-.btn-dorado,
-.btn-azul-premium {
-  background: linear-gradient(
-    135deg,
-    #2563EB 0%,
-    #1E40AF 100%
-  ) !important;
-  border: 1px solid rgba(96, 165, 250, 0.35) !important;
-  color: #FFFFFF !important;
-  font-weight: 700 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 5px 16px rgba(37, 99, 235, 0.22) !important;
-  transition: all 0.2s ease !important;
-}
-
-.btn-dorado:hover,
-.btn-azul-premium:hover {
-  background: linear-gradient(
-    135deg,
-    #3B82F6 0%,
-    #2563EB 100%
-  ) !important;
-  color: #FFFFFF !important;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.30) !important;
-}
-
-.btn-outline-dorado,
-.btn-outline-azul-premium {
-  background: transparent !important;
-  border: 1px solid #3B82F6 !important;
-  color: #60A5FA !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-}
-
-.btn-outline-dorado:hover,
-.btn-outline-azul-premium:hover {
-  background: rgba(37, 99, 235, 0.12) !important;
-  color: #93C5FD !important;
-  border-color: #60A5FA !important;
-}
-
 /* --------------------------------------------------------------------------
    BOTÓN "VER AGENDA"
    -------------------------------------------------------------------------- */
 
-.templates-index-admin__a-9,
-.templates-index-admin__a-23 {
+.templates-index-admin__a-9{
   border: 1px solid #60A5FA !important;
   color: #60A5FA !important;
   background: transparent !important;
@@ -2181,8 +1977,7 @@ main {
   font-weight: 600 !important;
 }
 
-.templates-index-admin__a-9:hover,
-.templates-index-admin__a-23:hover {
+.templates-index-admin__a-9:hover{
   background: rgba(37, 99, 235, 0.12) !important;
   color: #93C5FD !important;
 }
@@ -2206,14 +2001,12 @@ main {
 }
 
 .templates-index-admin__div-15 .table,
-.templates-index-admin__table-10,
-.templates-index-admin__table-24 {
+.templates-index-admin__table-10{
   background: transparent !important;
   color: #E2E8F0 !important;
 }
 
-.templates-index-admin__tr-11,
-.templates-index-admin__tr-25 {
+.templates-index-admin__tr-11{
   color: #94A3B8 !important;
 }
 
@@ -2260,12 +2053,6 @@ main {
 .templates-index-admin__div-16 small {
   color: #94A3B8 !important;
 }
-
-/* --------------------------------------------------------------------------
-   ICONOS DEL DASHBOARD
-   -------------------------------------------------------------------------- */
-
-.templates-index-admin__div-3,
 .templates-index-admin__div-4,
 .templates-index-admin__div-6,
 .templates-index-admin__div-7 {
@@ -2277,8 +2064,6 @@ main {
   color: #FFFFFF !important;
   border: 1px solid rgba(147, 197, 253, 0.28) !important;
 }
-
-.templates-index-admin__div-3 i,
 .templates-index-admin__div-4 i,
 .templates-index-admin__div-6 i,
 .templates-index-admin__div-7 i {
@@ -2289,10 +2074,7 @@ main {
    ELEMENTOS QUE TODAVÍA PODRÍAN HEREDAR AMARILLO DEL CSS ANTERIOR
    -------------------------------------------------------------------------- */
 
-.templates-index-admin .text-warning,
-.templates-index-admin .text-gold,
-.templates-index-admin .text-champagne,
-.templates-index-admin .text-dorado {
+.templates-index-admin .text-warning{
   color: #60A5FA !important;
 }
 
@@ -2307,26 +2089,9 @@ main {
   background: #1E40AF !important;
   border-color: #1E40AF !important;
 }
-
-/* --------------------------------------------------------------------------
-   TABLAS
-   -------------------------------------------------------------------------- */
-
-.templates-index-admin table thead,
-.templates-index-admin .thead-dark,
 .templates-index-admin .table-dark {
   background: #071525 !important;
   color: #CBD5E1 !important;
-}
-
-.templates-index-admin table th {
-  color: #94A3B8 !important;
-  border-color: rgba(96, 165, 250, 0.18) !important;
-}
-
-.templates-index-admin table td {
-  color: #E2E8F0 !important;
-  border-color: rgba(96, 165, 250, 0.12) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -2552,26 +2317,11 @@ body.theme-light .admin-aside a[aria-current="page"] {
 
     color: #FFFFFF !important;
 }
-.welcome-card h1,
-.welcome-card h2,
-.welcome-card .welcome-title {
-    color: #ffffff !important;
-}
 
-.welcome-card p,
-.welcome-card .welcome-subtitle {
-    color: #cbd5e1 !important;
-}
-
-#servicios animacion al apasar el cursor 
+#servicios animacion al apasar el cursor
 
 .servicios-servicios__div-1 {
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.servicios-servicios_div-1:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3) !important;
 }
 
  .hover-scale {
@@ -2668,7 +2418,7 @@ body.theme-light .admin-aside a[aria-current="page"] {
 
 .neon-text-gold {
     color: #ffd700;
-    text-shadow: 
+    text-shadow:
       0 0 5px rgba(255, 215, 0, 0.8),
       0 0 15px rgba(255, 215, 0, 0.6),
       0 0 30px rgba(255, 183, 3, 0.5),
@@ -2688,7 +2438,7 @@ body.theme-light .admin-aside a[aria-current="page"] {
 /* Efecto de resplandor Neón Blanco */
   .neon-text-white {
     color: #ffffff;
-    text-shadow: 
+    text-shadow:
       0 0 5px rgba(255, 255, 255, 0.8),
       0 0 15px rgba(255, 255, 255, 0.6),
       0 0 30px rgba(255, 255, 255, 0.5),
@@ -2696,11 +2446,6 @@ body.theme-light .admin-aside a[aria-current="page"] {
   }
 
   /* Fondo brillante para el badge (Neón Blanco) */
-  .neon-badge-bg-white {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-  }
 
   .font-heading {
     font-family: 'Montserrat', sans-serif;
@@ -2714,4 +2459,4 @@ body.theme-light .admin-aside a[aria-current="page"] {
     box-shadow: 0 0 12px rgba(255, 193, 7, 0.2);
   }
 
-    
+
