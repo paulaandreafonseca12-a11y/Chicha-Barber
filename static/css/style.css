@@ -1633,7 +1633,6 @@ body.theme-light .chat-input:focus {
 .configuraciones-carrusel__div-3 { width: 56px; height: 56px; }
 .configuraciones-carrusel__img-4 { width: 80px; height: 60px; object-fit: cover; }
 .configuraciones-carrusel__div-5 { width:80px; height:60px; }
-
 .facturas-factura__span-1 { font-size: 0.65rem; }
 .facturas-factura-adm__div-1 { width: 56px; height: 56px; }
 .facturas-factura-adm__div-2 { width: 56px; height: 56px; }
@@ -2089,6 +2088,14 @@ body.theme-light .partials-header-admin {
     border-bottom: 1px solid rgba(37, 99, 235, 0.35) !important;
 }
 
+body.theme-light .partials-header-admin h1,
+body.theme-light .partials-header-admin h2,
+body.theme-light .partials-header-admin h3,
+body.theme-light .partials-header-admin .navbar-brand,
+body.theme-light .partials-header-admin__a-3 {
+    color: #8CB7FF !important;
+    font-weight: 700 !important;
+}
 
 body.theme-light .partials-header-admin .btn {
     color: #FFFFFF !important;
