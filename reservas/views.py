@@ -78,14 +78,20 @@ def crear_reserva(request, servicio_id=None):
         turno_id = reserva_data.get('turno_id')
         telefono = reserva_data.get('telefono_usuario')
         observacion = reserva_data.get('observacion')
+        correo = reserva_data.get('correo_usuario')
+        nombre = reserva_data.get('nombre_usuario')
         try:
             agenda_obj = Agenda.objects.get(pk=turno_id, estado='disponible')
             precio = servicio.precio
+            fecha_hora_turno = datetime.combine(agenda_obj.fecha, agenda_obj.hora_inicio)
 
             reserva = Reserva.objects.create(
                 agenda=agenda_obj,  # <-- Actualizado de 'turno' a 'agenda'
                 usuario=request.user,
                 telefono_usuario=telefono,
+                nombre_usuario=nombre,
+                correo_usuario=correo,
+                fecha_reserva=fecha_hora_turno,
                 observacion=observacion,
                 servicio=servicio,
                 precio_historico=precio,
@@ -108,16 +114,18 @@ def crear_reserva(request, servicio_id=None):
             #     subtotal=precio
             # )
 
-            correo = None
-            nombre = None
-            enviar_correo_reserva(
-                correo_cliente=correo,
-                nombre=nombre,
-                servicio=servicio,
-                fecha=datetime.combine(agenda_obj.fecha, agenda_obj.hora_inicio),
-            )
+            try:
+                enviar_correo_reserva(
+                    correo_cliente=correo,
+                    nombre=nombre,
+                    servicio=servicio,
+                    fecha=fecha_hora_turno,
+                )
+            except Exception as mail_error:
+                print(f"Error al enviar correo de reserva: {mail_error}")
+
             messages.success(request, '¡Te has registrado con éxito y tu reserva ha sido confirmada!')
-            return redirect(f"{reverse('carrito')}?reserva_id={reserva.id}&reserva_servicio={reserva.servicio.nombre}&reserva_fecha={agenda_obj.fecha.isoformat()}&reserva_hora={agenda_obj.hora_inicio.strftime('%H:%M')}&reserva_precio={float(reserva.precio_historico or precio)}")
+            return redirect(reverse('reserva_confirmada', kwargs={'pk': reserva.id}))
         except Agenda.DoesNotExist:
             messages.error(request, 'El turno que habías seleccionado ya no está disponible.')
         except Exception as e:
@@ -142,20 +150,23 @@ def crear_reserva(request, servicio_id=None):
 
     if request.method == 'POST':
         turno_id = request.POST.get('turno_id')
-        telefono = request.POST.get('telefono_usuario', '').strip()
+        # Estos nombres deben coincidir EXACTAMENTE con los "name" de los <input> en reservas.html
+        telefono = request.POST.get('telefono_cliente', '').strip()
+        correo = request.POST.get('correo_cliente', '').strip()
+        nombre = request.POST.get('nombre_cliente', '').strip()
         observacion = request.POST.get('observacion', '').strip()
 
         if not request.user.is_authenticated:
             request.session['reserva_pendiente'] = {
                 'turno_id': turno_id,
                 'telefono_usuario': telefono,
+                'correo_usuario': correo,
+                'nombre_usuario': nombre,
                 'observacion': observacion,
             }
             messages.info(request, 'Por favor, regístrate o inicia sesión para confirmar tu reserva.')
             login_url = reverse('registro')
             return redirect(f'{login_url}?next={request.get_full_path()}')
-
-        # (La lógica del nombre se ha eliminado)
 
         context_error = {
             'servicio': servicio,
@@ -177,11 +188,15 @@ def crear_reserva(request, servicio_id=None):
                 agenda_obj = Agenda.objects.select_for_update().get(pk=turno_id, estado='disponible')
                 
                 precio = servicio.precio
+                fecha_hora_turno = datetime.combine(agenda_obj.fecha, agenda_obj.hora_inicio)
 
                 reserva = Reserva.objects.create(
                     agenda=agenda_obj,
                     usuario=request.user if request.user.is_authenticated else None,
                     telefono_usuario=telefono,
+                    nombre_usuario=nombre,
+                    correo_usuario=correo,
+                    fecha_reserva=fecha_hora_turno,
                     observacion=observacion,
                     servicio=servicio,
                     precio_historico=precio,
@@ -212,16 +227,17 @@ def crear_reserva(request, servicio_id=None):
                     correo_cliente=correo,
                     nombre=nombre,
                     servicio=servicio,
-                    fecha=datetime.combine(agenda_obj.fecha, agenda_obj.hora_inicio),
+                    fecha=fecha_hora_turno,
                 )
             except Exception as mail_error:
                 print(f"Error al enviar correo de reserva: {mail_error}")
 
-            return redirect(f"{reverse('carrito')}?reserva_id={reserva.id}&reserva_servicio={reserva.servicio.nombre}&reserva_fecha={agenda_obj.fecha.isoformat()}&reserva_hora={agenda_obj.hora_inicio.strftime('%H:%M')}&reserva_precio={float(reserva.precio_historico or precio)}")
+            messages.success(request, '¡Tu reserva ha sido confirmada!')
+            return redirect(reverse('reserva_confirmada', kwargs={'pk': reserva.id}))
         except Agenda.DoesNotExist:
             reserva_existente = Reserva.objects.filter(agenda_id=turno_id).first()
             if reserva_existente:
-                return redirect(f"{reverse('carrito')}?reserva_id={reserva_existente.id}&reserva_servicio={reserva_existente.servicio.nombre}&reserva_fecha={reserva_existente.agenda.fecha.isoformat()}&reserva_hora={reserva_existente.agenda.hora_inicio.strftime('%H:%M')}&reserva_precio={float(reserva_existente.precio_historico or 0)}")
+                return redirect(reverse('reserva_confirmada', kwargs={'pk': reserva_existente.id}))
             messages.error(request, '¡Ups! El turno seleccionado ya no está disponible. Por favor elige otro.')
         except Exception as e:
             messages.error(request, f'Error al crear la reserva: {e}')
@@ -307,7 +323,7 @@ def cancelar_cita(request, pk):
             ),
             url="/admin-reservas/",
         )
-    messages.warning(request, f'Cita cancelada: {cita.usuario_nombre}')
+    messages.warning(request, f'Cita cancelada: {cita.nombre_cliente}')
     return redirect('ver_agenda')
 
 
@@ -573,7 +589,7 @@ def desactivar_dia_agenda(request, fecha_str):
         try:
             enviar_correo_cancelacion_admin(
                 correo_cliente=reserva.correo_usuario,
-                nombre=reserva.usuario_nombre,
+                nombre=reserva.nombre_cliente,
                 servicio=reserva.servicio.nombre,
                 fecha=reserva.fecha_reserva
             )

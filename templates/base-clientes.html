@@ -18,6 +18,19 @@
     {% include 'partials/header.html' %}
 
     <main class="d-flex flex-column">
+
+        {% if messages %}
+        <div class="container mt-3" style="max-width: 700px;">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm"
+                 role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </main>
