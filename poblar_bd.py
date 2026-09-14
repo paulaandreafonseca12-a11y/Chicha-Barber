@@ -1,21 +1,6 @@
-"""
-==============================================================================
-CHICHA BARBER STUDIO - SCRIPT DE POBLACIÓN DE BASE DE DATOS
-==============================================================================
-Este script puebla la base de datos de Chicha Barber con datos coherentes,
-realistas y completamente alineados con la arquitectura actual de modelos:
-  - usuarios: Usuario, RegistroActividad, Notificacion
-  - servicios: Servicios, Calificacion
-  - reservas: Agenda, Reserva
-  - catalogo: Categoria, Marca, Proveedor, DetalleProducto, Producto,
-              MovimientoProducto, Promocion
-  - compra: Compra, DetalleCompra
-  - venta: Venta, DetalleVenta, DetallePagos
-  - configuraciones: Carrusel, Configuracion
-  - historial: Bitacora
-  - soporte: CategoriaAyuda, TicketSoporte
-==============================================================================
-"""
+# ==========================================================
+# POBLAR BASE DE DATOS - CHICHA BARBER STUDIO
+# ==========================================================
 
 import os
 import django
@@ -74,11 +59,31 @@ from catalogo.models import (
     MovimientoProducto,
     Promocion,
 )
-from compra.models import Compra, DetalleCompra
-from venta.models import Venta, DetalleVenta, DetallePagos
-from configuraciones.models import Carrusel, Configuracion
-from historial.models import Bitacora
-from soporte.models import CategoriaAyuda, TicketSoporte
+
+
+from compra.models import (
+    Compra,
+    DetalleCompra,
+)
+
+
+from venta.models import (
+    Venta,
+    DetalleVenta,
+    DetallePagos,
+)
+
+
+from historial.models import (
+    Bitacora,
+)
+
+
+from configuraciones.models import (
+    Carrusel,
+    Configuracion,
+)
+
 
 
 # ==========================================================
@@ -98,71 +103,54 @@ def limpiar_datos():
     print("LIMPIANDO BASE DE DATOS")
     print("=" * 60)
 
-    
-
-        # Historial
-    Bitacora.objects.all().delete()
-    print("  ✓ Bitácora limpiada.")
-
-        # Configuraciones
+  
+    # Configuración
     Configuracion.objects.all().delete()
     Carrusel.objects.all().delete()
-    print("  ✓ Configuraciones y Carrusel limpiados.")
 
-        # Ventas
+    # Historial
+    Bitacora.objects.all().delete()
+
+    # Pagos y ventas
     DetallePagos.objects.all().delete()
     DetalleVenta.objects.all().delete()
     Venta.objects.all().delete()
-    print("  ✓ Ventas, detalles y pagos limpiados.")
 
     # Compras
     DetalleCompra.objects.all().delete()
     Compra.objects.all().delete()
 
-        # Catálogo
+    # Movimientos
+    MovimientoProducto.objects.all().delete()
 
+    # Promociones
     Promocion.objects.all().delete()
 
-    MovimientoProducto.objects.all().delete()
+    # Productos
     Producto.objects.all().delete()
     DetalleProducto.objects.all().delete()
+
+    # Catálogo
     Marca.objects.all().delete()
-    Proveedor.objects.all().delete()
     Categoria.objects.all().delete()
-    print("  ✓ Catálogo de productos e inventario limpiados.")
+    Proveedor.objects.all().delete()
 
-        Promocion.objects.all().delete()
+    # Reservas
+    Reserva.objects.all().delete()
+    Agenda.objects.all().delete()
 
-        MovimientoProducto.objects.all().delete()
-        Producto.objects.all().delete()
-        DetalleProducto.objects.all().delete()
-        Marca.objects.all().delete()
-        Proveedor.objects.all().delete()
-        Categoria.objects.all().delete()
-        print("  ✓ Catálogo de productos e inventario limpiados.")
-n
+    # Servicios
+    Calificacion.objects.all().delete()
+    Servicios.objects.all().delete()
 
-        # Reservas y Servicios
-        Reserva.objects.all().delete()
-        Agenda.objects.all().delete()
-        Calificacion.objects.all().delete()
-        Servicios.objects.all().delete()
-        print("  ✓ Reservas, agendas, calificaciones y servicios limpiados.")
+    # Notificaciones e historial de usuarios
+    Notificacion.objects.all().delete()
+    HistorialAccion.objects.all().delete()
 
-        # Notificaciones y Actividades
-        Notificacion.objects.all().delete()
-        HistorialAccion.objects.all().delete()
+    # Usuarios
+    Usuario.objects.all().delete()
 
-        # Usuarios de prueba (conservar solo si se desea el admin personalizado)
-        Usuario.objects.exclude(email="a@b.com").delete()
-        print("  ✓ Usuarios anteriores limpiados.")
-
-        print("=> Base de datos preparada para inserción limpia.")
-
-    except Exception as e:
-        print(f"⚠️ Error limpiando datos: {e}")
-        import traceback
-        traceback.print_exc()
+    print("✓ Datos anteriores eliminados correctamente.")
 
 
 # ==========================================================
@@ -1341,50 +1329,9 @@ def poblar_configuraciones(
     return configuraciones
 
 
-# ============================================================================
-# 13. POBLAR SOPORTE Y TICKETS
-# ============================================================================
-def poblar_soporte(clientes):
-    print("\n" + "=" * 60)
-    print(" 10. POBLANDO CATEGORÍAS DE AYUDA Y TICKETS DE SOPORTE")
-    print("=" * 60)
-
-    categorias_ayuda_data = [
-        ("Reservas y Citas", "bi-calendar-check", "reservas-citas", "Consultas y cancelaciones de turnos agendados."),
-        ("Compras y Envíos", "bi-box-seam", "compras-envios", "Estado de pedidos, productos y despacho a domicilio."),
-        ("Pagos y Facturación", "bi-credit-card", "pagos-facturacion", "Medios de pago, transferencias y comprobantes."),
-        ("Cuenta y Acceso", "bi-person-gear", "cuenta-acceso", "Restablecimiento de contraseña y actualización de datos."),
-    ]
-
-    cats_soporte = []
-    for nom, ico, slug, desc in categorias_ayuda_data:
-        cat_s, _ = CategoriaAyuda.objects.get_or_create(
-            slug=slug,
-            defaults={
-                "nombre": nom,
-                "icono": ico,
-                "descripcion": desc
-            }
-        )
-        cats_soporte.append(cat_s)
-        print(f"  ✓ Categoría de soporte: {cat_s.nombre}")
-
-    tickets_data = [
-        ("¿Cómo puedo reprogramar mi cita?", "Necesito cambiar mi reserva para la próxima semana a la misma hora.", "ABIERTO"),
-        ("Duda con el pago por transferencia", "Ya envié el comprobante bancario, deseo confirmar la aprobación de mi compra.", "CERRADO"),
-        ("Disponibilidad de pomada Suavecito", "Quisiera saber si tienen stock disponible para recoger directamente en la barbería.", "ABIERTO"),
-    ]
-
-    for asunto, desc, est in tickets_data:
-        TicketSoporte.objects.create(
-            usuario=random.choice(clientes),
-            categoria=random.choice(cats_soporte),
-            asunto=asunto,
-            descripcion=desc,
-            estado=est
-        )
-
-    print("  ✓ Tickets de soporte iniciales creados.")
+# ==========================================================
+# SOPORTE
+# ==========================================================
 
 
 # ==========================================================
@@ -1571,36 +1518,96 @@ def poblar_base_datos():
         productos,
     )
 
-    # 8. Configuraciones y carrusel
-    poblar_configuraciones(admin)
+    # ------------------------------------------------------
+    # 15. CARRUSEL
+    # ------------------------------------------------------
 
-    # 9. Bitácora de historial
-    poblar_historial(admin, productos)
+    carruseles = poblar_carrusel()
 
-    # 10. Soporte técnico
-    poblar_soporte(clientes)
+    # ------------------------------------------------------
+    # 16. CONFIGURACIONES
+    # ------------------------------------------------------
 
-    print("\n" + "=" * 65)
-    print("   ¡BASE DE DATOS POBLADA EXITOSAMENTE AL 100%!")
-    print("=" * 65)
-    print(f"  • Usuarios registrados:      {Usuario.objects.count()}")
-    print(f"  • Servicios disponibles:     {Servicios.objects.count()}")
-    print(f"  • Calificaciones:            {Calificacion.objects.count()}")
-    print(f"  • Agendas de barberos:       {Agenda.objects.count()}")
-    print(f"  • Reservas de clientes:      {Reserva.objects.count()}")
-    print(f"  • Categorías de productos:   {Categoria.objects.count()}")
-    print(f"  • Marcas aliadas:            {Marca.objects.count()}")
-    print(f"  • Proveedores:               {Proveedor.objects.count()}")
-    print(f"  • Productos activos:         {Producto.objects.count()}")
-    print(f"  • Movimientos de stock:      {MovimientoProducto.objects.count()}")
-    print(f"  • Promociones vigentes:      {Promocion.objects.count()}")
-    print(f"  • Órdenes de compra:         {Compra.objects.count()}")
-    print(f"  • Ventas completadas:        {Venta.objects.count()}")
-    print(f"  • Registros en bitácora:     {Bitacora.objects.count()}")
-    print(f"  • Slides de carrusel:        {Carrusel.objects.count()}")
-    print(f"  • Tickets de soporte:        {TicketSoporte.objects.count()}")
-    print("-" * 65)
-    print("  Credenciales de Administrador:")
-    print("  Usuario:  a@b.com")
-    print("  Clave:    @dmin123")
-    print("=" * 65 + "\n")
+    poblar_configuraciones(
+        admin,
+        carruseles,
+        historial,
+    )
+
+    # ------------------------------------------------------
+    # 17. SOPORTE
+    # ------------------------------------------------------
+
+
+    # ------------------------------------------------------
+    # 18. NOTIFICACIONES
+    # ------------------------------------------------------
+
+    poblar_notificaciones(
+        admin,
+        barberos,
+        clientes,
+    )
+
+    # ------------------------------------------------------
+    # FINAL
+    # ------------------------------------------------------
+
+    print("\n" + "=" * 60)
+    print("      BASE DE DATOS POBLADA CORRECTAMENTE")
+    print("=" * 60)
+
+    print("\nUSUARIOS DE PRUEBA")
+    print("-" * 60)
+
+    print(
+        "Administrador:"
+        "\n  Correo: admin@chichabarber.com"
+        "\n  Contraseña: Admin123*"
+    )
+
+    print(
+        "\nBarberos:"
+        "\n  Correo: barbero1@chichabarber.com"
+        "\n  Contraseña: Barbero123*"
+    )
+
+    print(
+        "\nClientes:"
+        "\n  Correo: cliente1@gmail.com"
+        "\n  Contraseña: Cliente123*"
+    )
+
+    print("\n" + "=" * 60)
+    print("Puedes iniciar el servidor con:")
+    print("python manage.py runserver")
+    print("=" * 60)
+
+
+# ==========================================================
+# EJECUTAR
+# ==========================================================
+
+if __name__ == "__main__":
+
+    try:
+
+        poblar_base_datos()
+
+    except Exception as error:
+
+        print("\n" + "=" * 60)
+        print("ERROR AL POBLAR LA BASE DE DATOS")
+        print("=" * 60)
+
+        print(
+            f"\n{type(error).__name__}: {error}"
+        )
+
+        print(
+            "\nLa transacción fue cancelada "
+            "y los cambios realizados durante "
+            "esta ejecución no se conservarán."
+        )
+
+        raise

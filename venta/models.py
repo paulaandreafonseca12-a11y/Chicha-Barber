@@ -234,10 +234,10 @@ class DetalleVenta(models.Model):
                 codigo_detalle_producto=detalle_prod_obj,
                 tipo="salida",
                 cantidad=self.cantidad,
-                observacion=(
+                observacion=
                     f"Salida por Venta "
                     f"#{self.codigo_venta.codigo_venta}"
-
+            )
             self.codigo_movimiento_producto = movimiento
 
             super().save(
