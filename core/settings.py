@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'venta',
     'historial',
     'chat_ia',
-    'soporte',
+    
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
