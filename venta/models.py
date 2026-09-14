@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -87,10 +87,12 @@ class Venta(models.Model):
     )
 
     def actualizar_total(self):
-        self.total_venta = sum(
+        total = sum(
             detalle.subtotal
             for detalle in self.detalles.all()
         )
+
+        self.total_venta = total
 
         self.save(
             update_fields=["total_venta"]
@@ -177,11 +179,16 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
-        detalle_prod_obj = (
-            self.codigo_producto.codigo_detalle_producto
-        )
+        # --------------------------------------------------
+        # OBTENER INFORMACIÓN DEL PRODUCTO
+        # --------------------------------------------------
 
-        if not detalle_prod_obj:
+        try:
+            detalle_producto = (
+                self.codigo_producto.detalle_producto
+            )
+
+        except Exception:
             raise ValueError(
                 f"El producto "
                 f"'{self.codigo_producto.nombre}' "
@@ -191,13 +198,13 @@ class DetalleVenta(models.Model):
         # Validar stock únicamente al crear
         if not self.pk:
 
-            if self.cantidad > detalle_prod_obj.cantidad_actual:
+            if self.cantidad > detalle_producto.cantidad_actual:
 
                 raise ValueError(
                     f"Stock insuficiente para "
                     f"'{self.codigo_producto.nombre}'. "
                     f"Disponible: "
-                    f"{detalle_prod_obj.cantidad_actual}"
+                    f"{detalle_producto.cantidad_actual}"
                 )
 
         precio_venta = (
@@ -213,51 +220,57 @@ class DetalleVenta(models.Model):
             0
         )
 
-        super().save(*args, **kwargs)
+        # --------------------------------------------------
+        # GUARDAR Y ACTUALIZAR STOCK
+        # --------------------------------------------------
 
-        # Crear movimiento de salida solamente una vez
-        if not self.codigo_movimiento_producto:
+        with transaction.atomic():
 
-            movimiento = (
-                MovimientoProducto.objects.create(
-                    codigo_detalle_producto=detalle_prod_obj,
+            super().save(*args, **kwargs)
+
+            # Crear movimiento de salida solamente una vez
+            if not self.codigo_movimiento_producto:
+
+                # ----------------------------------------------
+                # CREAR MOVIMIENTO DE SALIDA
+                # ----------------------------------------------
+
+                movimiento = MovimientoProducto.objects.create(
+                    codigo_detalle_producto=detalle_producto,
                     tipo="salida",
                     cantidad=self.cantidad,
                     observacion=(
-                        f"Salida por Venta #"
-                        f"{self.codigo_venta.codigo_venta}"
-                    )
+                        f"Salida por Venta "
+                        f"#{self.codigo_venta.codigo_venta}"
+                    ),
                 )
-            )
 
-            movimiento = MovimientoProducto.objects.create(
-                codigo_detalle_producto=detalle_prod_obj,
-                tipo="salida",
-                cantidad=self.cantidad,
-                observacion=
-                    f"Salida por Venta "
-                    f"#{self.codigo_venta.codigo_venta}"
-            )
-            self.codigo_movimiento_producto = movimiento
+                self.codigo_movimiento_producto = movimiento
 
-            super().save(
-                update_fields=[
-                    "codigo_movimiento_producto"
-                ]
-            )
+                super().save(
+                    update_fields=[
+                        "codigo_movimiento_producto"
+                    ]
+                )
 
-            detalle_prod_obj.cantidad_actual -= (
-                self.cantidad
-            )
+                # ------------------------------------------
+                # DESCONTAR STOCK
+                # ------------------------------------------
 
-            detalle_prod_obj.save(
-                update_fields=[
-                    "cantidad_actual",
-                    "fecha_actualizacion"
-                ]
-            )
+                detalle_producto.cantidad_actual -= self.cantidad
 
-        self.codigo_venta.actualizar_total()
+                detalle_producto.save(
+                    update_fields=[
+                        "cantidad_actual",
+                        "fecha_actualizacion",
+                    ]
+                )
+
+                # ----------------------------------------------
+                # ACTUALIZAR TOTAL DE LA VENTA
+                # ----------------------------------------------
+
+                self.codigo_venta.actualizar_total()
 
     def __str__(self):
         return (
@@ -323,51 +336,16 @@ class DetallePagos(models.Model):
     )
 
     # ======================================================
-    # CREAR / OBTENER PAGO DE UNA VENTA ESPECÍFICA
+    # OBTENER DATOS DE TRANSFERENCIA
     # ======================================================
 
     @classmethod
-    def get_or_create_para_venta(
-        cls,
-        venta,
-        **kwargs
-    ):
+    def get_solo(cls):
         """
-        Obtiene o crea el detalle de pago
-        correspondiente a una venta específica.
+        Retorna el primer detalle de pago registrado
+        como referencia sin forzar pk=1.
         """
-
-        defaults = {
-            "banco": kwargs.get(
-                "banco",
-                "Bancolombia"
-            ),
-
-            "tipo_cuenta": kwargs.get(
-                "tipo_cuenta",
-                "Ahorros"
-            ),
-
-            "numero_cuenta": kwargs.get(
-                "numero_cuenta",
-                "123-456789-01"
-            ),
-
-            "titular": kwargs.get(
-                "titular",
-                "Chicha Barber Studio SAS"
-            ),
-
-            "instrucciones": kwargs.get(
-                "instrucciones",
-                "Comprobante registrado en proceso de verificación."
-            ),
-        }
-
-        return cls.objects.get_or_create(
-            codigo_venta=venta,
-            defaults=defaults
-        )
+        return cls.objects.first()
 
     def __str__(self):
         return (

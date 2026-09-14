@@ -52,9 +52,9 @@ $(document).ready(function () {
         if (rol === '') {
             table.column(3).search('').draw();
         } else if (rol === 'cliente') {
-            table.column(3).search('Cliente', false, false, false).draw();
+            table.column(3).search('Cliente', false, false, true).draw();
         } else if (rol === 'barbero') {
-            table.column(3).search('Barbero', false, false, false).draw();
+            table.column(3).search('Barbero', false, false, true).draw();
         }
     });
 });
