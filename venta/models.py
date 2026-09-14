@@ -198,13 +198,13 @@ class DetalleVenta(models.Model):
         # Validar stock únicamente al crear
         if not self.pk:
 
-            if self.cantidad > detalle_prod_obj.cantidad_actual:
+            if self.cantidad > detalle_producto.cantidad_actual:
 
                 raise ValueError(
                     f"Stock insuficiente para "
                     f"'{self.codigo_producto.nombre}'. "
                     f"Disponible: "
-                    f"{detalle_prod_obj.cantidad_actual}"
+                    f"{detalle_producto.cantidad_actual}"
                 )
 
         precio_venta = (
@@ -226,14 +226,14 @@ class DetalleVenta(models.Model):
 
         with transaction.atomic():
 
-        # Crear movimiento de salida solamente una vez
-        if not self.codigo_movimiento_producto:
+            super().save(*args, **kwargs)
 
-            # ----------------------------------------------
-            # CREAR MOVIMIENTO DE SALIDA
-            # ----------------------------------------------
-
+            # Crear movimiento de salida solamente una vez
             if not self.codigo_movimiento_producto:
+
+                # ----------------------------------------------
+                # CREAR MOVIMIENTO DE SALIDA
+                # ----------------------------------------------
 
                 movimiento = MovimientoProducto.objects.create(
                     codigo_detalle_producto=detalle_producto,
@@ -247,22 +247,17 @@ class DetalleVenta(models.Model):
 
                 self.codigo_movimiento_producto = movimiento
 
-            super().save(
-                update_fields=[
-                    "codigo_movimiento_producto"
-                ]
-            )
+                super().save(
+                    update_fields=[
+                        "codigo_movimiento_producto"
+                    ]
+                )
 
-            # ------------------------------------------
-            # DESCONTAR STOCK
-            # ------------------------------------------
+                # ------------------------------------------
+                # DESCONTAR STOCK
+                # ------------------------------------------
 
-            detalle_prod_obj.save(
-                update_fields=[
-                    "cantidad_actual",
-                    "fecha_actualizacion"
-                ]
-            )
+                detalle_producto.cantidad_actual -= self.cantidad
 
                 detalle_producto.save(
                     update_fields=[
@@ -271,11 +266,11 @@ class DetalleVenta(models.Model):
                     ]
                 )
 
-            # ----------------------------------------------
-            # ACTUALIZAR TOTAL DE LA VENTA
-            # ----------------------------------------------
+                # ----------------------------------------------
+                # ACTUALIZAR TOTAL DE LA VENTA
+                # ----------------------------------------------
 
-            self.codigo_venta.actualizar_total()
+                self.codigo_venta.actualizar_total()
 
     def __str__(self):
         return (

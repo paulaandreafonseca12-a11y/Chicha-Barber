@@ -1,11 +1,11 @@
 {% load static %}
 
-<header class="p-3 color-negro-bg">
+<header class="p-3 navbar-dorado">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
       <!-- Logo -->
-      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
         <img src="{% static 'img/logo.png' %}"
              alt="Chicha Barber"
              height="55"
@@ -16,31 +16,31 @@
       <!-- Menú de Navegación Dinámico -->
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-4">
         <li>
-          <a href="/" class="nav-link px-2 {% if request.path == '/' %}text-white fw-bold{% else %}text-white-50{% endif %}">Inicio</a>
+          <a href="/" class="nav-link px-2 {% if request.path == '/' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Inicio</a>
         </li>
         <li>
-          <a href="{% url 'servicios' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'servicios' %}text-white fw-bold{% else %}text-white-50{% endif %}">Servicios</a>
+          <a href="{% url 'servicios' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'servicios' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Servicios</a>
         </li>
         <li>
-          <a href="{% url 'productos_galeria' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'productos_galeria' %}text-white fw-bold{% else %}text-white-50{% endif %}">Productos</a>
+          <a href="{% url 'productos_galeria' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'productos_galeria' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Productos</a>
         </li>
         <li>
-          <a href="{% url 'promocion' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'promocion' %}text-white fw-bold{% else %}text-white-50{% endif %}">Promociones</a>
+          <a href="{% url 'promocion' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'promocion' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Promociones</a>
         </li>
         
       </ul>
 
       <!-- Sección Derecha (Campana, Carrito, Perfil) -->
-      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-white">
+      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-dark">
 
         {% if user.is_authenticated %}
           {% include "partials/campanita.html" with estilo_campanita="cliente" %}
         {% endif %}
 
         <a href="{% url 'carrito' %}"
-           class="btn btn-warning position-relative rounded-circle d-flex align-items-center justify-content-center shadow color-champaña">
+           class="btn btn-dark position-relative rounded-circle d-flex align-items-center justify-content-center shadow">
 
-          <i class="bi bi-cart3 fs-5 text-dark"></i>
+          <i class="bi bi-cart3 fs-5 text-warning"></i>
 
           <span id="contador" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;">
             0
@@ -50,7 +50,7 @@
 
         {% if user.is_authenticated %}
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-info rounded-pill px-3 py-1 text-white"
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 btn btn-outline-dark rounded-pill px-3 py-1 text-dark"
              href="#"
              id="navbarDropdown"
              role="button"
@@ -124,8 +124,8 @@
           </ul>
         </div>
         {% else %}
-          <a class="btn btn-outline-light rounded-pill px-3 py-2" href="{% url 'login' %}">Iniciar Sesi&oacute;n</a>
-          <a class="btn btn-info rounded-pill px-3 py-2 text-dark fw-bold" href="{% url 'registro' %}">Registrarse</a>
+          <a class="btn btn-outline-dark rounded-pill px-3 py-2" href="{% url 'login' %}">Iniciar Sesi&oacute;n</a>
+          <a class="btn btn-dark rounded-pill px-3 py-2 text-warning fw-bold" href="{% url 'registro' %}">Registrarse</a>
         {% endif %}
 
       </div>

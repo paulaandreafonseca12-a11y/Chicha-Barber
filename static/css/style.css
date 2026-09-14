@@ -4,8 +4,10 @@
 .color-azuloscuro   { background-color: #2b50aa !important; }
 .color-negro{ background-color: #170212!important; }
 .color-blanco { background-color: #ffffff !important; }
-
-
+.navbar-dorado {
+  background: linear-gradient(90deg, #FFC107 0%, #FFD700 100%);
+  box-shadow: 0 2px 20px rgba(255, 193, 7, 0.35);
+}
 
 /* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
 .theme-switch-item {
@@ -1925,17 +1927,10 @@ body {
    y evita que quede oscuro/invisible sobre el fondo.
    -------------------------------------------------------------------------- */
 
-header,
-.navbar,
 .partials-header-admin,
 .admin-header,
 .top-header {
-  background: linear-gradient(
-    90deg,
-    #071525 0%,
-    #0B1F3A 55%,
-    #08182B 100%
-  ) !important;
+  background: linear-gradient(90deg, #071525 0%, #0B1F3A 55%, #08182B 100%) !important;
   color: var(--chicha-text) !important;
   border-bottom: 1px solid rgba(37, 99, 235, 0.30) !important;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28) !important;
@@ -1943,14 +1938,6 @@ header,
   z-index: 1030;
 }
 
-/* Título superior */
-header h1,
-header h2,
-header .navbar-brand,
-header .brand-title,
-.navbar h1,
-.navbar h2,
-.navbar .navbar-brand,
 .partials-header-admin h1,
 .partials-header-admin h2,
 .partials-header-admin .navbar-brand,
@@ -1961,46 +1948,35 @@ header .brand-title,
 }
 
 /* Si el título está dentro de un elemento de texto */
-header .text-dark,
-.navbar .text-dark,
 .partials-header-admin .text-dark {
   color: #8CB7FF !important;
 }
 
-/* Textos y enlaces del header */
-header a,
-.navbar a,
 .partials-header-admin a {
   color: #F8FAFC !important;
 }
 
-header a:hover,
-.navbar a:hover,
 .partials-header-admin a:hover {
   color: #60A5FA !important;
 }
 
-/* Botón de usuario y campanita */
-header .btn,
-.navbar .btn,
+
 .partials-header-admin .btn {
   transition: all 0.2s ease;
 }
 
-header .btn-primary,
-.navbar .btn-primary,
 .partials-header-admin .btn-primary {
   background: var(--chicha-blue) !important;
   border-color: var(--chicha-blue) !important;
   color: #fff !important;
 }
 
-header .btn-primary:hover,
-.navbar .btn-primary:hover,
 .partials-header-admin .btn-primary:hover {
   background: var(--chicha-blue-light) !important;
   border-color: var(--chicha-blue-light) !important;
 }
+
+
 
 /* --------------------------------------------------------------------------
    SIDEBAR
@@ -2397,45 +2373,31 @@ main {
    NO AFECTA EL MODO OSCURO
    ============================================================ */
 
-/* HEADER SUPERIOR */
-body.theme-light .partials-header-admin,
-body.theme-light header,
-body.theme-light .navbar {
-    background: linear-gradient(
-        90deg,
-        #071525 0%,
-        #0B1F3A 55%,
-        #08182B 100%
-    ) !important;
-
+body.theme-light .partials-header-admin {
+    background: linear-gradient(90deg, #071525 0%, #0B1F3A 55%, #08182B 100%) !important;
     color: #F8FAFC !important;
     border-bottom: 1px solid rgba(37, 99, 235, 0.35) !important;
 }
 
-/* Título: Administración de Chicha Barber Studio */
 body.theme-light .partials-header-admin h1,
 body.theme-light .partials-header-admin h2,
 body.theme-light .partials-header-admin h3,
 body.theme-light .partials-header-admin .navbar-brand,
-body.theme-light .partials-header-admin__a-3,
-body.theme-light header h1,
-body.theme-light header h2 {
+body.theme-light .partials-header-admin__a-3 {
     color: #8CB7FF !important;
     font-weight: 700 !important;
 }
 
-/* Botones del header */
-body.theme-light .partials-header-admin .btn,
-body.theme-light header .btn {
+body.theme-light .partials-header-admin .btn {
     color: #FFFFFF !important;
 }
 
-body.theme-light .partials-header-admin .btn-primary,
-body.theme-light header .btn-primary {
+body.theme-light .partials-header-admin .btn-primary {
     background: #2563EB !important;
     border-color: #2563EB !important;
     color: #FFFFFF !important;
 }
+
 
 /* ============================================================
    PANEL "BIENVENIDO"
