@@ -179,15 +179,10 @@ class DetalleVenta(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # --------------------------------------------------
-        # OBTENER INFORMACIÓN DEL PRODUCTO
-        # --------------------------------------------------
-
         try:
             detalle_producto = (
                 self.codigo_producto.detalle_producto
             )
-
         except Exception:
             raise ValueError(
                 f"El producto "
@@ -253,24 +248,24 @@ class DetalleVenta(models.Model):
                     ]
                 )
 
-                # ------------------------------------------
-                # DESCONTAR STOCK
-                # ------------------------------------------
+            # ------------------------------------------
+            # DESCONTAR STOCK
+            # ------------------------------------------
 
                 detalle_producto.cantidad_actual -= self.cantidad
 
-                detalle_producto.save(
-                    update_fields=[
-                        "cantidad_actual",
-                        "fecha_actualizacion",
-                    ]
-                )
+            detalle_producto.save(
+                update_fields=[
+                    "cantidad_actual",
+                    "fecha_actualizacion",
+                ]
+            )
 
-                # ----------------------------------------------
-                # ACTUALIZAR TOTAL DE LA VENTA
-                # ----------------------------------------------
+            # ----------------------------------------------
+            # ACTUALIZAR TOTAL
+            # ----------------------------------------------
 
-                self.codigo_venta.actualizar_total()
+            self.codigo_venta.actualizar_total()
 
     def __str__(self):
         return (
@@ -334,10 +329,6 @@ class DetallePagos(models.Model):
         null=True,
         verbose_name="Instrucciones"
     )
-
-    # ======================================================
-    # OBTENER DATOS DE TRANSFERENCIA
-    # ======================================================
 
     @classmethod
     def get_solo(cls):
