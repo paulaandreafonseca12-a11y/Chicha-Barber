@@ -1625,6 +1625,15 @@ body.theme-light .chat-input:focus {
 .productos-registrar-venta__div-1 { max-width: 700px }
 .productos-confirmar-eliminar__div-1 { background-color: #1a1d20; min-height: 100vh; }
 .productos-confirmar-eliminar__div-2 { max-width: 500px; }
+
+.configuraciones-testimonios__td-1 { max-width: 300px; }
+.configuraciones-editar-carrusel__img-1 { width: 150px; height: 100px; object-fit: cover; }
+.configuraciones-carrusel__div-1 { width: 56px; height: 56px; }
+.configuraciones-carrusel__div-2 { width: 56px; height: 56px; }
+.configuraciones-carrusel__div-3 { width: 56px; height: 56px; }
+.configuraciones-carrusel__img-4 { width: 80px; height: 60px; object-fit: cover; }
+.configuraciones-carrusel__div-5 { width:80px; height:60px; }
+
 .facturas-factura__span-1 { font-size: 0.65rem; }
 .facturas-factura-adm__div-1 { width: 56px; height: 56px; }
 .facturas-factura-adm__div-2 { width: 56px; height: 56px; }
@@ -2079,14 +2088,6 @@ body.theme-light .partials-header-admin {
     border-bottom: 1px solid rgba(37, 99, 235, 0.35) !important;
 }
 
-body.theme-light .partials-header-admin h1,
-body.theme-light .partials-header-admin h2,
-body.theme-light .partials-header-admin h3,
-body.theme-light .partials-header-admin .navbar-brand,
-body.theme-light .partials-header-admin__a-3 {
-    color: #8CB7FF !important;
-    font-weight: 700 !important;
-}
 
 body.theme-light .partials-header-admin .btn {
     color: #FFFFFF !important;
@@ -2383,3 +2384,6 @@ body.theme-light .admin-aside a[aria-current="page"] {
     border: 1px solid rgba(255, 215, 0, 0.4);
     box-shadow: 0 0 12px rgba(255, 193, 7, 0.2);
   }
+
+  
+
