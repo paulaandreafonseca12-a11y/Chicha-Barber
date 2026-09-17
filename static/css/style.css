@@ -613,21 +613,29 @@ body.theme-dark .dataTables_paginate .pagination .page-item.disabled .page-link,
 
 body.theme-dark .dt-search input,
 body.theme-dark .dataTables_filter input,
+body.theme-dark input.form-control,
+.dt-search input,
+.dataTables_filter input {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 5px;
+  padding: 4px 2.25rem 4px 8px;
+}
+
 body.theme-dark .dt-length select,
 body.theme-dark .dataTables_length select,
 body.theme-dark select.form-select,
-body.theme-dark input.form-control,
-.dt-search input,
-.dataTables_filter input,
 .dt-length select,
 .dataTables_length select {
   background-color: #ffffff !important;
-color: #1a1a1a !important;
-/* CAMBIO: Usamos un gris estándar visible (#ced4da) en lugar de blanco transparente */
-border: 1px solid #ced4da !important;
-border-radius: 5px;
-padding: 4px 8px;
+  color: #1a1a1a !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 5px;
+  padding: 4px 2.25rem 4px 8px;
 }
+
+
 /* Specific override for the form-select and form-control under dt-container in dark mode */
 body.theme-dark .dt-container select.form-select,
 body.theme-dark .dt-container input.form-control,
@@ -637,6 +645,9 @@ body.theme-dark .dt-container .dt-search input {
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
+
+
+
 
 body.theme-dark .dt-search input:focus,
 body.theme-dark .dataTables_filter input:focus,
@@ -1071,18 +1082,24 @@ body.theme-light .flatpickr-time .numInputWrapper span.arrowDown:after {
   border-color: #030301 !important;
 }
 
-/* ── FORZAR ESTILO CLARO EN LA TABLA DE USUARIOS (sin importar el tema) ── */
 #tablaUsuarios_wrapper .dt-search input,
 #tablaUsuarios_wrapper .dataTables_filter input,
-#tablaUsuarios_wrapper .dt-length select,
-#tablaUsuarios_wrapper .dataTables_length select,
-#tablaUsuarios_wrapper input.form-control,
-#tablaUsuarios_wrapper select.form-select {
+#tablaUsuarios_wrapper input.form-control {
   background-color: #ffffff !important;
   color: #030301 !important;
   border: 1px solid rgba(141, 129, 140, 0.4) !important;
   border-radius: 5px;
   padding: 4px 8px;
+}
+
+#tablaUsuarios_wrapper .dt-length select,
+#tablaUsuarios_wrapper .dataTables_length select,
+#tablaUsuarios_wrapper select.form-select {
+  background-color: #ffffff !important;
+  color: #030301 !important;
+  border: 1px solid rgba(141, 129, 140, 0.4) !important;
+  border-radius: 5px;
+  padding: 4px 2.25rem 4px 8px;
 }
 
 #tablaUsuarios_wrapper .dt-search input::placeholder {

@@ -103,10 +103,13 @@
                     </thead>
                     <tbody>
                         {% for usuario in usuarios %}
-                        <tr class="align-middle usuarios-lista-usuarios__tr-15">
+                        <tr class="align-middle usuarios-lista-usuarios__tr-15" data-rol="{{ usuario.rol }}">
                             <td class="ps-4">
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="usuarios-lista-usuarios__div-16" class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white {% if usuario.rol.tipo_rol == 'barbero' %}bg-info {% elif usuario.rol.tipo_rol == 'admin' %}bg-danger {% else %}bg-warning text-dark{% endif %}">
+                                    <div class="usuarios-lista-usuarios__div-16 rounded-circle d-flex align-items-center justify-content-center fw-bold text-white
+                                        {% if usuario.rol == 'barbero' %}bg-info
+                                        {% elif usuario.rol == 'admin' %}bg-danger
+                                        {% else %}bg-warning text-dark{% endif %}">
                                         {{ usuario.get_full_name|first|upper }}
                                     </div>
                                     {{ usuario.get_full_name }}
@@ -116,10 +119,11 @@
                             <td>{{ usuario.telefono|default:"—" }}</td>
                             <td>
                                 <span class="badge
-                                    {% if usuario.rol.tipo_rol == 'barbero' %}bg-info text-dark
-                                    {% elif usuario.rol.tipo_rol == 'admin' %}bg-danger
-                                    {% else %}bg-warning text-dark{% endif %}">
-                                    {{ usuario.rol.tipo_rol }}
+                                    {% if usuario.rol == 'barbero' %}bg-info text-dark
+                                    {% elif usuario.rol == 'admin' %}bg-danger
+                                    {% else %}bg-warning text-dark{% endif %}"
+                                    data-rol="{{ usuario.rol }}">
+                                    {{ usuario.get_rol_display }}
                                 </span>
                             </td>
                             <td>
@@ -131,7 +135,7 @@
                                     <span class="badge bg-secondary">No</span>
                                 {% endif %}
                             </td>
-                            <td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+                            <td>{{ usuario.fecha_creacion|date:"d/m/Y" }}</td>
                             <td class="text-center">
                                 <a href="{% url 'editar_usuario' usuario.pk %}"
                                    class="btn btn-sm btn-outline-info"
