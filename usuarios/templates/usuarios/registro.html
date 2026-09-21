@@ -116,6 +116,9 @@
                     <div class="position-relative">
                         <span class="input-icon">🔒</span>
                         {{ form.password1 }}
+                        <button type="button" class="pwd-toggle-btn" id="toggle-password1" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
                     </div>
                     <small class="form-hint text-white opacity-50">Mínimo 8 caracteres, con al menos 1 mayúscula y 1 número.</small>
                 </div>
@@ -124,6 +127,9 @@
                     <div class="position-relative">
                         <span class="input-icon">🔒</span>
                         {{ form.password2 }}
+                        <button type="button" class="pwd-toggle-btn" id="toggle-password2" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
                     </div>
                     <small class="form-hint text-white opacity-50">Debe coincidir exactamente con la contraseña anterior.</small>
                 </div>
@@ -141,6 +147,56 @@
     </main>
 
 </div>
+
+<style>
+    /* Tarjeta del formulario: menos negra, más "vidrio esmerilado" */
+    .form-box {
+        background: rgba(35, 40, 50, 0.72) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Inputs y selects: fondo más claro y con mejor contraste */
+    .cb-input {
+        background-color: rgba(255, 255, 255, 0.10) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        color: #ffffff !important;
+    }
+    .cb-input::placeholder {
+        color: rgba(255, 255, 255, 0.55) !important;
+    }
+    .cb-input:focus {
+        background-color: rgba(255, 255, 255, 0.16) !important;
+        border-color: #29b6d8 !important;
+        box-shadow: 0 0 0 0.2rem rgba(41, 182, 216, 0.25) !important;
+    }
+
+    /* Textos de ayuda más legibles */
+    .form-hint {
+        opacity: 0.7 !important;
+    }
+
+    /* Ojito para mostrar/ocultar contraseña */
+    .pwd-toggle-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        padding: 0;
+        line-height: 1;
+        cursor: pointer;
+    }
+    .pwd-toggle-btn:hover {
+        color: #ffffff;
+    }
+    .col-6 .position-relative .cb-input {
+        padding-right: 2.5rem;
+    }
+</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -190,6 +246,23 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     if (inputPassword1) inputPassword1.addEventListener('input', removerEspacios);
     if (inputPassword2) inputPassword2.addEventListener('input', removerEspacios);
+
+    // ==========================================
+    // OJITOS: mostrar/ocultar contraseña
+    // ==========================================
+    function setupToggle(input, btnId) {
+        const btn = document.getElementById(btnId);
+        if (!input || !btn) return;
+        btn.addEventListener('click', function () {
+            const mostrar = input.type === 'password';
+            input.type = mostrar ? 'text' : 'password';
+            const icono = btn.querySelector('i');
+            icono.classList.toggle('bi-eye', !mostrar);
+            icono.classList.toggle('bi-eye-slash', mostrar);
+        });
+    }
+    setupToggle(inputPassword1, 'toggle-password1');
+    setupToggle(inputPassword2, 'toggle-password2');
 });
 </script>
 
