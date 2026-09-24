@@ -11,6 +11,12 @@ from usuarios.models import Usuario, RolUsuario
 from .models import Servicios, Calificacion
 from .forms import ServiciosForm, ServiciosEditarForm, CalificacionForm, ResponderCalificacionForm
 
+
+
+
+
+
+
 def servicios(request):
     servicios = Servicios.objects.all()
     context = {
@@ -24,7 +30,7 @@ def registro(request, servicio_pk):
 
     # Si el usuario ya está autenticado, lo enviamos directo a la reserva
     if request.user.is_authenticated:
-        return redirect('crear_reserva', servicio_id=servicio.pk)
+        return redirect('crear_reserva', servicio_id=servicio_pk)
 
     # Capturamos la URL de destino original (si existe)
     next_url = request.GET.get('next') or request.POST.get('next') or ''

@@ -16,8 +16,11 @@ from usuarios.models import Usuario
 from servicios.models import Servicios
 from reservas.models import Reserva
 from catalogo.models import Producto, DetalleProducto
-#from django.db.models import Sum
+from django.db.models import Sum
+from django.views.generic import ListView
 
+
+    
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
     form_class = CustomLoginForm
@@ -42,11 +45,13 @@ class CustomLoginView(LoginView):
 def inicio(request):
     carruseles = Carrusel.objects.filter(estado=True).order_by('-fecha_modificacion')[:4]
     testimonios = Calificacion.objects.filter(puntuacion=5, mostrar_en_inicio=True).order_by('-fecha_calificacion')[:6]
+    servicios = Servicios.objects.all()  # Obtener todos los servicios
     nombre = "Santiago"
     context = {
         'nombre': nombre,
         'carruseles': carruseles,
         'testimonios': testimonios,
+        'servicios': servicios,
     }
     return render(request, 'index-clientes.html', context)
 

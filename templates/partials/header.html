@@ -1,11 +1,11 @@
 {% load static %}
 
-<header class="p-3 navbar-dorado">
+<header class="p-3 color-negro-bg">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center">
 
-      <!-- Logo -->
-      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+      <!-- 1. Logo (Izquierda) -->
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none me-4">
         <img src="{% static 'img/logo.png' %}"
              alt="Chicha Barber"
              height="55"
@@ -15,22 +15,22 @@
       <!-- 2. Menú de Navegación (Horizontal) -->
       <ul class="nav col-12 col-lg-auto mb-2 mb-md-0 ">
         <li>
-          <a href="/" class="nav-link px-2 {% if request.path == '/' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Inicio</a>
+          <a href="/" class="nav-link px-2 {% if request.path == '/' %}text-white fw-bold{% else %}text-white-50{% endif %}">Inicio</a>
         </li>
         <li>
-          <a href="{% url 'servicios' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'servicios' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Servicios</a>
+          <a href="{% url 'servicios' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'servicios' %}text-white fw-bold{% else %}text-white-50{% endif %}">Servicios</a>
         </li>
         <li>
-          <a href="{% url 'productos_galeria' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'productos_galeria' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Productos</a>
+          <a href="{% url 'productos_galeria' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'productos_galeria' %}text-white fw-bold{% else %}text-white-50{% endif %}">Productos</a>
         </li>
         <li>
-          <a href="{% url 'promocion' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'promocion' %}text-dark fw-bold{% else %}text-black-50{% endif %}">Promociones</a>
+          <a href="{% url 'promocion' %}" class="nav-link px-2 {% if request.resolver_match.url_name == 'promocion' %}text-white fw-bold{% else %}text-white-50{% endif %}">Promociones</a>
         </li>
         
       </ul>
 
-      <!-- Sección Derecha (Campana, Carrito, Perfil) -->
-      <div class="d-flex align-items-center gap-3 ms-auto mb-2 mb-lg-0 text-dark">
+      <!-- 3. Sección Derecha (Empujada a la derecha con ms-auto) -->
+      <div class="d-flex align-items-center gap-3 mb-2 mb-lg-0 ms-auto">
 
         <!-- Campana de Notificaciones -->
         {% if user.is_authenticated %}

@@ -2,70 +2,214 @@
 {% load static %}
 
 {% block content %}
-
-
-<div class="container-fluid py-5 min-vh-100 d-flex flex-column justify-content-center">
+<div class="container py-5">
     
-    <div class="container">
-        <div class="text-center mb-5">
-            
-            <h1 class="display-4 fw-bold text-uppercase neon-text-gold mb-3 titulo-animado">
-         Nuestros servicios</span>
+    <!-- TARJETA CONTENEDORA PRINCIPAL GLASSMORPHISM -->
+    <div class="card border border-white border-opacity-10 rounded-4 shadow-lg p-3 p-md-4 text-light bg-dark bg-opacity-75">
+
+        <!-- Encabezado de la página -->
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold text-uppercase text-warning mb-2 font-heading">
+                <i class="bi bi-scissors me-2"></i>Nuestros Servicios
             </h1>
-            <p class="fs-4 neon-text-white  opacity-75">Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.</p>
-            <hr class="w-25 mx-auto opacity-50 text-white">    
+            <p class="fs-5 text-light opacity-75 mb-3">
+                Elige tu corte personalizado a tu gusto y de acuerdo a tu estilo.
+            </p>
+            <hr class="w-25 mx-auto text-warning opacity-50 my-2" style="border-width: 2px;">    
         </div>
 
-        <div class="row g-4 justify-content-center">
-            
-            {% for servicio in servicios %}
-            
-            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch">
-        
-                 <div class="card bg-warning-subtle text-body h-100 shadow-lg border-0 rounded-4 overflow-hidden hover-scale servicios-servicios__div-1 producto-nombre-animado:after w-100"
-                     style="max-width: 300px;">
-                    
-                    {% if servicio.imagen %}
-                        <img src="{{ servicio.imagen.url }}" loading="lazy" class="card-img-top servicios-servicios__img-2" alt="{{ servicio.nombre }}" style="height: 250px; object-fit: cover;">
-                    {% else %}
-                        <img src="{% static 'img/corte/corte_1.jpg' %}" loading="lazy" class="card-img-top servicios-servicios__img-3" alt="{{ servicio.nombre }}" style="height: 250px; object-fit: cover;">
-                    {% endif %}
-
-                    <div class="card-body d-flex flex-column text-center p-4">
-                        <h4 class="card-title fw-bold mb-3 text-body-emphasis">{{ servicio.nombre }}</h4>
-                        <p class="card-text text-body-secondary mb-4 flex-grow-1 text-start">{{ servicio.descripcion }}</p>
+        <!-- BUSCADOR MÁS PEQUEÑO Y COMPACTO -->
+        <div class="row mb-4 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="search-box-wrapper position-relative p-1 rounded-pill">
+                    <div class="input-group search-input-group bg-black bg-opacity-80 rounded-pill border border-warning border-opacity-25 shadow-sm overflow-hidden">
                         
-                        <h3 class="fw-bold mb-3 text-body-emphasis">${{ servicio.precio|floatformat:0 }}</h3>
+                        <!-- Icono de Búsqueda -->
+                        <span class="input-group-text bg-transparent border-0 text-warning fs-6 ps-3 pe-2">
+                            <i class="bi bi-search search-icon"></i>
+                        </span>
                         
-                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-body-secondary">
-                            <span class="text-body-secondary small fw-semibold d-flex align-items-center gap-2">
-                                <i class="bi bi-clock me-1"></i>{{ servicio.duracion }} min
-                            </span>
-                            <a href="{% url 'crear_reserva' servicio.pk %}" class="btn btn-info text-white rounded-pill px-3">
-                                <i class="bi bi-calendar-check me-2"></i>RESERVAR CITA
-                            </a>
-                        </div>
+                        <!-- Campo de Texto -->
+                        <input type="text" id="buscador-unico" class="form-control bg-transparent text-light border-0 shadow-none small py-1" placeholder="Buscar..." autocomplete="off">
+                        
+                        <!-- Botón para Limpiar Texto -->
+                        <button class="btn btn-transparent text-white-50 border-0 pe-2 d-none" type="button" id="btn-limpiar" title="Limpiar búsqueda">
+                            <i class="bi bi-x-circle-fill hover-gold"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-md-8 col-lg-6">
-                <div class="card shadow-lg border-0 rounded-4 text-center p-5 card-empty-hover">
-                    <div class="card-body">
-                        <i class="bi bi-inboxes display-1 text-body-secondary mb-4 d-block"></i>
-                        <h3 class="fw-bold mb-3 text-body-emphasis">¡Próximamente nuevos servicios!</h3>
-                        <p class="fs-5 mb-4 text-body-secondary">
-                            En este momento no tenemos servicios disponibles para mostrar en nuestro catálogo. 
-                            Estamos trabajando para ofrecerte las mejores opciones. ¡Vuelve pronto!
+        </div>
+
+        <!-- Mensaje cuando la búsqueda no produce resultados -->
+        <div id="no-results" class="col-12 text-center py-4 d-none">
+            <i class="bi bi-search-heart display-4 text-warning mb-2 d-block"></i>
+            <h5 class="text-warning fw-bold">No se encontraron coincidencias</h5>
+            <p class="text-light opacity-75 small">Prueba escribiendo otra palabra o un precio diferente.</p>
+        </div>
+
+        <!-- REJILLA DE SERVICIOS -->
+        <div class="row g-4 justify-content-center align-items-stretch">
+            
+            {% for servicio in servicios %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch servicio-item" 
+                 data-nombre="{{ servicio.nombre|lower }}" 
+                 data-categoria="{% if servicio.categoria %}{{ servicio.categoria.nombre|lower }}{% elif servicio.categoria_nombre %}{{ servicio.categoria_nombre|lower }}{% endif %}" 
+                 data-precio="{{ servicio.precio }}">
+        
+                <!-- Tarjeta de servicio compacta -->
+                <div class="card bg-black bg-opacity-75 text-white border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden w-100 d-flex flex-column justify-content-between hover-scale">
+                    
+                    <!-- Imagen en Proporción 1:1 -->
+                    <div class="ratio ratio-1x1 overflow-hidden position-relative bg-dark">
+                        {% if servicio.imagen %}
+                            <img src="{{ servicio.imagen.url }}" loading="lazy" class="w-100 h-100 object-fit-cover" alt="{{ servicio.nombre }}">
+                        {% else %}
+                            <img src="{% static 'img/corte/corte_1.jpg' %}" loading="lazy" class="w-100 h-100 object-fit-cover" alt="{{ servicio.nombre }}" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';">
+                        {% endif %}
+                        
+                        <!-- Sombras integradas -->
+                        <div class="position-absolute bottom-0 start-0 w-100 h-50 bg-gradient"></div>
+                    </div>
+
+                    <!-- Cuerpo de la Tarjeta -->
+                    <div class="card-body d-flex flex-column text-center p-3">
+                        
+                        <!-- Título del Servicio -->
+                        <div class="mb-2 d-flex align-items-center justify-content-center" style="min-height: 44px;">
+                            <h5 class="fw-bold text-warning text-uppercase font-heading mb-0 fs-6">{{ servicio.nombre }}</h5>
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <p class="card-text text-light opacity-75 mb-3 text-start small flex-grow-1">
+                            {{ servicio.descripcion }}
                         </p>
-                        <a href="/" class="btn btn-outline-dark px-4 py-2 rounded-pill fw-bold">
+                        
+                        <!-- Precio -->
+                        <h3 class="fw-bold mb-3 text-warning fs-5">${{ servicio.precio|floatformat:0 }}</h3>
+                        
+                        <!-- Duración y Botón Reservar -->
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-secondary border-opacity-25">
+                            <span class="text-white-50 small fw-semibold d-flex align-items-center gap-1">
+                                <i class="bi bi-clock text-warning"></i>{{ servicio.duracion }}m
+                            </span>
+                            <a href="{% url 'crear_reserva' servicio.pk %}" class="btn btn-warning btn-sm fw-bold rounded-pill px-3 shadow text-dark border-0">
+                                <i class="bi bi-calendar-check me-1"></i>Reservar
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            {% empty %}
+            <!-- Estado sin servicios -->
+            <div class="col-md-8 col-lg-6 my-4">
+                <div class="card bg-black bg-opacity-75 border border-secondary border-opacity-25 rounded-4 text-center p-5 text-light shadow-lg">
+                    <div class="card-body">
+                        <i class="bi bi-inboxes display-3 text-warning mb-3 d-block"></i>
+                        <h4 class="fw-bold mb-2 text-warning">¡Próximamente nuevos servicios!</h4>
+                        <p class="small mb-3 text-light opacity-75">
+                            En este momento no tenemos servicios disponibles para mostrar en nuestro catálogo. 
+                        </p>
+                        <a href="/" class="btn btn-outline-warning px-4 py-2 rounded-pill fw-bold">
                             <i class="bi bi-house-door me-2"></i>Ir al inicio
                         </a>
                     </div>
                 </div>
             </div>
             {% endfor %}
+
         </div>
+
     </div>
 </div>
+
+<!-- ESTILOS EXCLUSIVOS DEL BUSCADOR -->
+<style>
+.search-box-wrapper {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    transition: all 0.4s ease;
+}
+
+.search-box-wrapper:focus-within {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.35), rgba(255, 193, 7, 0.1));
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+    border-color: rgba(255, 193, 7, 0.6);
+    transform: translateY(-1px);
+}
+
+.search-input-group {
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+#buscador-unico::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.875rem;
+}
+
+.hover-gold:hover {
+    color: #ffc107 !important;
+    transition: color 0.2s ease;
+}
+</style>
+
+<!-- SCRIPT DE FILTRADO DINÁMICO UNIFICADO -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buscador = document.getElementById('buscador-unico');
+    const btnLimpiar = document.getElementById('btn-limpiar');
+    const items = document.querySelectorAll('.servicio-item');
+    const noResults = document.getElementById('no-results');
+
+    function filtrarServicios() {
+        const query = buscador.value.toLowerCase().trim();
+        const esNumero = !isNaN(parseFloat(query)) && isFinite(query);
+        const precioBuscado = parseFloat(query);
+        let visibles = 0;
+
+        // Mostrar u ocultar el botón de limpiar
+        if (query.length > 0) {
+            btnLimpiar.classList.remove('d-none');
+        } else {
+            btnLimpiar.classList.add('d-none');
+        }
+
+        items.forEach(item => {
+            const nombre = item.getAttribute('data-nombre') || '';
+            const categoria = item.getAttribute('data-categoria') || '';
+            const precio = parseFloat(item.getAttribute('data-precio')) || 0;
+
+            const coincideTexto = nombre.includes(query) || categoria.includes(query);
+            const coincidePrecio = esNumero && (precio <= precioBuscado);
+
+            if (query === '' || coincideTexto || coincidePrecio) {
+                item.classList.remove('d-none');
+                item.classList.add('d-flex');
+                visibles++;
+            } else {
+                item.classList.remove('d-flex');
+                item.classList.add('d-none');
+            }
+        });
+
+        if (visibles === 0 && items.length > 0) {
+            noResults.classList.remove('d-none');
+        } else {
+            noResults.classList.add('d-none');
+        }
+    }
+
+    buscador.addEventListener('input', filtrarServicios);
+
+    btnLimpiar.addEventListener('click', function() {
+        buscador.value = '';
+        filtrarServicios();
+        buscador.focus();
+    });
+});
+</script>
 {% endblock %}
