@@ -9,12 +9,109 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
+import re
+import dns.resolver
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 from reservas.models import Reserva, Agenda
 from reservas.forms import ReservaEditarForm
 from servicios.models import Servicios
 from catalogo.models import Promocion
 from usuarios.models import Usuario, Notificacion  # <-- Importamos Notificacion
 from core.utils import enviar_correo_reserva, enviar_correo_cancelacion_admin
+
+
+# Solo letras (incluye tildes y ñ), espacios, apóstrofes y guiones. Mínimo 3 caracteres.
+NOMBRE_REGEX = re.compile(r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\-\s]{3,100}$")
+TELEFONO_REGEX = re.compile(r"^3\d{9}$")
+
+# Dominios de correo muy conocidos: se aceptan sin consultar DNS, para que
+# el sistema siga funcionando aunque no haya internet en ese momento.
+# Ajusta/agrega aquí el dominio real de tu universidad o empresa si lo necesitas.
+DOMINIOS_CONOCIDOS = {
+    'gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.es',
+    'icloud.com', 'live.com', 'sena.edu.co',
+}
+
+
+def _dominio_correo_existe(correo):
+    """
+    Verifica que el dominio del correo tenga un servidor de correo real
+    (registro MX). Si el dominio está en DOMINIOS_CONOCIDOS, se acepta
+    directamente sin necesitar conexión a internet.
+
+    Para cualquier otro dominio, SÍ requiere poder consultar el DNS.
+    Si no se puede consultar (sin internet, timeout, etc.), se RECHAZA
+    por seguridad (fail-closed): preferimos bloquear un correo válido
+    poco común antes que dejar pasar uno inventado solo porque no
+    pudimos verificarlo.
+    """
+    dominio = correo.split('@')[-1].strip().lower()
+    if not dominio:
+        return False
+
+    if dominio in DOMINIOS_CONOCIDOS:
+        return True
+
+    resolver = dns.resolver.Resolver()
+    resolver.timeout = 3
+    resolver.lifetime = 3
+
+    try:
+        resolver.resolve(dominio, 'MX')
+        return True
+    except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+        # Algunos dominios reciben correo sin un registro MX explícito;
+        # como último intento, revisamos si al menos tiene un registro A.
+        try:
+            resolver.resolve(dominio, 'A')
+            return True
+        except Exception:
+            return False
+    except Exception:
+        # Sin internet, DNS no disponible, timeout, etc.
+        # No podemos verificar -> rechazamos (fail-closed).
+        return False
+
+
+def _validar_datos_contacto(nombre, correo, telefono):
+    """
+    Valida los datos de contacto en el SERVIDOR, sin confiar en el HTML/JS.
+    Devuelve una lista de mensajes de error (vacía si todo está bien).
+    """
+    errores = []
+
+    # --- Nombre ---
+    if not nombre:
+        errores.append('El nombre es obligatorio.')
+    elif not NOMBRE_REGEX.match(nombre):
+        errores.append('El nombre solo puede contener letras y espacios (mínimo 3 caracteres).')
+
+    # --- Correo ---
+    if not correo:
+        errores.append('El correo electrónico es obligatorio.')
+    else:
+        try:
+            validate_email(correo)
+        except ValidationError:
+            errores.append('El correo electrónico no tiene un formato válido.')
+        else:
+            # Solo revisamos el dominio si el formato ya pasó
+            if not _dominio_correo_existe(correo):
+                errores.append(
+                    'No pudimos confirmar que el dominio de este correo exista o '
+                    'reciba correos. Usa un correo de un proveedor conocido '
+                    '(Gmail, Outlook, Hotmail) o verifica que esté bien escrito.'
+                )
+
+    # --- Teléfono ---
+    if not telefono:
+        errores.append('El teléfono es obligatorio.')
+    elif not TELEFONO_REGEX.match(telefono):
+        errores.append('El teléfono debe ser un celular colombiano válido: 10 dígitos y empezar por 3.')
+
+    return errores
 
 
 def _parse_fecha_reserva(fecha_str):
@@ -99,21 +196,6 @@ def crear_reserva(request, servicio_id=None):
             agenda_obj.estado = 'reservada'
             agenda_obj.save()
 
-            # Comentado por ahora ya que Factura no existe en los modelos actuales
-            # factura = Factura.objects.create(
-            #     usuario=request.user,
-            #     total_pagado=0,
-            #     metodo_pago='efectivo',
-            #     estado='pendiente'
-            # )
-            # DetalleFactura.objects.create(
-            #     factura=factura,
-            #     reserva=reserva,
-            #     cantidad=1,
-            #     precio_unitario=precio,
-            #     subtotal=precio
-            # )
-
             try:
                 enviar_correo_reserva(
                     correo_cliente=correo,
@@ -135,14 +217,14 @@ def crear_reserva(request, servicio_id=None):
     ahora = datetime.now()
     hoy = ahora.date()
     fin = hoy + timedelta(days=6)
-    
+
     turnos_qs = Agenda.objects.filter(
         fecha__range=(hoy, fin),
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
 
     turnos_disponibles = [
-        t for t in turnos_qs 
+        t for t in turnos_qs
         if t.fecha > hoy or (t.fecha == hoy and t.hora_inicio > ahora.time())
     ]
 
@@ -156,6 +238,36 @@ def crear_reserva(request, servicio_id=None):
         nombre = request.POST.get('nombre_cliente', '').strip()
         observacion = request.POST.get('observacion', '').strip()
 
+        # Valores ya elegidos, para no perderlos si hay que volver a mostrar el formulario
+        barbero_id_sel = request.POST.get('barbero_id', 'any')
+        medio_pago_sel = request.POST.get('medio_pago', 'presencial')
+
+        context_error = {
+            'servicio': servicio,
+            'barberos': barberos,
+            'turnos_disponibles': turnos_disponibles,
+            'action_url': action_url,
+            'nombre_cliente_val': nombre,
+            'correo_cliente_val': correo,
+            'telefono_cliente_val': telefono,
+            'barbero_id_val': barbero_id_sel,
+            'turno_id_val': turno_id,
+            'medio_pago_val': medio_pago_sel,
+        }
+
+        if not turno_id:
+            context_error['wizard_error_step'] = 1  # Paso "Turno"
+            context_error['wizard_errors'] = ['Selecciona un turno disponible.']
+            return render(request, 'reservas/reservas.html', context_error)
+
+        # ---- VALIDACIÓN SERVIDOR (aquí está lo importante) ----
+        errores = _validar_datos_contacto(nombre, correo, telefono)
+        if errores:
+            context_error['wizard_error_step'] = 2  # Paso "Datos"
+            context_error['wizard_errors'] = errores
+            return render(request, 'reservas/reservas.html', context_error)
+        # --------------------------------------------------------
+
         if not request.user.is_authenticated:
             request.session['reserva_pendiente'] = {
                 'turno_id': turno_id,
@@ -168,25 +280,10 @@ def crear_reserva(request, servicio_id=None):
             login_url = reverse('registro')
             return redirect(f'{login_url}?next={request.get_full_path()}')
 
-        context_error = {
-            'servicio': servicio,
-            'barberos': barberos,
-            'turnos_disponibles': turnos_disponibles,
-            'action_url': action_url,
-        }
-
-        if not turno_id:
-            messages.error(request, 'Selecciona un turno disponible.')
-            return render(request, 'reservas/reservas.html', context_error)
-
-        if not telefono:
-            messages.error(request, 'El teléfono es obligatorio.')
-            return render(request, 'reservas/reservas.html', context_error)
-
         try:
             with transaction.atomic():
                 agenda_obj = Agenda.objects.select_for_update().get(pk=turno_id, estado='disponible')
-                
+
                 precio = servicio.precio
                 fecha_hora_turno = datetime.combine(agenda_obj.fecha, agenda_obj.hora_inicio)
 
@@ -203,24 +300,6 @@ def crear_reserva(request, servicio_id=None):
                 )
                 agenda_obj.estado = 'reservada'
                 agenda_obj.save()
-
-                # if factura_id:
-                #     factura = get_object_or_404(Factura, id=factura_id)
-                # else:
-                #     factura = Factura.objects.create(
-                #         usuario=request.user,
-                #         total_pagado=0,
-                #         metodo_pago='efectivo',
-                #         estado='pendiente'
-                #     )
-
-                # DetalleFactura.objects.create(
-                #     factura=factura,
-                #     reserva=reserva,
-                #     cantidad=1,
-                #     precio_unitario=precio,
-                #     subtotal=precio
-                # )
 
             try:
                 enviar_correo_reserva(
@@ -247,6 +326,8 @@ def crear_reserva(request, servicio_id=None):
         'barberos': barberos,
         'turnos_disponibles': turnos_disponibles,
         'action_url': action_url,
+        'nombre_cliente_val': request.user.get_full_name() if request.user.is_authenticated else '',
+        'correo_cliente_val': request.user.email if request.user.is_authenticated else '',
     }
 
     return render(request, 'reservas/reservas.html', context)
@@ -355,7 +436,7 @@ def ver_agenda(request):
     anio_actual = hoy_fecha.year
 
     total_citas_mes = Reserva.objects.filter(
-        agenda__fecha__month=mes_actual, # <-- Actualizado a agenda
+        agenda__fecha__month=mes_actual,  # <-- Actualizado a agenda
         agenda__fecha__year=anio_actual
     ).exclude(estado='cancelada').count()
 
@@ -424,55 +505,104 @@ def crear_reserva_admin(request):
         return redirect('ver_agenda')
 
     servicios = Servicios.objects.all()
+    barberos = Usuario.objects.filter(rol='barbero', estado=True)
+
+    # Igual que en el wizard de cliente: solo turnos futuros y realmente
+    # disponibles. El administrador ELIGE uno de esta lista, no escribe
+    # una fecha a mano.
+    ahora = datetime.now()
+    hoy = ahora.date()
+    fin = hoy + timedelta(days=30)
+
+    turnos_qs = Agenda.objects.select_related('profesional').filter(
+        fecha__range=(hoy, fin),
+        estado='disponible'
+    ).order_by('fecha', 'hora_inicio')
+
+    turnos_disponibles = [
+        t for t in turnos_qs
+        if t.fecha > hoy or (t.fecha == hoy and t.hora_inicio > ahora.time())
+    ]
 
     if request.method == 'POST':
-        telefono = request.POST.get('telefono_usuario', '').strip()
+        # Estos "name" deben coincidir EXACTAMENTE con los del formulario
+        # (antes leíamos 'telefono_usuario' y nunca llegaba nada porque el
+        # input se llama 'telefono_cliente'; nombre y correo ni se leían).
+        nombre = request.POST.get('nombre_cliente', '').strip()
+        correo = request.POST.get('correo_cliente', '').strip()
+        telefono = request.POST.get('telefono_cliente', '').strip()
         observacion = request.POST.get('observacion', '').strip()
-        fecha_reserva_raw = request.POST.get('fecha_reserva', '').strip()
         servicio_id = request.POST.get('servicio')
-        barbero_id = request.POST.get('barbero') 
+        turno_id = request.POST.get('turno_id')
 
-        if not (telefono and fecha_reserva_raw and servicio_id):
-            messages.error(request, 'El teléfono, la fecha y el servicio son obligatorios.')
-            return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
-        
-        fecha_reserva = _parse_fecha_reserva(fecha_reserva_raw)
-        if fecha_reserva is None:
-            messages.error(request, 'Fecha de cita inválida.')
-            return render(request, 'reservas/crear_cita_admin.html', {'servicios': servicios})
-    
+        context_error = {
+            'servicios': servicios,
+            'barberos': barberos,
+            'turnos_disponibles': turnos_disponibles,
+            'nombre_cliente_val': nombre,
+            'correo_cliente_val': correo,
+            'telefono_cliente_val': telefono,
+            'servicio_id_val': servicio_id,
+            'turno_id_val': turno_id,
+        }
+
+        # ---- VALIDACIÓN SERVIDOR: misma lógica que en la reserva del cliente ----
+        errores = _validar_datos_contacto(nombre, correo, telefono)
+
+        if not servicio_id:
+            errores.append('Debes seleccionar un servicio.')
+
+        if not turno_id:
+            errores.append('Debes seleccionar un turno disponible de la agenda.')
+
+        if errores:
+            context_error['wizard_errors'] = errores
+            for err in errores:
+                messages.error(request, err)
+            return render(request, 'reservas/crear_cita_admin.html', context_error)
+        # --------------------------------------------------------------------------
+
         try:
             with transaction.atomic():
+                # select_for_update + estado='disponible': si el turno ya fue
+                # tomado por otra reserva o no existe, esto lanza DoesNotExist
+                # en vez de crear la cita "flotando" sin agenda real.
+                agenda_obj = Agenda.objects.select_for_update().get(
+                    pk=turno_id,
+                    estado='disponible',
+                )
                 servicio = Servicios.objects.get(id=servicio_id)
-                
-                # <-- Actualizado de Turno.objects a Agenda.objects
-                turno_coincidente = Agenda.objects.filter(
-                    fecha=fecha_reserva.date(),
-                    hora_inicio=fecha_reserva.time(),
-                    profesional_id=barbero_id,
-                    estado='disponible'
-                ).first()
 
                 Reserva.objects.create(
-                    agenda=turno_coincidente, # <-- Actualizado
-                    usuario=request.user,
+                    agenda=agenda_obj,
+                    usuario=None,  # es una cita de un cliente, no del admin que la registra
+                    nombre_usuario=nombre,
+                    correo_usuario=correo,
                     telefono_usuario=telefono,
                     observacion=observacion,
-                    fecha_reserva=fecha_reserva,
                     servicio=servicio,
                 )
-                if turno_coincidente:
-                    turno_coincidente.estado = 'reservada'
-                    turno_coincidente.save()
+                agenda_obj.estado = 'reservada'
+                agenda_obj.save()
 
             messages.success(request, '¡Cita registrada!')
             return redirect('ver_agenda')
-        except Servicios.DoesNotExist:
-            messages.error(request, 'Servicio seleccionado no existe.')
-        except Exception as e:
-            messages.error(request, f'Error: {e}')
 
-    context = {'servicios': servicios}
+        except Agenda.DoesNotExist:
+            messages.error(request, 'El turno seleccionado ya no está disponible. Elige otro de la agenda.')
+        except Servicios.DoesNotExist:
+            messages.error(request, 'El servicio seleccionado no existe.')
+        except Exception as e:
+            messages.error(request, f'Error al registrar la cita: {e}')
+
+        context_error['wizard_errors'] = []
+        return render(request, 'reservas/crear_cita_admin.html', context_error)
+
+    context = {
+        'servicios': servicios,
+        'barberos': barberos,
+        'turnos_disponibles': turnos_disponibles,
+    }
     return render(request, 'reservas/crear_cita_admin.html', context)
 
 
@@ -484,12 +614,12 @@ def gestionar_disponibilidad_dias(request):
 
     hoy = date.today()
     dias = []
-    
+
     for i in range(15):
         fecha = hoy + timedelta(days=i)
         turnos_count = Agenda.objects.filter(fecha=fecha, estado='disponible').count()
-        reservas_count = Agenda.objects.filter(fecha=fecha, estado='reservada').count() # <-- Actualizado a 'reservada'
-        
+        reservas_count = Agenda.objects.filter(fecha=fecha, estado='reservada').count()  # <-- Actualizado a 'reservada'
+
         dias.append({
             'fecha': fecha,
             'disponible': turnos_count > 0,
@@ -536,7 +666,7 @@ def activar_dia_agenda(request, fecha_str):
         for barbero in barberos:
             inicio_dt = datetime.combine(fecha, time(hour=h_inicio_val))
             fin_dt = datetime.combine(fecha, time(hour=h_fin_val))
-            
+
             current = inicio_dt
             while current + timedelta(minutes=duracion) <= fin_dt:
                 es_almuerzo = False
@@ -548,7 +678,7 @@ def activar_dia_agenda(request, fecha_str):
                             es_almuerzo = True
                     except ValueError:
                         pass
-                
+
                 if es_almuerzo:
                     current += timedelta(minutes=duracion)
                     continue
@@ -575,17 +705,17 @@ def desactivar_dia_agenda(request, fecha_str):
         return redirect('ver_agenda')
 
     fecha = date.fromisoformat(fecha_str)
-    
+
     reservas_afectadas = Reserva.objects.filter(
-        agenda__fecha=fecha, # <-- Actualizado a agenda
+        agenda__fecha=fecha,  # <-- Actualizado a agenda
         estado__in=['reservada', 'confirmada']
     )
-    
+
     cantidad_notificada = 0
     for reserva in reservas_afectadas:
         reserva.estado = 'cancelada'
         reserva.save()
-        
+
         try:
             enviar_correo_cancelacion_admin(
                 correo_cliente=reserva.correo_usuario,
@@ -598,10 +728,10 @@ def desactivar_dia_agenda(request, fecha_str):
             print(f"Error al notificar a {reserva.correo_usuario}: {e}")
 
     Agenda.objects.filter(fecha=fecha, estado='disponible').delete()
-    
+
     if cantidad_notificada > 0:
         messages.success(request, f"Se cancelaron {cantidad_notificada} citas y se enviaron los correos de notificación.")
-    
+
     messages.warning(request, f"Día {fecha_str} desactivado. No se aceptarán más reservas para esta fecha.")
-    
+
     return redirect('gestionar_dias')
