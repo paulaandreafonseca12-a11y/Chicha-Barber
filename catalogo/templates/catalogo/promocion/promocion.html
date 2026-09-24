@@ -3,335 +3,219 @@
 
 {% block content %}
 
-<div class="container-fluid py-5 min-vh-100 d-flex flex-column justify-content-center">
+<!-- ==========================================================
+     MENSAJES Y NOTIFICACIONES
+========================================================== -->
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
-    <div class="container">
 
-        <!-- =====================================================
-             ENCABEZADO
-        ====================================================== -->
-        <div class="text-center mb-5">
+<!-- ==========================================================
+     CONTENEDOR PRINCIPAL
+========================================================== -->
+<div class="container py-5">
 
-            <h1 class="display-4 fw-bold text-uppercase neon-text-gold  mb-3 titulo-animado">
-                Nuestras Promociones
+    <!-- TARJETA CONTENEDORA PRINCIPAL GLASSMORPHISM -->
+    <div class="card border border-white border-opacity-10 rounded-4 shadow-lg p-3 p-md-4 text-light bg-dark bg-opacity-75">
+
+        <!-- ENCABEZADO PRINCIPAL -->
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold text-uppercase text-warning mb-2 font-heading">
+                <i class="bi bi-tags-fill me-2"></i>Nuestras Promociones
             </h1>
-
-            <p class="neon-text-white fs-5 mb-3">
-                Descubre nuestras ofertas especiales y ahorra en tus servicios preferidos.
+            <p class="fs-5 text-light opacity-75 mb-3">
+                Descubre nuestras ofertas especiales y ahorra en tus servicios y productos preferidos.
             </p>
-
-            <hr class="w-25 mx-auto opacity-50 text-white">
-
+            <hr class="w-25 mx-auto text-warning opacity-50 my-2" style="border-width: 2px;">
         </div>
 
-
-        <!-- =====================================================
-             LISTADO DE PROMOCIONES
-        ====================================================== -->
-        <div class="row g-4 justify-content-center">
+        <!-- LISTADO DE PROMOCIONES EN REJILLA -->
+        <div class="row g-4 justify-content-center align-items-stretch">
 
             {% for promocion in promociones %}
 
-            <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
 
-                <!-- =================================================
-                     TARJETA DE PROMOCIÓN
-                ================================================== -->
-                <div class="card bg-warning-subtle text-body h-100 shadow-lg border-0 rounded-4 overflow-hidden servicios-servicios__div-1 w-100"
-                     style="max-width: 300px;">
+                    <!-- Tarjeta de Promoción (Diseño idéntico a Servicios y Productos) -->
+                    <div class="card bg-black bg-opacity-75 text-white border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden w-100 d-flex flex-column justify-content-between hover-scale">
 
-                    <!-- =================================================
-                         IMAGEN
-                    ================================================== -->
-                    {% if promocion.imagen %}
+                        <!-- Imagen en Proporción 1:1 -->
+                        <div class="ratio ratio-1x1 overflow-hidden position-relative bg-dark">
+                            <img src="{% if promocion.imagen %}{{ promocion.imagen.url }}{% else %}{% static 'img/Fondo.png' %}{% endif %}"
+                                 loading="lazy"
+                                 class="w-100 h-100 object-fit-cover"
+                                 alt="{{ promocion.nombre }}"
+                                 onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';">
 
-                        <img
-                            src="{{ promocion.imagen.url }}"
-                            loading="lazy"
-                            class="card-img-top servicios-servicios__img-2 object-fit-cover"
-                            style="height: 200px;"
-                            alt="{{ promocion.nombre }}"
-                        >
-
-                    {% else %}
-
-                        <img
-                            src="{% static 'img/Fondo.png' %}"
-                            loading="lazy"
-                            class="card-img-top servicios-servicios__img-3 object-fit-cover"
-                            style="height: 200px;"
-                            alt="{{ promocion.nombre }}"
-                        >
-
-                    {% endif %}
-
-
-                    <!-- =================================================
-                         CUERPO DE LA TARJETA
-                    ================================================== -->
-                    <div class="card-body d-flex flex-column text-center p-3">
-
-                        <!-- BADGE TIPO DE PROMOCIÓN -->
-                        <div class="mb-2">
-                            {% if promocion.codigo_servicio %}
-                                <span class="badge bg-info text-dark rounded-pill px-3 py-1 fw-semibold">
-                                    <i class="bi bi-scissors me-1"></i> Servicio
-                                </span>
-                            {% elif promocion.codigo_producto %}
-                                <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-semibold">
-                                    <i class="bi bi-bag-check me-1"></i> Producto
-                                </span>
-                            {% endif %}
-                        </div>
-
-                        <!-- NOMBRE -->
-                        <h5 class="card-title fw-bold mb-2 text-body-emphasis fs-4">
-                            {{ promocion.nombre }}
-                        </h5>
-
-
-                        <!-- DESCRIPCIÓN -->
-                        <p class="card-text text-body-secondary mb-3 flex-grow-1 text-start small">
-                            {{ promocion.descripcion }}
-                        </p>
-
-
-                        <!-- DESCUENTO -->
-                        <h3 class="fw-bold mb-3 text-body-emphasis fs-3">
-                            {{ promocion.porcentaje_descuento|floatformat:0 }}% OFF
-                        </h3>
-
-
-                        <!-- =================================================
-                             FECHAS DE LA PROMOCIÓN
-                        ================================================== -->
-                        <div class="mb-3">
-
-                            <small class="text-body-secondary d-block">
-                                <i class="bi bi-calendar-event me-1"></i>
-
-                                Del
-                                {{ promocion.fecha_inicio|date:"d/m/Y" }}
-
-                                al
-
-                                {{ promocion.fecha_fin|date:"d/m/Y" }}
-                            </small>
-
-                        </div>
-
-
-                        <!-- =================================================
-                             PARTE INFERIOR
-                        ================================================== -->
-                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-body-secondary">
-
-                            <!-- DURACIÓN / INFORMACIÓN -->
-                            <span class="text-body-secondary small fw-semibold d-flex align-items-center gap-1">
-
-                                {% if promocion.codigo_servicio %}
-                                    <i class="bi bi-clock me-1"></i>
-                                    {{ promocion.codigo_servicio.duracion }} min
-                                {% elif promocion.codigo_producto %}
-                                    <i class="bi bi-box-seam me-1"></i>
-                                    {{ promocion.codigo_producto.nombre|truncatechars:18 }}
-                                {% else %}
-                                    <i class="bi bi-tag me-1"></i>
-                                    Promoción especial
-                                {% endif %}
-
+                            <!-- Badge Flotante del Porcentaje de Descuento -->
+                            <span class="badge bg-warning text-dark fw-bold position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill shadow-sm fs-7 style-z-index">
+                                {{ promocion.porcentaje_descuento|floatformat:0 }}% OFF
                             </span>
 
+                            <!-- Sombras integradas -->
+                            <div class="position-absolute bottom-0 start-0 w-100 h-50 bg-gradient"></div>
+                        </div>
 
-                            <!-- =================================================
-                                 BOTÓN RESERVAR
+                        <!-- Cuerpo de la Tarjeta -->
+                        <div class="card-body d-flex flex-column text-center p-3">
 
-                                 IMPORTANTE:
-                                 Tu modelo Promocion usa:
+                            <!-- Categoría / Tipo de Promoción -->
+                            <div class="text-uppercase fw-bold fs-8 text-warning opacity-75 mb-1 text-truncate">
+                                {% if promocion.codigo_servicio %}
+                                    <i class="bi bi-scissors me-1"></i>Servicio
+                                {% elif promocion.codigo_producto %}
+                                    <i class="bi bi-bag-check me-1"></i>Producto
+                                {% else %}
+                                    <i class="bi bi-tag me-1"></i>Especial
+                                {% endif %}
+                            </div>
 
-                                 codigo = models.AutoField(primary_key=True)
+                            <!-- Título de la Promoción (Altura mínima igualada) -->
+                            <div class="mb-2 d-flex align-items-center justify-content-center" style="min-height: 44px;">
+                                <h5 class="fw-bold text-warning text-uppercase font-heading mb-0 fs-6 text-truncate-2">
+                                    {{ promocion.nombre }}
+                                </h5>
+                            </div>
 
-                                 NO usa id.
+                            <!-- Descripción -->
+                            <p class="text-light opacity-75 small mb-3 flex-grow-1 text-truncate-2" style="font-size: 0.85rem;">
+                                {{ promocion.descripcion }}
+                            </p>
 
-                                 Por eso usamos:
-                                 promocion.codigo
-                            ================================================== -->
+                            <!-- Fechas de Vigencia -->
+                            <div class="mb-3 pt-2 border-top border-secondary border-opacity-25">
+                                <small class="text-white-50 d-block fs-8">
+                                    <i class="bi bi-calendar-event me-1 text-warning"></i>
+                                    Del {{ promocion.fecha_inicio|date:"d/m/Y" }} al {{ promocion.fecha_fin|date:"d/m/Y" }}
+                                </small>
+                            </div>
 
-                            {% if promocion.codigo_servicio %}
+                            <!-- Parte Inferior: Duración / Detalle y Botón Acción -->
+                            <div class="mt-auto pt-3 border-top border-secondary border-opacity-25 d-flex flex-column gap-2">
 
-                                <a
-                                    href="{% url 'crear_reserva_promocion' promocion.codigo %}"
-                                    class="btn btn-info text-white rounded-pill px-3 py-2 fw-semibold"
-                                    onclick="return gestionarSeleccion(event)"
-                                >
+                                <div class="text-white-50 fs-8 fw-semibold text-truncate">
+                                    {% if promocion.codigo_servicio %}
+                                        <i class="bi bi-clock me-1 text-warning"></i>{{ promocion.codigo_servicio.duracion }} min
+                                    {% elif promocion.codigo_producto %}
+                                        <i class="bi bi-box-seam me-1 text-warning"></i>{{ promocion.codigo_producto.nombre|truncatechars:18 }}
+                                    {% else %}
+                                        <i class="bi bi-star me-1 text-warning"></i>Promoción limitada
+                                    {% endif %}
+                                </div>
 
-                                    <i class="bi bi-calendar-check me-1"></i>
+                                {% if promocion.codigo_servicio or promocion.codigo %}
+                                    <a href="{% url 'crear_reserva_promocion' promocion.codigo %}"
+                                       class="btn btn-warning btn-sm fw-bold rounded-pill w-100 shadow text-dark border-0 d-flex align-items-center justify-content-center gap-1 mt-1"
+                                       onclick="return gestionarSeleccion(event)">
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        <span>RESERVAR</span>
+                                    </a>
+                                {% elif promocion.codigo_producto %}
+                                    <a href="{% url 'productos_galeria' %}"
+                                       class="btn btn-warning btn-sm fw-bold rounded-pill w-100 shadow text-dark border-0 d-flex align-items-center justify-content-center gap-1 mt-1">
+                                        <i class="bi bi-bag-check me-1"></i>
+                                        <span>VER PRODUCTO</span>
+                                    </a>
+                                {% else %}
+                                    <button type="button"
+                                            class="btn btn-secondary btn-sm fw-bold rounded-pill w-100 shadow text-white-50 border-0 d-flex align-items-center justify-content-center gap-1 mt-1"
+                                            disabled>
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        <span>NO DISPONIBLE</span>
+                                    </button>
+                                {% endif %}
 
-                                    RESERVAR
-
-                                </a>
-
-                            {% elif promocion.codigo_producto %}
-
-                                <a
-                                    href="{% url 'productos_galeria' %}"
-                                    class="btn btn-primary text-white rounded-pill px-3 py-2 fw-semibold"
-                                >
-
-                                    <i class="bi bi-bag-check me-1"></i>
-
-                                    VER PRODUCTO
-
-                                </a>
-
-                            {% elif promocion.codigo %}
-
-                                <a
-                                    href="{% url 'crear_reserva_promocion' promocion.codigo %}"
-                                    class="btn btn-info text-white rounded-pill px-3 py-2 fw-semibold"
-                                    onclick="return gestionarSeleccion(event)"
-                                >
-
-                                    <i class="bi bi-calendar-check me-1"></i>
-
-                                    RESERVAR
-
-                                </a>
-
-                            {% else %}
-
-                                <button
-                                    type="button"
-                                    class="btn btn-secondary rounded-pill px-3 py-2 fw-semibold"
-                                    disabled
-                                >
-
-                                    <i class="bi bi-exclamation-circle me-1"></i>
-
-                                    NO DISPONIBLE
-
-                                </button>
-
-                            {% endif %}
+                            </div>
 
                         </div>
 
                     </div>
-
                 </div>
-
-            </div>
 
             {% empty %}
 
-
-            <!-- =====================================================
-                 NO HAY PROMOCIONES
-            ====================================================== -->
-            <div class="col-md-8 col-lg-6">
-
-                <div class="card shadow-lg border-0 rounded-4 text-center p-5 card-empty-hover">
-
-                    <div class="card-body">
-
-                        <i class="bi bi-inboxes display-1 text-body-secondary mb-4 d-block"></i>
-
-                        <h3 class="fw-bold mb-3 text-body-emphasis">
-                            ¡Próximamente nuevas promociones!
-                        </h3>
-
-                        <p class="fs-5 mb-4 text-body-secondary">
-
-                            En este momento no tenemos promociones disponibles
-                            para mostrar en nuestro catálogo.
-
-                            ¡Vuelve pronto!
-
-                        </p>
-
-                        <a
-                            href="/"
-                            class="btn btn-outline-dark px-4 py-2 rounded-pill fw-bold"
-                        >
-
-                            <i class="bi bi-house-door me-2"></i>
-
-                            Ir al inicio
-
-                        </a>
-
+                <!-- Estado sin promociones -->
+                <div class="col-12 col-md-8 col-lg-6 my-4">
+                    <div class="card bg-black bg-opacity-75 border border-secondary border-opacity-25 rounded-4 text-center p-5 text-light shadow-lg">
+                        <div class="card-body">
+                            <i class="bi bi-inboxes display-3 text-warning mb-3 d-block"></i>
+                            <h4 class="fw-bold mb-2 text-warning">¡Próximamente nuevas promociones!</h4>
+                            <p class="small mb-4 text-light opacity-75">
+                                En este momento no tenemos promociones activas en nuestro catálogo. ¡Vuelve pronto!
+                            </p>
+                            <a href="/" class="btn btn-outline-warning px-4 py-2 rounded-pill fw-bold">
+                                <i class="bi bi-house-door me-2"></i>Ir al inicio
+                            </a>
+                        </div>
                     </div>
-
                 </div>
-
-            </div>
 
             {% endfor %}
 
         </div>
 
     </div>
-
 </div>
 
 
-<!-- =============================================================
-     SCRIPT PARA VALIDAR LOGIN
-============================================================== -->
+<!-- ==========================================================
+     ESTILOS CSS AUXILIARES
+========================================================== -->
+<style>
+    .fs-7 { font-size: 0.8rem; }
+    .fs-8 { font-size: 0.72rem; }
 
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .style-z-index {
+        z-index: 1050;
+    }
+
+    /* EFECTO HOVER IGUAL AL DE SERVICIOS Y PRODUCTOS */
+    .hover-scale {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-scale:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+    }
+</style>
+
+
+<!-- ==========================================================
+     SCRIPT DE VALIDACIÓN DE LOGIN
+========================================================== -->
 <script>
-
 function gestionarSeleccion(event) {
-
-    /*
-     * Django nos indica si el usuario está autenticado.
-     */
     var estaAutenticado = {{ user.is_authenticated|yesno:"true,false" }};
 
-
-    /*
-     * Si NO está autenticado:
-     */
     if (!estaAutenticado) {
-
-        /*
-         * Evitamos que se abra la URL de la reserva.
-         */
         event.preventDefault();
 
+        alert("🎁 ¡Atención! Debes iniciar sesión para acceder a nuestras promociones.");
 
-        /*
-         * Mostramos mensaje.
-         */
-        alert(
-            "🎁 ¡Atención! Debes iniciar sesión para acceder a nuestras promociones."
-        );
-
-
-        /*
-         * Mandamos al usuario al login.
-         *
-         * next permite volver posteriormente
-         * a la página de promociones.
-         */
         window.location.href =
             "{% url 'login' %}?next=" +
             encodeURIComponent(window.location.pathname);
 
-
         return false;
     }
 
-
-    /*
-     * Usuario autenticado:
-     * permitimos continuar con la reserva.
-     */
     return true;
-
 }
-
 </script>
-
 
 {% endblock %}

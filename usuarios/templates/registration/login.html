@@ -63,6 +63,9 @@
                     autocomplete="current-password"
                     required
                 >
+                <button type="button" class="pwd-toggle-btn" id="toggle-password" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+                    <i class="bi bi-eye"></i>
+                </button>
             </div>
 
             <!-- RECUPERAR -->
@@ -81,6 +84,51 @@
 
 </div>
 
+<style>
+    /* Tarjeta del formulario: menos negra, más "vidrio esmerilado" */
+    .form-box {
+        background: rgba(35, 40, 50, 0.72) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Inputs: fondo más claro y con mejor contraste */
+    .cb-input {
+        background-color: rgba(255, 255, 255, 0.10) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        color: #ffffff !important;
+    }
+    .cb-input::placeholder {
+        color: rgba(255, 255, 255, 0.55) !important;
+    }
+    .cb-input:focus {
+        background-color: rgba(255, 255, 255, 0.16) !important;
+        border-color: #29b6d8 !important;
+        box-shadow: 0 0 0 0.2rem rgba(41, 182, 216, 0.25) !important;
+    }
+
+    /* Ojito para mostrar/ocultar contraseña */
+    .pwd-toggle-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        padding: 0;
+        line-height: 1;
+        cursor: pointer;
+    }
+    .pwd-toggle-btn:hover {
+        color: #ffffff;
+    }
+    #id_password.cb-input {
+        padding-right: 2.5rem;
+    }
+</style>
+
 <!-- 🔥 NUEVO: Script para evitar espacios o mayúsculas incorrectas en tiempo real -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -98,6 +146,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (inputPassword) {
         inputPassword.addEventListener('input', function() {
             this.value = this.value.replace(/\s/g, '');
+        });
+    }
+
+    // Ojito: mostrar/ocultar contraseña
+    const toggleBtn = document.getElementById('toggle-password');
+    if (toggleBtn && inputPassword) {
+        toggleBtn.addEventListener('click', function () {
+            const mostrar = inputPassword.type === 'password';
+            inputPassword.type = mostrar ? 'text' : 'password';
+            const icono = toggleBtn.querySelector('i');
+            icono.classList.toggle('bi-eye', !mostrar);
+            icono.classList.toggle('bi-eye-slash', mostrar);
         });
     }
 });

@@ -13,9 +13,20 @@
             <form method="post" id="form-crear-usuario" novalidate>
                 {% csrf_token %}
 
+                <h6 class="text-uppercase text-muted fw-bold small mb-2">Información personal</h6>
+                <hr class="mt-0 mb-3">
+
                 <div class="row g-3">
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-dark">Tipo de Documento</label>
+                        {{ form.tipo_documento }}
+                        {% if form.tipo_documento.errors %}
+                            <div class="text-danger small mt-1 js-server-error">{{ form.tipo_documento.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
                         <label class="form-label fw-semibold text-dark">Número de Documento</label>
                         {{ form.numero_documento }}
                         {% if form.numero_documento.errors %}
@@ -24,7 +35,7 @@
                         <div class="text-danger small mt-1 js-live-error" id="err-numero_documento"></div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-semibold text-dark">Teléfono</label>
                         {{ form.telefono }}
                         {% if form.telefono.errors %}
@@ -60,7 +71,14 @@
                         <div class="text-danger small mt-1 js-live-error" id="err-email"></div>
                     </div>
 
-                    <div class="col-md-6">
+                </div>
+
+                <h6 class="text-uppercase text-muted fw-bold small mt-4 mb-2">Acceso y seguridad</h6>
+                <hr class="mt-0 mb-3">
+
+                <div class="row g-3">
+
+                    <div class="col-12">
                         <label class="form-label fw-semibold text-dark">Rol</label>
                         {{ form.rol }}
                         {% if form.rol.errors %}
@@ -73,10 +91,32 @@
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold text-dark">Contraseña</label>
-                        {{ form.password1 }}
+                        <div class="pwd-wrapper">
+                            {{ form.password1 }}
+                            <button type="button" class="pwd-toggle-btn" id="toggle-password1" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                         {% if form.password1.errors %}
                             <div class="text-danger small mt-1 js-server-error">{{ form.password1.errors.0 }}</div>
                         {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark">Confirmar Contraseña</label>
+                        <div class="pwd-wrapper">
+                            {{ form.password2 }}
+                            <button type="button" class="pwd-toggle-btn" id="toggle-password2" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="text-danger small mt-1 js-server-error">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                        <div class="text-danger small mt-1 js-live-error" id="err-password2"></div>
+                    </div>
+
+                    <div class="col-12">
                         <ul class="small mt-1 mb-0 ps-3" id="pwd-rules">
                             <li id="rule-len" class="text-muted">Mínimo 8 caracteres</li>
                             <li id="rule-upper" class="text-muted">Al menos una mayúscula</li>
@@ -85,15 +125,6 @@
                             <li id="rule-special" class="text-muted">Al menos un carácter especial (!@#$%...)</li>
                             <li id="rule-space" class="text-muted">Sin espacios</li>
                         </ul>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold text-dark">Confirmar Contraseña</label>
-                        {{ form.password2 }}
-                        {% if form.password2.errors %}
-                            <div class="text-danger small mt-1 js-server-error">{{ form.password2.errors.0 }}</div>
-                        {% endif %}
-                        <div class="text-danger small mt-1 js-live-error" id="err-password2"></div>
                     </div>
 
                 </div>
@@ -112,6 +143,39 @@
 
     </div>
 </div>
+
+<style>
+    .pwd-wrapper {
+        position: relative;
+    }
+    .pwd-wrapper input {
+        padding-right: 2.5rem;
+    }
+    .pwd-toggle-btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        padding: 0;
+        line-height: 1;
+        cursor: pointer;
+    }
+    .pwd-toggle-btn:hover {
+        color: #343a40;
+    }
+    #pwd-rules {
+        columns: 2;
+        column-gap: 1.5rem;
+    }
+    @media (max-width: 576px) {
+        #pwd-rules {
+            columns: 1;
+        }
+    }
+</style>
 
 <script>
 (function () {
@@ -217,6 +281,23 @@
             setError('password2', elPass2.value === elPass1.value ? '' : 'Las contraseñas no coinciden.');
         });
     }
+
+    // ---- Ojitos: mostrar/ocultar contraseña ----
+    function setupToggle(inputId, btnId) {
+        var input = byId(inputId);
+        var btn = byId(btnId);
+        if (!input || !btn) return;
+        btn.addEventListener('click', function () {
+            var mostrar = input.type === 'password';
+            input.type = mostrar ? 'text' : 'password';
+            var icono = btn.querySelector('i');
+            icono.classList.toggle('bi-eye', !mostrar);
+            icono.classList.toggle('bi-eye-slash', mostrar);
+        });
+    }
+
+    setupToggle('id_password1', 'toggle-password1');
+    setupToggle('id_password2', 'toggle-password2');
 
 })();
 </script>
