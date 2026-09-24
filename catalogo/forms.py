@@ -18,7 +18,7 @@ from .models import (
 
 def validar_texto(valor, campo):
     """
-    Valida campos que solamente deben contener:
+    Valida campos que pueden contener:
     letras, números, espacios y caracteres propios
     de letras en español.
     """
@@ -85,16 +85,24 @@ class ProductoForm(forms.ModelForm):
 
         widgets = {
 
+            # ==================================================
+            # NOMBRE DEL PRODUCTO
+            # SOLO LETRAS, TILDES, Ñ Y ESPACIOS
+            # ==================================================
+
             'nombre': forms.TextInput(
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre del producto',
+
                     'pattern': (
-                        r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$'
+                        r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$'
                     ),
+
                     'title': (
-                        'El nombre solo puede contener '
-                        'letras, números y espacios.'
+                        'El nombre del producto solo puede '
+                        'contener letras y espacios. '
+                        'No se permiten números ni caracteres especiales.'
                     ),
                 }
             ),
@@ -158,18 +166,7 @@ class ProductoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # ==================================================
-        # SOLO MOSTRAR MARCAS ACTIVAS
-        # ==================================================
-        #
-        # estado=True  -> Marca activa -> aparece
-        # estado=False -> Marca inactiva -> NO aparece
-        #
-        # Esto funciona tanto para:
-        # - Crear producto
-        # - Editar producto
-        # ==================================================
-
+        # Solo mostrar marcas activas
         if 'codigo_marca' in self.fields:
 
             self.fields['codigo_marca'].queryset = (
@@ -187,13 +184,6 @@ class ProductoForm(forms.ModelForm):
     # ======================================================
 
     def clean_codigo_marca(self):
-        """
-        Valida nuevamente la marca en el backend.
-
-        Aunque la marca inactiva no aparece en el SELECT,
-        esta validación evita que alguien intente manipular
-        manualmente el formulario desde el navegador.
-        """
 
         marca = self.cleaned_data.get('codigo_marca')
 
@@ -207,22 +197,49 @@ class ProductoForm(forms.ModelForm):
         return marca
 
     # ======================================================
-    # VALIDAR NOMBRE
+    # VALIDAR NOMBRE DEL PRODUCTO
+    # SOLO LETRAS Y ESPACIOS
     # ======================================================
 
     def clean_nombre(self):
+
         nombre = self.cleaned_data.get('nombre')
 
-        return validar_texto(
-            nombre,
-            'nombre del producto'
-        )
+        if not nombre:
+
+            raise forms.ValidationError(
+                'El nombre del producto es obligatorio.'
+            )
+
+        nombre = nombre.strip()
+
+        if len(nombre) < 2:
+
+            raise forms.ValidationError(
+                'El nombre del producto debe tener '
+                'al menos 2 caracteres.'
+            )
+
+        # SOLO LETRAS, TILDES, Ñ Y ESPACIOS
+        if not re.fullmatch(
+            r'[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+',
+            nombre
+        ):
+
+            raise forms.ValidationError(
+                'El nombre del producto solo puede contener '
+                'letras y espacios. No se permiten números '
+                'ni caracteres especiales.'
+            )
+
+        return nombre
 
     # ======================================================
     # VALIDAR DESCRIPCIÓN
     # ======================================================
 
     def clean_descripcion(self):
+
         descripcion = self.cleaned_data.get('descripcion')
 
         return validar_descripcion(
@@ -235,6 +252,7 @@ class ProductoForm(forms.ModelForm):
     # ======================================================
 
     def clean_precio(self):
+
         precio = self.cleaned_data.get('precio')
 
         if precio is not None and precio < 0:
