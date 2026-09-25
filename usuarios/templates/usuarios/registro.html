@@ -107,6 +107,7 @@
                         {{ form.email }}
                     </div>
                     <small class="form-hint text-white opacity-50">{{ form.email.help_text }}</small>
+                    <div class="text-danger small mt-1" id="err-email"></div>
                 </div>
             </div>
 
@@ -177,6 +178,12 @@
         opacity: 0.7 !important;
     }
 
+    /* Oculta el ojito nativo de Edge para que no se duplique con el nuestro */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+
     /* Ojito para mostrar/ocultar contraseña */
     .pwd-toggle-btn {
         position: absolute;
@@ -237,6 +244,39 @@ document.addEventListener("DOMContentLoaded", function () {
     if (inputEmail) {
         inputEmail.addEventListener('input', function() {
             this.value = this.value.toLowerCase().replace(/\s/g, '');
+        });
+    }
+
+    // Validación de dominio completo (evita correo@dominio.c, exige mínimo 2 letras tras el punto)
+    const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+    const errEmail = document.getElementById('err-email');
+
+    function validarEmail() {
+        const valor = inputEmail.value.trim();
+        if (valor === '') {
+            errEmail.textContent = '';
+            return true;
+        }
+        if (!RE_EMAIL.test(valor)) {
+            errEmail.textContent = 'Ingresa un correo completo y válido (ej: nombre@dominio.com).';
+            return false;
+        }
+        errEmail.textContent = '';
+        return true;
+    }
+
+    if (inputEmail) {
+        inputEmail.addEventListener('input', validarEmail);
+        inputEmail.addEventListener('blur', validarEmail);
+    }
+
+    const formRegistro = document.getElementById('form-registro');
+    if (formRegistro) {
+        formRegistro.addEventListener('submit', function (e) {
+            if (!validarEmail()) {
+                e.preventDefault();
+                inputEmail.focus();
+            }
         });
     }
 

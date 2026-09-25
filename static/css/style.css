@@ -1478,33 +1478,298 @@ body.theme-light .chat-input:focus {
 .usuarios-editar-usuario__div-3 { width:48px; height:48px; font-size:18px; flex-shrink:0; }
 .usuarios-crear-usuario__div-1 { max-width: 650px; margin: 0 auto; }
 .usuarios-recuperar__div-1 { background-color: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; color: #f8d7da; border-radius: 6px; }
-.private-perfil__div-1 { background: #ffffff; }
-.private-perfil__div-2 { height: 12px; background: linear-gradient(90deg, #EAF7FA, #D5EEF3); }
-.private-perfil__i-5 { font-size: 2.5rem }
-.private-perfil__small-7 { font-size: 0.75rem; }
-.private-perfil__small-8 { font-size: 0.75rem; }
-.private-perfil__small-9 { font-size: 0.75rem; }
-.private-perfil__small-10 { font-size: 0.75rem; }
-.private-perfil__small-11 { font-size: 0.75rem; }
-.private-perfil__button-12 { background: #EAF7FA; color: #4a3f35; }
-.private-perfil__button-14 { background: #EAF7FA; color: #4a3f35; }
-.private-perfil__i-15 { color: #22AED1 }
-.private-perfil__button-16 { background: #EAF7FA; color: #4a3f35; }
-.private-perfil__div-20 { width: 420px }
-.private-perfil__div-23 { width: 420px }
-.private-perfil__div-24 { background: #22AED1 }
-.private-perfil__button-25 { background: #22AED1 }
-.private-perfil__div-26 { width: 480px }
-.private-perfil__div-27 { background: #22AED1 }
-.private-perfil__i-28 { font-size: 3rem }
-.private-perfil__div-29 { width: 800px }
-.private-perfil__i-32 { font-size: 3rem }
-.private-perfil__a-33 { background: #198754 }
-.private-perfil__img-34 { object-fit: cover }
-.private-perfil__div-35 { width: 45px; height: 45px; background: #f8f9fa }
-.private-perfil__div-36 { font-size: 0.8rem }
-.private-perfil__i-37 { font-size: 3rem }
-.private-perfil__a-38 { background: #007ca9 }
+
+/* =========================================================
+   PERFIL - EFECTO GLASSMORPHISM DORADO
+   Coloca este archivo en: static/css/perfil-glass.css
+   ========================================================= */
+
+/* -------- FONDO DE LA PÁGINA --------
+   El blur solo se nota si hay algo detrás para desenfocar.
+   Si tu base-clientes.html no tiene ya una imagen de fondo fija,
+   descomenta y ajusta esto: */
+/*
+body {
+  background: url("/static/img/barberia-fondo.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+*/
+
+@keyframes brillo-dorado {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* =========================================================
+   TARJETA PRINCIPAL DEL PERFIL
+   ========================================================= */
+.private-perfil__div-1 {
+  background: rgba(20, 25, 35, 0.55) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 210, 90, 0.35) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+}
+
+.private-perfil__div-1 .card-body {
+  background: transparent;
+}
+
+/* Franja decorativa superior */
+.private-perfil__div-2 {
+  height: 4px;
+  background: linear-gradient(90deg, #ffe680, #ffb300, #ffe680);
+  background-size: 200% 200%;
+  animation: brillo-dorado 4s ease infinite;
+}
+
+.private-perfil__div-1 h3.text-dark,
+.private-perfil__div-1 span.text-dark {
+  color: #f5f5f5 !important;
+}
+
+.private-perfil__div-1 small.text-muted {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.private-perfil__div-1 .border-light-subtle,
+.private-perfil__div-1 .border-bottom {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* -------- AVATAR -------- */
+.private-perfil__div-1 img.rounded-circle,
+.private-perfil__div-1 .rounded-circle {
+  border-width: 3px !important;
+  border-style: solid !important;
+  border-color: #ffd700 !important;
+  background: linear-gradient(135deg, #ffe680, #ffb300, #ff8c00) !important;
+  background-size: 200% 200%;
+  animation: brillo-dorado 4s ease infinite;
+  box-shadow: 0 0 18px rgba(255, 200, 0, 0.55);
+}
+
+.private-perfil__i-5 {
+  font-size: 2.6rem;
+}
+
+/* Badge "ADMINISTRADOR" / rol */
+.private-perfil__div-1 .badge {
+  background: linear-gradient(135deg, #ffe680, #ffb300, #ff8c00) !important;
+  background-size: 200% 200%;
+  animation: brillo-dorado 4s ease infinite;
+  color: #241800 !important;
+  text-shadow: none;
+  box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+}
+
+/* =========================================================
+   BOTONES DE ACCIÓN (Editar / Contraseña / Historial)
+   ========================================================= */
+.private-perfil__button-12,
+.private-perfil__button-14,
+.private-perfil__button-16 {
+  background: rgba(30, 35, 45, 0.5) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f5f5f5 !important;
+  transition: all 0.2s ease;
+}
+
+.private-perfil__button-12 span,
+.private-perfil__button-14 span,
+.private-perfil__button-16 span {
+  color: #f5f5f5;
+}
+
+.private-perfil__button-12:hover,
+.private-perfil__button-14:hover,
+.private-perfil__button-16:hover {
+  background: rgba(255, 200, 0, 0.16) !important;
+  border-color: rgba(255, 200, 0, 0.45) !important;
+  transform: translateY(-2px);
+}
+
+.private-perfil__i-15,
+.private-perfil__button-12 i,
+.private-perfil__button-16 i {
+  color: #ffc333 !important;
+}
+
+/* =========================================================
+   OFFCANVAS (paneles laterales) - fondo oscuro con vidrio
+   ========================================================= */
+.private-perfil__div-20,
+.private-perfil__div-23,
+.private-perfil__div-26,
+.private-perfil__div-29 {
+  background: rgba(15, 18, 26, 0.92) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: #f5f5f5;
+}
+
+/* -------- ENCABEZADOS: oscuros con acento dorado, ya no bloque naranja -------- */
+.private-perfil__div-20 .offcanvas-header,
+.private-perfil__div-23 .offcanvas-header,
+.private-perfil__div-24,
+.private-perfil__div-26 .offcanvas-header,
+.private-perfil__div-27,
+.private-perfil__div-29 .offcanvas-header {
+  background: rgba(10, 12, 18, 0.9) !important;
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent, #ffcc4d, transparent) 1;
+  padding: 1.25rem 1.5rem;
+}
+
+.private-perfil__div-20 .offcanvas-title,
+.private-perfil__div-23 .offcanvas-title,
+.private-perfil__div-26 .offcanvas-title,
+.private-perfil__div-29 .offcanvas-title {
+  color: #ffd97a !important;
+  text-shadow: 0 0 10px rgba(255, 200, 0, 0.35);
+  font-weight: 700;
+}
+
+/* Botón de cerrar (X) visible sobre fondo oscuro */
+.private-perfil__div-20 .btn-close,
+.private-perfil__div-23 .btn-close,
+.private-perfil__div-26 .btn-close,
+.private-perfil__div-29 .btn-close {
+  filter: invert(1) grayscale(100%) brightness(1.8);
+  opacity: 0.85;
+}
+.private-perfil__div-20 .btn-close:hover,
+.private-perfil__div-23 .btn-close:hover,
+.private-perfil__div-26 .btn-close:hover,
+.private-perfil__div-29 .btn-close:hover {
+  opacity: 1;
+}
+
+/* -------- BOTONES PRINCIPALES DE LOS FORMULARIOS -------- */
+.private-perfil__div-20 button[type="submit"],
+.private-perfil__button-25 {
+  background: linear-gradient(90deg, #ffcc4d, #ff9d00) !important;
+  color: #241800 !important;
+  border: none !important;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(255, 170, 0, 0.35);
+}
+.private-perfil__div-20 button[type="submit"]:hover,
+.private-perfil__button-25:hover {
+  background: linear-gradient(90deg, #ffd97a, #ffb300) !important;
+  box-shadow: 0 6px 20px rgba(255, 170, 0, 0.5);
+}
+
+/* -------- CAMPOS DE FORMULARIO (ya no blancos sólidos) -------- */
+.private-perfil__div-20 .form-label,
+.private-perfil__div-23 .form-label {
+  color: rgba(255, 255, 255, 0.65) !important;
+  letter-spacing: 0.05em;
+}
+
+.private-perfil__div-20 input,
+.private-perfil__div-20 select,
+.private-perfil__div-20 textarea,
+.private-perfil__div-23 input,
+.private-perfil__div-23 select,
+.private-perfil__div-23 textarea {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #f5f5f5 !important;
+  border-radius: 10px;
+}
+
+.private-perfil__div-20 input::placeholder,
+.private-perfil__div-23 input::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.private-perfil__div-20 input:focus,
+.private-perfil__div-20 select:focus,
+.private-perfil__div-23 input:focus {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: #ffcc4d !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 190, 0, 0.2) !important;
+}
+
+/* Input de tipo file ("Seleccionar archivo") */
+.private-perfil__div-20 input[type="file"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.private-perfil__div-20 input[type="file"]::file-selector-button {
+  background: rgba(255, 200, 0, 0.15);
+  border: 1px solid rgba(255, 200, 0, 0.35);
+  color: #ffd97a;
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-right: 10px;
+}
+
+/* Link "¿Olvidaste tu contraseña?" y ojo mostrar/ocultar */
+.private-perfil__div-23 a {
+  color: #ffcc4d !important;
+}
+.pwd-toggle-btn {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+.pwd-toggle-btn:hover {
+  color: #ffd97a !important;
+}
+
+/* =========================================================
+   HISTORIAL - tarjetas oscuras en vez de blancas
+   ========================================================= */
+.private-perfil__div-26 .list-group-item,
+.private-perfil__div-29 .card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  color: #f5f5f5 !important;
+  margin-bottom: 10px;
+  transition: background 0.2s ease;
+}
+.private-perfil__div-26 .list-group-item:hover {
+  background: rgba(255, 200, 0, 0.07) !important;
+}
+
+.private-perfil__div-26 .list-group-item .fw-semibold,
+.private-perfil__div-29 .text-dark {
+  color: #f5f5f5 !important;
+}
+
+.private-perfil__div-26 .list-group-item .text-muted,
+.private-perfil__div-29 .text-muted {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.private-perfil__div-26 .list-group-item i,
+.private-perfil__div-29 i.text-secondary {
+  color: #ffc333 !important;
+}
+
+/* Pestañas Reservas / Ventas dentro del historial de cliente-barbero */
+.private-perfil__div-29 .nav-tabs {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+.private-perfil__div-29 .nav-link {
+  color: rgba(255, 255, 255, 0.6) !important;
+  border: none !important;
+}
+.private-perfil__div-29 .nav-link.active {
+  color: #ffd97a !important;
+  border-bottom: 2px solid #ffcc4d !important;
+  background: transparent !important;
+}
+.private-perfil__div-29 .tab-content,
+.private-perfil__div-29 .offcanvas-body {
+  background: transparent !important;
+}
+
+
 .private-detalle-notificacion__div-1 { max-width: 700px; }
 .private-detalle-notificacion__div-2 { width:56px;height:56px; }
 .private-detalle-notificacion__div-3 { width:56px;height:56px; }

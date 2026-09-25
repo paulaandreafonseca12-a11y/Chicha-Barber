@@ -31,13 +31,13 @@
         </div>
         {% endif %}
 
-        <form method="post">
+        <form method="post" id="form-login">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ request.GET.next }}">
 
             <!-- EMAIL -->
             <label class="form-label cb-label">Correo Electrónico</label>
-            <div class="position-relative mb-3">
+            <div class="position-relative mb-1">
                 <span class="input-icon">✉️</span>
                 <input
                     type="email"
@@ -49,6 +49,7 @@
                     required
                 >
             </div>
+            <div class="text-danger small mb-2" id="err-username"></div>
 
             <!-- PASSWORD -->
             <label class="form-label cb-label">Contraseña</label>
@@ -108,6 +109,12 @@
         box-shadow: 0 0 0 0.2rem rgba(41, 182, 216, 0.25) !important;
     }
 
+    /* Oculta el ojito nativo de Edge para que no se duplique con el nuestro */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+
     /* Ojito para mostrar/ocultar contraseña */
     .pwd-toggle-btn {
         position: absolute;
@@ -139,6 +146,39 @@ document.addEventListener("DOMContentLoaded", function () {
     if (inputEmail) {
         inputEmail.addEventListener('input', function() {
             this.value = this.value.toLowerCase().replace(/\s/g, '');
+        });
+    }
+
+    // Validación de dominio completo (evita correo@dominio.c, exige mínimo 2 letras tras el punto)
+    const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+    const errUsername = document.getElementById('err-username');
+
+    function validarEmail() {
+        const valor = inputEmail.value.trim();
+        if (valor === '') {
+            errUsername.textContent = '';
+            return true;
+        }
+        if (!RE_EMAIL.test(valor)) {
+            errUsername.textContent = 'Ingresa un correo completo y válido (ej: nombre@dominio.com).';
+            return false;
+        }
+        errUsername.textContent = '';
+        return true;
+    }
+
+    if (inputEmail) {
+        inputEmail.addEventListener('input', validarEmail);
+        inputEmail.addEventListener('blur', validarEmail);
+    }
+
+    const formLogin = document.getElementById('form-login');
+    if (formLogin) {
+        formLogin.addEventListener('submit', function (e) {
+            if (!validarEmail()) {
+                e.preventDefault();
+                inputEmail.focus();
+            }
         });
     }
 

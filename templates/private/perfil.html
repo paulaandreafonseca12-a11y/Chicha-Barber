@@ -1,6 +1,8 @@
 {% extends "base-clientes.html" %}
 {% load static %}
 
+<link rel="stylesheet" href="{% static 'css/perfil-glass.css' %}">
+
 {% block content %}
 
 <div class="container mt-5 mb-5">
@@ -608,7 +610,7 @@
 
   <div class="offcanvas-body p-4">
 
-    <form method="post">
+    <form method="post" id="form-cambiar-password">
 
       {% csrf_token %}
 
@@ -623,12 +625,18 @@
 
         </label>
 
-        <input
-          type="password"
-          name="password_actual"
-          class="form-control py-2"
-          placeholder="••••••••"
-        >
+        <div class="pwd-wrapper">
+          <input
+            type="password"
+            name="password_actual"
+            id="id_password_actual"
+            class="form-control py-2"
+            placeholder="••••••••"
+          >
+          <button type="button" class="pwd-toggle-btn" id="toggle-password-actual" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
 
         <div class="text-end mt-1">
 
@@ -656,12 +664,18 @@
 
         </label>
 
-        <input
-          type="password"
-          name="password_nueva"
-          class="form-control py-2"
-          placeholder="••••••••"
-        >
+        <div class="pwd-wrapper">
+          <input
+            type="password"
+            name="password_nueva"
+            id="id_password_nueva"
+            class="form-control py-2"
+            placeholder="••••••••"
+          >
+          <button type="button" class="pwd-toggle-btn" id="toggle-password-nueva" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
 
       </div>
 
@@ -676,12 +690,18 @@
 
         </label>
 
-        <input
-          type="password"
-          name="password_confirmar"
-          class="form-control py-2"
-          placeholder="••••••••"
-        >
+        <div class="pwd-wrapper">
+          <input
+            type="password"
+            name="password_confirmar"
+            id="id_password_confirmar"
+            class="form-control py-2"
+            placeholder="••••••••"
+          >
+          <button type="button" class="pwd-toggle-btn" id="toggle-password-confirmar" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
 
       </div>
 
@@ -1300,5 +1320,54 @@
 </div>
 
 {% endif %}
+
+<style>
+    .pwd-wrapper {
+        position: relative;
+    }
+    .pwd-wrapper input {
+        padding-right: 2.5rem;
+    }
+    .pwd-toggle-btn {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        padding: 0;
+        line-height: 1;
+        cursor: pointer;
+    }
+    .pwd-toggle-btn:hover {
+        color: #343a40;
+    }
+    /* Oculta el ojito nativo de Edge para que no se duplique con el nuestro */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function setupToggle(inputId, btnId) {
+        var input = document.getElementById(inputId);
+        var btn = document.getElementById(btnId);
+        if (!input || !btn) return;
+        btn.addEventListener('click', function () {
+            var mostrar = input.type === 'password';
+            input.type = mostrar ? 'text' : 'password';
+            var icono = btn.querySelector('i');
+            icono.classList.toggle('bi-eye', !mostrar);
+            icono.classList.toggle('bi-eye-slash', mostrar);
+        });
+    }
+    setupToggle('id_password_actual', 'toggle-password-actual');
+    setupToggle('id_password_nueva', 'toggle-password-nueva');
+    setupToggle('id_password_confirmar', 'toggle-password-confirmar');
+});
+</script>
 
 {% endblock %}
