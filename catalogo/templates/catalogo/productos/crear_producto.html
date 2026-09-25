@@ -3,200 +3,591 @@
 
 {% block content %}
 
-<div class="container py-4">
+<div class="container py-4 text-white">
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-7">
+        <div class="col-lg-9">
 
-            <div class="card shadow border-0">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
 
-                <div class="card-header color-champaña text-dark py-3">
+                <!-- ENCABEZADO CARD CON BOTÓN VOLVER INTEGRADO -->
+                <div class="card-header bg-gradient-header border-bottom border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
 
-                    <h4 class="mb-0 fw-bold text-dark">
+                    <h5 class="mb-0 fw-bold text-white d-flex align-items-center gap-2">
+                        <i class="bi bi-box-seam text-warning fs-5"></i>
+                        Información del Producto
+                    </h5>
 
-                        <i class="bi bi-box-seam me-2"></i>
-
-                        {% if form.instance.pk %}
-                            Editar Producto
-                        {% else %}
-                            Nuevo Producto
-                        {% endif %}
-
-                    </h4>
+                    <a href="{% url 'lista_productos_admin' %}"
+                       class="btn btn-sm btn-outline-light fw-bold rounded-pill px-3 py-2 d-flex align-items-center gap-1">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+                    </a>
 
                 </div>
 
-
-                <div class="card-body">
-
+                <div class="card-body p-4 p-md-5">
 
                     <form method="POST" enctype="multipart/form-data">
 
                         {% csrf_token %}
 
+                        <!-- ERRORES GENERALES -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger bg-danger bg-opacity-25 border border-danger text-white rounded-3 shadow-sm mb-4">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
 
+                        <div class="row g-4">
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Nombre del Producto <span class="text-danger">*</span>
-                            </label>
-                            {{ form.nombre }}
-                            {% for error in form.nombre.errors %}
-                                <div class="text-danger small mt-1">
-                                    <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Descripción
-                            </label>
-                            {{ form.descripcion }}
-                            {% for error in form.descripcion.errors %}
-                                <div class="text-danger small mt-1">
-                                    <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">
-                                    Categoría
+                            <!-- NOMBRE -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-white-50">
+                                    <i class="bi bi-tag text-warning me-1"></i>
+                                    Nombre del Producto
+                                    <span class="text-danger">*</span>
                                 </label>
-                                {{ form.codigo_categoria }}
-                                {% for error in form.codigo_categoria.errors %}
-                                    <div class="text-danger small mt-1">
-                                        <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                {{ form.nombre }}
+
+                                {% for error in form.nombre.errors %}
+                                    <div class="text-danger small mt-1 fw-medium d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle"></i>{{ error }}
                                     </div>
                                 {% endfor %}
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">
+                            <!-- PRECIO -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-white-50">
+                                    <i class="bi bi-currency-dollar text-success me-1"></i>
+                                    Precio
+                                    <span class="text-danger">*</span>
+                                </label>
+                                {{ form.precio }}
+
+                                {% for error in form.precio.errors %}
+                                    <div class="text-danger small mt-1 fw-medium d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle"></i>{{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- CATEGORÍA -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-white-50">
+                                    <i class="bi bi-tags text-warning me-1"></i>
+                                    Categoría
+                                    <span class="text-danger">*</span>
+                                </label>
+
+                                <div class="input-group">
+                                    <input type="text"
+                                           id="buscadorCategoria"
+                                           class="form-control bg-dark text-white border-secondary border-opacity-50"
+                                           placeholder="Buscar categoría..."
+                                           autocomplete="off">
+
+                                    <button type="button"
+                                            class="btn btn-warning text-dark fw-bold"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalCategoria"
+                                            title="Crear categoría">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </div>
+
+                                <div class="d-none">
+                                    {{ form.codigo_categoria }}
+                                </div>
+
+                                <div id="resultadosCategoria" class="list-group mt-1 shadow-lg"></div>
+
+                                <div id="categoriaSeleccionada" class="form-text fw-medium mt-2 text-white-50">
+                                    {% if form.codigo_categoria.value %}
+                                        <span class="text-success d-flex align-items-center gap-1"><i class="bi bi-check-circle-fill"></i>Categoría seleccionada.</span>
+                                    {% else %}
+                                        <i class="bi bi-info-circle me-1"></i>Selecciona una categoría.
+                                    {% endif %}
+                                </div>
+
+                                {% for error in form.codigo_categoria.errors %}
+                                    <div class="text-danger small mt-1 fw-medium d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle"></i>{{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- MARCA -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-white-50">
+                                    <i class="bi bi-award text-info me-1"></i>
                                     Marca
                                 </label>
-                                {{ form.codigo_marca }}
+
+                                <div class="input-group">
+                                    <input type="text"
+                                           id="buscadorMarca"
+                                           class="form-control bg-dark text-white border-secondary border-opacity-50"
+                                           placeholder="Buscar marca..."
+                                           autocomplete="off">
+
+                                    <button type="button"
+                                            class="btn btn-warning text-dark fw-bold"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalMarca"
+                                            title="Crear marca">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </div>
+
+                                <div class="d-none">
+                                    {{ form.codigo_marca }}
+                                </div>
+
+                                <div id="resultadosMarca" class="list-group mt-1 shadow-lg"></div>
+
+                                <div id="marcaSeleccionada" class="form-text fw-medium mt-2 text-white-50">
+                                    {% if form.codigo_marca.value %}
+                                        <span class="text-success d-flex align-items-center gap-1"><i class="bi bi-check-circle-fill"></i>Marca seleccionada.</span>
+                                    {% else %}
+                                        <i class="bi bi-info-circle me-1"></i>Selecciona una marca.
+                                    {% endif %}
+                                </div>
+
                                 {% for error in form.codigo_marca.errors %}
-                                    <div class="text-danger small mt-1">
-                                        <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                    <div class="text-danger small mt-1 fw-medium d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle"></i>{{ error }}
                                     </div>
                                 {% endfor %}
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Precio Base
-                            </label>
-                            {{ form.precio }}
-                            {% for error in form.precio.errors %}
-                                <div class="text-danger small mt-1">
-                                    <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
-                                </div>
-                            {% endfor %}
-                        </div>
+                            <!-- DESCRIPCIÓN -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold text-white-50">
+                                    <i class="bi bi-card-text me-1 text-secondary"></i>
+                                    Descripción
+                                </label>
+                                {{ form.descripcion }}
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Imagen
-                            </label>
-                            {{ form.imagen }}
-                            {% for error in form.imagen.errors %}
-                                <div class="text-danger small mt-1">
-                                    <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
-                                </div>
-                            {% endfor %}
-
-                            {% if form.instance.imagen %}
-                            <div class="mt-3">
-                                <p class="text-muted mb-2">
-                                    Imagen actual:
-                                </p>
-                                <img 
-                                src="{{ form.instance.imagen.url }}"
-                                class="img-thumbnail rounded"
-                                style="width:180px;height:180px;object-fit:cover;">
+                                {% for error in form.descripcion.errors %}
+                                    <div class="text-danger small mt-1 fw-medium d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle"></i>{{ error }}
+                                    </div>
+                                {% endfor %}
                             </div>
-                            {% endif %}
-                        </div>
 
-                        <div class="form-check form-switch mb-4">
-                            {{ form.estado }}
-                            <label class="form-check-label fw-semibold" for="{{ form.estado.id_for_label }}">
-                                Producto Activo
-                            </label>
-                            {% for error in form.estado.errors %}
-                                <div class="text-danger small mt-1">
-                                    <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            <!-- IMAGEN -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-white-50">
+                                    <i class="bi bi-image me-1 text-primary"></i>
+                                    Imagen
+                                </label>
+                                {{ form.imagen }}
+
+                                {% for error in form.imagen.errors %}
+                                    <div class="text-danger small mt-1 fw-medium d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle"></i>{{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- ESTADO -->
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="form-check form-switch mt-3">
+                                    {{ form.estado }}
+                                    <label class="form-check-label fw-bold text-white ms-2" for="{{ form.estado.id_for_label }}">
+                                        Producto activo
+                                    </label>
                                 </div>
-                            {% endfor %}
+                            </div>
+
                         </div>
 
+                        <!-- BOTONES ACCIÓN -->
+                        <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top border-secondary border-opacity-25">
 
-
-
-
-                        <div class="d-flex justify-content-end gap-2">
-
-
-                            <a href="{% url 'lista_productos_admin' %}"
-                               class="btn btn-outline-secondary">
-
-
-                                <i class="bi bi-x-circle"></i>
-
+                            <a href="{% url 'lista_productos_admin' %}" class="btn btn-outline-secondary px-4 fw-semibold rounded-pill text-white border-secondary">
+                                <i class="bi bi-x-circle me-1"></i>
                                 Cancelar
-
-
                             </a>
 
-
-
-
-                            <button type="submit"
-                                    class="btn color-azul text-white fw-bold">
-
-
-                                <i class="bi bi-save"></i>
-
-
-                                {% if form.instance.pk %}
-
-                                    Actualizar
-
-                                {% else %}
-
-                                    Guardar
-
-                                {% endif %}
-
-
-
+                            <button type="submit" class="btn btn-warning text-dark fw-bold px-4 rounded-pill shadow-sm d-flex align-items-center gap-2">
+                                <i class="bi bi-save-fill"></i>
+                                Guardar Producto
                             </button>
 
-
                         </div>
-
 
                     </form>
 
-
                 </div>
-
 
             </div>
 
-
         </div>
-
 
     </div>
 
-
 </div>
 
+
+<!-- MODAL CATEGORÍA -->
+<div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border border-secondary border-opacity-25 shadow-lg rounded-4 overflow-hidden">
+
+            <div class="modal-header bg-gradient-header border-bottom border-secondary border-opacity-25">
+                <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2" id="modalCategoriaLabel">
+                    <i class="bi bi-tags text-warning"></i>
+                    Nueva Categoría
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div id="errorCategoria" class="alert alert-danger bg-danger bg-opacity-25 border border-danger text-white d-none fw-medium"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-white-50">Nombre</label>
+                    <input type="text" id="nombreCategoria" class="form-control bg-dark text-white border-secondary border-opacity-50" placeholder="Ej. Cuidado capilar">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-white-50">Descripción</label>
+                    <textarea id="descripcionCategoria" class="form-control bg-dark text-white border-secondary border-opacity-50" rows="3" placeholder="Descripción de la categoría"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top border-secondary border-opacity-25 bg-black bg-opacity-25">
+                <button type="button" class="btn btn-outline-secondary text-white rounded-pill fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-3" id="guardarCategoria">
+                    <i class="bi bi-save me-1"></i>Guardar Categoría
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL MARCA -->
+<div class="modal fade" id="modalMarca" tabindex="-1" aria-labelledby="modalMarcaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border border-secondary border-opacity-25 shadow-lg rounded-4 overflow-hidden">
+
+            <div class="modal-header bg-gradient-header border-bottom border-secondary border-opacity-25">
+                <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2" id="modalMarcaLabel">
+                    <i class="bi bi-award text-info"></i>
+                    Nueva Marca
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div id="errorMarca" class="alert alert-danger bg-danger bg-opacity-25 border border-danger text-white d-none fw-medium"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-white-50">Nombre</label>
+                    <input type="text" id="nombreMarca" class="form-control bg-dark text-white border-secondary border-opacity-50" placeholder="Ej. Suavecito">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-white-50">Descripción</label>
+                    <textarea id="descripcionMarca" class="form-control bg-dark text-white border-secondary border-opacity-50" rows="3" placeholder="Descripción de la marca"></textarea>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="estadoMarca" checked>
+                    <label class="form-check-label fw-semibold text-white" for="estadoMarca">
+                        Marca activa
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top border-secondary border-opacity-25 bg-black bg-opacity-25">
+                <button type="button" class="btn btn-outline-secondary text-white rounded-pill fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-3" id="guardarMarca">
+                    <i class="bi bi-save me-1"></i>Guardar Marca
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ESTILOS ADICIONALES PARA COMPLEMENTAR DROPDOWNS EN MODO OSCURO -->
+<style>
+    #resultadosCategoria .list-group-item,
+    #resultadosMarca .list-group-item {
+        background-color: #212529;
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+    #resultadosCategoria .list-group-item-action:hover,
+    #resultadosMarca .list-group-item-action:hover {
+        background-color: #343a40;
+        color: #ffc107;
+    }
+    #resultadosCategoria .list-group-item.active,
+    #resultadosMarca .list-group-item.active {
+        background-color: #ffc107;
+        color: #000;
+        border-color: #ffc107;
+        font-weight: bold;
+    }
+</style>
+
+
+<!-- JAVASCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* BUSCADOR DE CATEGORÍAS */
+    const buscadorCategoria = document.getElementById("buscadorCategoria");
+    const resultadosCategoria = document.getElementById("resultadosCategoria");
+    const selectCategoria = document.getElementById("{{ form.codigo_categoria.id_for_label }}");
+    const categoriaSeleccionada = document.getElementById("categoriaSeleccionada");
+
+    function mostrarCategorias(texto = "") {
+        resultadosCategoria.innerHTML = "";
+        const termino = texto.toLowerCase().trim();
+        const opciones = Array.from(selectCategoria.options)
+            .filter(opcion => opcion.value !== "")
+            .filter(opcion => opcion.text.toLowerCase().includes(termino));
+
+        if (opciones.length === 0) {
+            resultadosCategoria.innerHTML = `
+                <div class="list-group-item text-white-50 text-center py-2">
+                    <i class="bi bi-search me-1"></i>No se encontraron categorías.
+                </div>`;
+            return;
+        }
+
+        opciones.forEach(opcion => {
+            const elemento = document.createElement("button");
+            elemento.type = "button";
+            elemento.className = "list-group-item list-group-item-action";
+
+            if (selectCategoria.value === opcion.value) {
+                elemento.classList.add("active");
+            }
+
+            elemento.textContent = opcion.text;
+
+            elemento.addEventListener("click", function () {
+                selectCategoria.value = opcion.value;
+                buscadorCategoria.value = opcion.text;
+                categoriaSeleccionada.innerHTML = `
+                    <span class="text-success fw-medium d-flex align-items-center gap-1">
+                        <i class="bi bi-check-circle-fill"></i>Seleccionada: <strong>${opcion.text}</strong>
+                    </span>`;
+                resultadosCategoria.innerHTML = "";
+            });
+
+            resultadosCategoria.appendChild(elemento);
+        });
+    }
+
+    buscadorCategoria.addEventListener("input", function () { mostrarCategorias(this.value); });
+    buscadorCategoria.addEventListener("focus", function () { mostrarCategorias(this.value); });
+
+    /* BUSCADOR DE MARCAS */
+    const buscadorMarca = document.getElementById("buscadorMarca");
+    const resultadosMarca = document.getElementById("resultadosMarca");
+    const selectMarca = document.getElementById("{{ form.codigo_marca.id_for_label }}");
+    const marcaSeleccionada = document.getElementById("marcaSeleccionada");
+
+    function mostrarMarcas(texto = "") {
+        resultadosMarca.innerHTML = "";
+        const termino = texto.toLowerCase().trim();
+        const opciones = Array.from(selectMarca.options)
+            .filter(opcion => opcion.value !== "")
+            .filter(opcion => opcion.text.toLowerCase().includes(termino));
+
+        if (opciones.length === 0) {
+            resultadosMarca.innerHTML = `
+                <div class="list-group-item text-white-50 text-center py-2">
+                    <i class="bi bi-search me-1"></i>No se encontraron marcas.
+                </div>`;
+            return;
+        }
+
+        opciones.forEach(opcion => {
+            const elemento = document.createElement("button");
+            elemento.type = "button";
+            elemento.className = "list-group-item list-group-item-action";
+
+            if (selectMarca.value === opcion.value) {
+                elemento.classList.add("active");
+            }
+
+            elemento.textContent = opcion.text;
+
+            elemento.addEventListener("click", function () {
+                selectMarca.value = opcion.value;
+                buscadorMarca.value = opcion.text;
+                marcaSeleccionada.innerHTML = `
+                    <span class="text-success fw-medium d-flex align-items-center gap-1">
+                        <i class="bi bi-check-circle-fill"></i>Seleccionada: <strong>${opcion.text}</strong>
+                    </span>`;
+                resultadosMarca.innerHTML = "";
+            });
+
+            resultadosMarca.appendChild(elemento);
+        });
+    }
+
+    buscadorMarca.addEventListener("input", function () { mostrarMarcas(this.value); });
+    buscadorMarca.addEventListener("focus", function () { mostrarMarcas(this.value); });
+
+    /* CERRAR RESULTADOS AL HACER CLICK AFUERA */
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest("#buscadorCategoria") && !event.target.closest("#resultadosCategoria")) {
+            resultadosCategoria.innerHTML = "";
+        }
+        if (!event.target.closest("#buscadorMarca") && !event.target.closest("#resultadosMarca")) {
+            resultadosMarca.innerHTML = "";
+        }
+    });
+
+    /* CARGAR CATEGORÍA EXISTENTE AL EDITAR */
+    if (selectCategoria.value) {
+        const opcion = selectCategoria.options[selectCategoria.selectedIndex];
+        if (opcion) {
+            buscadorCategoria.value = opcion.text;
+            categoriaSeleccionada.innerHTML = `
+                <span class="text-success fw-medium d-flex align-items-center gap-1">
+                    <i class="bi bi-check-circle-fill"></i>Seleccionada: <strong>${opcion.text}</strong>
+                </span>`;
+        }
+    }
+
+    /* CARGAR MARCA EXISTENTE AL EDITAR */
+    if (selectMarca.value) {
+        const opcion = selectMarca.options[selectMarca.selectedIndex];
+        if (opcion) {
+            buscadorMarca.value = opcion.text;
+            marcaSeleccionada.innerHTML = `
+                <span class="text-success fw-medium d-flex align-items-center gap-1">
+                    <i class="bi bi-check-circle-fill"></i>Seleccionada: <strong>${opcion.text}</strong>
+                </span>`;
+        }
+    }
+
+    /* CREAR CATEGORÍA */
+    const guardarCategoria = document.getElementById("guardarCategoria");
+    guardarCategoria.addEventListener("click", function () {
+        const nombre = document.getElementById("nombreCategoria").value.trim();
+        const descripcion = document.getElementById("descripcionCategoria").value.trim();
+        const error = document.getElementById("errorCategoria");
+
+        if (!nombre) {
+            error.textContent = "El nombre de la categoría es obligatorio.";
+            error.classList.remove("d-none");
+            return;
+        }
+
+        guardarCategoria.disabled = true;
+
+        fetch("{% url 'crear_categoria' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ nombre: nombre, descripcion: descripcion })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const option = new Option(data.nombre, data.codigo, true, true);
+                selectCategoria.add(option);
+                selectCategoria.value = data.codigo;
+                buscadorCategoria.value = data.nombre;
+                categoriaSeleccionada.innerHTML = `
+                    <span class="text-success fw-medium d-flex align-items-center gap-1">
+                        <i class="bi bi-check-circle-fill"></i>Seleccionada: <strong>${data.nombre}</strong>
+                    </span>`;
+                document.getElementById("nombreCategoria").value = "";
+                document.getElementById("descripcionCategoria").value = "";
+                error.classList.add("d-none");
+                bootstrap.Modal.getInstance(document.getElementById("modalCategoria")).hide();
+            } else {
+                error.textContent = data.error || "No fue posible crear la categoría.";
+                error.classList.remove("d-none");
+            }
+        })
+        .catch(() => {
+            error.textContent = "Ocurrió un error al crear la categoría.";
+            error.classList.remove("d-none");
+        })
+        .finally(() => { guardarCategoria.disabled = false; });
+    });
+
+    /* CREAR MARCA */
+    const guardarMarca = document.getElementById("guardarMarca");
+    guardarMarca.addEventListener("click", function () {
+        const nombre = document.getElementById("nombreMarca").value.trim();
+        const descripcion = document.getElementById("descripcionMarca").value.trim();
+        const estado = document.getElementById("estadoMarca").checked;
+        const error = document.getElementById("errorMarca");
+
+        if (!nombre) {
+            error.textContent = "El nombre de la marca es obligatorio.";
+            error.classList.remove("d-none");
+            return;
+        }
+
+        guardarMarca.disabled = true;
+
+        fetch("{% url 'crear_marca' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ nombre: nombre, descripcion: descripcion, estado: estado })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const option = new Option(data.nombre, data.codigo, true, true);
+                selectMarca.add(option);
+                selectMarca.value = data.codigo;
+                buscadorMarca.value = data.nombre;
+                marcaSeleccionada.innerHTML = `
+                    <span class="text-success fw-medium d-flex align-items-center gap-1">
+                        <i class="bi bi-check-circle-fill"></i>Seleccionada: <strong>${data.nombre}</strong>
+                    </span>`;
+                document.getElementById("nombreMarca").value = "";
+                document.getElementById("descripcionMarca").value = "";
+                document.getElementById("estadoMarca").checked = true;
+                error.classList.add("d-none");
+                bootstrap.Modal.getInstance(document.getElementById("modalMarca")).hide();
+            } else {
+                error.textContent = data.error || "No fue posible crear la marca.";
+                error.classList.remove("d-none");
+            }
+        })
+        .catch(() => {
+            error.textContent = "Ocurrió un error al crear la marca.";
+            error.classList.remove("d-none");
+        })
+        .finally(() => { guardarMarca.disabled = false; });
+    });
+
+    /* LIMPIAR ERRORES EN MODALES */
+    document.getElementById("modalCategoria").addEventListener("show.bs.modal", function () {
+        document.getElementById("errorCategoria").classList.add("d-none");
+    });
+    document.getElementById("modalMarca").addEventListener("show.bs.modal", function () {
+        document.getElementById("errorMarca").classList.add("d-none");
+    });
+
+});
+</script>
 
 {% endblock %}
