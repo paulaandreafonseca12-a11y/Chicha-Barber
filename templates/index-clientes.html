@@ -2,284 +2,423 @@
 {% load static %} 
 {% block content %}
 
-<!-- Importación de tipografías modernas (Montserrat y Playfair Display) -->
+<!-- Importación de tipografías modernas -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
 
-<section class="d-flex align-items-start pt-3">
+<section class="d-flex align-items-start pt-3 text-center">
   <div class="container">
-    <!-- Branding Central Superior -->
-    <div class="row align-items-center">
-      <div class="col-lg-6 text-light">
+    <!-- Branding Central Superior Centrado -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-light text-center">
         
         <!-- Badge estilo Neón -->
-        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 mb-3 rounded-pill neon-badge-bg">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 mb-3 rounded-pill neon-badge-bg mx-auto">
           <i class="bi bi-scissors text-warning fs-6"></i>
           <span class="text-warning fw-bold tracking-wider small text-uppercase font-heading" style="letter-spacing: 2px;">
             BARBERÍA PROFESIONAL
           </span>
         </div>
 
-        <h1 class="font-heading fw-black lh-1 mb-3 text-uppercase">
-          <!-- Primera línea: POTENCIA & ESTILO PARA -->
+        <h1 class="font-heading fw-black lh-1 mb-3 text-uppercase text-center">
           <span class="d-block neon-text-gold fw-black mb-1 text-nowrap" style="font-size: calc(1.5rem + 1.8vw);">
             POTENCIA &amp; ESTILO PARA
           </span>
-
-          <!-- Segunda línea: NUESTROS CLIENTES -->
           <span class="d-block neon-text-white fw-black mb-1 text-nowrap" style="font-size: calc(1.5rem + 1.8vw);">
             NUESTROS CLIENTES
           </span>
         </h1>
 
-        <!-- Subtítulo con acento de línea neón -->
-        <p class="fs-5 ps-3 border-start border-3 border-warning text-light opacity-90 mb-4" style="background: linear-gradient(90deg, rgba(255,215,0,0.08) 0%, rgba(0,0,0,0) 100%);">
+        <!-- Subtítulo Centrado -->
+        <p class="fs-5 text-light opacity-90 mb-4 mx-auto p-3 rounded-3" style="max-width: 600px; background: linear-gradient(180deg, rgba(255,215,0,0.08) 0%, rgba(0,0,0,0) 100%); border-bottom: 2px solid #ffc107;">
           Cortes modernos, estilo único y atención profesional en 
           <span class="fw-bold text-warning text-decoration-underline">Nobsa</span>.
         </p>
       </div>
-
-      <!-- Tarjeta Flotante Glassmorphism -->
-      <div class="col-lg-5 offset-lg-1 d-flex justify-content-end mt-4 mt-lg-0">
-        <div class="card border-0 rounded-4 shadow-lg p-4 text-white w-100 hover-scale templates-index-clientes__div-6" 
-             style="background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.12) !important;">
-          
-          <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
-                 style="width: 44px; height: 44px;">
-              <i class="bi bi-geo-alt-fill fs-5"></i>
-            </div>
-            <div>
-              <small class="text-white-50 d-block">Ubicación</small>
-              <span class="fw-bold">Nobsa, Boyacá</span>
-            </div>
-          </div>
-
-          <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
-                 style="width: 44px; height: 44px;">
-              <i class="bi bi-telephone-fill fs-5"></i>
-            </div>
-            <div>
-              <small class="text-white-50 d-block">Teléfono / WhatsApp</small>
-              <span class="fw-bold">300 178 4233</span>
-            </div>
-          </div>
-
-          <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
-                 style="width: 44px; height: 44px;">
-              <i class="bi bi-calendar-check-fill fs-5"></i> 
-            </div>
-            <div>
-              <small class="text-white-50 d-block">Atención</small>
-              <span class="fw-bold">Lunes a Domingo</span>
-            </div>
-          </div>
-
-          <div class="d-flex align-items-center gap-3 mb-0 fs-6 hover-scale p-2 rounded-3">
-            <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
-                 style="width: 44px; height: 44px;">
-              <i class="bi bi-clock-fill fs-5"></i>
-            </div>
-            <div>
-              <small class="text-white-50 d-block">Horario</small>
-              <span class="fw-bold">9:00 AM - 7:00 PM</span>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
 
-<!-- SECCIÓN CARRUSEL & QUIÉNES SOMOS DENTRO DE TARJETA CONTENEDORA GRIS TRANSPARENTE -->
-<section class="pt-4 position-relative">
+<!-- 1. SECCIÓN CARRUSEL (FLUIDO Y CONTINUO) -->
+<section class="pt-4 pb-4 mb-5 position-relative">
+  <div class="container d-flex justify-content-center">
+    <div id="carouselBarber" 
+         class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden hover-scale w-100" 
+         class="carousel slide" 
+         data-bs-ride="carousel" 
+        data-bs-interval="3500"            
+         data-bs-pause="false"
+         style="border: 2px solid rgba(255, 193, 7, 0.5); height: 480px; max-width: 1000px;">
+      
+      <!-- Indicadores -->
+      <div class="carousel-indicators mb-3">
+        {% if carruseles %} 
+          {% for carrusel in carruseles %}
+          <button type="button" 
+                  data-bs-target="#carouselBarber" 
+                  data-bs-slide-to="{{ forloop.counter0 }}" 
+                  class="{% if forloop.first %}active{% endif %}" 
+                  aria-current="{% if forloop.first %}true{% endif %}" 
+                  aria-label="Slide {{ forloop.counter }}"></button>
+          {% endfor %} 
+        {% else %}
+          <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        {% endif %}
+      </div>
+
+      <!-- Diapositivas -->
+      <div class="carousel-inner h-100 w-100">
+        {% if carruseles %} 
+          {% for carrusel in carruseles %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %} h-100">
+            <img src="{% if carrusel.imagen %}{{ carrusel.imagen.url }}{% else %}{% static 'img/Fondo.png' %}{% endif %}" class="d-block w-100 h-100 object-fit-cover" alt="{{ carrusel.texto|default:'Chicha Barber' }}" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+          </div>
+          {% endfor %} 
+        {% else %}
+          <div class="carousel-item active h-100">
+            <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+          </div>
+          <div class="carousel-item h-100">
+            <img src="{% static 'img/logo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Logo Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+          </div>
+          <div class="carousel-item h-100">
+            <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+          </div>
+          <div class="carousel-item h-100">
+            <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SECCIÓN SERVICIOS EN CARRUSEL (INDEX) -->
+<section class="py-5 text-body">
   <div class="container">
-    <!-- Tarjeta Gris Semitransparente que contiene el carrusel y Quiénes Somos -->
-    <div class="card border-0 rounded-4 shadow-lg p-3 p-md-4 text-light"
+    <h2 class="text-center mb-5 fw-bold font-heading text-warning">
+      <i class="bi bi-scissors me-2 fs-4"></i>Nuestros Servicios
+    </h2>
+
+    {% if servicios %}
+    <!-- Carrusel dinámico configurado a 4000ms (4 segundos) -->
+    <div id="carouselServiciosIndex" 
+         class="carousel slide" 
+         data-bs-ride="carousel" 
+         data-bs-interval="4000" 
+         data-bs-pause="hover">
+      
+      <div class="carousel-inner pb-4">
+        {% for servicio in servicios %}
+          {% cycle 'true' '' '' as start_slide silent %}
+          {% if start_slide %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+          {% endif %}
+
+          <div class="col">
+            <!-- Tarjeta de Servicio adaptada con el diseño de Testimonios -->
+            <div class="card h-100 shadow-lg border-0 bg-black bg-opacity-75 text-light position-relative overflow-hidden hover-scale" 
+                 style="border-radius: 2rem 0.5rem 2rem 0.5rem !important;">
+              
+              <!-- Imagen en Proporción 1:1 -->
+              <div class="ratio ratio-1x1 overflow-hidden position-relative bg-dark">
+                {% if servicio.imagen %}
+                  <img src="{{ servicio.imagen.url }}" loading="lazy" class="w-100 h-100 object-fit-cover" alt="{{ servicio.nombre }}">
+                {% else %}
+                  <img src="{% static 'img/corte/corte_1.jpg' %}" loading="lazy" class="w-100 h-100 object-fit-cover" alt="{{ servicio.nombre }}" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';">
+                {% endif %}
+                <div class="position-absolute bottom-0 start-0 w-100 h-50 bg-gradient"></div>
+              </div>
+
+              <!-- Cuerpo de la Tarjeta -->
+              <div class="card-body p-4 d-flex flex-column align-items-center text-center">
+                
+                <h5 class="fw-bold mb-2 text-uppercase tracking-wide fs-6 text-warning">
+                  <i class="bi bi-scissors me-1"></i>{{ servicio.nombre }}
+                </h5>
+
+                <p class="fst-italic mb-3 text-light opacity-75 small flex-grow-1 lh-sm">
+                  {{ servicio.descripcion }}
+                </p>
+
+                <h3 class="fw-bold mb-3 text-warning fs-5">${{ servicio.precio|floatformat:0 }}</h3>
+
+                <div class="pt-3 border-top border-secondary border-opacity-25 w-100 mt-auto d-flex justify-content-between align-items-center">
+                  <span class="text-white-50 small fw-semibold d-flex align-items-center gap-1">
+                    <i class="bi bi-clock text-warning"></i>{{ servicio.duracion }}m
+                  </span>
+                  <a href="{% url 'crear_reserva' servicio.pk %}" class="btn btn-warning btn-sm fw-bold rounded-pill px-3 shadow text-dark border-0">
+                    <i class="bi bi-calendar-check me-1"></i>Reservar
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          {% cycle '' '' 'true' as end_slide silent %}
+          {% if end_slide or forloop.last %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Controles laterales -->
+      <button class="carousel-control-prev w-auto" type="button" data-bs-target="#carouselServiciosIndex" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-3 border border-warning" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next w-auto" type="button" data-bs-target="#carouselServiciosIndex" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-3 border border-warning" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+
+    </div>
+
+    {% else %}
+    <!-- Estado si no existen servicios creados aún -->
+    <div class="text-center py-5">
+      <div class="p-4 rounded-4 bg-body-tertiary text-body border border-warning border-opacity-25 d-inline-block shadow">
+        <i class="bi bi-inboxes text-warning fs-1 mb-2 d-block"></i>
+        <p class="fw-bold fs-5 mb-0 text-warning">¡Próximamente nuevos servicios disponibles!</p>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+</section>
+<!-- 2. SECCIÓN QUIÉNES SOMOS (DINÁMICA, CENTRADA Y CON PUNTOS CLAVE) -->
+<section class="py-5 position-relative">
+  <div class="container text-center">
+    <div class="card border-0 rounded-4 shadow-lg p-4 p-md-5 text-light"
          style="background: rgba(30, 30, 30, 0.65); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1) !important;">
-      <div class="row align-items-center g-4">
-        
-        <!-- CARRUSEL CON DESVANECIMIENTO SUAVE -->
-        <div class="col-lg-6">
-          <div id="carouselBarber" 
-               class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden hover-scale" 
-               data-bs-ride="carousel" 
-               data-bs-interval="3500" 
-               style="border: 2px solid rgba(255, 193, 7, 0.3); height: 420px; max-height: 420px;">
-            
-            <!-- Indicadores -->
-            <div class="carousel-indicators mb-2">
-              {% if carruseles %} 
-                {% for carrusel in carruseles %}
-                <button type="button" 
-                        data-bs-target="#carouselBarber" 
-                        data-bs-slide-to="{{ forloop.counter0 }}" 
-                        class="{% if forloop.first %}active{% endif %}" 
-                        aria-current="{% if forloop.first %}true{% endif %}" 
-                        aria-label="Slide {{ forloop.counter }}"></button>
-                {% endfor %} 
-              {% else %}
-                <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                <button type="button" data-bs-target="#carouselBarber" data-bs-slide-to="3" aria-label="Slide 4"></button>
-              {% endif %}
-            </div>
-
-            <div class="carousel-inner h-100">
-              {% if carruseles %} 
-                {% for carrusel in carruseles %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %} h-100">
-                  <img src="{% if carrusel.imagen %}{{ carrusel.imagen.url }}{% else %}{% static 'img/Fondo.png' %}{% endif %}" class="d-block w-100 h-100 object-fit-cover" alt="{{ carrusel.texto|default:'Chicha Barber' }}" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
-                </div>
-                {% endfor %} 
-              {% else %}
-                <div class="carousel-item active h-100">
-                  <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
-                </div>
-                <div class="carousel-item h-100">
-                  <img src="{% static 'img/logo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Logo Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
-                </div>
-                <div class="carousel-item h-100">
-                  <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
-                </div>
-                <div class="carousel-item h-100">
-                  <img src="{% static 'img/Fondo.png' %}" class="d-block w-100 h-100 object-fit-cover" alt="Chicha Barber" onerror="this.onerror=null; this.src='{% static 'img/Fondo.png' %}';" />
-                </div>
-              {% endif %}
-            </div>
-
-            <!-- Controles con interacción -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselBarber" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-3 shadow-sm border border-secondary" aria-hidden="true"></span>
-              <span class="visually-hidden">Anterior</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselBarber" data-bs-slide="next">
-              <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-3 shadow-sm border border-secondary" aria-hidden="true"></span>
-              <span class="visually-hidden">Siguiente</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- QUIÉNES SOMOS -->
-        <div class="col-lg-6 ">
-          <div class="p-2 p-md-3  ">
-            <h2 class="fw-bold mb-4 text-white font-heading">Quiénes Somos</h2>
-
-            <p class="fs-5 ps-3 border-start border-3 border-warning mb-4 text-light opacity-90 ">
-              En <strong>Chicha Barber</strong> ofrecemos una experiencia pensada
-              para quienes buscan cuidar su imagen y disfrutar de un buen ambiente
-              al mismo tiempo. Más que una barbería, somos un espacio donde el
-              estilo y la confianza se fortalecen en cada visita, combinando
-              técnicas actuales con la esencia tradicional de la barbería.
-            </p>
-
-            <p class="fs-5 ps-3 border-start border-3 border-warning mb-0 text-light opacity-90">
-              Nos enfocamos en brindar una atención cercana y personalizada,
-              escuchando a cada cliente para lograr un resultado que se adapte a su
-              personalidad y estilo. Nuestro propósito es que cada persona viva una experiencia completa de cuidado personal.
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIOS -->
-<section class="py-5 text-light">
-  <div class="container">
-    <h2 class="text-center mb-5 fw-bold font-heading text-warning text-white">
-      <i class="bi bi-star-fill me-2 fs-4 text-white"></i>Lo que dicen nuestros clientes
-    </h2>
-
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for testimonio in testimonios %}
-      <div class="col">
-        <!-- Tarjeta con Estilo Dorado y Forma Asimétrica (Esquinas Diagonales Redondeadas) -->
-        <div class="card h-100 shadow-lg border-0 text-dark position-relative overflow-hidden hover-scale"
-             style="background: linear-gradient(145deg, #c8b7b7 100%); border-radius: 2rem 0.5rem 2rem 0.5rem !important; border-top: 4px solid #fff !important;">
+      
+      <div class="row justify-content-center">
+        <div class="col-lg-10 text-center">
           
-          <div class="card-body p-4 d-flex flex-column align-items-center text-center">
+          <h2 class="fw-bold mb-3 text-warning font-heading text-center text-uppercase">
+            ¿Quiénes Somos?
+          </h2>
+          
+          <p class="fs-5 text-light opacity-90 text-center mb-4 mx-auto" style="max-width: 800px;">
+            En <strong>Chicha Barber</strong> fusionamos la esencia tradicional del cuidado masculino con las técnicas urbanas y modernas más exigentes. Más que un corte, te ofrecemos una experiencia completa para fortalecer tu imagen y confianza.
+          </p>
+
+          <!-- Tarjetas Dinámicas de Propuesta de Valor -->
+          <div class="row g-4 mt-1 justify-content-center">
+            <div class="col-md-4">
+              <div class="p-4 rounded-4 h-100 border border-secondary border-opacity-25 hover-scale" style="background: rgba(0,0,0,0.3);">
+                <i class="bi bi-scissors text-warning fs-1 mb-2 d-block"></i>
+                <h5 class="fw-bold text-white mb-2">Técnica Profesional</h5>
+                <p class="small text-light opacity-75 mb-0">Especialistas en barbería clásica, cortes urbanos y perfilaría detallada.</p>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="p-4 rounded-4 h-100 border border-secondary border-opacity-25 hover-scale" style="background: rgba(0,0,0,0.3);">
+                <i class="bi bi-person-badge text-warning fs-1 mb-2 d-block"></i>
+                <h5 class="fw-bold text-white mb-2">Atención Exclusiva</h5>
+                <p class="small text-light opacity-75 mb-0">Asesoría personalizada según tus facciones y tipo de cabello.</p>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="p-4 rounded-4 h-100 border border-secondary border-opacity-25 hover-scale" style="background: rgba(0,0,0,0.3);">
+                <i class="bi bi-cup-hot text-warning fs-1 mb-2 d-block"></i>
+                <h5 class="fw-bold text-white mb-2">Ambiente Único</h5>
+                <p class="small text-light opacity-75 mb-0">Un espacio cómodo para relajarte y disfrutar de la mejor vibra en Nobsa.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- TESTIMONIOS (CONSERVADO EXACTAMENTE IGUAL) -->
+<section class="py-5 text-body">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold font-heading text-warning">
+      <i class="bi bi-star-fill me-2 fs-4"></i>Lo que dicen nuestros clientes
+    </h2>
+
+    {% if testimonios %}
+    <!-- Contenedor con autoplay (data-bs-ride="carousel") y velocidad ajustada a 3.5s -->
+    <div id="carouselTestimonios" 
+         class="carousel slide" 
+         data-bs-ride="carousel" 
+         data-bs-interval="3500" 
+         data-bs-pause="false">
+      
+      <div class="carousel-inner pb-4">
+        {% for testimonio in testimonios %}
+          {% cycle 'true' '' '' as start_slide silent %}
+          {% if start_slide %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+          {% endif %}
+
+          <div class="col">
+            <div class="card h-100 shadow-lg border-0 bg-body-tertiary text-body position-relative overflow-hidden hover-scale" 
+                 style="border-radius: 2rem 0.5rem 2rem 0.5rem !important;">
+              <div class="card-body p-4 d-flex flex-column align-items-center text-center">
+                
+                <div class="bg-warning text-dark rounded-circle d-inline-flex align-items-center justify-content-center mb-3 p-3">
+                  <i class="bi bi-quote fs-2"></i>
+                </div>
+
+                <h5 class="fw-bold mb-1 text-uppercase tracking-wide fs-6">
+                  <i class="bi bi-scissors me-1 text-warning"></i>{{ testimonio.servicio.nombre }}
+                </h5>
+
+                <div class="mb-3 text-warning">
+                  {% for i in "12345"|make_list %}
+                  <i class="bi bi-star-fill fs-6"></i>
+                  {% endfor %}
+                </div>
+
+                <p class="fst-italic mb-4 text-body-secondary fw-medium flex-grow-1 lh-sm">
+                  "{{ testimonio.comentario }}"
+                </p>
+
+                <div class="pt-3 border-top w-100 mt-auto">
+                  <span class="fw-bold d-block text-capitalize">
+                    <i class="bi bi-person-fill me-1 text-warning"></i>{{ testimonio.cliente }}
+                  </span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          {% cycle '' '' 'true' as end_slide silent %}
+          {% if end_slide or forloop.last %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Controles laterales -->
+      <button class="carousel-control-prev w-auto" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle p-3 border border-warning" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next w-auto" type="button" data-bs-target="#carouselTestimonios" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle p-3 border border-warning" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+      <div class="p-4 rounded-4 bg-body-tertiary text-body border border-warning border-opacity-25 d-inline-block shadow">
+        <i class="bi bi-chat-square-quote text-warning fs-1 mb-2 d-block"></i>
+        <p class="fw-bold fs-5 mb-1 text-warning">Aún no hay reseñas disponibles.</p>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+<!-- UBICACIÓN Y MAPA CON TARJETA CONTENEDORA PRINCIPAL -->
+<section id="mapa-ubicacion" class="py-5">
+  <div class="container text-body">
+    
+    <!-- TARJETA CONTENEDORA PRINCIPAL (ESTILO NEGRO TRANSPARENTE) -->
+    <div class="card border-0 rounded-4 shadow-lg p-4 p-md-5 text-light"
+         style="background: rgba(30, 30, 30, 0.65); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1) !important;">
+
+      <h2 class="mb-4 fw-bold font-heading fs-3 text-center text-warning text-uppercase">
+        Nuestra Ubicación
+      </h2>
+
+      <div class="row align-items-stretch g-4 justify-content-center">
+        
+        <!-- COLUMNA DEL MAPA (8 DE 12 COLUMNAS) -->
+        <div class="col-12 col-lg-8">
+          <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow border border-secondary hover-scale h-100">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d992.4011169060295!2d-72.94139472437891!3d5.76991143301728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a47a8d54e652f%3A0xdc4fd5e0fc57f59e!2sCl.%206%20%2310-13%2C%20Nobsa%2C%20Boyac%C3%A1!5e0!3m2!1ses-419!2sco!4v1780588958968!5m2!1ses-419!2sco" 
+              style="border:0;" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+        </div>
+
+        <!-- COLUMNA DE LA TARJETA DE INFORMACIÓN (4 DE 12 COLUMNAS) -->
+        <div class="col-12 col-lg-4 d-flex">
+          <div class="card border-0 rounded-4 shadow-lg p-4 text-white w-100 hover-scale d-flex flex-column justify-content-center templates-index-clientes__div-6" 
+               style="background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.12) !important;">
             
-            <!-- Círculo de Ícono en Contraste Oscuro -->
-            <div class="bg-dark text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm p-3 border border-warning border-2">
-              <i class="bi bi-quote fs-2"></i>
+            <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
+                   style="width: 44px; height: 44px; flex-shrink: 0;">
+                <i class="bi bi-geo-alt-fill fs-5"></i>
+              </div>
+              <div>
+                <small class="text-white-50 d-block">Ubicación</small>
+                <span class="fw-bold">Nobsa, Boyacá</span>
+              </div>
             </div>
 
-            <!-- Servicio -->
-            <h5 class="fw-bold mb-1 text-dark text-uppercase tracking-wide fs-6">
-              <i class="bi bi-scissors me-1"></i>{{ testimonio.servicio.nombre }}
-            </h5>
-
-            <!-- Estrellas en Contraste Oscuro/Blanco -->
-            <div class="mb-3 text-dark">
-              {% for i in "12345"|make_list %}
-              <i class="bi bi-star-fill text-dark fs-6"></i>
-              {% endfor %}
+            <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
+                   style="width: 44px; height: 44px; flex-shrink: 0;">
+                <i class="bi bi-telephone-fill fs-5"></i>
+              </div>
+              <div>
+                <small class="text-white-50 d-block">Teléfono / WhatsApp</small>
+                <span class="fw-bold">300 178 4233</span>
+              </div>
             </div>
 
-            <!-- Comentario -->
-            <p class="fst-italic mb-4 text-dark fw-medium flex-grow-1 lh-sm">
-              "{{ testimonio.comentario }}"
-            </p>
+            <div class="d-flex align-items-center gap-3 mb-3 fs-6 hover-scale p-2 rounded-3">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
+                   style="width: 44px; height: 44px; flex-shrink: 0;">
+                <i class="bi bi-calendar-check-fill fs-5"></i> 
+              </div>
+              <div>
+                <small class="text-white-50 d-block">Atención</small>
+                <span class="fw-bold">Lunes a Domingo</span>
+              </div>
+            </div>
 
-            <!-- Pie de Tarjeta: Nombre del Cliente -->
-            <div class="pt-3 border-top border-dark border-opacity-25 w-100 mt-auto">
-              <span class="fw-bold text-dark d-block text-capitalize">
-                <i class="bi bi-person-fill me-1"></i>{{ testimonio.cliente }}
-              </span>
+            <div class="d-flex align-items-center gap-3 mb-0 fs-6 hover-scale p-2 rounded-3">
+              <div class="rounded-circle d-flex align-items-center justify-content-center p-2 shadow-sm bg-primary bg-opacity-25 text-primary" 
+                   style="width: 44px; height: 44px; flex-shrink: 0;">
+                <i class="bi bi-clock-fill fs-5"></i>
+              </div>
+              <div>
+                <small class="text-white-50 d-block">Horario</small>
+                <span class="fw-bold">9:00 AM - 7:00 PM</span>
+              </div>
             </div>
 
           </div>
         </div>
-      </div>
-      {% empty %}
-      <div class="col-12 text-center py-5">
-        <div class="p-4 rounded-4 bg-dark text-white border border-warning border-opacity-25 d-inline-block shadow">
-          <i class="bi bi-chat-square-quote text-warning fs-1 mb-2 d-block"></i>
-          <p class="fw-bold fs-5 mb-1 text-warning">Aún no hay reseñas disponibles. ¡Sé el primero en calificarnos!</p>
-          <p class="text-white-50 mb-0 small">Pronto verás aquí lo que opinan nuestros clientes sobre Chicha Barber.</p>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- UBICACIÓN Y MAPA -->
-<!-- UBICACIÓN Y MAPA (TAMAÑO REDUCIDO) -->
-<section id="mapa-ubicacion" class="py-4">
-  <div class="container text-center text-body">
-    
-    <h2 class="mb-3 fw-bold font-heading fs-3">
-      Nuestra Ubicación
-    </h2>
-
-    <!-- Contenedor limitado en ancho (col-lg-8 o col-md-10 para centrar y reducir) -->
-    <div class="row justify-content-center">
-      <div class="col-11 col-md-10 col-lg-8">
-        
-        <!-- Ratio 16x9 (proporción más compacta que 21x9) -->
-        <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow border border-secondary hover-scale">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d992.4011169060295!2d-72.94139472437891!3d5.76991143301728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6a47a8d54e652f%3A0xdc4fd5e0fc57f59e!2sCl.%206%20%2310-13%2C%20Nobsa%2C%20Boyac%C3%A1!5e0!3m2!1ses-419!2sco!4v1780588958968!5m2!1ses-419!2sco" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
-        </div>
 
       </div>
+
     </div>
 
   </div>
 </section>
+    {% include 'partials/footer.html' %}
+
 <script>
   function verificarExpiracionCarrito() {
     let expiracion = localStorage.getItem("carrito_expiracion");

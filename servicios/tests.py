@@ -4,7 +4,7 @@ import tempfile
 from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
-from .models import Servicios, Promocion, Calificacion
+from .models import Servicios, Calificacion
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 

@@ -40,6 +40,7 @@ urlpatterns = [
     
     #ia - chat
    path('chat/', include('chat_ia.urls')),
+
    
    
    
