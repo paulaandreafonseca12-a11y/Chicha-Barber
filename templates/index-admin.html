@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid px-4 py-4 text-white">
+<div class="container-fluid px-4 py-4 text-white admin-index">
 
   <!-- =====================================================
        BIENVENIDA
@@ -28,7 +28,7 @@
           <!-- BOTÓN PRINCIPAL (DORADO) -->
           <div class="d-flex gap-2 flex-wrap">
             <a href="{% url 'ver_agenda' %}"
-               class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+               class="btn btn-admin-cyan fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
               <i class="bi bi-calendar-event fs-6"></i>
               Ver Agenda Completa
             </a>
@@ -133,7 +133,7 @@
             <i class="bi bi-clock-history text-warning"></i>
             Reservas Recientes
           </h5>
-          <a href="{% url 'ver_agenda' %}" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 fw-semibold shadow-sm">
+          <a href="{% url 'ver_agenda' %}" class="btn btn-sm btn-admin-cyan-outline rounded-pill px-3 py-1 fw-semibold shadow-sm">
             <i class="bi bi-calendar3 me-1"></i> Ver todas
           </a>
         </div>
@@ -346,7 +346,7 @@
 
               <!-- BOTÓN REABASTECER -->
               <div class="text-center mt-2">
-                <a href="{% url 'lista_bitacora' %}" class="btn btn-warning text-dark fw-bold w-100 rounded-pill py-2 shadow">
+                <a href="{% url 'lista_bitacora' %}" class="btn btn-admin-cyan text-dark fw-bold w-100 rounded-pill py-2 shadow">
                   <i class="bi bi-plus-circle-fill me-1"></i> Reabastecer Inventario
                 </a>
               </div>

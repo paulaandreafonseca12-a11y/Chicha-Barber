@@ -1,8 +1,6 @@
 {% extends "base-admin.html" %}
 
 {% block content %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
-<!-- Eliminamos el tema dark.min.css de Flatpickr para que use el tema claro por defecto -->
 
 <div class="container py-5 px-md-4 reservas-crear-cita-admin__div-1">
     {% if messages %}
@@ -11,52 +9,136 @@
         {% endfor %}
     {% endif %}
 
+    {% if wizard_errors %}
+        <div class="alert alert-danger border-0 shadow-sm">
+            <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>Revisa estos datos:</strong>
+            <ul class="mb-0 mt-2">
+                {% for err in wizard_errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Aquí se muestran los errores detectados en el navegador ANTES de enviar el formulario -->
+    <div id="client-errors" class="alert alert-danger border-0 shadow-sm d-none">
+        <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>Revisa estos datos:</strong>
+        <ul class="mb-0 mt-2" id="client-errors-list"></ul>
+    </div>
+
     <!-- Contenedor Principal Adaptado a Tema Blanco -->
     <div class="card text-dark border border-secondary border-opacity-10 shadow bg-white">
         <div class="card-header fw-bold text-primary py-3 bg-light reservas-crear-cita-admin__div-2">
             <i class="bi bi-person-fill me-2"></i>Datos de la Cita
         </div>
         <div class="card-body p-4">
-            <form method="POST" action="{% url 'crear_reserva_admin' %}">
+            <form method="POST" action="{% url 'crear_reserva_admin' %}" id="form-cita-admin" novalidate>
                 {% csrf_token %}
 
+                <!-- ===================== DATOS DEL CLIENTE ===================== -->
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-secondary small text-uppercase">Nombre del Cliente</label>
-                        <input type="text" name="nombre_cliente" class="form-control custom-white-input" placeholder="Nombre completo" required>
+                        <input type="text" name="nombre_cliente" id="id_nombre_cliente" class="form-control custom-white-input"
+                               placeholder="Nombre completo" required
+                               pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\-\s]{3,100}"
+                               title="Ingresa un nombre válido: solo letras y espacios, mínimo 3 caracteres."
+                               value="{{ nombre_cliente_val|default_if_none:'' }}">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-secondary small text-uppercase">Teléfono</label>
-                        <input type="text" name="telefono_cliente" class="form-control custom-white-input" placeholder="300 000 0000" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold text-secondary small text-uppercase">Correo Electrónico</label>
-                    <input type="email" name="correo_cliente" class="form-control custom-white-input" placeholder="correo@ejemplo.com" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold text-secondary small text-uppercase">Fecha y Hora</label>
-                    <div class="input-group">
-                        <span class="input-group-text custom-white-input text-primary border-end-0"><i class="bi bi-clock"></i></span>
-                        <input type="text" name="fecha_reserva" id="fecha_cita" class="form-control custom-white-input" placeholder="Selecciona fecha y hora" autocomplete="off" required>
+                        <input type="tel" name="telefono_cliente" id="id_telefono_cliente" class="form-control custom-white-input"
+                               placeholder="300 000 0000" required
+                               pattern="3[0-9]{9}" maxlength="10"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                               title="Ingresa un celular colombiano válido: 10 dígitos, debe empezar por 3."
+                               value="{{ telefono_cliente_val|default_if_none:'' }}">
                     </div>
                 </div>
 
                 <div class="mb-4">
+                    <label class="form-label fw-bold text-secondary small text-uppercase">Correo Electrónico</label>
+                    <input type="email" name="correo_cliente" id="id_correo_cliente" class="form-control custom-white-input"
+                           placeholder="correo@ejemplo.com" required
+                           value="{{ correo_cliente_val|default_if_none:'' }}">
+                </div>
+
+                <!-- ===================== SERVICIO ===================== -->
+                <div class="mb-4">
                     <label class="form-label fw-bold text-secondary small text-uppercase">Servicio</label>
-                    <select name="servicio" class="form-select custom-white-input">
+                    <select name="servicio" id="id_servicio" class="form-select custom-white-input" required>
+                        <option value="" {% if not servicio_id_val %}selected{% endif %} disabled>Selecciona un servicio</option>
                         {% for servicio in servicios %}
-                            <option value="{{ servicio.id }}">{{ servicio.nombre }}</option>
+                            <option value="{{ servicio.id }}" {% if servicio_id_val == servicio.id|stringformat:"s" %}selected{% endif %}>
+                                {{ servicio.nombre }}
+                            </option>
                         {% empty %}
                             <option disabled class="text-muted">No hay servicios disponibles</option>
                         {% endfor %}
                     </select>
                 </div>
 
+                <hr class="my-4">
+
+                <!-- ===================== AGENDA: SELECCIÓN DE TURNO REAL ===================== -->
+                <div class="mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <label class="form-label fw-bold text-secondary small text-uppercase mb-0">
+                        Fecha y Hora (elige un turno disponible de la agenda)
+                    </label>
+                    <div style="min-width: 220px;">
+                        <select id="filtro-barbero" class="form-select form-select-sm custom-white-input">
+                            <option value="any">Todos los barberos</option>
+                            {% for barbero in barberos %}
+                                <option value="{{ barbero.id }}">{{ barbero.get_full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                {% if not turnos_disponibles %}
+                    <div class="alert alert-secondary border-0">
+                        No hay turnos disponibles en la agenda para los próximos días.
+                        Configura disponibilidad primero desde "Configurar Disponibilidad".
+                    </div>
+                {% else %}
+                <div class="table-responsive border rounded-3" style="max-height: 340px; overflow-y: auto;">
+                    <table class="table align-middle mb-0" id="tabla-turnos-admin">
+                        <thead class="table-light" style="position: sticky; top: 0;">
+                            <tr>
+                                <th class="ps-3"></th>
+                                <th>Barbero</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for turno in turnos_disponibles %}
+                            <tr class="turno-fila" data-barbero="{{ turno.profesional.id }}">
+                                <td class="ps-3">
+                                    <input type="radio" class="form-check-input" name="turno_id"
+                                           id="turno-admin-{{ turno.id }}" value="{{ turno.id }}"
+                                           {% if turno_id_val == turno.id|stringformat:"s" %}checked{% endif %}
+                                           required>
+                                </td>
+                                <td>
+                                    <label for="turno-admin-{{ turno.id }}" class="mb-0 fw-medium">
+                                        {{ turno.profesional.get_full_name }}
+                                    </label>
+                                </td>
+                                <td>{{ turno.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ turno.hora_inicio|time:"H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="sin-turnos-filtro" class="alert alert-secondary border-0 mt-2 d-none">
+                    Este barbero no tiene turnos disponibles. Elige otro o selecciona "Todos los barberos".
+                </div>
+                {% endif %}
+
                 <!-- BOTONES ALINEADOS EN TEMA BLANCO -->
-                <div class="d-flex justify-content-end gap-2 border-top border-light-subtle pt-3">
+                <div class="d-flex justify-content-end gap-2 border-top border-light-subtle pt-3 mt-4">
                     <a href="{% url 'ver_agenda' %}" class="btn btn-secondary bg-opacity-75 px-4">
                         <i class="bi bi-arrow-left me-1"></i>Regresar
                     </a>
@@ -69,17 +151,110 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/es.min.js"></script>
 <script>
-    flatpickr("#fecha_cita", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        time_24hr: true,
-        locale: "es",
-        minDate: "today",
-        defaultHour: 9,
-        minuteIncrement: 15,
+    document.addEventListener('DOMContentLoaded', function () {
+        const filtro = document.getElementById('filtro-barbero');
+        const filas = document.querySelectorAll('.turno-fila');
+        const msgSinTurnos = document.getElementById('sin-turnos-filtro');
+
+        function aplicarFiltro() {
+            if (!filtro) return;
+            const seleccionado = filtro.value;
+            let visibles = 0;
+
+            filas.forEach(function (fila) {
+                const barberoFila = fila.getAttribute('data-barbero');
+                if (seleccionado === 'any' || barberoFila === seleccionado) {
+                    fila.classList.remove('d-none');
+                    visibles++;
+                } else {
+                    fila.classList.add('d-none');
+                    const radio = fila.querySelector('input[type="radio"]');
+                    if (radio && radio.checked) radio.checked = false;
+                }
+            });
+
+            if (msgSinTurnos) {
+                msgSinTurnos.classList.toggle('d-none', visibles !== 0);
+            }
+        }
+
+        if (filtro) {
+            filtro.addEventListener('change', aplicarFiltro);
+        }
+
+        // ===================== VALIDACIÓN VISIBLE EN EL CLIENTE =====================
+        // No confiamos solo en el tooltip nativo del navegador (pattern/required):
+        // en este layout pasa fácil desapercibido. Mostramos los errores en una
+        // caja de alerta explícita, igual que se muestran los errores del servidor.
+        const NOMBRE_REGEX = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\-\s]{3,100}$/;
+        const TELEFONO_REGEX = /^3[0-9]{9}$/;
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        const form = document.getElementById('form-cita-admin');
+        const cajaErrores = document.getElementById('client-errors');
+        const listaErrores = document.getElementById('client-errors-list');
+
+        function mostrarErroresCliente(errores) {
+            listaErrores.innerHTML = '';
+            errores.forEach(function (msg) {
+                const li = document.createElement('li');
+                li.textContent = msg;
+                listaErrores.appendChild(li);
+            });
+            cajaErrores.classList.remove('d-none');
+            cajaErrores.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function ocultarErroresCliente() {
+            cajaErrores.classList.add('d-none');
+            listaErrores.innerHTML = '';
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const errores = [];
+
+                const nombre = document.getElementById('id_nombre_cliente').value.trim();
+                const telefono = document.getElementById('id_telefono_cliente').value.trim();
+                const correo = document.getElementById('id_correo_cliente').value.trim();
+                const servicio = document.getElementById('id_servicio').value;
+                const turnoElegido = document.querySelector('input[name="turno_id"]:checked');
+
+                if (!nombre) {
+                    errores.push('El nombre es obligatorio.');
+                } else if (!NOMBRE_REGEX.test(nombre)) {
+                    errores.push('El nombre solo puede contener letras y espacios (mínimo 3 caracteres). Escribiste: "' + nombre + '".');
+                }
+
+                if (!telefono) {
+                    errores.push('El teléfono es obligatorio.');
+                } else if (!TELEFONO_REGEX.test(telefono)) {
+                    errores.push('El teléfono debe ser un celular colombiano válido: 10 dígitos y empezar por 3.');
+                }
+
+                if (!correo) {
+                    errores.push('El correo electrónico es obligatorio.');
+                } else if (!EMAIL_REGEX.test(correo)) {
+                    errores.push('El correo electrónico no tiene un formato válido.');
+                }
+
+                if (!servicio) {
+                    errores.push('Debes seleccionar un servicio.');
+                }
+
+                if (!turnoElegido) {
+                    errores.push('Debes seleccionar un turno disponible de la agenda.');
+                }
+
+                if (errores.length > 0) {
+                    e.preventDefault();
+                    mostrarErroresCliente(errores);
+                } else {
+                    ocultarErroresCliente();
+                }
+            });
+        }
     });
 </script>
 

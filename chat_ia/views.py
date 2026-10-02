@@ -25,7 +25,14 @@ def construir_contexto_dinamico():
     contexto_extra += "\n--- PROMOCIONES VIGENTES ---\n"
     if promociones.exists():
         for p in promociones:
-            contexto_extra += f"- {p.nombre}: {p.porcentaje_descuento}% descuento en {p.servicio.nombre} | {p.descripcion}\n"
+            if p.codigo_servicio:
+                destino = f"el servicio {p.codigo_servicio.nombre}"
+            elif p.codigo_producto:
+                destino = f"el producto {p.codigo_producto.nombre}"
+            else:
+                destino = "servicios o productos"
+
+            contexto_extra += f"- {p.nombre}: {p.porcentaje_descuento}% de descuento en {destino} | {p.descripcion}\n"
     else:
         contexto_extra += "- No hay promociones activas en este momento.\n"
 

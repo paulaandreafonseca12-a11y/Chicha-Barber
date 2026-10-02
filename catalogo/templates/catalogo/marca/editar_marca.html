@@ -2,209 +2,109 @@
 {% load static %}
 
 {% block content %}
-
-<div class="container py-4">
-
+<div class="container-fluid px-4 py-4 text-white">
     <!-- ==========================================================
-         ENCABEZADO
+         MENSAJES DE ALERTA
     ========================================================== -->
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-
-            <h2 class="fw-bold mb-1">
-
-               
-
-            </h2>
-
-            <p class="text-muted mb-0">
-
-             
-
-            </p>
-
-        </div>
-
-
-        <a href="{% url 'lista_marcas' %}"
-           class="btn color-azul text-white fw-bold shadow-sm">
-
-            <i class="bi bi-arrow-left me-2"></i>
-
-            Volver
-
-        </a>
-
-    </div>
-
-
-    <!-- ==========================================================
-         MENSAJES
-    ========================================================== -->
-
     {% if messages %}
-
         {% for message in messages %}
-
-            <div class="alert alert-{{ message.tags|default:'info' }}
-                        alert-dismissible fade show shadow-sm"
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show bg-gradient-dark text-white border border-secondary border-opacity-25 rounded-4 shadow-sm mb-4"
                  role="alert">
-
-                <i class="bi bi-info-circle me-2"></i>
-
+                <i class="bi bi-info-circle-fill me-2 text-warning"></i>
                 {{ message }}
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                </button>
-
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-
         {% endfor %}
-
     {% endif %}
 
-
     <!-- ==========================================================
-         FORMULARIO
+         TARJETA DEL FORMULARIO
     ========================================================== -->
-
     <div class="row justify-content-center">
-
         <div class="col-lg-8">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
 
-            <div class="card shadow border-0">
-
-                <!-- HEADER -->
-
-                <div class="card-header
-                            thead-azul
-                            text-white
-                            py-3">
-
-                    <h5 class="mb-0 fw-bold">
-
-                        <i class="bi bi-tag me-2"></i>
-
-                        Información de la marca
-
+                <!-- HEADER CON TÍTULO Y BOTÓN VOLVER -->
+                <div class="card-header bg-gradient-header border-bottom border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-white d-flex align-items-center gap-2">
+                        <i class="bi bi-pencil-square text-warning"></i>
+                        Información de la Marca
                     </h5>
 
+                    <!-- BOTÓN VOLVER -->
+                    <a href="{% url 'lista_marcas' %}"
+                       class="btn btn-dark text-white border border-secondary rounded-pill px-3 py-1 shadow-sm d-flex align-items-center gap-2 btn-sm">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+                    </a>
                 </div>
 
-
                 <!-- BODY -->
-
                 <div class="card-body p-4">
-
-                    <form method="POST">
-
+                    <form method="POST" novalidate>
                         {% csrf_token %}
 
-
-                        <!-- ERRORES GENERALES -->
-
+                        <!-- ERRORES GENERALES DEL FORMULARIO -->
                         {% if form.non_field_errors %}
-
-                            <div class="alert alert-danger">
-
-                                <i class="bi bi-exclamation-triangle me-2"></i>
-
+                            <div class="alert alert-danger bg-danger bg-opacity-10 border border-danger border-opacity-25 text-danger rounded-3 p-3 mb-4">
+                                <div class="d-flex align-items-center gap-2 fw-semibold">
+                                    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                                    <span>Atención:</span>
+                                </div>
                                 {{ form.non_field_errors }}
-
                             </div>
-
                         {% endif %}
 
-
-                        <!-- CAMPOS -->
-
+                        <!-- RENDERING DE CAMPOS -->
                         <div class="row g-3">
-
                             {% for field in form %}
-
-                                <div class="col-md-12">
-
-                                    <label for="{{ field.id_for_label }}"
-                                           class="form-label fw-bold">
-
+                                <div class="col-12">
+                                    <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-white-50 fs-7 text-uppercase tracking-wide mb-1">
                                         {{ field.label }}
-
+                                        {% if field.field.required %}
+                                            <span class="text-warning">*</span>
+                                        {% endif %}
                                     </label>
-
 
                                     {{ field }}
 
-
                                     {% if field.help_text %}
-
-                                        <div class="form-text">
-
-                                            {{ field.help_text }}
-
+                                        <div class="form-text text-white-50 fs-8 mt-1">
+                                            <i class="bi bi-info-circle me-1"></i>{{ field.help_text }}
                                         </div>
-
                                     {% endif %}
 
-
                                     {% for error in field.errors %}
-
-                                        <div class="text-danger small mt-1">
-
-                                            <i class="bi bi-exclamation-circle me-1"></i>
-
-                                            {{ error }}
-
+                                        <div class="text-danger small mt-1 d-flex align-items-center gap-1">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            <span>{{ error }}</span>
                                         </div>
-
                                     {% endfor %}
-
                                 </div>
-
                             {% endfor %}
-
                         </div>
 
-
-                        <!-- BOTONES -->
-
-                        <div class="d-flex justify-content-end
-                                    gap-2 mt-4 pt-3 border-top">
-
+                        <!-- ACCIONES DE FORMULARIO -->
+                        <div class="d-flex justify-content-end align-items-center gap-2 mt-4 pt-4 border-top border-secondary border-opacity-25">
                             <a href="{% url 'lista_marcas' %}"
-                               class="btn btn-outline-secondary">
-
+                               class="btn btn-outline-light border-secondary text-white-50 rounded-pill px-4 py-2">
                                 <i class="bi bi-x-circle me-1"></i>
-
                                 Cancelar
-
                             </a>
 
-
                             <button type="submit"
-                                    class="btn color-azul text-white fw-bold">
-
-                                <i class="bi bi-save me-1"></i>
-
+                                    class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+                                <i class="bi bi-save-fill"></i>
                                 Guardar cambios
-
                             </button>
-
                         </div>
 
                     </form>
-
                 </div>
 
             </div>
-
         </div>
-
     </div>
 
 </div>
-
 {% endblock %}
