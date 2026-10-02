@@ -6,6 +6,7 @@ from .contexto import CONTEXTO
 load_dotenv()
 
 SYSTEM_PROMPT = CONTEXTO
+DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
 
 def obtener_respuesta_ia(prompt, historial=None, system_prompt_extra=None):
 
@@ -43,7 +44,7 @@ def obtener_respuesta_ia(prompt, historial=None, system_prompt_extra=None):
 
     try:
         respuesta = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model=os.environ.get("GROQ_MODEL", DEFAULT_GROQ_MODEL),
             temperature=0.5,
             max_tokens=300,
             top_p=0.9,
