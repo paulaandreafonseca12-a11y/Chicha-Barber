@@ -1,6 +1,5 @@
-/* ── PALETA DE COLORES ── */
-.color-azul de marca { background-color: #22AED1 !important; }
-.color-azul  { background-color: #22aed1 !important; }
+.color-azul-de-marca,
+.color-azul { background-color: #22aed1 !important; }
 .color-blanco { background-color: #ffffff !important; }
 .navbar-dorado {
   background: linear-gradient(90deg, #FFC107 0%, #FFD700 100%);
@@ -63,7 +62,7 @@ main {
   overflow-y: auto;
 }
 
-.color-negro-bg { background: #000c06 !important; } /*color barra de navegacion modo oscuro*\ 
+.color-negro-bg { background: #000c06 !important; } /* color barra de navegacion modo oscuro */ 
 
 
 /* ── CAROUSEL ── */
@@ -117,6 +116,27 @@ header a { transition: .3s; }
 /* ── BOTONES ── */
 .btn-warning            { background: #94d6ea; border: none; }
 .btn-warning:hover      { background: #9ed5e9; }
+
+.admin-index .btn-admin-cyan {
+  background: #94d6ea !important;
+  border: 1px solid #94d6ea !important;
+  color: #10232a !important;
+}
+.admin-index .btn-admin-cyan:hover,
+.admin-index .btn-admin-cyan:focus-visible {
+  background: #7ec8df !important;
+  border-color: #7ec8df !important;
+  color: #10232a !important;
+}
+.admin-index .btn-admin-cyan-outline {
+  color: #94d6ea !important;
+  border-color: #94d6ea !important;
+}
+.admin-index .btn-admin-cyan-outline:hover,
+.admin-index .btn-admin-cyan-outline:focus-visible {
+  background: #94d6ea !important;
+  color: #10232a !important;
+}
 
 .custom-btn {
   background-color: #22aed1 !important;
@@ -243,7 +263,7 @@ body.theme-light .booking-wrap .form-control-barber::placeholder {
 .booking-wrap .alert-barber {
   background: rgba(255, 255, 255, 0.03) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: var(--color-azul de marca) !important;
+  color: var(--color-azul, #22AED1) !important;
 }
 body.theme-light .booking-wrap .alert-barber {
   background: rgba(0, 0, 0, 0.03) !important;
@@ -261,7 +281,7 @@ body.theme-light #turnos-container::-webkit-scrollbar-thumb { background: rgba(0
 
 /* Clases semánticas adaptativas para textos de reservas */
 .booking-wrap .text-accent { color: var(--accent-azul) !important; }
-.booking-wrap .text-brand-title { color: var(--color-azul de marca) !important; }
+.booking-wrap .text-brand-title { color: var(--color-azul, #22AED1) !important; }
 .booking-wrap .text-custom-muted { color: var(--text-muted) !important; }
 .booking-wrap .text-time-date { color: #ffffff !important; }
 body.theme-light .booking-wrap .text-time-date { color: #030301 !important; }
@@ -477,7 +497,7 @@ select.cb-input {
 .filtro-rol { background: transparent; }
 .filtro-rol:hover { background: transparent; }
 
-/* /* ==========================================================================
+/* ==========================================================================
    TEMA CLARO ELEGANTE & EJECUTIVO (Chicha Barber Studio)
    ========================================================================== */
 
@@ -1698,7 +1718,7 @@ body.theme-light .chat-input:focus {
 .reservas-reservas__span-4 { font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: .75rem; }
 .reservas-reservas__h2-5 { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 2px; }
 .reservas-reservas__p-6 { font-size: .95rem; }
-.reservas-reservas__div-7 { background: rgba(34, 174, 209, 0.08); border: 1px solid rgba(34, 174, 209, 0.3); color: var(--color-azul de marca); }
+.reservas-reservas__div-7 { background: rgba(34, 174, 209, 0.08); border: 1px solid rgba(34, 174, 209, 0.3); color: var(--color-azul, #22AED1); }
 .reservas-reservas__i-8 { color: var(--accent-azul); }
 .reservas-reservas__a-9 { font-size: 0.75rem }
 .reservas-reservas__label-10 { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.05rem; }
@@ -1842,17 +1862,30 @@ body.theme-light .chat-input:focus {
 }
 
 /* En desktop (>= 992px): el aside se muestra como sidebar normal */
+/* En desktop (>= 992px): el aside se muestra como sidebar normal */
 @media (min-width: 992px) {
   .admin-aside {
     position: sticky !important;
     top: 0;
+
     width: 280px !important;
     height: 100vh;
+
+    /* ✅ ARREGLO: permite desplazamiento vertical */
     overflow-y: auto;
+
+    /* ✅ ARREGLO: evita que aparezca desplazamiento horizontal */
+    overflow-x: hidden;
+
+    /* ✅ ARREGLO: oculta la barra vertical */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
-  .aside-backdrop {
-    display: none !important;
+  /* ✅ ARREGLO: Chrome / Edge / Opera */
+  .admin-aside::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 }
 
@@ -2292,7 +2325,7 @@ body.theme-light .templates-index-admin__div-15 td {
     border-bottom: 1px solid #f1f5f9 !important;
 }
 
-#servicios animacion al apasar el cursor
+/* ── SERVICIOS: ANIMACIÓN AL PASAR EL CURSOR ── */
 
 .servicios-servicios__div-1 {
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -2871,5 +2904,315 @@ main {
   margin-top: 1rem;
   margin-bottom: 2rem;
 }
+
+/* =====================================================
+   ELEMENTOS DE INTERFAZ & DROPDOWNS NEÓN
+   ===================================================== */
+.border-gold-subtle {
+  border-color: rgba(255, 215, 0, 0.3) !important;
+}
+
+.header-dropdown-glass {
+  background: rgba(10, 10, 10, 0.95) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
+}
+
+.dropdown-item-neon {
+  transition: all 0.2s ease;
+}
+
+.dropdown-item-neon:hover {
+  background: rgba(255, 215, 0, 0.15) !important;
+  color: #ffd700 !important;
+  transform: translateX(3px);
+}
+
+.dropdown-item-danger:hover {
+  background: rgba(220, 53, 69, 0.2) !important;
+  color: #ff6b6b !important;
+}
+
+.fs-7 { font-size: 0.8rem !important; }
+.fs-8 { font-size: 0.72rem !important; }
+
+.color-azul-text {
+  color: #22aed1 !important;
+}
+
+/* ENLACES CATEGORÍA SIDEBAR */
+.sidebar-category-link {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar-category-link:hover {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.sidebar-category-link.active {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffffff;
+  font-weight: 600;
+  border-left: 3px solid #ffc107;
+}
+
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.style-z-index {
+  z-index: 1050;
+}
+
+.custom-dropdown-menu .dropdown-item {
+  color: #d1d5db;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.custom-dropdown-menu .dropdown-item:hover,
+.custom-dropdown-menu .dropdown-item:focus {
+  background-color: #2b3035 !important;
+  color: #ffffff !important;
+}
+.custom-dropdown-menu .dropdown-item-danger:hover,
+.custom-dropdown-menu .dropdown-item-danger:focus {
+  background-color: rgba(220, 53, 69, 0.15) !important;
+  color: #ea868f !important;
+}
+
+/* =====================================================
+   ESTILOS PERSONALIZADOS (DARK & GOLD ADMIN)
+   ===================================================== */
+
+/* Gradientes de fondo para romper el aspecto plano */
+.bg-gradient-dark,
+.card.bg-gradient-dark {
+  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
+  color: #f8fafc !important;
+}
+
+.bg-gradient-header,
+.card-header.bg-gradient-header {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.08) 0%, rgba(20, 23, 26, 0.9) 100%) !important;
+}
+
+.border-gold-left {
+  border-left: 4px solid #ffc107 !important;
+}
+
+/* Efecto Hover dinámico para tarjetas */
+.card-hover-effect {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+.card-hover-effect:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5) !important;
+  border-color: rgba(255, 193, 7, 0.35) !important;
+}
+
+/* Badges de estado con alto contraste y texto altamente legible */
+.badge-status-confirmada {
+  background-color: #0f3822 !important;
+  color: #4ade80 !important;
+  border: 1px solid #166534 !important;
+}
+.badge-status-reservada {
+  background-color: #422006 !important;
+  color: #fde047 !important;
+  border: 1px solid #854d0e !important;
+}
+.badge-status-pendiente {
+  background-color: #451a03 !important;
+  color: #fdba74 !important;
+  border: 1px solid #9a3412 !important;
+}
+.badge-status-cancelada {
+  background-color: #450a0a !important;
+  color: #fca5a5 !important;
+  border: 1px solid #991b1b !important;
+}
+.badge-status-completada {
+  background-color: #172554 !important;
+  color: #93c5fd !important;
+  border: 1px solid #1e40af !important;
+}
+.badge-status-default {
+  background-color: #27272a !important;
+  color: #e4e4e7 !important;
+  border: 1px solid #52525b !important;
+}
+
+/* ── OPTIMIZACIÓN DE CONTRASTE PARA TEXTOS Y BORDES GRISES EN EL PANEL ── */
+.bg-gradient-dark .text-white-50 {
+  color: rgba(241, 245, 249, 0.72) !important; /* Gris plateado de alta legibilidad */
+}
+
+.bg-gradient-dark.border-secondary,
+.card.bg-gradient-dark.border-secondary {
+  border-color: rgba(255, 255, 255, 0.12) !important; /* Borde cristal sutil en vez de gris sucio */
+}
+
+/* Unifica las pantallas de gestión de catálogo, compras y ventas con Productos Admin */
+body.admin-productos-theme {
+  color: #f8fafc;
+}
+
+body.admin-productos-theme h1,
+body.admin-productos-theme h2,
+body.admin-productos-theme h3,
+body.admin-productos-theme h4,
+body.admin-productos-theme h5,
+body.admin-productos-theme h6,
+body.admin-productos-theme label {
+  color: #f8fafc !important;
+}
+
+body.admin-productos-theme .text-dark {
+  color: #f8fafc !important;
+}
+
+body.admin-productos-theme .text-muted,
+body.admin-productos-theme .text-body-secondary {
+  color: rgba(241, 245, 249, 0.68) !important;
+}
+
+body.admin-productos-theme .card {
+  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24) !important;
+}
+
+body.admin-productos-theme .card-header {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.1) 0%, rgba(20, 23, 26, 0.95) 100%) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.admin-productos-theme .card .card-header {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.1) 0%, rgba(20, 23, 26, 0.95) 100%) !important;
+}
+
+body.admin-productos-theme.theme-light main .text-white:not(.btn):not(.badge):not(.thead-azul *) {
+  color: #f8fafc !important;
+}
+
+body.admin-productos-theme .table {
+  --bs-table-color: #f8fafc;
+  --bs-table-bg: transparent;
+  --bs-table-hover-color: #ffffff;
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.045);
+  --bs-table-border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.admin-productos-theme .table thead,
+body.admin-productos-theme .table thead.thead-azul {
+  background: rgba(0, 0, 0, 0.4) !important;
+  color: rgba(241, 245, 249, 0.72) !important;
+}
+
+body.admin-productos-theme .table thead th {
+  color: rgba(241, 245, 249, 0.82) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+body.admin-productos-theme .table tbody td {
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.admin-productos-theme .form-control:not([type="checkbox"]):not([type="radio"]),
+body.admin-productos-theme .form-select,
+body.admin-productos-theme .input-group-text {
+  background-color: #111315 !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+body.admin-productos-theme .form-control::placeholder {
+  color: rgba(241, 245, 249, 0.52) !important;
+}
+
+body.admin-productos-theme .form-control:focus,
+body.admin-productos-theme .form-select:focus {
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.18) !important;
+}
+
+body.admin-productos-theme .form-select option {
+  background: #111315;
+  color: #f8fafc;
+}
+
+body.admin-productos-theme .btn-primary,
+body.admin-productos-theme .btn.color-azul,
+body.admin-productos-theme .btn.custom-btn {
+  background: #ffc107 !important;
+  color: #171717 !important;
+  border-color: #ffc107 !important;
+  font-weight: 700;
+}
+
+body.admin-productos-theme .btn-outline-primary,
+body.admin-productos-theme .btn-outline-info {
+  color: #ffc107 !important;
+  border-color: rgba(255, 193, 7, 0.65) !important;
+}
+
+body.admin-productos-theme .btn-outline-primary:hover,
+body.admin-productos-theme .btn-outline-info:hover {
+  background: #ffc107 !important;
+  color: #171717 !important;
+}
+
+body.admin-productos-theme .btn-outline-secondary,
+body.admin-productos-theme .btn-secondary {
+  color: #f8fafc !important;
+  background: #202428 !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+body.admin-panel-cyan .btn-primary,
+body.admin-panel-cyan .btn.color-azul,
+body.admin-panel-cyan .btn.custom-btn,
+body.admin-panel-cyan .btn-warning {
+  background: #94d6ea !important;
+  border-color: #94d6ea !important;
+  color: #10232a !important;
+  font-weight: 700;
+}
+
+body.admin-panel-cyan .btn-primary:hover,
+body.admin-panel-cyan .btn.color-azul:hover,
+body.admin-panel-cyan .btn.custom-btn:hover,
+body.admin-panel-cyan .btn-warning:hover {
+  background: #7ec8df !important;
+  border-color: #7ec8df !important;
+  color: #10232a !important;
+}
+
+body.admin-panel-cyan .btn-outline-primary,
+body.admin-panel-cyan .btn-outline-info,
+body.admin-panel-cyan .btn-outline-warning {
+  color: #94d6ea !important;
+  border-color: #94d6ea !important;
+}
+
+body.admin-panel-cyan .btn-outline-primary:hover,
+body.admin-panel-cyan .btn-outline-info:hover,
+body.admin-panel-cyan .btn-outline-warning:hover {
+  background: #94d6ea !important;
+  color: #10232a !important;
+}
+
+
+
+
 
 
