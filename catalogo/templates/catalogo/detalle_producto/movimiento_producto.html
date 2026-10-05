@@ -3,19 +3,14 @@
 
 {% block content %}
 
-<div class="container py-4">
+<div class="container-fluid px-4 py-4 text-white">
 
     <!-- ENCABEZADO -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <h2 class="fw-bold mb-0">
-            
-        </h2>
-
+    <div class="d-flex justify-content-end align-items-center flex-wrap gap-3 mb-4">
         <a href="{% url 'registrar_movimiento_existencias' %}"
            class="btn color-azul text-white fw-bold shadow-sm">
 
-            <i></i>
+            <i class="bi bi-plus-circle-fill me-1"></i>
             Nuevo Movimiento
 
         </a>
@@ -29,7 +24,7 @@
         <!-- TOTAL MOVIMIENTOS -->
         <div class="col-md-4">
 
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10">
+            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
 
                 <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
 
@@ -62,7 +57,7 @@
         <!-- ENTRADAS -->
         <div class="col-md-4">
 
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10">
+            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
 
                 <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
 
@@ -95,7 +90,7 @@
         <!-- SALIDAS -->
         <div class="col-md-4">
 
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10">
+            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
 
                 <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
 

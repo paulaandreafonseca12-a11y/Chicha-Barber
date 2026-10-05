@@ -3,25 +3,14 @@
 
 {% block content %}
 
-<div class="container py-4">
+<div class="container-fluid px-4 py-4 text-white">
 
     <!-- ENCABEZADO -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-            <h2 class="fw-bold mb-1">
-    
-            </h2>
-
-        </div>
-
-        <div class="d-flex gap-2">
-            <a href="{% url 'lista_movimientos_existencias' %}" class="btn color-azul text-white fw-bold shadow-sm">
-                <i class="bi bi-arrow-left-right me-2"></i>
-                Movimiento de productos
-            </a>
-        </div>
-
+    <div class="d-flex justify-content-end align-items-center flex-wrap gap-3 mb-4">
+        <a href="{% url 'lista_movimientos_existencias' %}" class="btn color-azul text-white fw-bold shadow-sm">
+            <i class="bi bi-arrow-left-right me-2"></i>
+            Movimiento de productos
+        </a>
     </div>
 
 
@@ -31,7 +20,7 @@
         <!-- TOTAL PRODUCTOS -->
         <div class="col-md-4">
 
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10">
+            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
 
                 <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
 
@@ -64,7 +53,7 @@
         <!-- STOCK TOTAL -->
         <div class="col-md-4">
 
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10">
+            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
 
                 <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
 
@@ -97,7 +86,7 @@
         <!-- STOCK BAJO -->
         <div class="col-md-4">
 
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10">
+            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
 
                 <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
 
