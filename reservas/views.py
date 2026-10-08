@@ -199,8 +199,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             reserva = Reserva.objects.create(
                 agenda=agenda_obj,
                 usuario=request.user,
-                nombre_cliente=nombre,
-                correo_cliente=correo,
+                nombre_usuario=nombre,
+                correo_usuario=correo,
                 telefono_usuario=telefono,
                 fecha_reserva=fecha_hora_turno,
                 observacion=observacion,
@@ -250,9 +250,9 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
 
     if request.method == 'POST':
         turno_id = request.POST.get('turno_id')
-        telefono = request.POST.get('telefono_cliente', '').strip()
-        correo = request.POST.get('correo_cliente', '').strip() or request.user.email
-        nombre = request.POST.get('nombre_cliente', '').strip() or request.user.get_full_name()
+        telefono = request.POST.get('telefono_usuario', request.POST.get('telefono_cliente', '')).strip()
+        correo = request.POST.get('correo_usuario', request.POST.get('correo_cliente', '')).strip() or request.user.email
+        nombre = request.POST.get('nombre_usuario', request.POST.get('nombre_cliente', '')).strip() or request.user.get_full_name()
         observacion = request.POST.get('observacion', '').strip()
 
         # Valores ya elegidos, para no perderlos si hay que volver a mostrar el formulario
@@ -264,9 +264,9 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
             'barberos': barberos,
             'turnos_disponibles': turnos_disponibles,
             'action_url': action_url,
-            'nombre_cliente_val': nombre,
-            'correo_cliente_val': correo,
-            'telefono_cliente_val': telefono,
+            'nombre_usuario_val': nombre,
+            'correo_usuario_val': correo,
+            'telefono_usuario_val': telefono,
             'barbero_id_val': barbero_id_sel,
             'turno_id_val': turno_id,
             'medio_pago_val': medio_pago_sel,
@@ -307,8 +307,8 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 reserva = Reserva.objects.create(
                     agenda=agenda_obj,
                     usuario=request.user,
-                    nombre_cliente=nombre,
-                    correo_cliente=correo,
+                    nombre_usuario=nombre,
+                    correo_usuario=correo,
                     telefono_usuario=telefono,
                     fecha_reserva=fecha_hora_turno,
                     observacion=observacion,
