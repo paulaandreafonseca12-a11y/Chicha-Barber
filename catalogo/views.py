@@ -317,101 +317,88 @@ def lista_categorias(request):
 
 
 # ==========================================================
-# 🟢 CREAR CATEGORÍA DESDE MODAL / JSON
+# ==========================================================
+# 🟢 CREAR CATEGORÍA (Formulario HTML y Modal JSON)
 # ==========================================================
 
 @login_required
-@require_POST
 def crear_categoria(request):
 
-    try:
+    is_json = (
+        'application/json' in request.META.get('CONTENT_TYPE', '') or
+        request.headers.get('x-requested-with') == 'XMLHttpRequest' or
+        (request.body and request.body.startswith(b'{'))
+    )
 
-        data = json.loads(
-            request.body
-        )
-
-        nombre = data.get(
-            'nombre',
-            ''
-        ).strip()
-
-        descripcion = data.get(
-            'descripcion',
-            ''
-        ).strip()
-
-        if not nombre:
-
+    # 1. Petición JSON desde Modal (crear_producto)
+    if is_json:
+        if request.method != 'POST':
             return JsonResponse(
-                {
-                    'success': False,
-                    'error': (
-                        'El nombre de la categoría '
-                        'es obligatorio.'
-                    )
-                },
-                status=400
+                {'success': False, 'error': 'Método no permitido.'},
+                status=405
+            )
+        try:
+            data = json.loads(request.body)
+            nombre = data.get('nombre', '').strip()
+            descripcion = data.get('descripcion', '').strip()
+
+            if not nombre:
+                return JsonResponse(
+                    {'success': False, 'error': 'El nombre de la categoría es obligatorio.'},
+                    status=400
+                )
+
+            if Categoria.objects.filter(nombre__iexact=nombre).exists():
+                return JsonResponse(
+                    {'success': False, 'error': 'Ya existe una categoría con ese nombre.'},
+                    status=400
+                )
+
+            categoria = Categoria.objects.create(
+                nombre=nombre,
+                descripcion=descripcion
             )
 
-        if Categoria.objects.filter(
-            nombre__iexact=nombre
-        ).exists():
-
-            return JsonResponse(
-                {
-                    'success': False,
-                    'error': (
-                        'Ya existe una categoría '
-                        'con ese nombre.'
-                    )
-                },
-                status=400
-            )
-
-        categoria = Categoria.objects.create(
-            nombre=nombre,
-            descripcion=descripcion
-        )
-
-        return JsonResponse(
-            {
+            return JsonResponse({
                 'success': True,
                 'codigo': categoria.codigo,
                 'nombre': categoria.nombre,
-                'descripcion': (
-                    categoria.descripcion or ''
-                ),
-                'mensaje': (
-                    f"Categoría '{categoria.nombre}' "
-                    "creada correctamente."
-                )
-            }
-        )
+                'descripcion': categoria.descripcion or '',
+                'mensaje': f"Categoría '{categoria.nombre}' creada correctamente."
+            })
 
-    except json.JSONDecodeError:
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {'success': False, 'error': 'Los datos enviados no tienen un formato válido.'},
+                status=400
+            )
+        except Exception as e:
+            return JsonResponse(
+                {'success': False, 'error': f'No se pudo crear la categoría: {str(e)}'},
+                status=500
+            )
 
-        return JsonResponse(
-            {
-                'success': False,
-                'error': (
-                    'Los datos enviados no tienen '
-                    'un formato válido.'
-                )
-            },
-            status=400
-        )
+    # 2. Petición estándar (Página crear_categoria.html)
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            categoria = form.save()
+            messages.success(
+                request,
+                f"Categoría '{categoria.nombre}' creada correctamente."
+            )
+            return redirect('lista_categorias')
+    else:
+        form = CategoriaForm()
 
-    except Exception as e:
-
-        return JsonResponse(
-            {
-                'success': False,
-                'error': (
-                    f'No se pudo crear la categoría: {str(e)}'
-                )
-            },
-            status=500
-        )
+    return render(
+        request,
+        'catalogo/categorias/crear_categoria.html',
+        {
+            'titulo': 'Crear Categoría',
+            'form': form
+        }
+    )
 
 
 @login_required
@@ -670,121 +657,96 @@ def lista_marcas(request):
 
 
 # ==========================================================
-# 🟢 CREAR MARCA DESDE MODAL / JSON
+# ==========================================================
+# 🟢 CREAR MARCA (Formulario HTML y Modal JSON)
 # ==========================================================
 
 @login_required
-@require_POST
 def crear_marca(request):
 
-    try:
+    is_json = (
+        'application/json' in request.META.get('CONTENT_TYPE', '') or
+        request.headers.get('x-requested-with') == 'XMLHttpRequest' or
+        (request.body and request.body.startswith(b'{'))
+    )
 
-        data = json.loads(
-            request.body
-        )
-
-        nombre = data.get(
-            'nombre',
-            ''
-        ).strip()
-
-        descripcion = data.get(
-            'descripcion',
-            ''
-        ).strip()
-
-        estado = data.get(
-            'estado',
-            True
-        )
-
-        if isinstance(
-            estado,
-            str
-        ):
-
-            estado = estado.lower() in [
-                'true',
-                '1',
-                'si',
-                'sí',
-                'activo'
-            ]
-
-        if not nombre:
-
+    # 1. Petición JSON desde Modal (crear_producto)
+    if is_json:
+        if request.method != 'POST':
             return JsonResponse(
-                {
-                    'success': False,
-                    'error': (
-                        'El nombre de la marca '
-                        'es obligatorio.'
-                    )
-                },
-                status=400
+                {'success': False, 'error': 'Método no permitido.'},
+                status=405
+            )
+        try:
+            data = json.loads(request.body)
+            nombre = data.get('nombre', '').strip()
+            descripcion = data.get('descripcion', '').strip()
+            estado = data.get('estado', True)
+
+            if isinstance(estado, str):
+                estado = estado.lower() in [
+                    'true', '1', 'si', 'sí', 'activo'
+                ]
+
+            if not nombre:
+                return JsonResponse(
+                    {'success': False, 'error': 'El nombre de la marca es obligatorio.'},
+                    status=400
+                )
+
+            if Marca.objects.filter(nombre__iexact=nombre).exists():
+                return JsonResponse(
+                    {'success': False, 'error': 'Ya existe una marca con ese nombre.'},
+                    status=400
+                )
+
+            marca = Marca.objects.create(
+                nombre=nombre,
+                descripcion=descripcion,
+                estado=estado
             )
 
-        if Marca.objects.filter(
-            nombre__iexact=nombre
-        ).exists():
-
-            return JsonResponse(
-                {
-                    'success': False,
-                    'error': (
-                        'Ya existe una marca '
-                        'con ese nombre.'
-                    )
-                },
-                status=400
-            )
-
-        marca = Marca.objects.create(
-            nombre=nombre,
-            descripcion=descripcion,
-            estado=estado
-        )
-
-        return JsonResponse(
-            {
+            return JsonResponse({
                 'success': True,
                 'codigo': marca.codigo,
                 'nombre': marca.nombre,
-                'descripcion': (
-                    marca.descripcion or ''
-                ),
+                'descripcion': marca.descripcion or '',
                 'estado': marca.estado,
-                'mensaje': (
-                    f"Marca '{marca.nombre}' "
-                    "creada correctamente."
-                )
-            }
-        )
+                'mensaje': f"Marca '{marca.nombre}' creada correctamente."
+            })
 
-    except json.JSONDecodeError:
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {'success': False, 'error': 'Los datos enviados no tienen un formato válido.'},
+                status=400
+            )
+        except Exception as e:
+            return JsonResponse(
+                {'success': False, 'error': f'No se pudo crear la marca: {str(e)}'},
+                status=500
+            )
 
-        return JsonResponse(
-            {
-                'success': False,
-                'error': (
-                    'Los datos enviados no tienen '
-                    'un formato válido.'
-                )
-            },
-            status=400
-        )
+    # 2. Petición estándar (Página crear_marca.html)
+    if request.method == 'POST':
+        form = MarcaForm(request.POST)
+        if form.is_valid():
+            marca = form.save()
+            messages.success(
+                request,
+                f"Marca '{marca.nombre}' creada correctamente."
+            )
+            return redirect('lista_marcas')
+    else:
+        form = MarcaForm()
 
-    except Exception as e:
-
-        return JsonResponse(
-            {
-                'success': False,
-                'error': (
-                    f'No se pudo crear la marca: {str(e)}'
-                )
-            },
-            status=500
-        )
+    return render(
+        request,
+        'catalogo/marca/crear_marca.html',
+        {
+            'titulo': 'Crear Marca',
+            'form': form
+        }
+    )
 
 
 @login_required
