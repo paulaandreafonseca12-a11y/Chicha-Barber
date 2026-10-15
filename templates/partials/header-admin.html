@@ -66,8 +66,9 @@
               
               {% if user.rol == 'admin' or user.rol == 'barbero' %}
               <li>
-                <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center" href="{% url 'inicio' %}">
-                  <i class="bi bi-grid-1x2-fill me-2 text-primary fs-6"></i>Ver página web
+                <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center partials-header-admin__web-link" href="{% url 'inicio' %}">
+                  <i class="bi bi-grid-1x2-fill me-2 fs-6"></i>
+                  <span class="partials-header-admin__web-label">Ver página web</span>
                 </a>
               </li>
               <li>
