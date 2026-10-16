@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'venta',
     'historial',
     'chat_ia',
+    'rest_framework',
+    'reportes',
     
 ]
 
@@ -96,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bdchichabarber',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': 'F4b14n89',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
