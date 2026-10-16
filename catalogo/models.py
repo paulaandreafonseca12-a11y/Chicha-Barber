@@ -48,15 +48,18 @@ class Proveedor(models.Model):
 
     telefono = models.CharField(
         max_length=20,
+        default="",
         verbose_name="Teléfono"
     )
 
     correo = models.EmailField(
+        default="",
         verbose_name="Correo electrónico"
     )
 
     direccion = models.CharField(
         max_length=200,
+        default="",
         verbose_name="Dirección"
     )
 
@@ -248,6 +251,10 @@ class Producto(models.Model):
             return self.codigo_detalle_producto.cantidad_actual
 
         return 0
+
+    @property
+    def detalle_producto(self):
+        return self.codigo_detalle_producto
 
     # ======================================================
     # PRECIO DE VENTA ACTUAL
