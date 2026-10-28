@@ -440,10 +440,13 @@ class EditarUsuarioForm(forms.ModelForm):
 
     numero_documento = forms.CharField(
         max_length=20,
+        min_length=6,
         label='Número de documento',
         validators=[validador_solo_numeros],
         widget=forms.TextInput(attrs={
-            'class': 'form-control'
+            'class': 'form-control',
+            'pattern': r'^\d+$',
+            'title': 'Solo se permiten números (mínimo 6 dígitos).'
         })
     )
 
@@ -588,6 +591,18 @@ class EditarPerfilForm(forms.ModelForm):
         })
     )
 
+    numero_documento = forms.CharField(
+        max_length=20,
+        min_length=6,
+        label='Número de documento',
+        validators=[validador_solo_numeros],
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'pattern': r'^\d+$',
+            'title': 'Solo se permiten números (mínimo 6 dígitos).'
+        })
+    )
+
     tipo_documento = forms.ChoiceField(
         choices=TipoDocumento.choices,
         label='Tipo de documento',
@@ -647,6 +662,28 @@ class EditarPerfilForm(forms.ModelForm):
             )
 
         return email
+
+    def clean_numero_documento(self):
+        numero = self.cleaned_data.get(
+            'numero_documento',
+            ''
+        ).strip()
+
+        qs = Usuario.objects.filter(
+            numero_documento=numero
+        )
+
+        if self.instance and self.instance.pk:
+            qs = qs.exclude(
+                pk=self.instance.pk
+            )
+
+        if qs.exists():
+            raise ValidationError(
+                'Ya existe otro usuario registrado con este número de documento.'
+            )
+
+        return numero
 
 
 # ==========================================================

@@ -24,8 +24,8 @@ from core.utils import enviar_correo_reserva, enviar_correo_cancelacion_admin
 
 
 # Solo letras (incluye tildes y ñ), espacios, apóstrofes y guiones. Mínimo 3 caracteres.
-NOMBRE_REGEX = re.compile(r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\-\s]{3,100}$")
-TELEFONO_REGEX = re.compile(r"^3\d{9}$")
+NOMBRE_REGEX = re.compile(r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\-\s]{2,100}$")
+TELEFONO_REGEX = re.compile(r"^\d{7,15}$")
 
 # Dominios de correo muy conocidos: se aceptan sin consultar DNS, para que
 # el sistema siga funcionando aunque no haya internet en ese momento.
@@ -110,7 +110,7 @@ def _validar_datos_contacto(nombre, correo, telefono):
     if not telefono:
         errores.append('El teléfono es obligatorio.')
     elif not TELEFONO_REGEX.match(telefono):
-        errores.append('El teléfono debe ser un celular colombiano válido: 10 dígitos y empezar por 3.')
+        errores.append('El teléfono debe contener entre 7 y 15 dígitos numéricos (ej: 3001234567).')
 
     return errores
 

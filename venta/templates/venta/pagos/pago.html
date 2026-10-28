@@ -37,7 +37,7 @@
 
                 <div class="form-floating mb-3">
                   <input type="text" name="nombre" class="form-control border-2 shadow-none" id="nombreInput" placeholder="Nombre completo"
-                    value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" required>
+                    value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" minlength="2" required>
                   <label for="nombreInput" class="text-secondary">Nombre completo</label>
                 </div>
 
@@ -51,7 +51,8 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-floating">
-                      <input type="text" name="telefono" class="form-control border-2 shadow-none" id="telefonoInput" placeholder="Teléfono"
+                      <input type="tel" name="telefono" class="form-control border-2 shadow-none" id="telefonoInput" placeholder="Teléfono"
+                        pattern="^\d{7,15}$" title="Ingresa entre 7 y 15 dígitos numéricos." inputmode="numeric"
                         value="{% if request.user.is_authenticated %}{{ request.user.telefono }}{% endif %}" required>
                       <label for="telefonoInput" class="text-secondary">Teléfono</label>
                     </div>

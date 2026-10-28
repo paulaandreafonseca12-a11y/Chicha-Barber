@@ -49,9 +49,11 @@
                                     <a href="{% url 'detalle_venta' venta.codigo_venta %}" class="btn btn-sm btn-outline-info" title="Seleccionar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar"
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar"
                                         data-url="{% url 'eliminar_venta' venta.codigo_venta %}"
-                                        data-id="{{ venta.codigo_venta }}"
+                                        data-nombre="la venta #{{ venta.codigo_venta }}"
+                                        data-titulo="Eliminar Venta"
+                                        data-metodo="POST"
                                         onclick="abrirModalEliminar(this)">
                                         <i class="bi bi-trash"></i>
                                     </button>

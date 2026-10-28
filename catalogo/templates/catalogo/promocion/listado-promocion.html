@@ -75,7 +75,15 @@
                             <a href="{% url 'editar-promocion' promocion.pk %}" class="btn btn-sm btn-outline-warning rounded-circle p-0 me-1 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(229, 184, 105, 0.4); color: #e5b869;" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);" title="Eliminar" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion" data-delete-url="{% url 'eliminar-promocion' promocion.pk %}" data-item-name="{{ promocion.nombre|escape }}">
+                            <button type="button"
+                               class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
+                               style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);"
+                               data-url="{% url 'eliminar-promocion' promocion.pk %}"
+                               data-nombre="{{ promocion.nombre }}"
+                               data-titulo="Eliminar Promoción"
+                               data-metodo="POST"
+                               onclick="abrirModalEliminar(this)"
+                               title="Eliminar">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>

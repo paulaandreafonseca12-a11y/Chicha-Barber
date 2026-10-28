@@ -70,9 +70,8 @@ class ValidacionPromocionMixin:
 
 def validar_texto(valor, campo):
     """
-    Valida campos que pueden contener:
-    letras, números, espacios y caracteres propios
-    de letras en español.
+    Permite letras, números, espacios y caracteres
+    propios del español.
     """
 
     if not valor:
@@ -82,8 +81,13 @@ def validar_texto(valor, campo):
 
     valor = valor.strip()
 
+    if len(valor) < 2:
+        raise forms.ValidationError(
+            f'El campo {campo} debe tener al menos 2 caracteres.'
+        )
+
     if not re.fullmatch(
-        r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
+        r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+',
         valor
     ):
         raise forms.ValidationError(
@@ -94,10 +98,40 @@ def validar_texto(valor, campo):
     return valor
 
 
+def validar_solo_letras(valor, campo):
+    """
+    Permite únicamente letras, tildes, ñ, ü y espacios.
+    No permite números ni símbolos.
+    """
+
+    if not valor or not valor.strip():
+        raise forms.ValidationError(
+            f'El campo {campo} es obligatorio.'
+        )
+
+    valor = valor.strip()
+
+    if len(valor) < 2:
+        raise forms.ValidationError(
+            f'El campo {campo} debe tener al menos 2 caracteres.'
+        )
+
+    if not re.fullmatch(
+        r'[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+',
+        valor
+    ):
+        raise forms.ValidationError(
+            f'El campo {campo} solo puede contener letras y espacios.'
+        )
+
+    return valor
+
+
 def validar_descripcion(valor, campo):
     """
-    Valida descripciones permitiendo algunos caracteres
-    útiles como punto, coma, dos puntos, #, *, /, (), guion y guion bajo.
+    Valida descripciones permitiendo caracteres útiles
+    como punto, coma, dos puntos, #, *, /, paréntesis,
+    guion, guion bajo y otros signos habituales.
     """
 
     if not valor:
@@ -106,7 +140,7 @@ def validar_descripcion(valor, campo):
     valor = valor.strip()
 
     if not re.fullmatch(
-        r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s.,:#*/()_-]+',
+        r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s.,:#*/()_+¡!¿?–—\-"\'$%@&]+',
         valor
     ):
         raise forms.ValidationError(
@@ -136,26 +170,12 @@ class ProductoForm(forms.ModelForm):
         ]
 
         widgets = {
-
-            # ==================================================
-            # NOMBRE DEL PRODUCTO
-            # Letras, números, tildes, ñ y espacios
-            # ==================================================
-
             'nombre': forms.TextInput(
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre del producto',
-
-                    'pattern': (
-                        r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$'
-                    ),
-
-                    'title': (
-                        'El nombre del producto solo puede '
-                        'contener letras y espacios. '
-                        'No se permiten números ni caracteres especiales.'
-                    ),
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'El nombre solo puede contener letras y espacios.',
                 }
             ),
 
@@ -211,16 +231,12 @@ class ProductoForm(forms.ModelForm):
             'estado': 'Activo',
         }
 
-    # ======================================================
     # FILTRAR MARCAS ACTIVAS
-    # ======================================================
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Solo mostrar marcas activas
         if 'codigo_marca' in self.fields:
-
             self.fields['codigo_marca'].queryset = (
                 Marca.objects
                 .filter(estado=True)
@@ -231,16 +247,12 @@ class ProductoForm(forms.ModelForm):
                 'Seleccione una marca (opcional)'
             )
 
-    # ======================================================
     # VALIDAR MARCA
-    # ======================================================
 
     def clean_codigo_marca(self):
-
         marca = self.cleaned_data.get('codigo_marca')
 
         if marca is not None and not marca.estado:
-
             raise forms.ValidationError(
                 'No se puede asignar una marca inactiva '
                 'a un producto.'
@@ -248,49 +260,19 @@ class ProductoForm(forms.ModelForm):
 
         return marca
 
-    # ======================================================
     # VALIDAR NOMBRE DEL PRODUCTO
-    # Letras, números y espacios
-    # ======================================================
 
     def clean_nombre(self):
-
         nombre = self.cleaned_data.get('nombre')
 
-        if not nombre:
+        return validar_solo_letras(
+            nombre,
+            'nombre del producto'
+        )
 
-            raise forms.ValidationError(
-                'El nombre del producto es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-
-            raise forms.ValidationError(
-                'El nombre del producto debe tener '
-                'al menos 2 caracteres.'
-            )
-
-        # Letras, números, tildes, ñ y espacios
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+',
-            nombre
-        ):
-
-            raise forms.ValidationError(
-                'El nombre del producto solo puede contener '
-                'letras, números y espacios.'
-            )
-
-        return nombre
-
-    # ======================================================
     # VALIDAR DESCRIPCIÓN
-    # ======================================================
 
     def clean_descripcion(self):
-
         descripcion = self.cleaned_data.get('descripcion')
 
         return validar_descripcion(
@@ -298,16 +280,12 @@ class ProductoForm(forms.ModelForm):
             'descripción'
         )
 
-    # ======================================================
     # VALIDAR PRECIO
-    # ======================================================
 
     def clean_precio(self):
-
         precio = self.cleaned_data.get('precio')
 
         if precio is not None and precio < 0:
-
             raise forms.ValidationError(
                 'El precio no puede ser negativo.'
             )
@@ -333,7 +311,6 @@ class DetalleProductoForm(forms.ModelForm):
         ]
 
         widgets = {
-
             'cantidad_actual': forms.NumberInput(
                 attrs={
                     'class': 'form-control',
@@ -374,66 +351,45 @@ class DetalleProductoForm(forms.ModelForm):
             'observaciones': 'Observaciones',
         }
 
-    # ======================================================
-    # VALIDAR CANTIDAD
-    # ======================================================
+    # VALIDAR CANTIDAD ACTUAL
 
     def clean_cantidad_actual(self):
-
-        cantidad = self.cleaned_data.get(
-            'cantidad_actual'
-        )
+        cantidad = self.cleaned_data.get('cantidad_actual')
 
         if cantidad is not None and cantidad < 0:
-
             raise forms.ValidationError(
                 'La cantidad actual no puede ser negativa.'
             )
 
         return cantidad
 
-    # ======================================================
     # VALIDAR STOCK MÍNIMO
-    # ======================================================
 
     def clean_stock_min(self):
-
-        stock_min = self.cleaned_data.get(
-            'stock_min'
-        )
+        stock_min = self.cleaned_data.get('stock_min')
 
         if stock_min is not None and stock_min < 0:
-
             raise forms.ValidationError(
                 'El stock mínimo no puede ser negativo.'
             )
 
         return stock_min
 
-    # ======================================================
     # VALIDAR STOCK MÁXIMO
-    # ======================================================
 
     def clean_stock_max(self):
-
-        stock_max = self.cleaned_data.get(
-            'stock_max'
-        )
+        stock_max = self.cleaned_data.get('stock_max')
 
         if stock_max is not None and stock_max < 0:
-
             raise forms.ValidationError(
                 'El stock máximo no puede ser negativo.'
             )
 
         return stock_max
 
-    # ======================================================
-    # VALIDAR RELACIÓN STOCK MÍNIMO / MÁXIMO
-    # ======================================================
+    # VALIDAR RELACIÓN ENTRE STOCK MÍNIMO Y MÁXIMO
 
     def clean(self):
-
         cleaned_data = super().clean()
 
         stock_min = cleaned_data.get('stock_min')
@@ -444,13 +400,54 @@ class DetalleProductoForm(forms.ModelForm):
             and stock_max is not None
             and stock_max < stock_min
         ):
-
             raise forms.ValidationError(
                 'El stock máximo no puede ser menor '
                 'que el stock mínimo.'
             )
 
         return cleaned_data
+
+
+# ==========================================================
+# FORMULARIO PARA EDITAR ÚNICAMENTE LAS EXISTENCIAS
+# ==========================================================
+
+class EditarExistenciasForm(forms.ModelForm):
+
+    class Meta:
+        model = DetalleProducto
+
+        fields = ['cantidad_actual']
+
+        widgets = {
+            'cantidad_actual': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'min': '0',
+                    'step': '1',
+                    'required': True,
+                }
+            ),
+        }
+
+        labels = {
+            'cantidad_actual': 'Cantidad actual',
+        }
+
+    def clean_cantidad_actual(self):
+        cantidad = self.cleaned_data.get('cantidad_actual')
+
+        if cantidad is None:
+            raise forms.ValidationError(
+                'Debes ingresar una cantidad.'
+            )
+
+        if cantidad < 0:
+            raise forms.ValidationError(
+                'La cantidad actual no puede ser negativa.'
+            )
+
+        return cantidad
 
 
 # ==========================================================
@@ -468,27 +465,19 @@ class CategoriaForm(forms.ModelForm):
         ]
 
         widgets = {
-
             'nombre': forms.TextInput(
                 attrs={
                     'class': 'form-control border-secondary',
-                    'placeholder': (
-                        'Ingrese el nombre de la categoría'
-                    ),
-                    'pattern': NOMBRE_PROMOCION_PATTERN,
-                    'title': (
-                        'Solo se permiten letras, números '
-                        'y espacios.'
-                    ),
+                    'placeholder': 'Ingrese el nombre de la categoría',
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'Solo se permiten letras y espacios.',
                 }
             ),
 
             'descripcion': forms.Textarea(
                 attrs={
                     'class': 'form-control border-secondary',
-                    'placeholder': (
-                        'Descripción de la categoría'
-                    ),
+                    'placeholder': 'Descripción de la categoría',
                     'rows': 4,
                 }
             ),
@@ -499,25 +488,19 @@ class CategoriaForm(forms.ModelForm):
             'descripcion': 'Descripción',
         }
 
-    # ======================================================
     # VALIDAR NOMBRE
-    # ======================================================
 
     def clean_nombre(self):
-
         nombre = self.cleaned_data.get('nombre')
 
-        return validar_texto(
+        return validar_solo_letras(
             nombre,
             'nombre de la categoría'
         )
 
-    # ======================================================
     # VALIDAR DESCRIPCIÓN
-    # ======================================================
 
     def clean_descripcion(self):
-
         descripcion = self.cleaned_data.get('descripcion')
 
         return validar_descripcion(
@@ -543,18 +526,12 @@ class ProveedorForm(forms.ModelForm):
         ]
 
         widgets = {
-
             'nombre': forms.TextInput(
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre del proveedor',
-                    'pattern': (
-                        r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$'
-                    ),
-                    'title': (
-                        'Solo se permiten letras, números '
-                        'y espacios.'
-                    ),
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'Solo se permiten letras y espacios.',
                 }
             ),
 
@@ -564,9 +541,7 @@ class ProveedorForm(forms.ModelForm):
                     'placeholder': '3001234567',
                     'pattern': r'^[0-9]+$',
                     'inputmode': 'numeric',
-                    'title': (
-                        'El teléfono solo puede contener números.'
-                    ),
+                    'title': 'El teléfono solo puede contener números.',
                 }
             ),
 
@@ -592,25 +567,19 @@ class ProveedorForm(forms.ModelForm):
             'direccion': 'Dirección',
         }
 
-    # ======================================================
     # VALIDAR NOMBRE
-    # ======================================================
 
     def clean_nombre(self):
-
         nombre = self.cleaned_data.get('nombre')
 
-        return validar_texto(
+        return validar_solo_letras(
             nombre,
             'nombre del proveedor'
         )
 
-    # ======================================================
     # VALIDAR TELÉFONO
-    # ======================================================
 
     def clean_telefono(self):
-
         telefono = self.cleaned_data.get('telefono')
 
         if not telefono:
@@ -619,25 +588,20 @@ class ProveedorForm(forms.ModelForm):
         telefono = telefono.strip()
 
         if not telefono.isdigit():
-
             raise forms.ValidationError(
                 'El teléfono solo puede contener números.'
             )
 
         if len(telefono) < 7 or len(telefono) > 15:
-
             raise forms.ValidationError(
                 'El teléfono debe tener entre 7 y 15 números.'
             )
 
         return telefono
 
-    # ======================================================
     # VALIDAR DIRECCIÓN
-    # ======================================================
 
     def clean_direccion(self):
-
         direccion = self.cleaned_data.get('direccion')
 
         if not direccion:
@@ -646,10 +610,9 @@ class ProveedorForm(forms.ModelForm):
         direccion = direccion.strip()
 
         if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,#*/()_-]+',
+            r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s.,#*/()_-]+',
             direccion
         ):
-
             raise forms.ValidationError(
                 'La dirección contiene caracteres no permitidos.'
             )
@@ -673,18 +636,12 @@ class MarcaForm(forms.ModelForm):
         ]
 
         widgets = {
-
             'nombre': forms.TextInput(
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre de la marca',
-                    'pattern': (
-                        r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$'
-                    ),
-                    'title': (
-                        'El nombre solo puede contener '
-                        'letras, números y espacios.'
-                    ),
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'El nombre solo puede contener letras y espacios.',
                 }
             ),
 
@@ -709,49 +666,20 @@ class MarcaForm(forms.ModelForm):
             'estado': 'Activo',
         }
 
-    # ======================================================
     # VALIDAR NOMBRE
-    # ======================================================
 
     def clean_nombre(self):
-
         nombre = self.cleaned_data.get('nombre')
 
-        if not nombre:
+        return validar_solo_letras(
+            nombre,
+            'nombre de la marca'
+        )
 
-            raise forms.ValidationError(
-                'El nombre de la marca es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
-            nombre
-        ):
-
-            raise forms.ValidationError(
-                'El nombre solo puede contener letras, '
-                'números y espacios.'
-            )
-
-        return nombre
-
-    # ======================================================
     # VALIDAR DESCRIPCIÓN
-    # ======================================================
 
     def clean_descripcion(self):
-
-        descripcion = self.cleaned_data.get(
-            'descripcion'
-        )
+        descripcion = self.cleaned_data.get('descripcion')
 
         return validar_descripcion(
             descripcion,
@@ -794,7 +722,6 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
         ]
 
         widgets = {
-
             'codigo_servicio': forms.Select(
                 attrs={
                     'class': 'form-select',
@@ -810,23 +737,20 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
             'nombre': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'placeholder': (
-                        'Ej. Promoción de Verano'
-                    ),
-                    'pattern': NOMBRE_PROMOCION_PATTERN,
-                    'title': (
-                        'Use solo letras y espacios; no ingrese números.'
-                    ),
+                    'placeholder': 'Ej. Promoción de Verano',
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'El nombre solo puede contener letras y espacios.',
                 }
             ),
 
             'porcentaje_descuento': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'inputmode': 'decimal',
-                    'pattern': r'^\d+(?:\.\d{1,2})?%?$',
-                    'placeholder': 'Ej. 20 o 20%',
-                    'title': 'Ingrese un número entre 0 y 50; puede agregar % al final.',
+                    'min': '0',
+                    'max': '50',
+                    'step': '0.01',
+                    'placeholder': 'Ej. 20',
+                    'title': 'El descuento debe estar entre 0 y 50.',
                 }
             ),
 
@@ -847,9 +771,7 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
             'descripcion': forms.Textarea(
                 attrs={
                     'class': 'form-control',
-                    'placeholder': (
-                        'Descripción de la promoción'
-                    ),
+                    'placeholder': 'Descripción de la promoción',
                     'rows': 3,
                 }
             ),
@@ -871,9 +793,7 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
             'codigo_servicio': 'Servicio Asociado',
             'codigo_producto': 'Producto Asociado',
             'nombre': 'Nombre de la Promoción',
-            'porcentaje_descuento': (
-                'Porcentaje de Descuento'
-            ),
+            'porcentaje_descuento': 'Porcentaje de Descuento',
             'fecha_inicio': 'Fecha de Inicio',
             'fecha_fin': 'Fecha de Fin',
             'descripcion': 'Descripción',
@@ -881,79 +801,39 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
             'estado': 'Activo',
         }
 
-    # ======================================================
     # VALIDAR NOMBRE
-    # ======================================================
 
     def clean_nombre(self):
-
         nombre = self.cleaned_data.get('nombre')
 
-        if not nombre:
+        return validar_solo_letras(
+            nombre,
+            'nombre de la promoción'
+        )
 
-            raise forms.ValidationError(
-                'El nombre de la promoción es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-
-        if any(caracter.isdigit() for caracter in nombre):
-
-            raise forms.ValidationError(
-                'El nombre no puede contener números; escriba solo letras.'
-            )
-
-        if not re.fullmatch(
-            NOMBRE_PROMOCION_PATTERN,
-            nombre
-        ):
-
-            raise forms.ValidationError(
-                'El nombre solo puede contener letras y espacios.'
-            )
-
-        return nombre
-
-    # ======================================================
     # VALIDAR PORCENTAJE
-    # ======================================================
 
     def clean_porcentaje_descuento(self):
-
         porcentaje = self.cleaned_data.get(
             'porcentaje_descuento'
         )
 
         if porcentaje is None:
-
             raise forms.ValidationError(
                 'El porcentaje de descuento es obligatorio.'
             )
 
         if porcentaje < 0 or porcentaje > 50:
-
             raise forms.ValidationError(
-                'El porcentaje de descuento debe estar '
-                'entre 0 y 50.'
+                'El porcentaje de descuento debe estar entre 0 y 50.'
             )
 
         return porcentaje
 
-    # ======================================================
     # VALIDAR DESCRIPCIÓN
-    # ======================================================
 
     def clean_descripcion(self):
-
-        descripcion = self.cleaned_data.get(
-            'descripcion'
-        )
+        descripcion = self.cleaned_data.get('descripcion')
 
         if not descripcion:
             return descripcion
@@ -961,62 +841,42 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
         descripcion = descripcion.strip()
 
         if len(descripcion) < 10:
-
             raise forms.ValidationError(
-                'La descripción debe tener al menos '
-                '10 caracteres.'
+                'La descripción debe tener al menos 10 caracteres.'
             )
 
         if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,#*/()_-]+',
+            r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s.,#*/()_-]+',
             descripcion
         ):
-
             raise forms.ValidationError(
-                'La descripción contiene caracteres '
-                'no permitidos.'
+                'La descripción contiene caracteres no permitidos.'
             )
 
         return descripcion
 
-    # ======================================================
     # VALIDAR FECHAS Y ASOCIACIÓN
-    # ======================================================
 
     def clean(self):
-
         cleaned_data = super().clean()
 
-        fecha_inicio = cleaned_data.get(
-            'fecha_inicio'
-        )
-
-        fecha_fin = cleaned_data.get(
-            'fecha_fin'
-        )
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
 
         if fecha_inicio and fecha_fin:
-
             if fecha_fin < fecha_inicio:
-
-                self.add_error('fecha_fin',
+                raise forms.ValidationError(
                     'La fecha de finalización no puede '
                     'ser anterior a la fecha de inicio.'
                 )
 
-        codigo_producto = cleaned_data.get(
-            'codigo_producto'
-        )
+        codigo_producto = cleaned_data.get('codigo_producto')
+        codigo_servicio = cleaned_data.get('codigo_servicio')
 
-        codigo_servicio = cleaned_data.get(
-            'codigo_servicio'
-        )
-
-        if bool(codigo_producto) == bool(codigo_servicio):
-
-            self.add_error(None,
-                'La promoción debe estar asociada a un solo '
-                'producto o servicio.'
+        if not codigo_producto and not codigo_servicio:
+            raise forms.ValidationError(
+                'La promoción debe estar asociada '
+                'a un producto o a un servicio.'
             )
 
         return cleaned_data
@@ -1057,7 +917,6 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
         ]
 
         widgets = {
-
             'codigo_servicio': forms.Select(
                 attrs={
                     'class': 'form-select',
@@ -1074,8 +933,8 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre de la promoción',
-                    'pattern': NOMBRE_PROMOCION_PATTERN,
-                    'title': 'Use solo letras y espacios; no ingrese números.',
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'El nombre solo puede contener letras y espacios.',
                 }
             ),
 
@@ -1107,9 +966,7 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'rows': 3,
-                    'placeholder': (
-                        'Descripción de la promoción'
-                    ),
+                    'placeholder': 'Descripción de la promoción',
                 }
             ),
 
@@ -1130,9 +987,7 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
             'codigo_servicio': 'Servicio Asociado',
             'codigo_producto': 'Producto Asociado',
             'nombre': 'Nombre de la Promoción',
-            'porcentaje_descuento': (
-                'Porcentaje de Descuento'
-            ),
+            'porcentaje_descuento': 'Porcentaje de Descuento',
             'fecha_inicio': 'Fecha de Inicio',
             'fecha_fin': 'Fecha de Fin',
             'descripcion': 'Descripción',
@@ -1140,76 +995,39 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
             'estado': 'Activo',
         }
 
-    # ======================================================
     # VALIDAR NOMBRE
-    # ======================================================
 
     def clean_nombre(self):
-
         nombre = self.cleaned_data.get('nombre')
 
-        if not nombre:
+        return validar_solo_letras(
+            nombre,
+            'nombre de la promoción'
+        )
 
-            raise forms.ValidationError(
-                'El nombre de la promoción es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-
-        if any(caracter.isdigit() for caracter in nombre):
-
-            raise forms.ValidationError(
-            'El nombre no puede contener números; escriba solo letras.'
-            )
-
-        if not re.fullmatch(NOMBRE_PROMOCION_PATTERN, nombre):
-
-            raise forms.ValidationError(
-                'El nombre solo puede contener letras y espacios.'
-            )
-
-        return nombre
-
-    # ======================================================
     # VALIDAR PORCENTAJE
-    # ======================================================
 
     def clean_porcentaje_descuento(self):
-
         porcentaje = self.cleaned_data.get(
             'porcentaje_descuento'
         )
 
         if porcentaje is None:
-
             raise forms.ValidationError(
                 'El porcentaje de descuento es obligatorio.'
             )
 
         if porcentaje < 0 or porcentaje > 50:
-
             raise forms.ValidationError(
-                'El porcentaje de descuento debe estar '
-                'entre 0 y 50.'
+                'El porcentaje de descuento debe estar entre 0 y 50.'
             )
 
         return porcentaje
 
-    # ======================================================
     # VALIDAR DESCRIPCIÓN
-    # ======================================================
 
     def clean_descripcion(self):
-
-        descripcion = self.cleaned_data.get(
-            'descripcion'
-        )
+        descripcion = self.cleaned_data.get('descripcion')
 
         if not descripcion:
             return descripcion
@@ -1217,62 +1035,42 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
         descripcion = descripcion.strip()
 
         if len(descripcion) < 10:
-
             raise forms.ValidationError(
-                'La descripción debe tener al menos '
-                '10 caracteres.'
+                'La descripción debe tener al menos 10 caracteres.'
             )
 
         if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,#*/()_-]+',
+            r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s.,#*/()_-]+',
             descripcion
         ):
-
             raise forms.ValidationError(
-                'La descripción contiene caracteres '
-                'no permitidos.'
+                'La descripción contiene caracteres no permitidos.'
             )
 
         return descripcion
 
-    # ======================================================
     # VALIDAR FECHAS Y ASOCIACIÓN
-    # ======================================================
 
     def clean(self):
-
         cleaned_data = super().clean()
 
-        fecha_inicio = cleaned_data.get(
-            'fecha_inicio'
-        )
-
-        fecha_fin = cleaned_data.get(
-            'fecha_fin'
-        )
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
 
         if fecha_inicio and fecha_fin:
-
             if fecha_fin < fecha_inicio:
-
-                self.add_error('fecha_fin',
+                raise forms.ValidationError(
                     'La fecha de finalización no puede '
                     'ser anterior a la fecha de inicio.'
                 )
 
-        codigo_producto = cleaned_data.get(
-            'codigo_producto'
-        )
+        codigo_producto = cleaned_data.get('codigo_producto')
+        codigo_servicio = cleaned_data.get('codigo_servicio')
 
-        codigo_servicio = cleaned_data.get(
-            'codigo_servicio'
-        )
-
-        if bool(codigo_producto) == bool(codigo_servicio):
-
-            self.add_error(None,
-                'La promoción debe estar asociada a un solo '
-                'producto o servicio.'
+        if not codigo_producto and not codigo_servicio:
+            raise forms.ValidationError(
+                'La promoción debe estar asociada '
+                'a un producto o a un servicio.'
             )
 
         return cleaned_data

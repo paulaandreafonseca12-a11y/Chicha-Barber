@@ -35,14 +35,10 @@ class ValidacionServicioMixin:
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre', '').strip()
+        if not nombre:
+            raise forms.ValidationError('El nombre del servicio es obligatorio.')
         if len(nombre) < 2:
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-        if any(caracter.isdigit() for caracter in nombre):
-            raise forms.ValidationError(
-                'El nombre no puede contener números; escriba solo letras.'
-            )
+            raise forms.ValidationError('El nombre debe tener al menos 2 caracteres.')
         if not re.fullmatch(self.nombre_pattern, nombre):
             raise forms.ValidationError(
                 'El nombre contiene caracteres no permitidos.'
@@ -53,6 +49,8 @@ class ValidacionServicioMixin:
         precio = self.cleaned_data.get('precio')
         if precio is not None and precio < 0:
             raise forms.ValidationError('El precio no puede ser negativo.')
+        if precio is not None and precio > 10000000:
+            raise forms.ValidationError('El precio ingresado excede el valor máximo permitido.')
         return precio
 
     def clean_duracion(self):
@@ -159,85 +157,24 @@ class CalificacionForm(ModelForm):
         fields = ['servicio', 'cliente_nombre', 'puntuacion', 'comentario']
         widgets = {
             'servicio': forms.Select(attrs={'class': 'form-control'}),
-            'puntuacion': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1,
-                'max': 5,
-                'step': 1,
-                'inputmode': 'numeric',
-                'title': 'Ingrese solo números enteros del 1 al 5.',
-            }),
-            'comentario': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'maxlength': 1000,
-            }),
+            'puntuacion': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+            'comentario': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
-    def __init__(self, *args, user=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['servicio'].queryset = Servicios.objects.filter(
-            estado=True
-        ).order_by('nombre')
-        self.fields['servicio'].error_messages.update({
-            'required': 'Seleccione un servicio.',
-            'invalid_choice': 'Seleccione un servicio válido.',
-        })
-        self.fields['puntuacion'].error_messages.update({
-            'required': 'Ingrese una puntuación del 1 al 5.',
-            'invalid': 'La puntuación debe ser un número entero del 1 al 5.',
-            'min_value': 'La puntuación mínima es 1.',
-            'max_value': 'La puntuación máxima es 5.',
-        })
-        self.fields['comentario'].error_messages.update({
-            'required': 'Ingrese un comentario.',
-        })
-        if user is not None and user.is_authenticated:
-            self.fields.pop('cliente_nombre')
-        else:
-            self.fields['cliente_nombre'].error_messages.update({
-                'required': 'Ingrese su nombre usando solo letras.',
-                    'max_length': 'El nombre no puede superar 150 caracteres.',
-            })
-
-    def clean_cliente_nombre(self):
-        nombre = self.cleaned_data['cliente_nombre'].strip()
-        if len(nombre) < 2:
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-        if any(caracter.isdigit() for caracter in nombre):
-            raise forms.ValidationError(
-                'El nombre no puede contener números; escriba solo letras.'
-            )
-        if not all(
-            caracter.isalpha() or caracter.isspace() or caracter in "'-"
-            for caracter in nombre
-        ):
-            raise forms.ValidationError(
-                'Use solo letras, espacios, guiones o apóstrofos en el nombre.'
-            )
-        return nombre
+    def clean_puntuacion(self):
+        puntuacion = self.cleaned_data.get('puntuacion')
+        if puntuacion is None or puntuacion < 1 or puntuacion > 5:
+            raise forms.ValidationError('La puntuación debe ser un número entero entre 1 y 5 estrellas.')
+        return puntuacion
 
     def clean_comentario(self):
-        comentario = self.cleaned_data['comentario'].strip()
-        if len(comentario) < 10:
-            raise forms.ValidationError(
-                'El comentario debe tener al menos 10 caracteres.'
-            )
-        if len(comentario) > 1000:
-            raise forms.ValidationError(
-                'El comentario no puede superar 1000 caracteres.'
-            )
+        comentario = self.cleaned_data.get('comentario', '')
+        if comentario:
+            comentario = comentario.strip()
         return comentario
 
-    def clean_puntuacion(self):
-        puntuacion = self.cleaned_data['puntuacion']
-        if not 1 <= puntuacion <= 5:
-            raise forms.ValidationError(
-                'La puntuación debe ser un número del 1 al 5.'
-            )
-        return puntuacion
+        
+        
 
 class ResponderCalificacionForm(forms.Form):
     respuesta = forms.CharField(
