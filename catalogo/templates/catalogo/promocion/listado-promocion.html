@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block content %}
-<!-- Contenedor principal con fondo oscuro -->
-<div class="container-fluid px-4 py-4 bg-dark text-light min-vh-100 theme-promociones-listado">
+<!-- Contenedor principal -->
+<div class="container-fluid px-4 py-4 min-vh-100 theme-promociones-listado">
 
     <!-- BOTÓN ACCIÓN -->
     <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'crear_promocion' %}" class="btn fw-bold d-flex align-items-center gap-2" style="background-color: #e5b869; color: #000; border-radius: 8px;">
-            <i class="bi bi-plus-circle text-dark text-light"></i> Nueva Promoción
+        <a href="{% url 'crear_promocion' %}" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+            <i class="bi bi-plus-circle text-dark"></i> Nueva Promoción
         </a>
     </div>
 
@@ -24,7 +24,7 @@
     <div class="p-4 rounded-3 border border-secondary border-opacity-25 mb-4 admin-theme-table-panel">
         <!-- Tabla de Datos -->
         <div class="table-responsive">
-            <table id="tablaPromociones" class="table table-dark table-hover align-middle mb-0 w-100 admin-theme-table" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255, 255, 255, 0.03);">
+            <table id="tablaPromociones" class="table table-hover align-middle mb-0 w-100 admin-theme-table">
                 <thead>
                     <tr class="border-bottom border-secondary border-opacity-25 text-muted small">
                         <th scope="col" class="ps-3 py-3 fw-bold text-uppercase">Código</th>
@@ -52,7 +52,7 @@
                                     </div>
                                 {% endif %}
                                 <div>
-                                    <h6 class="mb-0 fw-bold text-white">{{ promocion.nombre }}</h6>
+                                    <h6 class="mb-0 fw-bold">{{ promocion.nombre }}</h6>
                                 </div>
                             </div>
                         </td>
