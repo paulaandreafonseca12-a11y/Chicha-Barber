@@ -5881,6 +5881,156 @@ body.theme-dark .admin-panel-shell main #tablaPromociones tbody .servicios-lista
   }
 }
 
+  .badge-status-confirmada {
+    background-color: #0f3822 !important;
+    color: #4ade80 !important;
+    border: 1px solid #166534 !important;
+  }
+  .badge-status-reservada {
+    background-color: #422006 !important;
+    color: #fde047 !important;
+    border: 1px solid #854d0e !important;
+  }
+  .badge-status-pendiente {
+    background-color: #451a03 !important;
+    color: #fdba74 !important;
+    border: 1px solid #9a3412 !important;
+  }
+  .badge-status-cancelada {
+    background-color: #450a0a !important;
+    color: #fca5a5 !important;
+    border: 1px solid #991b1b !important;
+  }
+  .badge-status-completada {
+    background-color: #172554 !important;
+    color: #93c5fd !important;
+    border: 1px solid #1e40af !important;
+  }
+  .badge-status-default {
+    background-color: #27272a !important;
+    color: #e4e4e7 !important;
+    border: 1px solid #52525b !important;
+  }
+
+  /* PERFIL - modo claro: texto oscuro sobre la tarjeta blanca */
+body.theme-light .private-perfil__div-1 h3.text-dark,
+body.theme-light .private-perfil__div-1 span.text-dark {
+  color: #30291f !important;
+}
+
+body.theme-light .private-perfil__div-1 small.text-muted {
+  color: #6c6253 !important;
+}
+
+body.theme-light .private-perfil__div-1 .border-light-subtle,
+body.theme-light .private-perfil__div-1 .border-bottom {
+  border-color: #e5ded1 !important;
+}
+
+
+/* PERFIL - modo claro: tarjeta con degradado y acentos bronce */
+body.theme-light .private-perfil__div-1 {
+  background:
+    linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #292d30 100%) top / 100% 200px no-repeat,
+    linear-gradient(160deg, #fffefa 0%, #f6f1e7 55%, #ebe3d3 100%) !important;
+  border: 1px solid #d5c8ae !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 44px rgba(44, 36, 25, 0.22) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Etiquetas en bronce y líneas divisorias suaves */
+body.theme-light .private-perfil__div-1 small.text-muted {
+  color: #8a642c !important;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+body.theme-light .private-perfil__div-1 .border-light-subtle,
+body.theme-light .private-perfil__div-1 .border-bottom {
+  border-color: rgba(169, 135, 79, 0.35) !important;
+}
+
+/* Avatar con aro blanco para que resalte sobre la franja */
+body.theme-light .private-perfil__div-1 .rounded-circle {
+  border-color: #fffefa !important;
+  box-shadow: 0 6px 18px rgba(44, 36, 25, 0.35);
+}
+
+/* Botones de abajo a juego: marfil y bronce */
+body.theme-light .private-perfil__button-12,
+body.theme-light .private-perfil__button-14,
+body.theme-light .private-perfil__button-16 {
+  background: linear-gradient(135deg, #fffaf0 0%, #ead9b8 100%) !important;
+  border: 1px solid #b08d57 !important;
+  color: #403729 !important;
+  box-shadow: 0 6px 16px rgba(55, 43, 25, 0.18);
+}
+
+body.theme-light .private-perfil__button-12 span,
+body.theme-light .private-perfil__button-14 span,
+body.theme-light .private-perfil__button-16 span {
+  color: #403729;
+}
+
+body.theme-light .private-perfil__button-12 i,
+body.theme-light .private-perfil__button-14 i,
+body.theme-light .private-perfil__button-16 i,
+body.theme-light .private-perfil__i-15 {
+  color: #896729 !important;
+}
+
+body.theme-light .private-perfil__button-12:hover,
+body.theme-light .private-perfil__button-14:hover,
+body.theme-light .private-perfil__button-16:hover {
+  background: linear-gradient(135deg, #fffdf7 0%, #dfc99e 100%) !important;
+  border-color: #967342 !important;
+}
+
+/* PERFIL - paneles en modo claro */
+body.theme-light .perfil-panel {
+  background: linear-gradient(160deg, #fffefa, #ebe3d3) !important;
+  color: #30291f !important;
+}
+body.theme-light .perfil-panel .offcanvas-header {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #292d30 100%) !important;
+  border-image: none !important;
+}
+body.theme-light .perfil-panel .offcanvas-title { color: #795923 !important; text-shadow: none; }
+body.theme-light .perfil-panel .form-label { color: #8a642c !important; }
+body.theme-light .perfil-panel :is(input, select) {
+  background: #fffefa !important; color: #30291f !important; border-color: #d5c8ae !important;
+}
+body.theme-light .perfil-panel button[type="submit"] {
+  background: linear-gradient(135deg, #c4a66a, #a9874f) !important; color: #30291f !important;
+}
+body.theme-light .perfil-panel :is(.list-group-item, .card) {
+  background: #fffefa !important; border-color: #dccfb3 !important;
+}
+body.theme-light .perfil-panel :is(.text-dark, .fw-semibold) { color: #30291f !important; }
+body.theme-light .perfil-panel :is(.text-muted, .nav-link) { color: #6c6253 !important; }
+body.theme-light .perfil-panel .nav-link.active { color: #795923 !important; }
+body.theme-light .perfil-panel :is(a, .list-group-item i, .pwd-toggle-btn) { color: #8a642c !important; }
+
+/* PERFIL - ojito de mostrar/ocultar contraseña */
+.pwd-wrapper { position: relative; }
+.pwd-wrapper input { padding-right: 2.5rem; }
+.pwd-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6c757d;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+}
+.pwd-toggle-btn:hover { color: #343a40; }
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear { display: none; }
 /* Paneles de servicios, promociones y calificaciones, solo en admin. */
 body.theme-dark .admin-panel-shell main .theme-servicios-listado,
 body.theme-dark .admin-panel-shell main .theme-calificaciones-listado,
