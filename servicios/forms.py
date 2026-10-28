@@ -10,6 +10,10 @@ class ValidacionServicioMixin:
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre', '').strip()
+        if not nombre:
+            raise forms.ValidationError('El nombre del servicio es obligatorio.')
+        if len(nombre) < 2:
+            raise forms.ValidationError('El nombre debe tener al menos 2 caracteres.')
         if not re.fullmatch(self.nombre_pattern, nombre):
             raise forms.ValidationError(
                 'El nombre solo puede contener letras, números y espacios.'
@@ -20,6 +24,8 @@ class ValidacionServicioMixin:
         precio = self.cleaned_data.get('precio')
         if precio is not None and precio < 0:
             raise forms.ValidationError('El precio no puede ser negativo.')
+        if precio is not None and precio > 10000000:
+            raise forms.ValidationError('El precio ingresado excede el valor máximo permitido.')
         return precio
 
     def clean_duracion(self):
@@ -104,9 +110,19 @@ class CalificacionForm(ModelForm):
             'servicio': forms.Select(attrs={'class': 'form-control'}),
             'puntuacion': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
             'comentario': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            
-           
         }
+
+    def clean_puntuacion(self):
+        puntuacion = self.cleaned_data.get('puntuacion')
+        if puntuacion is None or puntuacion < 1 or puntuacion > 5:
+            raise forms.ValidationError('La puntuación debe ser un número entero entre 1 y 5 estrellas.')
+        return puntuacion
+
+    def clean_comentario(self):
+        comentario = self.cleaned_data.get('comentario', '')
+        if comentario:
+            comentario = comentario.strip()
+        return comentario
 
         
         

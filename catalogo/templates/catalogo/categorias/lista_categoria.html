@@ -60,12 +60,15 @@
                                     </a>
 
                                     <!-- ELIMINAR -->
-                                    <a href="{% url 'eliminar_categoria' categoria.codigo %}"
+                                    <button type="button"
                                        class="btn btn-sm btn-outline-danger"
                                        title="Eliminar"
-                                       onclick="return confirm('¿Deseas eliminar esta categoría?');">
+                                       data-url="{% url 'eliminar_categoria' categoria.codigo %}"
+                                       data-nombre="{{ categoria.nombre }}"
+                                       data-titulo="Eliminar Categoría"
+                                       onclick="abrirModalEliminar(this)">
                                         <i class="bi bi-trash"></i>
-                                    </a>
+                                    </button>
 
                                 </div>
                             </td>

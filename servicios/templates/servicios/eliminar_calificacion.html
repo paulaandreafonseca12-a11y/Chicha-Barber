@@ -2,19 +2,51 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4 mb-5">
-    <h2 class="fw-bold text-warning mb-4">Eliminar Calificación</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card bg-dark text-white border-danger shadow-lg rounded-4">
+                <div class="modal-header border-danger p-3">
+                    <h5 class="modal-title text-danger fw-bold mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Eliminar Calificación
+                    </h5>
+                    <a href="{% url 'listado-calificacion' %}" class="btn-close btn-close-white" aria-label="Cerrar"></a>
+                </div>
+                <div class="card-body text-center py-4 px-4">
+                    <i class="bi bi-x-circle-fill text-danger reservas-ver-agenda__i-21 d-block mb-3" style="font-size: 3rem;"></i>
+                    <p class="mt-3 fs-5">
+                        ¿Seguro que deseas eliminar la calificación de <strong class="text-white">{{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre|default:"Cliente" }}</strong> para el servicio <strong class="text-white">{{ calificacion.servicio.nombre }}</strong>?
+                    </p>
+                    <p class="text-secondary small mb-3">Esta acción no se puede deshacer.</p>
 
-    <div class="card bg-dark text-white shadow border-secondary">
-        <div class="card-body">
-            <p class="lead">¿Estás seguro de que quieres eliminar la calificación de <strong>{{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre }}</strong> para el servicio <strong>{{ calificacion.servicio.nombre }}</strong>?</p>
-            <p class="text-danger">Esta acción no se puede deshacer.</p>
-
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger me-2">Sí, eliminar</button>
-                <a href="{% url 'listado-calificacion' %}" class="btn btn-secondary">Cancelar</a>
-            </form>
+                    <div class="card bg-black bg-opacity-50 border border-secondary border-opacity-25 rounded-3 mb-3 text-start p-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary">Puntuación:</span>
+                            <span class="text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= calificacion.puntuacion %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        {% if calificacion.comentario %}
+                        <div class="mt-2 text-white-50 small fst-italic">
+                            "{{ calificacion.comentario }}"
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer border-danger justify-content-center gap-3 p-3">
+                    <a href="{% url 'listado-calificacion' %}" class="btn btn-secondary px-4">
+                        <i class="bi bi-arrow-left me-1"></i>Volver
+                    </a>
+                    <form method="POST" class="d-inline m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-x-circle-fill me-1"></i>Sí, eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

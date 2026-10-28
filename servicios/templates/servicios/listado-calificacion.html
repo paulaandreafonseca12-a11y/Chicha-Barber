@@ -159,9 +159,17 @@
                             <a href="{% url 'responder-calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-info rounded-circle p-0 me-1 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(13, 202, 240, 0.4);" title="Responder">
                                 <i class="bi bi-chat-right-text"></i>
                             </a>
-                            <a href="{% url 'eliminar_calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);" title="Eliminar">
+                            <button type="button"
+                               class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
+                               style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);"
+                               data-url="{% url 'eliminar_calificacion' calificacion.pk %}"
+                               data-nombre="la calificación de {{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre|default:'Cliente' }}"
+                               data-titulo="Eliminar Calificación"
+                               data-metodo="POST"
+                               onclick="abrirModalEliminar(this)"
+                               title="Eliminar">
                                 <i class="bi bi-trash"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                     {% empty %}

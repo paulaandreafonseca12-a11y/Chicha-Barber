@@ -123,7 +123,37 @@ function mostrarCarrito(){
 }
 
 function eliminarItem(index){
-    if(confirm("¿Eliminar este elemento del carrito?")){
+    const item = carrito[index];
+    const nombre = item ? item.nombre : 'este producto';
+    const modalEl = document.getElementById('modalEliminarUniversal');
+    
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        const tituloEl = document.getElementById('modalEliminarUniversalTitulo');
+        const preguntaEl = document.getElementById('modalEliminarUniversalPregunta');
+        const subtituloEl = document.getElementById('modalEliminarUniversalSubtitulo');
+        const formEl = document.getElementById('formEliminarUniversal');
+        const linkEl = document.getElementById('linkConfirmarEliminarUniversal');
+        const textoLink = document.getElementById('textoLinkConfirmar');
+
+        if (tituloEl) tituloEl.textContent = 'Eliminar del Carrito';
+        if (preguntaEl) preguntaEl.innerHTML = `¿Seguro que deseas eliminar <strong class="text-white">${nombre}</strong> del carrito?`;
+        if (subtituloEl) subtituloEl.textContent = 'Se removerá de tu pedido actual.';
+        if (textoLink) textoLink.textContent = 'Sí, eliminar';
+
+        if (formEl) formEl.classList.add('d-none');
+        if (linkEl) {
+            linkEl.classList.remove('d-none');
+            linkEl.href = '#';
+            linkEl.onclick = function(e) {
+                e.preventDefault();
+                carrito.splice(index, 1);
+                mostrarCarrito();
+                const inst = bootstrap.Modal.getInstance(modalEl);
+                if (inst) inst.hide();
+            };
+        }
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    } else {
         carrito.splice(index, 1);
         mostrarCarrito();
     }
