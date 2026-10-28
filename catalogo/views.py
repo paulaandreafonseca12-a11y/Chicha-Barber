@@ -1483,6 +1483,7 @@ def editar_promocion(request, pk):
 
 
 @login_required
+@require_POST
 def eliminar_promocion(request, pk):
 
     if not (
@@ -1508,23 +1509,13 @@ def eliminar_promocion(request, pk):
         pk=pk
     )
 
-    if request.method == 'POST':
+    promocion_obj.delete()
 
-        promocion_obj.delete()
-
-        messages.success(
-            request,
-            "Promoción eliminada."
-        )
-
-        return redirect(
-            'listado-promocion'
-        )
-
-    return render(
+    messages.success(
         request,
-        'catalogo/promocion/eliminar_promocion.html',
-        {
-            'promocion': promocion_obj
-        }
+        "Promoción eliminada."
+    )
+
+    return redirect(
+        'listado-promocion'
     )

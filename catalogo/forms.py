@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 
 from django import forms
 
@@ -10,6 +11,57 @@ from .models import (
     DetalleProducto,
     Promocion,
 )
+
+NOMBRE_PROMOCION_PATTERN = (
+    r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$'
+)
+
+
+class PorcentajeDescuentoField(forms.DecimalField):
+    default_error_messages = {
+        'invalid': 'Ingrese un porcentaje numérico, por ejemplo 20 o 20%.',
+    }
+
+    def to_python(self, value):
+        if isinstance(value, str):
+            value = value.strip()
+            if '%' in value:
+                if not value.endswith('%') or value.count('%') != 1:
+                    raise forms.ValidationError(
+                        'Escriba el signo % solo al final del porcentaje.',
+                        code='invalid',
+                    )
+                value = value[:-1].strip()
+        return super().to_python(value)
+
+
+class ValidacionPromocionMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].error_messages.update({
+            'required': 'Ingrese el nombre de la promoción usando solo letras.',
+            'invalid': 'Use solo letras y espacios; el nombre no admite números.',
+            'max_length': 'El nombre de la promoción no puede superar 150 caracteres.',
+        })
+        self.fields['porcentaje_descuento'].error_messages.update({
+            'required': 'Ingrese el descuento usando solo números.',
+            'invalid': 'El descuento debe contener solo números y signo %.',
+            'max_digits': 'El descuento admite máximo 5 dígitos y 2 decimales.',
+            'max_decimal_places': 'El descuento admite máximo 2 decimales.',
+            'max_whole_digits': 'El descuento admite máximo 3 dígitos enteros.',
+        })
+        for campo_fecha in ('fecha_inicio', 'fecha_fin'):
+            self.fields[campo_fecha].error_messages.update({
+                'required': 'Seleccione una fecha válida.',
+                'invalid': 'Ingrese una fecha válida.',
+            })
+        for campo_relacion in ('codigo_servicio', 'codigo_producto'):
+            self.fields[campo_relacion].error_messages.update({
+                'invalid_choice': 'Seleccione una opción válida.',
+            })
+        self.fields['imagen'].error_messages.update({
+            'invalid_image': 'Seleccione un archivo de imagen válido.',
+        })
 
 
 # ==========================================================
@@ -423,9 +475,7 @@ class CategoriaForm(forms.ModelForm):
                     'placeholder': (
                         'Ingrese el nombre de la categoría'
                     ),
-                    'pattern': (
-                        r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$'
-                    ),
+                    'pattern': NOMBRE_PROMOCION_PATTERN,
                     'title': (
                         'Solo se permiten letras, números '
                         'y espacios.'
@@ -713,7 +763,20 @@ class MarcaForm(forms.ModelForm):
 # FORMULARIO PROMOCIÓN
 # ==========================================================
 
-class PromocionForm(forms.ModelForm):
+class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
+    porcentaje_descuento = PorcentajeDescuentoField(
+        max_digits=5,
+        decimal_places=2,
+        min_value=Decimal('0'),
+        max_value=Decimal('50'),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'inputmode': 'decimal',
+            'pattern': r'^\d+(?:\.\d{1,2})?%?$',
+            'placeholder': 'Ej. 20 o 20%',
+            'title': 'Ingrese un número entre 0 y 50; puede agregar % al final.',
+        }),
+    )
 
     class Meta:
         model = Promocion
@@ -750,27 +813,20 @@ class PromocionForm(forms.ModelForm):
                     'placeholder': (
                         'Ej. Promoción de Verano'
                     ),
-                    'pattern': (
-                        r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$'
-                    ),
+                    'pattern': NOMBRE_PROMOCION_PATTERN,
                     'title': (
-                        'El nombre solo puede contener '
-                        'letras, números y espacios.'
+                        'Use solo letras y espacios; no ingrese números.'
                     ),
                 }
             ),
 
-            'porcentaje_descuento': forms.NumberInput(
+            'porcentaje_descuento': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'min': '0',
-                    'max': '50',
-                    'step': '0.01',
-                    'placeholder': 'Ej. 20',
-                    'title': (
-                        'El descuento debe estar '
-                        'entre 0 y 50.'
-                    ),
+                    'inputmode': 'decimal',
+                    'pattern': r'^\d+(?:\.\d{1,2})?%?$',
+                    'placeholder': 'Ej. 20 o 20%',
+                    'title': 'Ingrese un número entre 0 y 50; puede agregar % al final.',
                 }
             ),
 
@@ -847,14 +903,19 @@ class PromocionForm(forms.ModelForm):
                 'El nombre debe tener al menos 2 caracteres.'
             )
 
+        if any(caracter.isdigit() for caracter in nombre):
+
+            raise forms.ValidationError(
+                'El nombre no puede contener números; escriba solo letras.'
+            )
+
         if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
+            NOMBRE_PROMOCION_PATTERN,
             nombre
         ):
 
             raise forms.ValidationError(
-                'El nombre solo puede contener '
-                'letras, números y espacios.'
+                'El nombre solo puede contener letras y espacios.'
             )
 
         return nombre
@@ -938,7 +999,7 @@ class PromocionForm(forms.ModelForm):
 
             if fecha_fin < fecha_inicio:
 
-                raise forms.ValidationError(
+                self.add_error('fecha_fin',
                     'La fecha de finalización no puede '
                     'ser anterior a la fecha de inicio.'
                 )
@@ -951,11 +1012,11 @@ class PromocionForm(forms.ModelForm):
             'codigo_servicio'
         )
 
-        if not codigo_producto and not codigo_servicio:
+        if bool(codigo_producto) == bool(codigo_servicio):
 
-            raise forms.ValidationError(
-                'La promoción debe estar asociada '
-                'a un producto o a un servicio.'
+            self.add_error(None,
+                'La promoción debe estar asociada a un solo '
+                'producto o servicio.'
             )
 
         return cleaned_data
@@ -965,7 +1026,20 @@ class PromocionForm(forms.ModelForm):
 # FORMULARIO EDITAR PROMOCIÓN
 # ==========================================================
 
-class PromocionEditarForm(forms.ModelForm):
+class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
+    porcentaje_descuento = PorcentajeDescuentoField(
+        max_digits=5,
+        decimal_places=2,
+        min_value=Decimal('0'),
+        max_value=Decimal('50'),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'inputmode': 'decimal',
+            'pattern': r'^\d+(?:\.\d{1,2})?%?$',
+            'placeholder': 'Ej. 20 o 20%',
+            'title': 'Ingrese un número entre 0 y 50; puede agregar % al final.',
+        }),
+    )
 
     class Meta:
         model = Promocion
@@ -1000,18 +1074,18 @@ class PromocionEditarForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre de la promoción',
-                    'pattern': (
-                        r'^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$'
-                    ),
+                    'pattern': NOMBRE_PROMOCION_PATTERN,
+                    'title': 'Use solo letras y espacios; no ingrese números.',
                 }
             ),
 
-            'porcentaje_descuento': forms.NumberInput(
+            'porcentaje_descuento': forms.TextInput(
                 attrs={
                     'class': 'form-control',
-                    'min': '0',
-                    'max': '50',
-                    'step': '0.01',
+                    'inputmode': 'decimal',
+                    'pattern': r'^\d+(?:\.\d{1,2})?%?$',
+                    'placeholder': 'Ej. 20 o 20%',
+                    'title': 'Ingrese un número entre 0 y 50; puede agregar % al final.',
                 }
             ),
 
@@ -1088,14 +1162,16 @@ class PromocionEditarForm(forms.ModelForm):
                 'El nombre debe tener al menos 2 caracteres.'
             )
 
-        if not re.fullmatch(
-            r'[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+',
-            nombre
-        ):
+        if any(caracter.isdigit() for caracter in nombre):
 
             raise forms.ValidationError(
-                'El nombre solo puede contener '
-                'letras, números y espacios.'
+            'El nombre no puede contener números; escriba solo letras.'
+            )
+
+        if not re.fullmatch(NOMBRE_PROMOCION_PATTERN, nombre):
+
+            raise forms.ValidationError(
+                'El nombre solo puede contener letras y espacios.'
             )
 
         return nombre
@@ -1179,7 +1255,7 @@ class PromocionEditarForm(forms.ModelForm):
 
             if fecha_fin < fecha_inicio:
 
-                raise forms.ValidationError(
+                self.add_error('fecha_fin',
                     'La fecha de finalización no puede '
                     'ser anterior a la fecha de inicio.'
                 )
@@ -1192,11 +1268,11 @@ class PromocionEditarForm(forms.ModelForm):
             'codigo_servicio'
         )
 
-        if not codigo_producto and not codigo_servicio:
+        if bool(codigo_producto) == bool(codigo_servicio):
 
-            raise forms.ValidationError(
-                'La promoción debe estar asociada '
-                'a un producto o a un servicio.'
+            self.add_error(None,
+                'La promoción debe estar asociada a un solo '
+                'producto o servicio.'
             )
 
         return cleaned_data

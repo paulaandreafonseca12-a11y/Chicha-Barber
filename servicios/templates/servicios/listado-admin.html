@@ -3,7 +3,7 @@
 
 {% block content %}
 <!-- Contenedor principal con fondo oscuro -->
-<div class="container-fluid px-4 py-4 bg-dark text-light min-vh-100" style="background-color: #121316 !important;">
+<div class="container-fluid px-4 py-4 bg-dark text-light min-vh-100 theme-servicios-listado">
 
     <!-- BOTÓN ACCIÓN -->
     <div class="d-flex justify-content-end align-items-center mb-4">
@@ -13,78 +13,30 @@
     </div>
 
     <!-- TARJETAS DE MÉTRICAS -->
-    <div class="row g-3 mb-4 card-hover-effect:hover card-hover-effect">
-        <!-- Total Servicios -->
+    <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
-                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 border border-primary border-opacity-25" style="width:48px;height:48px;">
-                            <i class="bi bi-boxes text-primary fs-5"></i>
-                        </div>
-                        <span class="text-dark opacity-75 small text-uppercase fw-bold mb-0">Total Servicios</span>
-                    </div>
-                    <h2 class="fw-bold mb-0 text-primary">{{ total_servicios|default:"0" }}</h2>
-        <div class="col-md-4 card-hover-effect:hover card-hover-effect">
-            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25" style="background-color: #1a1c23;">
-                <div>
-                    <span class="text-uppercase text-muted fw-bold small" style="font-size: 0.75rem; letter-spacing: 0.5px;">Total Servicios</span>
-                    <h2 class="fw-bold text-white mb-0 mt-1">{{ total_servicios|default:"0" }}</h2>
-                </div>
-                <div class="rounded-3 d-flex align-items-center justify-content-center text-primary" style="width: 48px; height: 48px; background-color: rgba(13, 110, 253, 0.15);">
-                    <i class="bi bi-boxes fs-4"></i>
-                </div>
+            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel">
+                <div><span class="text-uppercase text-muted fw-bold small">Total Servicios</span><h2 class="fw-bold text-white mb-0 mt-1">{{ total_servicios|default:"0" }}</h2></div>
+                <i class="bi bi-boxes fs-4 text-primary"></i>
             </div>
         </div>
-
-        <!-- Servicios Activos -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
-                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-10 border border-success border-opacity-25" style="width:48px;height:48px;">
-                            <i class="bi bi-check-circle text-success fs-5"></i>
-                        </div>
-                        <span class="text-dark opacity-75 small text-uppercase fw-bold mb-0">Servicios Activos</span>
-                    </div>
-                    <h2 class="fw-bold mb-0 text-success">{{ activos|default:"0" }}</h2>
-            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25" style="background-color: #1a1c23;">
-                <div>
-                    <span class="text-uppercase text-muted fw-bold small" style="font-size: 0.75rem; letter-spacing: 0.5px;">Servicios Activos</span>
-                    <h2 class="fw-bold text-success mb-0 mt-1">{{ activos|default:"0" }}</h2>
-                </div>
-                <div class="rounded-3 d-flex align-items-center justify-content-center text-success" style="width: 48px; height: 48px; background-color: rgba(25, 135, 84, 0.15);">
-                    <i class="bi bi-check-circle-fill fs-4"></i>
-                </div>
+            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel">
+                <div><span class="text-uppercase text-muted fw-bold small">Servicios Activos</span><h2 class="fw-bold text-success mb-0 mt-1">{{ activos|default:"0" }}</h2></div>
+                <i class="bi bi-check-circle-fill fs-4 text-success"></i>
             </div>
         </div>
-
-        <!-- Servicios Inactivos -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm border border-dark border-opacity-10 card-hover-effect">
-                <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-danger bg-opacity-10 border border-danger border-opacity-25" style="width:48px;height:48px;">
-                            <i class="bi bi-x-circle text-danger fs-5"></i>
-                        </div>
-                        <span class="text-dark opacity-75 small text-uppercase fw-bold mb-0">Servicios Inactivos</span>
-                    </div>
-                    <h2 class="fw-bold mb-0 text-danger">{{ inactivos|default:"0" }}</h2>
-            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25" style="background-color: #1a1c23;">
-                <div>
-                    <span class="text-uppercase text-muted fw-bold small" style="font-size: 0.75rem; letter-spacing: 0.5px;">Servicios Inactivos</span>
-                    <h2 class="fw-bold text-danger mb-0 mt-1">{{ inactivos|default:"0" }}</h2>
-                </div>
-                <div class="rounded-3 d-flex align-items-center justify-content-center text-danger" style="width: 48px; height: 48px; background-color: rgba(220, 53, 69, 0.15);">
-                    <i class="bi bi-x-circle-fill fs-4"></i>
-                </div>
+            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel">
+                <div><span class="text-uppercase text-muted fw-bold small">Servicios Inactivos</span><h2 class="fw-bold text-danger mb-0 mt-1">{{ inactivos|default:"0" }}</h2></div>
+                <i class="bi bi-x-circle-fill fs-4 text-danger"></i>
             </div>
         </div>
     </div>
 
         <!-- Tabla de Datos -->
-        <div class="table-responsive">
-            <table id="tablaServicios" class="table table-dark table-hover align-middle mb-0 w-100" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255, 255, 255, 0.03);">
+        <div class="table-responsive admin-theme-table-wrap">
+            <table id="tablaServicios" class="table table-dark table-hover align-middle mb-0 w-100 admin-theme-table" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255, 255, 255, 0.03);">
                 <thead>
                     <tr class="border-bottom border-secondary border-opacity-25 text-muted small">
                         <th scope="col" class="ps-3 py-3 fw-bold text-uppercase">Código</th>
@@ -135,9 +87,9 @@
                             <a href="{% url 'editar-servicios' servicio.pk %}" class="btn btn-sm btn-outline-warning rounded-circle p-0 me-1 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(229, 184, 105, 0.4); color: #e5b869;" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="{% url 'eliminar-servicios' servicio.pk %}" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);" title="Eliminar">
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);" title="Eliminar" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion" data-delete-url="{% url 'eliminar-servicios' servicio.pk %}" data-item-name="{{ servicio.nombre|escape }}">
                                 <i class="bi bi-trash"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                     {% empty %}
@@ -148,7 +100,24 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
+<div class="modal fade" id="confirmarEliminacion" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light border border-secondary admin-theme-modal">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="confirmarEliminacionLabel">Eliminar servicio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">¿Seguro que deseas eliminar <strong id="nombreElementoEliminar"></strong>?</div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formEliminarElemento" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -158,4 +127,11 @@
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="{% static 'js/datatables.js' %}"></script>
 <script src="{% static 'js/tconf/tconf-tablaServicios.js' %}"></script>
+<script>
+    document.getElementById('confirmarEliminacion').addEventListener('show.bs.modal', function (event) {
+        const boton = event.relatedTarget;
+        document.getElementById('formEliminarElemento').action = boton.dataset.deleteUrl;
+        document.getElementById('nombreElementoEliminar').textContent = boton.dataset.itemName;
+    });
+</script>
 {% endblock scripts %}

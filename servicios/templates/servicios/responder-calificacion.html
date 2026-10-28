@@ -10,12 +10,12 @@
                     <h5 class="mb-0">{{ titulo }}</h5>
                 </div>
                 <div class="card-body">
-                    <div class="mb-4 p-3 bg-light rounded border text-dark">
-                        <h6><strong>Detalles de la calificación:</strong></h6>
-                        <p class="mb-1 "><strong>Cliente:</strong> {{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre }}</p>
-                        <p class="mb-1"><strong>Servicio:</strong> {{ calificacion.servicio.nombre }}</p>
-                        <p class="mb-1"><strong>Puntuación:</strong> {{ calificacion.puntuacion }} / 5</p>
-                        <p class="mb-0"><strong>Comentario:</strong> {{ calificacion.comentario }}</p>
+                    <div class="mb-4 p-3 bg-light rounded border text-dark text-black">
+                         <p class="mb-1 text-black"><strong  >Detalles de la calificación:</strong></h6>
+                        <p class="mb-1 text-black"><strong>Cliente:</strong> {{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre }}</p>
+                        <p class="mb-1 text-black"><strong>Servicio:</strong> {{ calificacion.servicio.nombre }}</p>
+                        <p class="mb-1 text-black"><strong>Puntuación:</strong> {{ calificacion.puntuacion }} / 5</p>
+                        <p class="mb-0 text-black"><strong>Comentario:</strong> {{ calificacion.comentario }}</p>
                     </div>
 
                     <form method="POST">
