@@ -503,6 +503,13 @@ def perfil(request):
     form = EditarPerfilForm(
         instance=request.user
     )
+    abrir_offcanvas = None
+    errores_password = {
+        'password_actual': [],
+        'password_nueva': [],
+        'password_confirmar': [],
+        'general': [],
+    }
 
     # ------------------------------------------------------
     # EDITAR PERFIL
@@ -536,12 +543,7 @@ def perfil(request):
                 return redirect('perfil')
 
             else:
-
-                messages.error(
-                    request,
-                    "❌ Revisa los datos del formulario, "
-                    "hay errores."
-                )
+                abrir_offcanvas = 'offcanvasEditar'
 
         # --------------------------------------------------
         # CAMBIAR CONTRASEÑA
@@ -564,60 +566,57 @@ def perfil(request):
                 ''
             )
 
-            if not request.user.check_password(actual):
-
-                messages.error(
-                    request,
-                    "❌ La contraseña actual es incorrecta."
+            if not actual:
+                errores_password['password_actual'].append(
+                    'Ingrese su contraseña actual.'
+                )
+            elif not request.user.check_password(actual):
+                errores_password['password_actual'].append(
+                    'La contraseña actual es incorrecta.'
                 )
 
-            elif nueva != confirmar:
-
-                messages.error(
-                    request,
-                    "❌ Las contraseñas nuevas no coinciden."
+            if not nueva:
+                errores_password['password_nueva'].append(
+                    'Ingrese una contraseña nueva.'
                 )
-
             else:
-
                 try:
+                    validar_password_fuerte(nueva)
+                except ValidationError as error:
+                    errores_password['password_nueva'].extend(error.messages)
 
-                    validar_password_fuerte(
-                        nueva
-                    )
+            if not confirmar:
+                errores_password['password_confirmar'].append(
+                    'Confirme la contraseña nueva.'
+                )
+            elif nueva and nueva != confirmar:
+                errores_password['password_confirmar'].append(
+                    'Las contraseñas nuevas no coinciden.'
+                )
 
-                    request.user.set_password(
-                        nueva
-                    )
+            if not any(errores_password.values()):
+                request.user.set_password(nueva)
+                request.user.save()
 
-                    request.user.save()
+                update_session_auth_hash(
+                    request,
+                    request.user
+                )
 
-                    update_session_auth_hash(
-                        request,
-                        request.user
-                    )
+                HistorialAccion.objects.create(
+                    usuario=request.user,
+                    tipo='sesion',
+                    descripcion='Cambió su contraseña'
+                )
 
-                    HistorialAccion.objects.create(
-                        usuario=request.user,
-                        tipo='sesion',
-                        descripcion='Cambió su contraseña'
-                    )
+                messages.success(
+                    request,
+                    "✅ Contraseña actualizada."
+                )
 
-                    messages.success(
-                        request,
-                        "✅ Contraseña actualizada."
-                    )
+                return redirect('perfil')
 
-                    return redirect('perfil')
-
-                except ValidationError as e:
-
-                    for error in e.messages:
-
-                        messages.error(
-                            request,
-                            f"❌ {error}"
-                        )
+            abrir_offcanvas = 'offcanvasPassword'
 
     actividades = HistorialAccion.objects.all().order_by(
         '-fecha'
@@ -657,6 +656,10 @@ def perfil(request):
 
         # Historial de acciones
         'actividades': actividades,
+
+        'abrir_offcanvas': abrir_offcanvas,
+
+        'errores_password': errores_password,
 
     }
 

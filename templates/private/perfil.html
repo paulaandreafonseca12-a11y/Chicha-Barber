@@ -459,95 +459,23 @@
 
       {% csrf_token %}
 
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert" aria-live="polite">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
 
-      <!-- TIPO DOCUMENTO -->
-
-      <div class="mb-3">
-
-        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">
-
-          Tipo de documento
-
-        </label>
-
-        {{ form.tipo_documento }}
-
-      </div>
-
-
-      <!-- NOMBRE -->
-
-      <div class="mb-3">
-
-        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">
-
-          Nombre(s)
-
-        </label>
-
-        {{ form.primer_nombre }}
-
-      </div>
-
-
-      <!-- APELLIDO -->
-
-      <div class="mb-3">
-
-        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">
-
-          Apellido(s)
-
-        </label>
-
-        {{ form.primer_apellido }}
-
-      </div>
-
-
-      <!-- TELÉFONO -->
-
-      <div class="mb-3">
-
-        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">
-
-          Teléfono
-
-        </label>
-
-        {{ form.telefono }}
-
-      </div>
-
-
-      <!-- CORREO -->
-
-      <div class="mb-3">
-
-        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">
-
-          Correo electrónico
-
-        </label>
-
-        {{ form.email }}
-
-      </div>
-
-
-      <!-- FOTO -->
-
-      <div class="mb-4">
-
-        <label class="form-label small fw-bold text-muted text-uppercase tracking-wider">
-
-          Foto de perfil
-
-        </label>
-
-        {{ form.foto_perfil }}
-
-      </div>
+      {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label small fw-bold text-muted text-uppercase tracking-wider">
+            {{ field.label }}
+          </label>
+          {{ field }}
+          {% for error in field.errors %}
+            <div class="text-danger small mt-1" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
 
 
       <!-- BOTÓN -->
@@ -637,6 +565,9 @@
             <i class="bi bi-eye"></i>
           </button>
         </div>
+        {% for error in errores_password.password_actual %}
+          <div class="text-danger small mt-1" role="alert">{{ error }}</div>
+        {% endfor %}
 
         <div class="text-end mt-1">
 
@@ -676,6 +607,9 @@
             <i class="bi bi-eye"></i>
           </button>
         </div>
+        {% for error in errores_password.password_nueva %}
+          <div class="text-danger small mt-1" role="alert">{{ error }}</div>
+        {% endfor %}
 
       </div>
 
@@ -702,6 +636,9 @@
             <i class="bi bi-eye"></i>
           </button>
         </div>
+        {% for error in errores_password.password_confirmar %}
+          <div class="text-danger small mt-1" role="alert">{{ error }}</div>
+        {% endfor %}
 
       </div>
 
@@ -1340,5 +1277,16 @@ document.addEventListener("DOMContentLoaded", function () {
     setupToggle('id_password_confirmar', 'toggle-password-confirmar');
 });
 </script>
+
+{% if abrir_offcanvas %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const panel = document.getElementById('{{ abrir_offcanvas }}');
+  if (panel && window.bootstrap) {
+    bootstrap.Offcanvas.getOrCreateInstance(panel).show();
+  }
+});
+</script>
+{% endif %}
 
 {% endblock %}

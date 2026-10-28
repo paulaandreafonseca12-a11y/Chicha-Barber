@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages # type: ignore
 from django.core.mail import send_mail
+from django.views.decorators.http import require_POST
 
 from usuarios.forms import RegistroForm
 from usuarios.models import Usuario, RolUsuario
@@ -141,20 +142,16 @@ def editar_servicios(request, pk):
     return render(request, 'servicios/editar_servicios.html', context)
 
 @login_required
+@require_POST
 def eliminar_servicios(request, pk):
     if not (request.user.is_staff or getattr(request.user, 'rol', None) == RolUsuario.ADMIN):
         messages.error(request, "Acceso denegado.")
         return redirect('listado-admin')
 
     servicio = get_object_or_404(Servicios, pk=pk)
-    if request.method == 'POST':
-        servicio.delete()
-        messages.success(request, 'Servicio eliminado.')
-        return redirect('listado-admin')
-    context = {
-        'servicio': servicio
-    }
-    return render(request, 'servicios/eliminar_servicios.html', context)
+    servicio.delete()
+    messages.success(request, 'Servicio eliminado.')
+    return redirect('listado-admin')
 
 @login_required
 
@@ -175,9 +172,8 @@ def listado_calificacion(request):
         'titulo': 'Listado de Calificaciones',
         'calificaciones': calificaciones,
         'total_calificaciones': calificaciones.count(),
-        'titulo': 'Listado de Calificaciones'
-        
-        
+        'positivas': calificaciones.filter(puntuacion__gte=4).count(),
+        'negativas': calificaciones.filter(puntuacion__lte=2).count(),
     }
     return render(request, 'servicios/listado-calificacion.html', context)
 
@@ -226,35 +222,38 @@ def responder_calificacion(request, pk):
     return render(request, 'servicios/responder-calificacion.html', context)
 
 def guardar_calificacion_view(request):
-    if request.method == 'POST':
-        form = CalificacionForm(request.POST)
-        if form.is_valid():
-            calificacion = form.save(commit=False)
+    form = CalificacionForm(
+        request.POST or None,
+        user=request.user,
+    )
+    if request.method == 'POST' and form.is_valid():
+        calificacion = form.save(commit=False)
 
-            # Si el cliente tiene sesión iniciada, se enlaza
-            # directamente a su cuenta; si no, solo queda el nombre de respaldo.
-            if request.user.is_authenticated:
-                calificacion.cliente = request.user
-                if not calificacion.cliente_nombre:
-                    calificacion.cliente_nombre = request.user.get_full_name() or request.user.email
+        if request.user.is_authenticated:
+            calificacion.cliente = request.user
+            calificacion.cliente_nombre = (
+                request.user.get_full_name().strip()
+                or request.user.email
+                or request.user.get_username()
+            )
 
-            calificacion.save()
-            messages.success(request, "✅ ¡Gracias por tu calificación!")
-            return redirect('calificacion')
-    return redirect('calificacion')
+        calificacion.save()
+        messages.success(request, "¡Gracias por tu calificación!")
+        return redirect('calificacion')
 
+    return render(request, 'servicios/agregar-calificacion.html', {
+        'form': form,
+        'titulo': 'Califica nuestros servicios',
+    })
+
+@login_required
+@require_POST
 def eliminar_calificacion(request, pk):
-    calificacion = get_object_or_404(Calificacion, pk=pk)
-
-    nombre_cliente = calificacion.cliente.get_full_name() if calificacion.cliente else calificacion.cliente_nombre
-
-    if request.method == 'POST':
-        calificacion.delete()
-        messages.success(request, 'Calificación eliminada.')
+    if not (request.user.is_staff or getattr(request.user, 'rol', None) == RolUsuario.ADMIN):
+        messages.error(request, "Acceso denegado. Solo administradores.")
         return redirect('listado-calificacion')
-    
-    context = {
-        'calificacion': calificacion,
-        'titulo': f'Eliminar calificación de {nombre_cliente}'
-    }
-    return render(request, 'servicios/eliminar_calificacion.html', context)
+
+    calificacion = get_object_or_404(Calificacion, pk=pk)
+    calificacion.delete()
+    messages.success(request, 'Calificación eliminada.')
+    return redirect('listado-calificacion')
