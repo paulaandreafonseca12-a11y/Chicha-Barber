@@ -2129,6 +2129,31 @@ body.theme-light .private-perfil__div-1 {
 .partials-header__a-4 { color:#126782 !important; }
 .partials-header__a-5 { color:rgba(var(--bs-info-rgb),1)!important; }
 .partials-header__a-6 { cursor: pointer; }
+.asw-container .asw-menu-btn {
+  --asw-btn-size: 48px;
+  --asw-icon-size: 28px;
+  --asw-btn-size-mobile: 38px;
+  --asw-icon-size-mobile: 22px;
+}
+.asw-container .asw-menu {
+  top: auto;
+  right: 20px;
+  bottom: 20px;
+  left: auto;
+  width: min(420px, calc(100vw - 40px));
+  height: min(82vh, 760px);
+  max-height: calc(100vh - 40px);
+  border-radius: 16px;
+}
+@media (max-width: 560px) {
+  .asw-container .asw-menu {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    height: min(82vh, 680px);
+    max-height: calc(100vh - 24px);
+  }
+}
 .partials-campanita__a-1 { width:42px;height:42px; }
 .partials-campanita__span-2 { font-size:0.65rem; }
 .partials-campanita__ul-3 { width: 340px; max-height: 420px; overflow-y: auto; }
