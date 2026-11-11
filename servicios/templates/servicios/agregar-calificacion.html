@@ -18,7 +18,7 @@
                         {% csrf_token %}
                         {{ form|crispy }}
                         <div class="d-flex justify-content-end gap-2 mt-3">
-                            <a href="{% url 'listado-calificacion' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <a href="{% url 'calificacion' %}" class="btn btn-outline-secondary">Cancelar</a>
                             <button type="submit" class="btn btn-primary">Guardar Calificación</button>
                         </div>
                     </form>

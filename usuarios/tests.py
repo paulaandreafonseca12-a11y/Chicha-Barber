@@ -116,3 +116,54 @@ class UsuarioModelTest(TestCase):
             'password': 'Test1234*'
         })
         self.assertEqual(response.status_code, 200)
+
+
+class PerfilFormularioTests(TestCase):
+    def setUp(self):
+        self.usuario = Usuario.objects.create_user(
+            email='perfil@correo.com',
+            password='ClaveSegura123*',
+            numero_documento='456789123',
+            primer_nombre='Paula',
+            primer_apellido='Pérez',
+            telefono='3001234567',
+            rol='cliente',
+        )
+        self.client.force_login(self.usuario)
+
+    def test_perfil_invalido_mantiene_errores_y_reabre_edicion(self):
+        response = self.client.post(reverse('perfil'), {
+            'editar_perfil': '1',
+            'tipo_documento': 'CC',
+            'numero_documento': self.usuario.numero_documento,
+            'primer_nombre': 'Paula',
+            'segundo_nombre': '',
+            'primer_apellido': 'Pérez',
+            'segundo_apellido': '',
+            'telefono': 'telefono-invalido',
+            'email': 'correo-invalido',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['abrir_offcanvas'], 'offcanvasEditar')
+        self.assertIn('telefono', response.context['form'].errors)
+        self.assertIn('email', response.context['form'].errors)
+        self.assertContains(response, 'offcanvasEditar')
+        self.assertContains(response, response.context['form'].errors['email'][0])
+
+    def test_password_invalida_mantiene_errores_y_reabre_panel(self):
+        response = self.client.post(reverse('perfil'), {
+            'cambiar_password': '1',
+            'password_actual': 'incorrecta',
+            'password_nueva': 'debil',
+            'password_confirmar': 'diferente',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['abrir_offcanvas'], 'offcanvasPassword')
+        errores = response.context['errores_password']
+        self.assertTrue(errores['password_actual'])
+        self.assertTrue(errores['password_nueva'])
+        self.assertTrue(errores['password_confirmar'])
+        self.assertContains(response, errores['password_actual'][0])
+        self.assertContains(response, 'offcanvasPassword')

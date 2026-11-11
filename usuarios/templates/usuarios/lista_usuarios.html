@@ -5,12 +5,12 @@
 <div class="container mt-4 mb-5">
 
     <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'crear_usuario' %}" class="btn custom-btn fw-bold">
+        <a href="{% url 'crear_usuario' %}" class="btn custom-btn fw-bold" title="Crear un nuevo usuario">
             <i class="bi bi-person-plus-fill me-1"></i> Agregar Usuario
         </a>
     </div>  
 
-    <!-- Tarjetas de resumen (estilo productos_admin) -->
+    <!-- Tarjetas de resumen -->
     <div class="row g-3 mb-4">
         <!-- TOTAL USUARIOS -->
         <div class="col-md-3">
@@ -73,19 +73,20 @@
         </div>
     </div>
 
+    <!-- Filtros por rol -->
     <div class="d-flex gap-2 mb-3">
-        <button class="btn btn-sm fw-bold filtro-rol border-info text-info" data-rol="">
+        <button class="btn btn-sm fw-bold filtro-rol border-info text-info" data-rol="" title="Ver todos los usuarios">
             Todos
         </button>
-        <button class="btn btn-sm fw-bold filtro-rol border-secondary text-secondary" data-rol="cliente">
+        <button class="btn btn-sm fw-bold filtro-rol border-secondary text-secondary" data-rol="cliente" title="Ver solo los clientes">
             Clientes
         </button>
-        <button class="btn btn-sm fw-bold filtro-rol border-secondary text-secondary" data-rol="barbero">
+        <button class="btn btn-sm fw-bold filtro-rol border-secondary text-secondary" data-rol="barbero" title="Ver solo los barberos">
             Barberos
         </button>
     </div>
 
-    <!-- Tabla estilo claro, igual a Agenda -->
+    <!-- Tabla -->
     <div class="card shadow border-0 mb-4 usuarios-lista-usuarios__div-13">
         <div class="card-body">
             <div class="table-responsive">
@@ -142,6 +143,14 @@
                                    title="Editar usuario">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
+
+                                {% if usuario != request.user %}
+                                <a href="{% url 'eliminar_usuario' usuario.pk %}"
+                                   class="btn btn-sm btn-outline-danger ms-1"
+                                   title="Eliminar usuario">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% empty %}

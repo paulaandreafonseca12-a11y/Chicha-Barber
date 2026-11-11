@@ -195,11 +195,16 @@
                                     <i class="bi bi-pencil text-warning"></i>
                                 </a>
 
-                                <a href="{% url 'eliminar_marca' marca.pk %}"
+                                <button type="button"
                                    class="btn btn-sm btn-dark text-white border border-secondary rounded-pill px-2 py-1 shadow-sm"
+                                   data-url="{% url 'eliminar_marca' marca.pk %}"
+                                   data-nombre="{{ marca.nombre }}"
+                                   data-titulo="Eliminar Marca"
+                                   data-metodo="POST"
+                                   onclick="abrirModalEliminar(this)"
                                    title="Eliminar marca">
                                     <i class="bi bi-trash text-danger"></i>
-                                </a>
+                                </button>
                             </div>
                         </td>
 

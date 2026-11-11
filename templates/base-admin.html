@@ -10,9 +10,10 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" data-position="bottom-right" data-offset="20,90" async></script>
 </head>
 
-<body id="main-body" class="back {% if user.is_authenticated and user.tema == 'light' %}theme-light{% else %}theme-dark{% endif %} {% if request.resolver_match.url_name in 'lista_categorias,crear_categoria,editar_categoria,eliminar_categoria,lista_marcas,crear_marca,editar_marca,eliminar_marca,lista_proveedores,crear_proveedor,editar_proveedor,eliminar_proveedor,crear_promocion,listado-promocion,editar-promocion,eliminar-promocion,lista_adquisiciones,registrar_adquisicion,editar_adquisicion,eliminar_adquisicion,lista_compras,crear_compra,editar_compra,eliminar_compra,historial_ventas,registrar_venta,detalle_venta,eliminar_venta,lista_bitacora,editar_bitacora,lista_existencias,editar_existencias,lista_movimientos_existencias,registrar_movimiento_existencias,eliminar_movimiento_existencias' %}admin-productos-theme{% endif %} {% if request.resolver_match.url_name in 'lista_categorias,crear_categoria,editar_categoria,eliminar_categoria,lista_adquisiciones,registrar_adquisicion,editar_adquisicion,eliminar_adquisicion,lista_compras,crear_compra,editar_compra,eliminar_compra,historial_ventas,registrar_venta,detalle_venta,eliminar_venta,lista_bitacora,editar_bitacora,lista_existencias,editar_existencias,lista_movimientos_existencias,registrar_movimiento_existencias,eliminar_movimiento_existencias' %}admin-panel-cyan{% endif %}">
+<body id="main-body" class="back {% if user.is_authenticated and user.tema == 'light' %}theme-light{% else %}theme-dark{% endif %} {% if request.resolver_match.url_name in 'lista_categorias,crear_categoria,editar_categoria,eliminar_categoria,lista_marcas,crear_marca,editar_marca,eliminar_marca,lista_proveedores,crear_proveedor,editar_proveedor,eliminar_proveedor,crear_promocion,editar-promocion,eliminar-promocion,lista_adquisiciones,registrar_adquisicion,editar_adquisicion,eliminar_adquisicion,lista_compras,crear_compra,editar_compra,eliminar_compra,historial_ventas,registrar_venta,detalle_venta,eliminar_venta,lista_bitacora,editar_bitacora,lista_existencias,editar_existencias,lista_movimientos_existencias,registrar_movimiento_existencias,eliminar_movimiento_existencias' %}admin-productos-theme{% endif %} {% if request.resolver_match.url_name in 'lista_categorias,crear_categoria,editar_categoria,eliminar_categoria,lista_adquisiciones,registrar_adquisicion,editar_adquisicion,eliminar_adquisicion,lista_compras,crear_compra,editar_compra,eliminar_compra,historial_ventas,registrar_venta,detalle_venta,eliminar_venta,lista_bitacora,editar_bitacora,lista_existencias,editar_existencias,lista_movimientos_existencias,registrar_movimiento_existencias,eliminar_movimiento_existencias' %}admin-panel-cyan{% endif %}">
     <div class="admin-panel-shell d-flex min-vh-100 position-relative">
         <!-- Backdrop para el menú móvil -->
         <div class="aside-backdrop" id="asideBackdrop"></div>
@@ -29,40 +30,131 @@
         </div>
     </div>
 
+    <!-- ========================= -->
+    <!-- CHAT IA - Diseño Elegante -->
+    <!-- ========================= -->
+
+    <div id="chatWidget"
+         class="card shadow-lg border-0 position-fixed chat-widget admin-chat-widget"
+         style="width:380px;height:500px;bottom:90px;right:20px;z-index:9999;border-radius:16px;overflow:hidden;display:none;">
+
+        <!-- Header con gradiente -->
+        <div class="card-header chat-header d-flex justify-content-between align-items-center py-3 px-3">
+
+            <div class="d-flex align-items-center gap-2">
+                <div class="chat-avatar">
+                    <i class="bi bi-robot fs-5"></i>
+                </div>
+                <div>
+                    <span class="fw-bold chat-title">ChichaBot</span>
+                    <small class="d-block chat-status">🟢 En línea</small>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+
+                <button type="button"
+                        id="btnMinimizar"
+                        onclick="toggleMinimizar()"
+                        class="btn btn-sm text-white-50 p-1 chat-btn"
+                        title="Minimizar">
+                    <i class="bi bi-dash-lg" id="iconMinimizar"></i>
+                </button>
+
+                <button type="button"
+                        onclick="cerrarChat()"
+                        class="btn btn-sm text-white-50 p-1 chat-btn"
+                        title="Cerrar chat">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Mensajes -->
+        <div id="chatMessages"
+             class="card-body p-3 d-flex flex-column chat-body"
+             style="height:360px;overflow-y:auto;">
+            <!-- Los mensajes se cargarán dinámicamente -->
+            <div class="text-center py-5" id="chatLoading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="text-muted small mt-2">Conectando con ChichaBot...</p>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <form id="chatForm"
+              class="p-3 chat-footer border-top">
+
+            {% csrf_token %}
+
+            <div class="input-group">
+                <input
+                    type="text"
+                    id="pregunta"
+                    name="pregunta"
+                    class="form-control chat-input"
+                    placeholder="Escribe un mensaje..."
+                    required
+                    autocomplete="off">
+
+                <button type="submit"
+                        class="btn chat-send-btn">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Botón flotante abrir chat -->
+    <button id="openChatBtn"
+            onclick="abrirChat()"
+            class="btn shadow chat-fab admin-chat-fab position-fixed d-flex align-items-center justify-content-center"
+            style="border-radius:50%;width:60px;height:60px;bottom:20px;right:20px;z-index:9998;display:flex;">
+
+        <i class="bi bi-chat-dots-fill fs-4"></i>
+
+    </button>
+
     <!-- ✅ Offcanvas del menú hamburguesa -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="menuPremium" aria-labelledby="menuPremiumLabel">
         <div class="offcanvas-header color-azul text-white">
             <h5 class="offcanvas-title" id="menuPremiumLabel">
                 <i class="bi bi-list me-2"></i>Menú
             </h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar" title="Cerrar menú"></button>
         </div>
         <div class="offcanvas-body p-0">
             <ul class="nav flex-column mt-2">
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'perfil' %}">
+                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'perfil' %}" title="Ver y editar mi perfil">
                         <i class="bi bi-person-vcard me-2 text-success"></i>Mi Perfil
                     </a>
                 </li>
                {% if user.rol.tipo_rol == 'admin' or user.rol.tipo_rol == 'barbero' %}
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'inicio_admin' %}">
+                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'inicio_admin' %}" title="Ir al panel de administración">
                         <i class="bi bi-grid-1x2-fill me-2 text-primary"></i>Panel Admin
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'crear_reserva_directa' %}">
+                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'crear_reserva_directa' %}" title="Gestionar reservas de clientes">
                         <i class="bi bi-calendar-check me-2"></i>Reservas de clientes
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="/guardados/">
+                    <a class="nav-link px-4 py-3 border-bottom" href="/guardados/" title="Ver elementos guardados">
                         <i class="bi bi-bookmark me-2"></i>Guardados
                     </a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <div class="theme-switch-item" id="theme-toggle">
+                    <div class="theme-switch-item" id="theme-toggle" title="Cambiar entre modo claro y oscuro">
                         <span>
                             {% if user.tema == 'light' %}
                                 <i class="bi bi-moon-fill me-2"></i> <span id="theme-text">Modo Oscuro</span>
@@ -76,7 +168,7 @@
                 <li class="nav-item mt-2">
                     <form action="{% url 'logout' %}" method="post" class="px-4">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-danger w-100 mt-2">
+                        <button type="submit" class="btn btn-outline-danger w-100 mt-2" title="Cerrar mi sesión">
                             <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
                         </button>
                     </form>
@@ -90,36 +182,217 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
+    {% include "partials/modal-eliminar.html" %}
+
+    <!-- ========================= -->
+    <!-- SCRIPT CHAT IA -->
+    <!-- ========================= -->
+    <script>
+        function formatearMensaje(texto) {
+            return texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+        }
+
+        function cerrarChat() {
+            document.getElementById("chatWidget").style.display = "none";
+            document.getElementById("openChatBtn").style.display = "flex";
+        }
+
+        function abrirChat() {
+            document.getElementById("chatWidget").style.display = "block";
+            document.getElementById("openChatBtn").style.display = "none";
+            cargarMensajes();
+        }
+
+        function toggleMinimizar() {
+            const widget = document.getElementById("chatWidget");
+            const btn = document.getElementById("btnMinimizar");
+            const icon = document.getElementById("iconMinimizar");
+
+            widget.classList.toggle("minimized");
+
+            if (widget.classList.contains("minimized")) {
+                if (icon) icon.className = "bi bi-plus-lg";
+                if (btn) btn.title = "Expandir";
+            } else {
+                if (icon) icon.className = "bi bi-dash-lg";
+                if (btn) btn.title = "Minimizar";
+            }
+        }
+
+        function cargarMensajes() {
+            const chatMessagesEl = document.getElementById("chatMessages");
+            const loadingEl = document.getElementById("chatLoading");
+
+            fetch("{% url 'chat_ia_admin' %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (loadingEl) loadingEl.style.display = "none";
+
+                    if (data.chat && data.chat.length > 0) {
+                        chatMessagesEl.innerHTML = "";
+                        data.chat.forEach(msg => {
+                            if (msg.rol === "user") {
+                                chatMessagesEl.innerHTML += `
+                                    <div class="msg-user align-self-end mb-3">
+                                        <div class="msg-user-text">${formatearMensaje(msg.texto)}</div>
+                                    </div>
+                                `;
+                            } else {
+                                chatMessagesEl.innerHTML += `
+                                    <div class="msg-ia align-self-start mb-3">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <div class="msg-ia-avatar flex-shrink-0">
+                                                <i class="bi bi-robot-fill"></i>
+                                            </div>
+                                            <div class="msg-ia-text">${formatearMensaje(msg.texto)}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        });
+                        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al cargar mensajes:", error);
+                    if (loadingEl) {
+                        loadingEl.innerHTML = '<p class="text-muted small">Error al conectar. Intenta de nuevo.</p>';
+                    }
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", function(){
+            const chatFormEl = document.getElementById("chatForm");
+            const chatMessagesEl = document.getElementById("chatMessages");
+            const input = document.getElementById("pregunta");
+
+            if(chatFormEl){
+                chatFormEl.addEventListener("submit", function(e){
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    if(!input.value.trim()) return;
+
+                    const loadingDiv = document.getElementById("chatLoading");
+                    if (loadingDiv) loadingDiv.style.display = "none";
+
+                    chatMessagesEl.innerHTML += `
+                        <div class="msg-user align-self-end mb-3">
+                            <div class="msg-user-text">${formatearMensaje(input.value)}</div>
+                        </div>
+                    `;
+
+                    input.value = "";
+                    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+
+                    chatMessagesEl.innerHTML += `
+                        <div class="msg-ia align-self-start mb-3" id="typingIndicator">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="msg-ia-avatar flex-shrink-0">
+                                    <i class="bi bi-robot-fill"></i>
+                                </div>
+                                <div class="msg-ia-text">
+                                    <span class="typing-dots">
+                                        <span>.</span><span>.</span><span>.</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+
+                    fetch("{% url 'chat_ia_admin' %}", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const typingEl = document.getElementById("typingIndicator");
+                        if (typingEl) typingEl.remove();
+
+                        if(data.nuevo_mensaje){
+                            chatMessagesEl.innerHTML += `
+                                <div class="msg-ia align-self-start mb-3">
+                                    <div class="d-flex align-items-start gap-2">
+                                        <div class="msg-ia-avatar flex-shrink-0">
+                                            <i class="bi bi-robot-fill"></i>
+                                        </div>
+                                        <div class="msg-ia-text">${formatearMensaje(data.nuevo_mensaje)}</div>
+                                    </div>
+                                </div>
+                            `;
+                            chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+                        }
+                    })
+                    .catch(error => {
+                        const typingEl = document.getElementById("typingIndicator");
+                        if (typingEl) typingEl.remove();
+                        console.error(error);
+                    });
+                });
+            }
+
+            if (input) {
+                input.addEventListener("keydown", function(e) {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        chatFormEl.dispatchEvent(new Event("submit"));
+                    }
+                });
+            }
+        });
+    </script>
 
     <script>
-        // Abrir/Cerrar menú lateral en móvil
-        function toggleAside() {
+        function setAsideOpen(isOpen) {
             const aside = document.querySelector('.admin-aside');
             const backdrop = document.getElementById('asideBackdrop');
-            if (aside) {
-                aside.classList.toggle('aside-mobile-open');
+            const menuButton = document.querySelector('.admin-menu-toggle');
+            if (!aside || !backdrop) return;
+
+            const isMobile = window.matchMedia('(max-width: 991.98px)').matches;
+            const shouldBeOpen = isMobile && isOpen;
+            aside.classList.toggle('aside-mobile-open', shouldBeOpen);
+            aside.inert = isMobile && !shouldBeOpen;
+            aside.setAttribute('aria-hidden', String(isMobile && !shouldBeOpen));
+            backdrop.classList.toggle('aside-backdrop-show', shouldBeOpen);
+            document.body.classList.toggle('aside-open', shouldBeOpen);
+            if (menuButton) {
+                menuButton.setAttribute('aria-expanded', String(shouldBeOpen));
+                menuButton.setAttribute('aria-label', shouldBeOpen ? 'Cerrar menú de administración' : 'Abrir menú de administración');
             }
-            if (backdrop) {
-                backdrop.classList.toggle('aside-backdrop-show');
+        }
+
+        function toggleAside() {
+            const aside = document.querySelector('.admin-aside');
+            if (!aside) return;
+
+            const isOpen = !aside.classList.contains('aside-mobile-open');
+            setAsideOpen(isOpen);
+            if (isOpen) {
+                const closeButton = document.querySelector('.admin-sidebar-close');
+                if (closeButton) closeButton.focus();
             }
-            document.body.classList.toggle('aside-open');
         }
 
         function closeAside() {
-            const aside = document.querySelector('.admin-aside');
-            const backdrop = document.getElementById('asideBackdrop');
-            if (aside) {
-                aside.classList.remove('aside-mobile-open');
-            }
-            if (backdrop) {
-                backdrop.classList.remove('aside-backdrop-show');
-            }
-            document.body.classList.remove('aside-open');
+            const menuButton = document.querySelector('.admin-menu-toggle');
+            const wasOpen = document.querySelector('.admin-aside')?.classList.contains('aside-mobile-open');
+            setAsideOpen(false);
+            if (wasOpen && menuButton) menuButton.focus();
         }
 
         // Cerrar al hacer clic en backdrop
         document.addEventListener('DOMContentLoaded', function() {
             const backdrop = document.getElementById('asideBackdrop');
+            const mobileQuery = window.matchMedia('(max-width: 991.98px)');
+            setAsideOpen(false);
+            mobileQuery.addEventListener('change', function() {
+                setAsideOpen(false);
+            });
+
             if (backdrop) {
                 backdrop.addEventListener('click', closeAside);
             }
@@ -138,18 +411,15 @@
             const themeText = document.getElementById('theme-text');
             const themeIcon = document.getElementById('theme-icon');
 
-            // Inicializar UI basado en el tema actual del body (renderizado por Django)
             const isLight = body.classList.contains('theme-light');
             updateUI(isLight);
 
             if (themeToggle) {
                 themeToggle.addEventListener('click', () => {
-                    // Guardar en localStorage para sincronizar la web pública
                     const nextTheme = isLight ? 'dark' : 'light';
                     localStorage.setItem('theme', nextTheme);
                     localStorage.setItem('admin-theme', nextTheme);
                     
-                    // Redirigir al endpoint de Django para actualizar la base de datos
                     window.location.href = "{% url 'cambiar_tema' %}";
                 });
             }
@@ -162,6 +432,63 @@
                     themeIcon.className = isLight ? "bi bi-toggle-on" : "bi bi-toggle-off";
                 }
             }
+        });
+    </script>
+
+    <!-- ✅ Tooltips globales: convierte title="..." de botones y enlaces en tooltips de Bootstrap -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof bootstrap === 'undefined') return;
+
+            // Tooltips por delegación: funcionan también con elementos creados después (DataTables)
+            new bootstrap.Tooltip(document.body, {
+                selector: '[data-bs-toggle="tooltip"]',
+                trigger: 'hover',
+                container: 'body'
+            });
+
+            var SELECTOR = 'button[title], a[title], .btn[title], .dropdown-toggle[title], .theme-switch-item[title], .pwd-toggle-btn[title]';
+
+            function prepararTooltips(root) {
+                if (!root || !root.querySelectorAll) return;
+                root.querySelectorAll(SELECTOR).forEach(function (el) {
+                    var texto = el.getAttribute('title');
+                    if (!texto) return;
+
+                    var toggle = el.getAttribute('data-bs-toggle');
+
+                    if (!toggle) {
+                        // Botón normal: lo maneja la delegación
+                        el.setAttribute('data-bs-toggle', 'tooltip');
+                        el.setAttribute('data-bs-title', texto);
+                        el.removeAttribute('title');
+                    } else if (toggle !== 'tooltip') {
+                        // Elemento con dropdown/offcanvas/modal (campana, menú de usuario):
+                        // se crea el tooltip directamente para no pisar su data-bs-toggle
+                        el.removeAttribute('title');
+                        var tip = new bootstrap.Tooltip(el, {
+                            title: texto,
+                            trigger: 'hover',
+                            container: 'body'
+                        });
+                        el.addEventListener('click', function () { tip.hide(); });
+                    }
+                });
+            }
+
+            prepararTooltips(document);
+
+            // Observa cambios del DOM (paginar/filtrar DataTables, botones nuevos)
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (m) {
+                    m.addedNodes.forEach(function (n) {
+                        if (n.nodeType === 1) {
+                            prepararTooltips(n.parentNode || n);
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
         });
     </script>
 

@@ -432,14 +432,16 @@
 
                                 <!-- ELIMINAR -->
 
-                                <a href="{% url 'eliminar_adquisicion' adquisicion.pk %}"
+                                <button type="button"
                                    class="btn btn-sm btn-outline-danger"
                                    title="Eliminar"
-                                   onclick="return confirm('¿Seguro que deseas eliminar esta Compras?');">
-
+                                   data-url="{% url 'eliminar_adquisicion' adquisicion.pk %}"
+                                   data-nombre="la compra #{{ adquisicion.codigo_compra.codigo }} ({{ adquisicion.codigo_producto.nombre }})"
+                                   data-titulo="Eliminar Compra"
+                                   data-metodo="POST"
+                                   onclick="abrirModalEliminar(this)">
                                     <i class="bi bi-trash"></i>
-
-                                </a>
+                                </button>
 
                             </div>
 

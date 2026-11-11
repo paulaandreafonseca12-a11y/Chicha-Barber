@@ -150,15 +150,15 @@
 
 
 
-                            <a href="{% url 'eliminar_proveedor' proveedor.codigo %}"
+                            <button type="button"
                                class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('¿Deseas eliminar este proveedor?');">
-
-
+                               data-url="{% url 'eliminar_proveedor' proveedor.codigo %}"
+                               data-nombre="{{ proveedor.nombre }}"
+                               data-titulo="Eliminar Proveedor"
+                               onclick="abrirModalEliminar(this)"
+                               title="Eliminar">
                                 <i class="bi bi-trash"></i>
-
-
-                            </a>
+                            </button>
 
 
                         </td>

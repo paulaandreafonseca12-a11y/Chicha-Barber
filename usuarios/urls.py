@@ -35,4 +35,6 @@ urlpatterns = [
     path('cambiar-tema/', views.cambiar_tema, name='cambiar_tema'),
     path('notificaciones/marcar-leidas/', views.marcar_notificaciones_leidas, name='marcar_notificaciones_leidas'),
     path('notificaciones/<int:pk>/', views.detalle_notificacion, name='detalle_notificacion'),  # 👈 NUEVA
+    path('eliminar/<int:pk>/', views.eliminar_usuario, name='eliminar_usuario'),
+    path('terminos/', views.terminos, name='terminos'),
 ]

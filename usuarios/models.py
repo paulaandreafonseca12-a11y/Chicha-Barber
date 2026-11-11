@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 
@@ -69,8 +70,8 @@ class UsuarioManager(BaseUserManager):
 # MODELO USUARIO
 # ==========================================================
 
-class Usuario(AbstractBaseUser):
-
+class Usuario(AbstractBaseUser, PermissionsMixin):
+    
     objects = UsuarioManager()
     # ======================================================
     # CAMPOS HEREDADOS DE DJANGO
@@ -294,15 +295,6 @@ class Usuario(AbstractBaseUser):
     @property
     def is_active(self):
         return self.estado
-
-    def has_perm(self, perm, obj=None):
-        return self.is_superuser
-
-    def has_module_perms(self, app_label):
-        return self.is_superuser
-
-
-
 
 # ==========================================================
 # NOTIFICACIONES

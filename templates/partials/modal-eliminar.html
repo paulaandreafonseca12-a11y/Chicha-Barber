@@ -1,0 +1,92 @@
+{% load static %}
+<!-- ==========================================================
+     MODAL UNIVERSAL DE CONFIRMACIÓN DE ELIMINACIÓN / CANCELACIÓN
+     Diseño estándar y coherente para todo el sistema
+========================================================== -->
+<div class="modal fade" id="modalEliminarUniversal" tabindex="-1" aria-labelledby="modalEliminarUniversalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-danger shadow-lg">
+            <div class="modal-header border-danger">
+                <h5 class="modal-title text-danger fw-bold" id="modalEliminarUniversalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><span id="modalEliminarUniversalTitulo">Confirmar Eliminación</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-x-circle-fill text-danger reservas-ver-agenda__i-21 d-block mb-3" style="font-size: 3rem;"></i>
+                <p class="mt-3 fs-5" id="modalEliminarUniversalPregunta">
+                    ¿Seguro que deseas eliminar <strong id="modalEliminarUniversalNombre"></strong>?
+                </p>
+                <p class="text-secondary small mb-0" id="modalEliminarUniversalSubtitulo">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer border-danger justify-content-center gap-3">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i>Volver
+                </button>
+                <form id="formEliminarUniversal" method="POST" action="" class="d-inline m-0">
+                    {% csrf_token %}
+                    <button type="submit" id="btnConfirmarEliminarUniversal" class="btn btn-danger px-4">
+                        <i class="bi bi-x-circle-fill me-1" id="iconoBtnConfirmar"></i><span id="textoBtnConfirmar">Sí, eliminar</span>
+                    </button>
+                </form>
+                <a id="linkConfirmarEliminarUniversal" href="#" class="btn btn-danger px-4 d-none">
+                    <i class="bi bi-x-circle-fill me-1" id="iconoLinkConfirmar"></i><span id="textoLinkConfirmar">Sí, eliminar</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModalEliminar(btn) {
+    const url = btn.dataset.url || btn.getAttribute('href');
+    const nombre = btn.dataset.nombre || '';
+    const titulo = btn.dataset.titulo || 'Confirmar Eliminación';
+    const tipo = btn.dataset.tipo || 'eliminar'; // 'eliminar' o 'cancelar'
+    const subtitulo = btn.dataset.subtitulo || 'Esta acción no se puede deshacer.';
+    const metodo = (btn.dataset.metodo || 'POST').toUpperCase();
+    
+    const tituloEl = document.getElementById('modalEliminarUniversalTitulo');
+    const preguntaEl = document.getElementById('modalEliminarUniversalPregunta');
+    const subtituloEl = document.getElementById('modalEliminarUniversalSubtitulo');
+    const textoBtn = document.getElementById('textoBtnConfirmar');
+    const textoLink = document.getElementById('textoLinkConfirmar');
+    const formEl = document.getElementById('formEliminarUniversal');
+    const linkEl = document.getElementById('linkConfirmarEliminarUniversal');
+    
+    if (tituloEl) tituloEl.textContent = titulo;
+    if (subtituloEl) subtituloEl.textContent = subtitulo;
+    
+    const labelBoton = (tipo === 'cancelar') ? 'Sí, cancelar' : 'Sí, eliminar';
+    if (textoBtn) textoBtn.textContent = labelBoton;
+    if (textoLink) textoLink.textContent = labelBoton;
+    
+    if (preguntaEl) {
+        if (tipo === 'cancelar') {
+            preguntaEl.innerHTML = `¿Seguro que deseas cancelar <strong class="text-white">${nombre}</strong>?`;
+        } else {
+            preguntaEl.innerHTML = `¿Seguro que deseas eliminar <strong class="text-white">${nombre}</strong>?`;
+        }
+    }
+    
+    if (metodo === 'GET') {
+        if (formEl) formEl.classList.add('d-none');
+        if (linkEl) {
+            linkEl.classList.remove('d-none');
+            linkEl.href = url;
+        }
+    } else {
+        if (linkEl) linkEl.classList.add('d-none');
+        if (formEl) {
+            formEl.classList.remove('d-none');
+            formEl.action = url;
+        }
+    }
+    
+    const modalEl = document.getElementById('modalEliminarUniversal');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    }
+}
+</script>

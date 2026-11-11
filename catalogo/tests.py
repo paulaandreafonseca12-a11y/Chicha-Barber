@@ -1,7 +1,13 @@
 from decimal import Decimal
+from datetime import date
 from django.test import TestCase
-from catalogo.models import Categoria, Marca, Producto, DetalleProducto
-from catalogo.forms import ProductoForm
+from catalogo.models import Categoria, Marca, Producto, DetalleProducto, Promocion
+from catalogo.forms import (
+    ProductoForm,
+    PromocionEditarForm,
+    PromocionForm,
+)
+from servicios.models import Servicios
 
 
 class ProductoSanitizacionXSSValidationTestCase(TestCase):
@@ -108,4 +114,145 @@ class ProductoSanitizacionXSSValidationTestCase(TestCase):
         queryset_marcas = form.fields['codigo_marca'].queryset
         self.assertIn(self.marca_activa, queryset_marcas)
         self.assertNotIn(self.marca_inactiva, queryset_marcas)
+
+
+class PromocionFormValidationTests(TestCase):
+    def setUp(self):
+        self.servicio = Servicios.objects.create(
+            nombre='Corte premium',
+            precio=Decimal('30000.00'),
+            duracion=45,
+            descripcion='Corte premium con lavado y peinado.',
+        )
+        self.producto = Producto.objects.create(
+            nombre='Pomada capilar',
+            descripcion='Pomada para peinar.',
+            precio=Decimal('15000.00'),
+        )
+        self.data = {
+            'codigo_servicio': self.servicio.pk,
+            'codigo_producto': '',
+            'nombre': '  Promo de verano  ',
+            'porcentaje_descuento': '20.00',
+            'fecha_inicio': '2026-10-16',
+            'fecha_fin': '2026-10-31',
+            'descripcion': 'Descuento especial de temporada.',
+            'estado': True,
+        }
+        self.promocion = Promocion.objects.create(
+            codigo_servicio=self.servicio,
+            nombre='Promo anterior',
+            porcentaje_descuento=Decimal('10.00'),
+            fecha_inicio=date(2026, 9, 1),
+            fecha_fin=date(2026, 9, 30),
+            descripcion='Promoción anterior de prueba.',
+        )
+
+    def test_accepts_valid_promotion_and_trims_name(self):
+        form = PromocionForm(data=self.data)
+
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(form.cleaned_data['nombre'], 'Promo de verano')
+
+    def test_accepts_discount_with_percent_sign_on_create_and_edit(self):
+        for form_class in (PromocionForm, PromocionEditarForm):
+            with self.subTest(form=form_class.__name__):
+                form = form_class(
+                    data={**self.data, 'porcentaje_descuento': '20%'},
+                    **({'instance': self.promocion} if form_class is PromocionEditarForm else {})
+                )
+
+                self.assertTrue(form.is_valid(), form.errors)
+                self.assertEqual(
+                    form.cleaned_data['porcentaje_descuento'],
+                    Decimal('20'),
+                )
+
+    def test_rejects_misplaced_or_repeated_percent_sign(self):
+        for porcentaje in ('%20', '20%%'):
+            with self.subTest(porcentaje=porcentaje):
+                form = PromocionForm(
+                    data={**self.data, 'porcentaje_descuento': porcentaje}
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn('porcentaje_descuento', form.errors)
+
+    def test_rejects_numeric_only_promotion_name_on_create_and_edit(self):
+        for form_class in (PromocionForm, PromocionEditarForm):
+            with self.subTest(form=form_class.__name__):
+                form = form_class(
+                    data={**self.data, 'nombre': '12345'},
+                    **({'instance': self.promocion} if form_class is PromocionEditarForm else {})
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn('nombre', form.errors)
+
+    def test_rejects_digits_inside_promotion_name_on_create_and_edit(self):
+        for form_class in (PromocionForm, PromocionEditarForm):
+            with self.subTest(form=form_class.__name__):
+                form = form_class(
+                    data={**self.data, 'nombre': 'Promo 2026'},
+                    **({'instance': self.promocion} if form_class is PromocionEditarForm else {})
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn('nombre', form.errors)
+
+    def test_rejects_discount_above_limit(self):
+        for form_class in (PromocionForm, PromocionEditarForm):
+            with self.subTest(form=form_class.__name__):
+                form = form_class(
+                    data={**self.data, 'porcentaje_descuento': '50.01'},
+                    **({'instance': self.promocion} if form_class is PromocionEditarForm else {})
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn('porcentaje_descuento', form.errors)
+
+    def test_rejects_negative_and_non_numeric_discount(self):
+        for porcentaje in ('-1', 'abc'):
+            with self.subTest(porcentaje=porcentaje):
+                form = PromocionForm(
+                    data={**self.data, 'porcentaje_descuento': porcentaje}
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn('porcentaje_descuento', form.errors)
+
+    def test_rejects_end_date_before_start_date(self):
+        for form_class in (PromocionForm, PromocionEditarForm):
+            with self.subTest(form=form_class.__name__):
+                form = form_class(
+                    data={**self.data, 'fecha_fin': '2026-10-15'},
+                    **({'instance': self.promocion} if form_class is PromocionEditarForm else {})
+                )
+
+                self.assertFalse(form.is_valid())
+                self.assertIn('fecha_fin', form.errors)
+
+    def test_requires_exactly_one_product_or_service(self):
+        invalid_data = {**self.data, 'codigo_servicio': '', 'codigo_producto': ''}
+        both_data = {
+            **self.data,
+            'codigo_producto': self.producto.pk,
+        }
+
+        for form_class in (PromocionForm, PromocionEditarForm):
+            with self.subTest(form=form_class.__name__, relation='none'):
+                form = form_class(
+                    data=invalid_data,
+                    **({'instance': self.promocion} if form_class is PromocionEditarForm else {})
+                )
+                self.assertFalse(form.is_valid())
+                self.assertTrue(form.non_field_errors())
+
+            with self.subTest(form=form_class.__name__, relation='both'):
+                form = form_class(
+                    data=both_data,
+                    **({'instance': self.promocion} if form_class is PromocionEditarForm else {})
+                )
+                self.assertFalse(form.is_valid())
+                self.assertTrue(form.non_field_errors())
 

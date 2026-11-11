@@ -162,15 +162,21 @@ function abrirModalActivar(fechaIso, fechaLegible) {
 }
 
 function confirmarDesactivar(fechaIso, fechaLegible, reservas) {
-    let mensaje = `¿Estás seguro de que quieres cerrar la agenda del ${fechaLegible}?\n\nSe eliminarán todos los turnos libres.`;
-    
+    let subtitulo = 'Se eliminarán todos los turnos libres de este día.';
     if (reservas > 0) {
-        mensaje += `\n\nATENCIÓN: Tienes ${reservas} cita(s) ya reservada(s) que NO se borrarán, deberás atenderlas o cancelarlas manualmente.`;
+        subtitulo += ` ATENCIÓN: Tienes ${reservas} cita(s) ya reservada(s) que deberás gestionar manualmente.`;
     }
 
-    if (confirm(mensaje)) {
-        window.location.href = `/reservas/gestion-dias/desactivar/${fechaIso}/`;
-    }
+    abrirModalEliminar({
+        dataset: {
+            url: `/reservas/gestion-dias/desactivar/${fechaIso}/`,
+            nombre: `la agenda del día ${fechaLegible}`,
+            titulo: 'Cerrar Agenda',
+            tipo: 'cancelar',
+            subtitulo: subtitulo,
+            metodo: 'GET'
+        }
+    });
 }
 </script>
 

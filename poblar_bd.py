@@ -1569,7 +1569,7 @@ def poblar_base_datos():
     print(
         "Administrador:"
         "\n  Correo: admin@chichabarber.com"
-        "\n  Contraseña: Admin123*"
+        "\n  Contraseña: l"
     )
 
     print(

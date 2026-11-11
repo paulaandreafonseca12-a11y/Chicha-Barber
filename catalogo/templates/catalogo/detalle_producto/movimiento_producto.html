@@ -285,13 +285,16 @@
                         <!-- ACCIÓN -->
                         <td class="text-center">
 
-                            <a href="{% url 'eliminar_movimiento_existencias' movimiento.pk %}"
+                            <button type="button"
                                class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('¿Seguro que deseas eliminar este movimiento?');">
-
+                               data-url="{% url 'eliminar_movimiento_existencias' movimiento.pk %}"
+                               data-nombre="el movimiento #{{ movimiento.pk }} ({{ movimiento.tipo }} de {{ movimiento.cantidad }} uds)"
+                               data-titulo="Eliminar Movimiento"
+                               data-metodo="POST"
+                               onclick="abrirModalEliminar(this)"
+                               title="Eliminar">
                                 <i class="bi bi-trash"></i>
-
-                            </a>
+                            </button>
 
                         </td>
 
