@@ -6234,3 +6234,99 @@ body.theme-light .admin-panel-shell main .resumen-compra-card .resumen-ganancia-
   border-color: rgba(220, 38, 38, 0.25) !important;
 }
 
+/* Textos de la tabla en MODO OSCURO (no afecta modo claro) */
+body:not(.theme-light) .dataTables_wrapper .dataTables_length,
+body:not(.theme-light) .dataTables_wrapper .dataTables_filter,
+body:not(.theme-light) .dataTables_wrapper .dataTables_info,
+body:not(.theme-light) .dataTables_wrapper label,
+body:not(.theme-light) #tablaUsuarios thead th,
+body:not(.theme-light) #tablaUsuarios thead th.sorting,
+body:not(.theme-light) #tablaUsuarios thead th.sorting_asc,
+body:not(.theme-light) #tablaUsuarios thead th.sorting_desc {
+    color: #f1f1f1 !important;
+}
+/* Textos de la tabla en MODO OSCURO (no afecta modo claro) */
+body:not(.theme-light) #tablaUsuarios_wrapper label,
+body:not(.theme-light) #tablaUsuarios_wrapper > div:not(.dt-buttons):not(.dt-layout-cell),
+body:not(.theme-light) #tablaUsuarios_wrapper [class*="info"],
+body:not(.theme-light) #tablaUsuarios_wrapper [class*="length"],
+body:not(.theme-light) #tablaUsuarios_wrapper [class*="filter"],
+body:not(.theme-light) #tablaUsuarios_wrapper [class*="search"],
+body:not(.theme-light) #tablaUsuarios_wrapper [class*="paginate"] a,
+body:not(.theme-light) #tablaUsuarios_wrapper [class*="paging"] button {
+    color: #f1f1f1 !important;
+}
+
+/* Los campos blancos (select y buscador) mantienen texto oscuro */
+body:not(.theme-light) #tablaUsuarios_wrapper select,
+body:not(.theme-light) #tablaUsuarios_wrapper input {
+    color: #212529 !important;
+}
+
+/* Tarjeta del formulario: "vidrio esmerilado" */
+.form-box {
+    background: rgba(35, 40, 50, 0.72) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Inputs y selects */
+.cb-input {
+    background-color: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+}
+.cb-input::placeholder {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
+.cb-input:focus {
+    background-color: rgba(255, 255, 255, 0.16) !important;
+    border-color: #29b6d8 !important;
+    box-shadow: 0 0 0 0.2rem rgba(41, 182, 216, 0.25) !important;
+}
+
+/* Textos de ayuda */
+.form-hint {
+    opacity: 0.7 !important;
+}
+
+/* Oculta el ojito nativo de Edge */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+/* Ojito para mostrar/ocultar contraseña */
+.pwd-toggle-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+}
+.pwd-toggle-btn:hover {
+    color: #ffffff;
+}
+.col-6 .position-relative .cb-input {
+    padding-right: 2.5rem;
+}
+
+/* Términos y condiciones */
+.terminos-label {
+    color: #f1f1f1;
+    font-size: 0.9rem;
+}
+.terminos-link {
+    color: #29b6d8;
+    font-weight: 600;
+    text-decoration: underline;
+}
+.terminos-link:hover {
+    color: #ffffff;
+}

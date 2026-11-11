@@ -36,34 +36,34 @@
             <h5 class="offcanvas-title" id="menuPremiumLabel">
                 <i class="bi bi-list me-2"></i>Menú
             </h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar" title="Cerrar menú"></button>
         </div>
         <div class="offcanvas-body p-0">
             <ul class="nav flex-column mt-2">
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'perfil' %}">
+                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'perfil' %}" title="Ver y editar mi perfil">
                         <i class="bi bi-person-vcard me-2 text-success"></i>Mi Perfil
                     </a>
                 </li>
                {% if user.rol.tipo_rol == 'admin' or user.rol.tipo_rol == 'barbero' %}
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'inicio_admin' %}">
+                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'inicio_admin' %}" title="Ir al panel de administración">
                         <i class="bi bi-grid-1x2-fill me-2 text-primary"></i>Panel Admin
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'crear_reserva_directa' %}">
+                    <a class="nav-link px-4 py-3 border-bottom" href="{% url 'crear_reserva_directa' %}" title="Gestionar reservas de clientes">
                         <i class="bi bi-calendar-check me-2"></i>Reservas de clientes
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-4 py-3 border-bottom" href="/guardados/">
+                    <a class="nav-link px-4 py-3 border-bottom" href="/guardados/" title="Ver elementos guardados">
                         <i class="bi bi-bookmark me-2"></i>Guardados
                     </a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <div class="theme-switch-item" id="theme-toggle">
+                    <div class="theme-switch-item" id="theme-toggle" title="Cambiar entre modo claro y oscuro">
                         <span>
                             {% if user.tema == 'light' %}
                                 <i class="bi bi-moon-fill me-2"></i> <span id="theme-text">Modo Oscuro</span>
@@ -77,7 +77,7 @@
                 <li class="nav-item mt-2">
                     <form action="{% url 'logout' %}" method="post" class="px-4">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-danger w-100 mt-2">
+                        <button type="submit" class="btn btn-outline-danger w-100 mt-2" title="Cerrar mi sesión">
                             <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
                         </button>
                     </form>
@@ -164,6 +164,63 @@
                     themeIcon.className = isLight ? "bi bi-toggle-on" : "bi bi-toggle-off";
                 }
             }
+        });
+    </script>
+
+    <!-- ✅ Tooltips globales: convierte title="..." de botones y enlaces en tooltips de Bootstrap -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof bootstrap === 'undefined') return;
+
+            // Tooltips por delegación: funcionan también con elementos creados después (DataTables)
+            new bootstrap.Tooltip(document.body, {
+                selector: '[data-bs-toggle="tooltip"]',
+                trigger: 'hover',
+                container: 'body'
+            });
+
+            var SELECTOR = 'button[title], a[title], .btn[title], .dropdown-toggle[title], .theme-switch-item[title], .pwd-toggle-btn[title]';
+
+            function prepararTooltips(root) {
+                if (!root || !root.querySelectorAll) return;
+                root.querySelectorAll(SELECTOR).forEach(function (el) {
+                    var texto = el.getAttribute('title');
+                    if (!texto) return;
+
+                    var toggle = el.getAttribute('data-bs-toggle');
+
+                    if (!toggle) {
+                        // Botón normal: lo maneja la delegación
+                        el.setAttribute('data-bs-toggle', 'tooltip');
+                        el.setAttribute('data-bs-title', texto);
+                        el.removeAttribute('title');
+                    } else if (toggle !== 'tooltip') {
+                        // Elemento con dropdown/offcanvas/modal (campana, menú de usuario):
+                        // se crea el tooltip directamente para no pisar su data-bs-toggle
+                        el.removeAttribute('title');
+                        var tip = new bootstrap.Tooltip(el, {
+                            title: texto,
+                            trigger: 'hover',
+                            container: 'body'
+                        });
+                        el.addEventListener('click', function () { tip.hide(); });
+                    }
+                });
+            }
+
+            prepararTooltips(document);
+
+            // Observa cambios del DOM (paginar/filtrar DataTables, botones nuevos)
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (m) {
+                    m.addedNodes.forEach(function (n) {
+                        if (n.nodeType === 1) {
+                            prepararTooltips(n.parentNode || n);
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
         });
     </script>
 

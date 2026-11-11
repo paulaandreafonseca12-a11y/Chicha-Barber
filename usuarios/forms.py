@@ -718,3 +718,7 @@ class RecuperarPasswordForm(forms.Form):
             )
 
         return email
+acepta_terminos = forms.BooleanField(
+    required=True,
+    error_messages={'required': 'Debes aceptar los términos y condiciones.'},
+)

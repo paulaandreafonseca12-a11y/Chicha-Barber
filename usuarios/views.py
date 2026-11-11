@@ -391,7 +391,19 @@ def editar_usuario(request, pk):
         context
     )
 
+@login_required
+def eliminar_usuario(request, pk):
+    usuario = get_object_or_404(Usuario, pk=pk)
 
+    if request.method == 'POST':
+        if usuario == request.user:
+            messages.error(request, "No puedes eliminar tu propia cuenta.")
+        else:
+            usuario.delete()
+            messages.success(request, "Usuario eliminado correctamente.")
+        return redirect('lista_usuarios')
+
+    return render(request, 'usuarios/eliminar_usuario.html', {'usuario': usuario})
 # ==========================================================
 # RECUPERAR CONTRASEÑA
 # ==========================================================
@@ -806,3 +818,6 @@ def detalle_notificacion(request, pk):
         'private/detalle_notificacion.html',
         context
     )
+
+def terminos(request):
+    return render(request, 'usuarios/terminos.html')

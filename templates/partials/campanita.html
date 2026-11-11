@@ -1,7 +1,8 @@
 {% load static %}
 <!-- CAMPANITA DE NOTIFICACIONES -->
 <div class="dropdown">
-  <a href="#" class="btn position-relative rounded-circle d-flex align-items-center justify-content-center shadow {% if estilo_campanita == 'admin' %}color-azul{% else %}btn-warning color-champaña{% endif %} partials-campanita__a-1" id="campanitaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="btn position-relative rounded-circle d-flex align-items-center justify-content-center shadow {% if estilo_campanita == 'admin' %}color-azul{% else %}btn-warning color-champaña{% endif %} partials-campanita__a-1" id="campanitaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+     title="{% if notificaciones_no_leidas > 0 %}Tienes {{ notificaciones_no_leidas }} notificaciones sin leer{% else %}Ver notificaciones{% endif %}">
 
     <i class="bi bi-bell-fill fs-5 {% if estilo_campanita == 'admin' %}text-white{% else %}text-dark{% endif %}"></i>
 
@@ -19,7 +20,8 @@
         Notificaciones
       </span>
       {% if notificaciones_no_leidas > 0 %}
-      <a href="{% url 'marcar_notificaciones_leidas' %}" class="small text-decoration-none">
+      <a href="{% url 'marcar_notificaciones_leidas' %}" class="small text-decoration-none"
+         title="Marcar todas las notificaciones como leídas">
         Marcar todas como leídas
       </a>
       {% endif %}
