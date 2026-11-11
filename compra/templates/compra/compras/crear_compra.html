@@ -9,16 +9,19 @@
          ENCABEZADO
     ====================================================== -->
 
-    <div class="d-flex justify-content-end align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h4 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-cart-plus text-info"></i>
+                Registrar Compra
+            </h4>
+            <p class="text-muted small mb-0">Registra una nueva adquisición de productos y actualiza sus valores</p>
+        </div>
         <a href="{% url 'lista_adquisiciones' %}"
-           class="btn color-azul text-white">
-
-            <i ></i>
-
+           class="btn color-azul text-white fw-semibold d-inline-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
             Volver
-
         </a>
-
     </div>
 
 
@@ -268,13 +271,13 @@
 
                     <div class="col-12">
 
-                        <div class="bg-light border rounded p-4">
+                        <div class="resumen-compra-card rounded-4 p-4">
 
-                            <h5 class="fw-bold mb-3">
+                            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
 
-                                <i class="bi bi-calculator me-2"></i>
+                                <i class="bi bi-calculator text-info fs-5"></i>
 
-                                Resumen de la Compras
+                                Resumen de la Compra
 
                             </h5>
 
@@ -288,17 +291,17 @@
 
                                     <div class="d-flex justify-content-between
                                                 align-items-center
-                                                border-bottom
+                                                resumen-item-border
                                                 pb-2">
 
                                         <span class="fw-semibold">
 
-                                            Total Compras
+                                            Total Compra
 
                                         </span>
 
                                         <span id="total"
-                                              class="fs-4 fw-bold text-primary">
+                                              class="fs-4 fw-bold">
 
                                             $0
 
@@ -306,7 +309,7 @@
 
                                     </div>
 
-                                    <small class="text-muted">
+                                    <small class="text-muted d-block mt-1">
 
                                         Cantidad adquirida × precio de compra
 
@@ -321,17 +324,17 @@
 
                                     <div class="d-flex justify-content-between
                                                 align-items-center
-                                                border-bottom
+                                                resumen-item-border
                                                 pb-2">
 
                                         <span class="fw-semibold">
 
-                                            Valor total de venta
+                                            Valor Total de Venta
 
                                         </span>
 
                                         <span id="totalVenta"
-                                              class="fs-4 fw-bold text-success">
+                                              class="fs-4 fw-bold">
 
                                             $0
 
@@ -339,7 +342,7 @@
 
                                     </div>
 
-                                    <small class="text-muted">
+                                    <small class="text-muted d-block mt-1">
 
                                         Cantidad de venta × precio de venta
 
@@ -352,15 +355,16 @@
 
                                 <div class="col-12 mt-3">
 
-                                    <div class="d-flex justify-content-between
+                                    <div class="resumen-ganancia-box d-flex justify-content-between
                                                 align-items-center
                                                 p-3
-                                                rounded
-                                                border">
+                                                rounded-3">
 
-                                        <span class="fw-bold">
+                                        <span class="fw-bold d-flex align-items-center gap-2">
 
-                                            Ganancia estimada
+                                            <i class="bi bi-graph-up-arrow"></i>
+
+                                            Ganancia Estimada
 
                                         </span>
 
@@ -406,7 +410,7 @@
 
                         <i class="bi bi-plus-circle me-1"></i>
 
-                        Registrar Compras
+                        Registrar Compra
 
                     </button>
 
@@ -522,17 +526,27 @@ document.addEventListener('DOMContentLoaded', function () {
            CAMBIAR COLOR DE GANANCIA
         ------------------------------------------------ */
 
+        const gananciaBox = ganancia.closest('.resumen-ganancia-box');
+
         if (resultadoGanancia < 0) {
 
             ganancia.classList.remove('text-success');
 
             ganancia.classList.add('text-danger');
 
+            if (gananciaBox) {
+                gananciaBox.classList.add('is-negative');
+            }
+
         } else {
 
             ganancia.classList.remove('text-danger');
 
             ganancia.classList.add('text-success');
+
+            if (gananciaBox) {
+                gananciaBox.classList.remove('is-negative');
+            }
 
         }
 

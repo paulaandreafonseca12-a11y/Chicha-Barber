@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block content %}
-<!-- Contenedor principal con fondo oscuro -->
-<div class="container-fluid px-4 py-4 bg-dark text-light min-vh-100 theme-calificaciones-listado">
+<!-- Contenedor principal -->
+<div class="container-fluid px-4 py-4 min-vh-100 theme-calificaciones-listado">
 
     
 
@@ -19,14 +19,14 @@
         
         <!-- Título de Sección -->
         <div class="mb-3">
-            <h5 class="fw-bold text-white mb-0 d-flex align-items-center gap-2">
+            <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
                 <i class="bi bi-list-task" style="color: #e5b869;"></i> Registro de Calificaciones
             </h5>
         </div>
 
         <!-- Tabla de Datos -->
         <div class="table-responsive">
-            <table id="tablaCalificaciones" class="table table-dark table-hover align-middle mb-0 w-100 admin-theme-table" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255, 255, 255, 0.03);">
+            <table id="tablaCalificaciones" class="table table-hover align-middle mb-0 w-100 admin-theme-table">
                 <thead>
                     <tr class="border-bottom border-secondary border-opacity-25 text-muted small">
                         <th scope="col" class="ps-3 py-3 fw-bold text-uppercase">Código</th>
@@ -48,11 +48,11 @@
 
                         <!-- Servicio -->
                         <td>
-                            <h6 class="mb-0 fw-bold text-white">{{ calificacion.servicio.nombre }}</h6>
+                            <h6 class="mb-0 fw-bold">{{ calificacion.servicio.nombre }}</h6>
                         </td>
 
                         <!-- Cliente -->
-                        <td class="text-light opacity-75">
+                        <td class="opacity-75">
                             {{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre }}
                         </td>
 
@@ -68,7 +68,7 @@
                         </td>
 
                         <!-- Comentario -->
-                        <td class="text-light opacity-75 small">
+                        <td class="opacity-75 small">
                             {{ calificacion.comentario|truncatechars:50 }}
                         </td>
 

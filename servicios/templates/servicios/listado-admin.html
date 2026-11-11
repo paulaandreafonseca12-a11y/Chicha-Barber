@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block content %}
-<!-- Contenedor principal con fondo oscuro -->
-<div class="container-fluid px-4 py-4 bg-dark text-light min-vh-100 theme-servicios-listado">
+<!-- Contenedor principal -->
+<div class="container-fluid px-4 py-4 min-vh-100 theme-servicios-listado">
 
     <!-- BOTÓN ACCIÓN -->
     <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'crear_servicios' %}" class="btn fw-bold d-flex align-items-center gap-2" style="background-color: #e5b869; color: #000; border-radius: 8px;">
+        <a href="{% url 'crear_servicios' %}"  class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
             <i class="bi bi-plus-circle"></i> Nuevo Servicio
         </a>
     </div>
@@ -34,9 +34,10 @@
         </div>
     </div>
 
-        <!-- Tabla de Datos -->
-        <div class="table-responsive admin-theme-table-wrap">
-            <table id="tablaServicios" class="table table-dark table-hover align-middle mb-0 w-100 admin-theme-table" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255, 255, 255, 0.03);">
+    <!-- CONTENEDOR PRINCIPAL / TABLA -->
+    <div class="p-4 rounded-3 border border-secondary border-opacity-25 mb-4 admin-theme-table-panel">
+        <div class="table-responsive">
+            <table id="tablaServicios" class="table table-hover align-middle mb-0 w-100 admin-theme-table">
                 <thead>
                     <tr class="border-bottom border-secondary border-opacity-25 text-muted small">
                         <th scope="col" class="ps-3 py-3 fw-bold text-uppercase">Código</th>
@@ -64,7 +65,7 @@
                                     </div>
                                 {% endif %}
                                 <div>
-                                    <h6 class="mb-0 fw-bold text-white">{{ servicio.nombre }}</h6>
+                                    <h6 class="mb-0 fw-bold">{{ servicio.nombre }}</h6>
                                 </div>
                             </div>
                         </td>
@@ -109,6 +110,7 @@
             </table>
         </div>
     </div>
+</div>
 
 <div class="modal fade" id="confirmarEliminacion" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
