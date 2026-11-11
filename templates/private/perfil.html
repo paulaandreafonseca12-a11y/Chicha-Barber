@@ -321,6 +321,7 @@
             class="btn btn-light w-100 py-3 rounded-4 d-flex flex-column align-items-center gap-2 shadow-sm transition-all border border-0 private-perfil__button-12"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasEditar"
+            title="Editar mis datos personales"
           >
 
             <i
@@ -355,6 +356,7 @@
             class="btn btn-light w-100 py-3 rounded-4 d-flex flex-column align-items-center gap-2 shadow-sm transition-all border border-0 private-perfil__button-14"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasPassword"
+            title="Cambiar mi contraseña"
           >
 
             <i class="bi bi-lock fs-4 private-perfil__i-15"></i>
@@ -377,6 +379,7 @@
             class="btn btn-light w-100 py-3 rounded-4 d-flex flex-column align-items-center gap-2 shadow-sm transition-all border border-0 private-perfil__button-16"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasHistorial"
+            title="Ver mi historial"
           >
 
             <i
@@ -445,6 +448,7 @@
       type="button"
       class="btn-close btn-close-white"
       data-bs-dismiss="offcanvas"
+      title="Cerrar panel"
     ></button>
 
   </div>
@@ -484,6 +488,7 @@
         type="submit"
         name="editar_perfil"
         class="btn w-100 text-white py-3 rounded-3 fw-bold shadow-sm"
+        title="Guardar los cambios de mi perfil"
         style="
           background:
           {% if user.rol == 'admin' %}
@@ -531,6 +536,7 @@
       type="button"
       class="btn-close btn-close-white"
       data-bs-dismiss="offcanvas"
+      title="Cerrar panel"
     ></button>
 
   </div>
@@ -561,7 +567,7 @@
             class="form-control py-2"
             placeholder="••••••••"
           >
-          <button type="button" class="pwd-toggle-btn" id="toggle-password-actual" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+          <button type="button" class="pwd-toggle-btn" id="toggle-password-actual" aria-label="Mostrar u ocultar contraseña" title="Mostrar u ocultar contraseña" tabindex="-1">
             <i class="bi bi-eye"></i>
           </button>
         </div>
@@ -574,6 +580,7 @@
           <a
             href="{% url 'password_reset' %}"
             class="small text-decoration-none"
+            title="Recuperar mi contraseña por correo"
           >
 
             ¿Olvidaste tu contraseña actual?
@@ -603,7 +610,7 @@
             class="form-control py-2"
             placeholder="••••••••"
           >
-          <button type="button" class="pwd-toggle-btn" id="toggle-password-nueva" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+          <button type="button" class="pwd-toggle-btn" id="toggle-password-nueva" aria-label="Mostrar u ocultar contraseña" title="Mostrar u ocultar contraseña" tabindex="-1">
             <i class="bi bi-eye"></i>
           </button>
         </div>
@@ -632,7 +639,7 @@
             class="form-control py-2"
             placeholder="••••••••"
           >
-          <button type="button" class="pwd-toggle-btn" id="toggle-password-confirmar" aria-label="Mostrar u ocultar contraseña" tabindex="-1">
+          <button type="button" class="pwd-toggle-btn" id="toggle-password-confirmar" aria-label="Mostrar u ocultar contraseña" title="Mostrar u ocultar contraseña" tabindex="-1">
             <i class="bi bi-eye"></i>
           </button>
         </div>
@@ -649,6 +656,7 @@
         type="submit"
         name="cambiar_password"
         class="btn w-100 text-white py-3 rounded-3 fw-bold shadow-sm private-perfil__button-25"
+        title="Guardar la nueva contraseña"
       >
 
         <i class="bi bi-shield-lock me-2"></i>
@@ -691,6 +699,7 @@
       type="button"
       class="btn-close"
       data-bs-dismiss="offcanvas"
+      title="Cerrar panel"
     ></button>
 
   </div>
@@ -816,6 +825,7 @@
       type="button"
       class="btn-close btn-close-white"
       data-bs-dismiss="offcanvas"
+      title="Cerrar panel"
     ></button>
 
   </div>
@@ -842,6 +852,7 @@
           data-bs-toggle="tab"
           data-bs-target="#tabReservas"
           type="button"
+          title="Ver mis reservas"
         >
 
           <i class="bi bi-calendar-check me-1"></i>
@@ -877,6 +888,7 @@
           data-bs-toggle="tab"
           data-bs-target="#tabVentas"
           type="button"
+          title="Ver mis compras"
         >
 
           <i class="bi bi-bag-check me-1"></i>
@@ -1069,6 +1081,7 @@
             <a
               href="{% url 'crear_reserva_directa' %}"
               class="btn btn-sm text-white px-4 py-2 rounded-pill fw-bold private-perfil__a-33"
+              title="Ir a crear una reserva"
             >
 
               Hacer una reserva
@@ -1237,6 +1250,7 @@
             <a
               href="{% url 'productos_galeria' %}"
               class="btn btn-sm text-white px-4 py-2 rounded-pill fw-bold private-perfil__a-38"
+              title="Ir al catálogo de productos"
             >
 
               Ver productos
