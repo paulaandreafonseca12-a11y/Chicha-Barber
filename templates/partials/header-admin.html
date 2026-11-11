@@ -1,24 +1,28 @@
 {% load static %}
 <header class="sticky-top">
   <!-- Navegación con fondo negro y borde inferior sutil -->
-  <nav class="navbar bg-black shadow-lg py-2 border-bottom border-gold-subtle">
-    <div class="container-fluid">
+  <nav class="navbar bg-black shadow-lg py-2 border-bottom border-gold-subtle admin-navbar">
+    <div class="container-fluid admin-navbar__inner">
       
       <!-- Botón hamburguesa para móvil -->
       <button class="btn btn-sm btn-outline-warning text-gold border-gold-subtle d-lg-none me-2" type="button" onclick="toggleAside()" aria-label="Abrir menú" title="Abrir el menú lateral">
         <i class="bi bi-list fs-4"></i>
       </button>
 
-      <a class="navbar-brand m-0" href="#">
-        <div class="d-flex align-items-center gap-2">
-          <!-- Título en amarillo plano -->
-          <span class="fw-bold text-uppercase text-warning tracking-wide">
-            {{ titulo|default:"Administración de Chicha Barber Studio" }}
-          </span>
-        </div>
+      <a class="navbar-brand m-0 admin-navbar__brand"
+         href="{% url 'inicio_admin' %}"
+         aria-label="{{ titulo|default:'Administración de Chicha Barber Studio' }}"
+         title="{{ titulo|default:'Administración de Chicha Barber Studio' }}">
+        <span class="fw-bold text-uppercase text-warning tracking-wide admin-header-title admin-header-title--desktop">
+          {{ titulo|default:"Administración de Chicha Barber Studio" }}
+        </span>
+        <span class="admin-header-title--mobile" aria-hidden="true">
+          <strong>Panel Admin</strong>
+          <small>Chicha Barber</small>
+        </span>
       </a>
       
-      <div class="d-flex align-items-center gap-3 ms-auto text-white">
+      <div class="d-flex align-items-center gap-3 ms-auto text-white admin-header-actions">
         {% if user.is_authenticated %}
           {% include "partials/campanita.html" with estilo_campanita="admin" %}
 
