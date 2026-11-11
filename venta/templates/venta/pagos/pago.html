@@ -1,23 +1,33 @@
 {% extends "base-clientes.html" %}
 {% load static %}
+
 {% block content %}
 
-<div class="container py-5 pago-page">
-  <!-- Aumentamos el contenedor a un ancho superior (col-12 col-xl-10) -->
+<section class="container py-5 pago-page">
+
+  <!-- TÍTULO -->
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-uppercase text-warning mb-2 font-heading">
+      <i></i>
+      Finalizar Pedido
+    </h1>
+    <p class="neon-text-white fs-5 mb-3">
+      Revisa tus datos y selecciona tu método de pago para completar la compra.
+    </p>
+  </div>
+
+  <!-- TARJETA PRINCIPAL -->
   <div class="row justify-content-center">
     <div class="col-12 col-xl-10">
       
-      <!-- Tarjeta Principal -->
-      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+        
         <!-- Encabezado de la Tarjeta -->
-        <div class="card-header color-champaña py-3 px-4 border-0">
-          <div class="d-flex align-items-center justify-content-between">
-            <h5 class="text-dark mb-0 fw-bold">
-              <i class="bi bi-shield-check me-2"></i>Finalizar Pedido
-            </h5>
-            <span class="badge bg-white text-dark border">Paso final</span>
-          </div>
+        <div class="card-header bg-white text-dark fw-bold py-3 px-4 border-bottom d-flex align-items-center justify-content-between">
+          <span>
+            <i class="bi bi-shield-check me-2"></i>Detalles de pago y envío
+          </span>
+          <span class="badge bg-secondary text-white border-0">Paso final</span>
         </div>
 
         <div class="card-body p-4 p-md-5">
@@ -80,7 +90,7 @@
 
                   <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
                     <span class="fw-bold text-uppercase text-secondary small">Total</span>
-                    <span class="h4 fw-bold text-dark mb-0" id="montoTotalDisplay">$0</span>
+                    <span class="h4 fw-bold text-success mb-0" id="montoTotalDisplay">$0</span>
                   </div>
                 </div>
 
@@ -138,14 +148,17 @@
                   <div id="infoPago" class="alert rounded-3 d-none mb-3"></div>
                 </div>
 
-                <!-- Campos Ocultos y Botón -->
-                <div>
+                <!-- Campos Ocultos y Botones de Acción -->
+                <div class="mt-4">
                   <input type="hidden" name="carrito" id="carritoInput">
                   <input type="hidden" name="factura_id" value="{{ factura_id|default:'' }}">
 
-                  <button type="submit" class="btn color-azul w-100 rounded-3 py-3 fw-bold shadow-sm text-uppercase mt-3">
-                    Confirmar Compra
+                  <button type="submit" class="btn btn-dark w-100 rounded-3 py-3 fw-bold shadow-sm text-uppercase mb-2">
+                    <i class="bi bi-check-circle-fill me-1"></i> Confirmar Compra
                   </button>
+                  <a href="{% url 'carrito' %}" class="btn btn-outline-dark w-100 rounded-3 py-2 small">
+                    <i class="bi bi-arrow-left me-1"></i> Volver al carrito
+                  </a>
                 </div>
 
               </div>
@@ -155,9 +168,11 @@
         </div>
 
       </div>
+
     </div>
   </div>
-</div>
+
+</section>
 
 <script>
 let carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
@@ -205,12 +220,12 @@ function mostrarInfoPago(tipo) {
   info.classList.remove("d-none");
 
   if (tipo === "persona") {
-    info.className = "alert alert-info border-0 rounded-3 mb-3";
-    info.innerHTML = "<i class='bi bi-info-circle-fill me-2'></i><strong>Pago en local:</strong> Pagas al recoger.";
+    info.className = "alert alert-info border-0 rounded-3 mb-3 small";
+    info.innerHTML = "<i class='bi bi-info-circle-fill me-2'></i><strong>Pago en local:</strong> Pagas directamente al recoger tu pedido.";
     comp.classList.add("d-none");
     tipoDiv.classList.add("d-none");
   } else {
-    info.className = "alert alert-warning border-0 rounded-3 mb-3";
+    info.className = "alert alert-warning border-0 rounded-3 mb-3 small";
     info.innerHTML = `
       <div class="d-flex align-items-center mb-1">
         <i class="bi bi-bank me-2"></i>

@@ -3,20 +3,86 @@
 
 {% block content %}
 <!-- Contenedor principal -->
-<div class="container-fluid px-4 py-4 min-vh-100 theme-promociones-listado">
+<div class="container-fluid px-4 py-4 text-white">
 
-    <!-- BOTÓN ACCIÓN -->
-    <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'crear_promocion' %}" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
-            <i class="bi bi-plus-circle text-dark"></i> Nueva Promoción
-        </a>
+    <!-- =====================================================
+         BOTÓN NUEVA PROMOCIÓN
+         ===================================================== -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-end align-items-center">
+            <a href="{% url 'crear_promocion' %}"
+               class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+                <i class="bi bi-plus-circle-fill fs-6"></i>
+                Nueva Promoción
+            </a>
+        </div>
     </div>
 
-    <!-- TARJETAS DE MÉTRICAS -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4"><div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel"><div><span class="text-uppercase text-muted fw-bold small">Total Promociones</span><h2 class="fw-bold text-white mb-0 mt-1">{{ total_promociones|default:"0" }}</h2></div><i class="bi bi-megaphone fs-4 text-primary"></i></div></div>
-        <div class="col-md-4"><div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel"><div><span class="text-uppercase text-muted fw-bold small">Promociones Activas</span><h2 class="fw-bold text-success mb-0 mt-1">{{ activas|default:"0" }}</h2></div><i class="bi bi-check-circle-fill fs-4 text-success"></i></div></div>
-        <div class="col-md-4"><div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel"><div><span class="text-uppercase text-muted fw-bold small">Promociones Inactivas</span><h2 class="fw-bold text-danger mb-0 mt-1">{{ inactivas|default:"0" }}</h2></div><i class="bi bi-x-circle-fill fs-4 text-danger"></i></div></div>
+    <!-- =====================================================
+         TARJETAS DE ESTADÍSTICAS
+         ===================================================== -->
+    <div class="row g-4 mb-4">
+
+        <!-- TOTAL PROMOCIONES -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Total Promociones
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-white">
+                            {{ total_promociones|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(13, 110, 253, 0.15); border: 1px solid rgba(13, 110, 253, 0.3);">
+                        <i class="bi bi-megaphone fs-2 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROMOCIONES ACTIVAS -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Promociones Activas
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-success">
+                            {{ activas|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(25, 135, 84, 0.15); border: 1px solid rgba(25, 135, 84, 0.3);">
+                        <i class="bi bi-check-circle-fill fs-2 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROMOCIONES INACTIVAS -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Promociones Inactivas
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-danger">
+                            {{ inactivas|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3);">
+                        <i class="bi bi-x-circle-fill fs-2 text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
         
        

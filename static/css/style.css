@@ -5912,6 +5912,156 @@ body.theme-dark .admin-panel-shell main #tablaPromociones tbody .servicios-lista
   }
 }
 
+  .badge-status-confirmada {
+    background-color: #0f3822 !important;
+    color: #4ade80 !important;
+    border: 1px solid #166534 !important;
+  }
+  .badge-status-reservada {
+    background-color: #422006 !important;
+    color: #fde047 !important;
+    border: 1px solid #854d0e !important;
+  }
+  .badge-status-pendiente {
+    background-color: #451a03 !important;
+    color: #fdba74 !important;
+    border: 1px solid #9a3412 !important;
+  }
+  .badge-status-cancelada {
+    background-color: #450a0a !important;
+    color: #fca5a5 !important;
+    border: 1px solid #991b1b !important;
+  }
+  .badge-status-completada {
+    background-color: #172554 !important;
+    color: #93c5fd !important;
+    border: 1px solid #1e40af !important;
+  }
+  .badge-status-default {
+    background-color: #27272a !important;
+    color: #e4e4e7 !important;
+    border: 1px solid #52525b !important;
+  }
+
+  /* PERFIL - modo claro: texto oscuro sobre la tarjeta blanca */
+body.theme-light .private-perfil__div-1 h3.text-dark,
+body.theme-light .private-perfil__div-1 span.text-dark {
+  color: #30291f !important;
+}
+
+body.theme-light .private-perfil__div-1 small.text-muted {
+  color: #6c6253 !important;
+}
+
+body.theme-light .private-perfil__div-1 .border-light-subtle,
+body.theme-light .private-perfil__div-1 .border-bottom {
+  border-color: #e5ded1 !important;
+}
+
+
+/* PERFIL - modo claro: tarjeta con degradado y acentos bronce */
+body.theme-light .private-perfil__div-1 {
+  background:
+    linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #292d30 100%) top / 100% 200px no-repeat,
+    linear-gradient(160deg, #fffefa 0%, #f6f1e7 55%, #ebe3d3 100%) !important;
+  border: 1px solid #d5c8ae !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 44px rgba(44, 36, 25, 0.22) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Etiquetas en bronce y líneas divisorias suaves */
+body.theme-light .private-perfil__div-1 small.text-muted {
+  color: #8a642c !important;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+body.theme-light .private-perfil__div-1 .border-light-subtle,
+body.theme-light .private-perfil__div-1 .border-bottom {
+  border-color: rgba(169, 135, 79, 0.35) !important;
+}
+
+/* Avatar con aro blanco para que resalte sobre la franja */
+body.theme-light .private-perfil__div-1 .rounded-circle {
+  border-color: #fffefa !important;
+  box-shadow: 0 6px 18px rgba(44, 36, 25, 0.35);
+}
+
+/* Botones de abajo a juego: marfil y bronce */
+body.theme-light .private-perfil__button-12,
+body.theme-light .private-perfil__button-14,
+body.theme-light .private-perfil__button-16 {
+  background: linear-gradient(135deg, #fffaf0 0%, #ead9b8 100%) !important;
+  border: 1px solid #b08d57 !important;
+  color: #403729 !important;
+  box-shadow: 0 6px 16px rgba(55, 43, 25, 0.18);
+}
+
+body.theme-light .private-perfil__button-12 span,
+body.theme-light .private-perfil__button-14 span,
+body.theme-light .private-perfil__button-16 span {
+  color: #403729;
+}
+
+body.theme-light .private-perfil__button-12 i,
+body.theme-light .private-perfil__button-14 i,
+body.theme-light .private-perfil__button-16 i,
+body.theme-light .private-perfil__i-15 {
+  color: #896729 !important;
+}
+
+body.theme-light .private-perfil__button-12:hover,
+body.theme-light .private-perfil__button-14:hover,
+body.theme-light .private-perfil__button-16:hover {
+  background: linear-gradient(135deg, #fffdf7 0%, #dfc99e 100%) !important;
+  border-color: #967342 !important;
+}
+
+/* PERFIL - paneles en modo claro */
+body.theme-light .perfil-panel {
+  background: linear-gradient(160deg, #fffefa, #ebe3d3) !important;
+  color: #30291f !important;
+}
+body.theme-light .perfil-panel .offcanvas-header {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #292d30 100%) !important;
+  border-image: none !important;
+}
+body.theme-light .perfil-panel .offcanvas-title { color: #795923 !important; text-shadow: none; }
+body.theme-light .perfil-panel .form-label { color: #8a642c !important; }
+body.theme-light .perfil-panel :is(input, select) {
+  background: #fffefa !important; color: #30291f !important; border-color: #d5c8ae !important;
+}
+body.theme-light .perfil-panel button[type="submit"] {
+  background: linear-gradient(135deg, #c4a66a, #a9874f) !important; color: #30291f !important;
+}
+body.theme-light .perfil-panel :is(.list-group-item, .card) {
+  background: #fffefa !important; border-color: #dccfb3 !important;
+}
+body.theme-light .perfil-panel :is(.text-dark, .fw-semibold) { color: #30291f !important; }
+body.theme-light .perfil-panel :is(.text-muted, .nav-link) { color: #6c6253 !important; }
+body.theme-light .perfil-panel .nav-link.active { color: #795923 !important; }
+body.theme-light .perfil-panel :is(a, .list-group-item i, .pwd-toggle-btn) { color: #8a642c !important; }
+
+/* PERFIL - ojito de mostrar/ocultar contraseña */
+.pwd-wrapper { position: relative; }
+.pwd-wrapper input { padding-right: 2.5rem; }
+.pwd-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6c757d;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+}
+.pwd-toggle-btn:hover { color: #343a40; }
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear { display: none; }
 /* Paneles de servicios, promociones y calificaciones, solo en admin. */
 body.theme-dark .admin-panel-shell main .theme-servicios-listado,
 body.theme-dark .admin-panel-shell main .theme-calificaciones-listado,
@@ -6089,3 +6239,579 @@ body.theme-light .admin-panel-shell main .resumen-compra-card .resumen-ganancia-
   background: rgba(220, 38, 38, 0.08) !important;
   border-color: rgba(220, 38, 38, 0.25) !important;
 }
+<<<<<<< HEAD
+=======
+
+body.theme-dark .admin-panel-shell main .btn-primary,
+body.theme-dark .admin-panel-shell main .btn-info,
+body.theme-dark .admin-panel-shell main .btn-warning,
+body.theme-dark .admin-panel-shell main .btn-admin-cyan,
+body.theme-dark .admin-panel-shell main .btn.custom-btn,
+body.theme-dark .admin-panel-shell main .btn.color-azul,
+body.theme-dark .admin-panel-shell main .btn.color-amarillo {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
+}
+
+body.theme-dark .admin-panel-shell main .btn-primary:hover,
+body.theme-dark .admin-panel-shell main .btn-primary:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-info:hover,
+body.theme-dark .admin-panel-shell main .btn-info:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-warning:hover,
+body.theme-dark .admin-panel-shell main .btn-warning:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-admin-cyan:hover,
+body.theme-dark .admin-panel-shell main .btn-admin-cyan:focus-visible,
+body.theme-dark .admin-panel-shell main .btn.custom-btn:hover,
+body.theme-dark .admin-panel-shell main .btn.custom-btn:focus-visible,
+body.theme-dark .admin-panel-shell main .btn.color-azul:hover,
+body.theme-dark .admin-panel-shell main .btn.color-azul:focus-visible,
+body.theme-dark .admin-panel-shell main .btn.color-amarillo:hover,
+body.theme-dark .admin-panel-shell main .btn.color-amarillo:focus-visible {
+  background: #e0a800 !important;
+  background-image: none !important;
+  border-color: #e0a800 !important;
+  color: #171717 !important;
+}
+
+body.theme-dark .admin-panel-shell main .btn-outline-primary,
+body.theme-dark .admin-panel-shell main .btn-outline-info,
+body.theme-dark .admin-panel-shell main .btn-outline-warning {
+  background: transparent !important;
+  border-color: #ffc107 !important;
+  color: #ffc107 !important;
+}
+
+body.theme-dark .admin-panel-shell main .btn-outline-primary:hover,
+body.theme-dark .admin-panel-shell main .btn-outline-primary:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-outline-info:hover,
+body.theme-dark .admin-panel-shell main .btn-outline-info:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-outline-warning:hover,
+body.theme-dark .admin-panel-shell main .btn-outline-warning:focus-visible {
+  background: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
+}
+
+body.theme-dark .admin-panel-shell header nav.navbar .partials-campanita__a-1 {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border-color: #ffc107 !important;
+}
+
+body.theme-dark .admin-panel-shell header nav.navbar .partials-campanita__a-1:hover,
+body.theme-dark .admin-panel-shell header nav.navbar .partials-campanita__a-1:focus-visible {
+  background: #e0a800 !important;
+  border-color: #e0a800 !important;
+}
+
+body.theme-dark .admin-panel-shell header nav.navbar .partials-campanita__a-1 i {
+  color: #171717 !important;
+}
+
+body.theme-dark .admin-chat-widget {
+  border-color: rgba(255, 193, 7, 0.35) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 193, 7, 0.15) !important;
+}
+
+body.theme-dark .admin-chat-widget .chat-header {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+}
+
+body.theme-dark .admin-chat-widget .chat-avatar {
+  background: rgba(23, 23, 23, 0.1);
+  border-color: rgba(23, 23, 23, 0.25);
+  color: #171717;
+}
+
+body.theme-dark .admin-chat-widget .chat-title,
+body.theme-dark .admin-chat-widget .chat-status,
+body.theme-dark .admin-chat-widget .chat-btn,
+body.theme-dark .admin-chat-widget .chat-btn:hover {
+  color: #171717 !important;
+}
+
+body.theme-dark .admin-chat-widget .chat-btn:hover {
+  background: rgba(23, 23, 23, 0.12);
+}
+
+body.theme-dark .admin-chat-widget .chat-footer {
+  border-top-color: rgba(255, 193, 7, 0.25) !important;
+}
+
+body.theme-dark .admin-chat-widget .chat-input {
+  border-color: rgba(255, 193, 7, 0.3) !important;
+}
+
+body.theme-dark .admin-chat-widget .chat-input:focus {
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.18) !important;
+}
+
+body.theme-dark .admin-chat-widget .chat-send-btn {
+  background: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.25) !important;
+}
+
+body.theme-dark .admin-chat-widget .chat-send-btn:hover,
+body.theme-dark .admin-chat-widget .chat-send-btn:focus-visible {
+  background: #e0a800 !important;
+  border-color: #e0a800 !important;
+  color: #171717 !important;
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.35) !important;
+}
+
+body.theme-dark .admin-chat-fab,
+body.theme-dark .admin-chat-fab:hover,
+body.theme-dark .admin-chat-fab:focus-visible {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
+  box-shadow: 0 8px 30px rgba(255, 193, 7, 0.35) !important;
+}
+
+body.theme-dark .admin-chat-fab:hover,
+body.theme-dark .admin-chat-fab:focus-visible {
+  background: #e0a800 !important;
+  border-color: #e0a800 !important;
+  box-shadow: 0 12px 40px rgba(255, 193, 7, 0.45) !important;
+}
+
+body.client-site.theme-dark {
+  --bs-primary: #ffc107;
+  --bs-primary-rgb: 255, 193, 7;
+  --bs-primary-text-emphasis: #664d03;
+  --bs-primary-bg-subtle: #332701;
+  --bs-primary-border-subtle: #997404;
+  --bs-info: #ffc107;
+  --bs-info-rgb: 255, 193, 7;
+  --bs-info-text-emphasis: #664d03;
+  --bs-info-bg-subtle: #332701;
+  --bs-info-border-subtle: #997404;
+  --color-azul: #ffc107;
+  --accent-azul: #ffc107;
+  --accent-oscuro: #e0a800;
+}
+
+body.client-site.theme-dark .booking-wrap {
+  --color-azul: #ffc107;
+  --accent-azul: #ffc107;
+  --accent-oscuro: #e0a800;
+}
+
+body.client-site.theme-dark .btn-primary,
+body.client-site.theme-dark .btn-info,
+body.client-site.theme-dark .btn-warning,
+body.client-site.theme-dark .btn.color-azul {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
+}
+
+body.client-site.theme-dark .btn-primary:hover,
+body.client-site.theme-dark .btn-primary:focus-visible,
+body.client-site.theme-dark .btn-info:hover,
+body.client-site.theme-dark .btn-info:focus-visible,
+body.client-site.theme-dark .btn-warning:hover,
+body.client-site.theme-dark .btn-warning:focus-visible,
+body.client-site.theme-dark .btn.color-azul:hover,
+body.client-site.theme-dark .btn.color-azul:focus-visible {
+  background: #e0a800 !important;
+  border-color: #e0a800 !important;
+  color: #171717 !important;
+}
+
+body.client-site.theme-dark .btn-outline-primary,
+body.client-site.theme-dark .btn-outline-info {
+  background: transparent !important;
+  border-color: #ffc107 !important;
+  color: #ffc107 !important;
+}
+
+body.client-site.theme-dark .btn-outline-primary:hover,
+body.client-site.theme-dark .btn-outline-primary:focus-visible,
+body.client-site.theme-dark .btn-outline-info:hover,
+body.client-site.theme-dark .btn-outline-info:focus-visible {
+  background: #ffc107 !important;
+  color: #171717 !important;
+}
+
+body.client-site.theme-dark .chat-widget {
+  border-color: rgba(255, 193, 7, 0.35) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 193, 7, 0.15) !important;
+}
+
+body.client-site.theme-dark .chat-body {
+  scrollbar-color: rgba(255, 193, 7, 0.4) transparent;
+}
+
+body.client-site.theme-dark .chat-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 193, 7, 0.4);
+}
+
+body.client-site.theme-dark .chat-header {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+}
+
+body.client-site.theme-dark .chat-avatar {
+  background: rgba(23, 23, 23, 0.1);
+  border-color: rgba(23, 23, 23, 0.25);
+  color: #171717;
+}
+
+body.client-site.theme-dark .chat-title,
+body.client-site.theme-dark .chat-status,
+body.client-site.theme-dark .chat-btn,
+body.client-site.theme-dark .chat-btn:hover {
+  color: #171717 !important;
+}
+
+body.client-site.theme-dark .chat-btn:hover {
+  background: rgba(23, 23, 23, 0.12);
+}
+
+body.client-site.theme-dark .chat-footer {
+  border-top-color: rgba(255, 193, 7, 0.25) !important;
+}
+
+body.client-site.theme-dark .chat-input {
+  border-color: rgba(255, 193, 7, 0.3) !important;
+}
+
+body.client-site.theme-dark .chat-input:focus {
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.18) !important;
+}
+
+body.client-site.theme-dark .msg-user-text {
+  background: linear-gradient(135deg, #e0a800, #b8860b) !important;
+  color: #171717 !important;
+}
+
+body.client-site.theme-dark .msg-user-text strong,
+body.client-site.theme-dark .msg-ia-text strong,
+body.client-site.theme-dark .typing-dots span {
+  color: #ffc107 !important;
+}
+
+body.client-site.theme-dark .msg-ia-avatar {
+  background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+  color: #171717 !important;
+}
+
+body.client-site.theme-dark .chat-send-btn,
+body.client-site.theme-dark .chat-fab {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
+  box-shadow: 0 8px 30px rgba(255, 193, 7, 0.35) !important;
+}
+
+body.client-site.theme-dark .chat-send-btn:hover,
+body.client-site.theme-dark .chat-send-btn:focus-visible,
+body.client-site.theme-dark .chat-fab:hover,
+body.client-site.theme-dark .chat-fab:focus-visible {
+  background: #e0a800 !important;
+  border-color: #e0a800 !important;
+  color: #171717 !important;
+  box-shadow: 0 12px 40px rgba(255, 193, 7, 0.45) !important;
+}
+
+body.client-site.theme-dark .chat-fab i {
+  color: #171717 !important;
+}
+
+body.client-site.theme-dark .dropdown-menu-custom {
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 193, 7, 0.12) !important;
+}
+
+body.client-site.theme-dark .dropdown-menu-custom .partials-header__li-2 {
+  background: linear-gradient(110deg, rgba(255, 193, 7, 0.12), rgba(255, 255, 255, 0.025)) !important;
+}
+
+body.client-site.theme-dark .dropdown-menu-custom .dropdown-item:not(.text-danger) i,
+body.client-site.theme-dark .dropdown-menu-custom .partials-header__a-4,
+body.client-site.theme-dark .dropdown-menu-custom .partials-header__a-5,
+body.client-site.theme-dark .dropdown-menu-custom .partials-header__a-6 i.text-info {
+  color: #ffc107 !important;
+}
+
+body.client-site.theme-dark .dropdown-menu-custom .dropdown-item:not(.text-danger):hover,
+body.client-site.theme-dark .dropdown-menu-custom .dropdown-item:not(.text-danger):focus-visible {
+  background: rgba(255, 193, 7, 0.14) !important;
+}
+
+body.client-site.theme-dark .dropdown-menu-custom .dropdown-item:not(.text-danger):hover i,
+body.client-site.theme-dark .dropdown-menu-custom .dropdown-item:not(.text-danger):focus-visible i {
+  color: #ffda6a !important;
+}
+
+body.client-site.theme-dark header #navbarDropdown {
+  border-color: rgba(255, 193, 7, 0.55) !important;
+}
+
+body.client-site.theme-dark header #navbarDropdown:hover,
+body.client-site.theme-dark header #navbarDropdown:focus-visible,
+body.client-site.theme-dark header #navbarDropdown[aria-expanded="true"] {
+  background-color: rgba(255, 193, 7, 0.12) !important;
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.12) !important;
+}
+
+body.client-site header .partials-campanita__a-1 i,
+body.client-site header .client-cart-button i {
+  color: #171717 !important;
+}
+
+@media (max-width: 767.98px) {
+  body.client-site header.color-negro-bg > .container > .d-flex {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center !important;
+    column-gap: 0.5rem;
+    row-gap: 0.65rem;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > a:first-child {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0 !important;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > a:first-child img {
+    height: 48px;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > .client-nav-toggle {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.65rem;
+    border-color: rgba(255, 193, 7, 0.7);
+    color: #ffc107;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > .nav {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0 !important;
+    padding: 0.35rem;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    border-radius: 0.75rem;
+    background: rgba(13, 17, 23, 0.96);
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > .nav .nav-link {
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+  body.client-site header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
+  body.client-site header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
+    background: rgba(255, 193, 7, 0.12);
+    color: #ffc107 !important;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > .ms-auto {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: flex-end;
+    gap: 0.5rem !important;
+    margin: 0 !important;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
+  body.client-site header.color-negro-bg > .container > .d-flex > .ms-auto > .btn-warning {
+    width: 42px;
+    height: 42px;
+    padding: 0 !important;
+    flex: 0 0 42px;
+  }
+
+  body.client-site header.color-negro-bg > .container > .d-flex > .ms-auto #navbarDropdown {
+    min-height: 42px;
+    padding: 0.35rem 0.65rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  body.client-site.theme-light header.color-negro-bg > .container > .d-flex > .client-nav-toggle {
+    border-color: #a9874f;
+    color: #795923;
+  }
+
+  body.client-site.theme-light header.color-negro-bg > .container > .d-flex > .nav {
+    border-color: #ded5c5;
+    background: rgba(251, 248, 241, 0.98);
+  }
+
+  body.client-site.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+  body.client-site.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
+  body.client-site.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
+    background: rgba(176, 141, 87, 0.12);
+    color: #795923 !important;
+  }
+}
+
+/* Admin header: preserve the title and controls across tablet and mobile widths. */
+.admin-panel-shell .admin-navbar__inner {
+  min-width: 0;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+}
+
+.admin-panel-shell .admin-navbar__brand {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.admin-panel-shell .admin-header-title {
+  display: block;
+  overflow: hidden;
+  font-size: clamp(0.95rem, 1.8vw, 1.3rem);
+  letter-spacing: 0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-panel-shell .admin-header-title--mobile {
+  display: none;
+}
+
+.admin-panel-shell .admin-menu-toggle {
+  display: inline-flex;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  border-radius: 0.65rem;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.admin-panel-shell .admin-menu-toggle:hover,
+.admin-panel-shell .admin-menu-toggle:focus-visible {
+  background-color: rgba(255, 193, 7, 0.12);
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.14);
+  transform: translateY(-1px);
+}
+
+.admin-panel-shell .admin-header-actions {
+  flex: 0 0 auto;
+  gap: 0.75rem !important;
+}
+
+.admin-panel-shell .admin-header-actions .partials-campanita__ul-3 {
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+}
+
+.admin-panel-shell .admin-menu-toggle:focus-visible,
+.admin-panel-shell .admin-navbar__brand:focus-visible,
+.admin-panel-shell .admin-header-actions a:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 3px;
+}
+
+@media (max-width: 767.98px) {
+  .admin-panel-shell .admin-navbar {
+    padding-block: 0.55rem !important;
+  }
+
+  .admin-panel-shell .admin-navbar__inner {
+    gap: 0.55rem;
+  }
+
+  .admin-panel-shell .admin-header-title {
+    display: none;
+  }
+
+  .admin-panel-shell .admin-header-title--mobile {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .admin-panel-shell .admin-header-title--mobile strong {
+    overflow: hidden;
+    max-width: 100%;
+    color: #ffc107;
+    font-size: clamp(0.78rem, 3.6vw, 0.95rem);
+    font-weight: 800;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+  }
+
+  .admin-panel-shell .admin-header-title--mobile small {
+    color: rgba(248, 250, 252, 0.68);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .admin-panel-shell .admin-header-actions {
+    gap: 0.45rem !important;
+  }
+
+  .admin-panel-shell .admin-header-actions .partials-campanita__a-1 {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+  }
+
+  .admin-panel-shell .admin-header-actions #navbarDropdown {
+    min-width: 46px;
+    min-height: 42px;
+    justify-content: center;
+    padding-inline: 0.6rem !important;
+  }
+}
+
+@media (max-width: 359.98px) {
+  .admin-panel-shell .admin-navbar__inner {
+    gap: 0.35rem;
+  }
+
+  .admin-panel-shell .admin-menu-toggle {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .admin-panel-shell .admin-header-title {
+    font-size: 0.75rem;
+  }
+
+  .admin-panel-shell .admin-header-title--mobile strong {
+    font-size: 0.72rem;
+  }
+
+  .admin-panel-shell .admin-header-title--mobile small {
+    font-size: 0.58rem;
+  }
+
+  .admin-panel-shell .admin-header-actions {
+    gap: 0.3rem !important;
+  }
+}
+>>>>>>> 9748d328559a070877f646c22933696112e31d71

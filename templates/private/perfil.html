@@ -415,7 +415,7 @@
      ========================================================= -->
 
 <div
-  class="offcanvas offcanvas-end border-0 shadow private-perfil__div-20"
+  class="offcanvas offcanvas-end border-0 shadow private-perfil__div-20 perfil-panel"
   tabindex="-1"
   id="offcanvasEditar"
 >
@@ -513,7 +513,7 @@
      ========================================================= -->
 
 <div
-  class="offcanvas offcanvas-end border-0 shadow private-perfil__div-23"
+  class="offcanvas offcanvas-end border-0 shadow private-perfil__div-23 perfil-panel"
   tabindex="-1"
   id="offcanvasPassword"
 >
@@ -673,7 +673,7 @@
 {% if user.rol == "admin" %}
 
 <div
-  class="offcanvas offcanvas-end private-perfil__div-26"
+  class="offcanvas offcanvas-end private-perfil__div-26 perfil-panel"
   tabindex="-1"
   id="offcanvasHistorial"
 >
@@ -785,7 +785,7 @@
      ========================================================= -->
 
 <div
-  class="offcanvas offcanvas-end border-0 shadow private-perfil__div-29"
+  class="offcanvas offcanvas-end border-0 shadow private-perfil__div-29 perfil-panel"
   tabindex="-1"
   id="offcanvasHistorial"
 >
@@ -1257,35 +1257,6 @@
 </div>
 
 {% endif %}
-
-<style>
-    .pwd-wrapper {
-        position: relative;
-    }
-    .pwd-wrapper input {
-        padding-right: 2.5rem;
-    }
-    .pwd-toggle-btn {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: #6c757d;
-        padding: 0;
-        line-height: 1;
-        cursor: pointer;
-    }
-    .pwd-toggle-btn:hover {
-        color: #343a40;
-    }
-    /* Oculta el ojito nativo de Edge para que no se duplique con el nuestro */
-    input[type="password"]::-ms-reveal,
-    input[type="password"]::-ms-clear {
-        display: none;
-    }
-</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

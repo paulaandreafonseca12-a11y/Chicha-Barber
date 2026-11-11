@@ -3,115 +3,208 @@
 
 {% block content %}
 <!-- Contenedor principal -->
-<div class="container-fluid px-4 py-4 min-vh-100 theme-servicios-listado">
+<div class="container-fluid px-4 py-4 text-white">
 
-    <!-- BOTÓN ACCIÓN -->
-    <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'crear_servicios' %}"  class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
-            <i class="bi bi-plus-circle"></i> Nuevo Servicio
-        </a>
-    </div>
-
-    <!-- TARJETAS DE MÉTRICAS -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel">
-                <div><span class="text-uppercase text-muted fw-bold small">Total Servicios</span><h2 class="fw-bold text-white mb-0 mt-1">{{ total_servicios|default:"0" }}</h2></div>
-                <i class="bi bi-boxes fs-4 text-primary"></i>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel">
-                <div><span class="text-uppercase text-muted fw-bold small">Servicios Activos</span><h2 class="fw-bold text-success mb-0 mt-1">{{ activos|default:"0" }}</h2></div>
-                <i class="bi bi-check-circle-fill fs-4 text-success"></i>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel">
-                <div><span class="text-uppercase text-muted fw-bold small">Servicios Inactivos</span><h2 class="fw-bold text-danger mb-0 mt-1">{{ inactivos|default:"0" }}</h2></div>
-                <i class="bi bi-x-circle-fill fs-4 text-danger"></i>
-            </div>
+    <!-- =====================================================
+         BOTÓN NUEVO SERVICIO
+         ===================================================== -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-end align-items-center">
+            <a href="{% url 'crear_servicios' %}"
+               class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+                <i class="bi bi-plus-circle-fill fs-6"></i>
+                Nuevo Servicio
+            </a>
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL / TABLA -->
-    <div class="p-4 rounded-3 border border-secondary border-opacity-25 mb-4 admin-theme-table-panel">
-        <div class="table-responsive">
-            <table id="tablaServicios" class="table table-hover align-middle mb-0 w-100 admin-theme-table">
-                <thead>
-                    <tr class="border-bottom border-secondary border-opacity-25 text-muted small">
-                        <th scope="col" class="ps-3 py-3 fw-bold text-uppercase">Código</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase">Servicio</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase text-center">Estado</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
+    <!-- =====================================================
+         TARJETAS DE ESTADÍSTICAS
+         ===================================================== -->
+    <div class="row g-4 mb-4">
+
+        <!-- TOTAL SERVICIOS -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Total Servicios
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-white">
+                            {{ total_servicios|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(13, 110, 253, 0.15); border: 1px solid rgba(13, 110, 253, 0.3);">
+                        <i class="bi bi-boxes fs-2 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERVICIOS ACTIVOS -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Servicios Activos
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-success">
+                            {{ activos|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(25, 135, 84, 0.15); border: 1px solid rgba(25, 135, 84, 0.3);">
+                        <i class="bi bi-check-circle-fill fs-2 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERVICIOS INACTIVOS -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Servicios Inactivos
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-danger">
+                            {{ inactivos|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3);">
+                        <i class="bi bi-x-circle-fill fs-2 text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         TABLA DE SERVICIOS (Con tarjeta contenedora estilo productos)
+         ===================================================== -->
+    <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
+        
+        <div class="card-header bg-gradient-header border-bottom border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-white d-flex align-items-center gap-2">
+                <i class="bi bi-list-stars text-warning"></i>
+                Catálogo de Servicios
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive p-3">
+
+                <table id="tablaServicios" class="table table-dark table-hover align-middle mb-0 bg-transparent w-100">
+
+                    <thead>
+                        <tr class="text-white-50 border-bottom border-secondary border-opacity-25 text-uppercase fs-8 tracking-wide bg-black bg-opacity-40">
+                            <th width="120" class="ps-3 py-3">Código</th>
+                            <th class="py-3">Servicio</th>
+                            <th class="text-center py-3">Estado</th>
+                            <th class="text-center py-3" width="120">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
                     {% for servicio in servicios %}
+
                     <tr class="border-bottom border-secondary border-opacity-10">
-                        <!-- Código en dorado -->
-                        <td class="ps-3 fw-bold" style="color: #edb045;">
+
+                        <td class="fw-bold ps-3" style="color: #edb045;">
                             #SERV-{{ servicio.id|stringformat:"05d" }}
                         </td>
 
-                        <!-- Imagen y Título -->
                         <td>
                             <div class="d-flex align-items-center">
+
                                 {% if servicio.imagen %}
-                                    <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" class="rounded me-3 border border-secondary border-opacity-25" style="width: 42px; height: 42px; object-fit: cover;">
+                                    <img src="{{ servicio.imagen.url }}"
+                                         class="rounded-3 me-3 border border-secondary border-opacity-25 shadow-sm"
+                                         style="width:55px;height:55px;object-fit:cover;"
+                                         alt="{{ servicio.nombre }}">
                                 {% else %}
-                                    <div class="rounded me-3 d-flex align-items-center justify-content-center bg-secondary bg-opacity-10 border border-secondary border-opacity-25" style="width: 42px; height: 42px;">
-                                        <i class="bi bi-image text-secondary fs-5"></i>
+                                    <div class="bg-black bg-opacity-50 border border-secondary border-opacity-25 rounded-3 d-flex align-items-center justify-content-center me-3 shadow-sm"
+                                         style="width:55px;height:55px;">
+                                        <i class="bi bi-image fs-4 text-white-50"></i>
                                     </div>
                                 {% endif %}
+
                                 <div>
-                                    <h6 class="mb-0 fw-bold">{{ servicio.nombre }}</h6>
+                                    <h6 class="mb-0 fw-bold text-white">
+                                        {{ servicio.nombre }}
+                                    </h6>
                                 </div>
+
                             </div>
                         </td>
 
-                        <!-- Badge de Estado Pill -->
                         <td class="text-center">
                             {% if servicio.estado %}
-                                <span class="badge rounded-pill bg-success bg-opacity-25 text-success fw-semibold px-3 py-2">
-                                    <i class="bi bi-circle-fill me-1 small"></i> Activo
+                                <span class="badge badge-status-confirmada rounded-pill px-3 py-2 fw-semibold">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Activo
                                 </span>
                             {% else %}
-                                <span class="badge rounded-pill bg-danger bg-opacity-25 text-danger fw-semibold px-3 py-2">
-                                    <i class="bi bi-circle-fill me-1 small"></i> Inactivo
+                                <span class="badge badge-status-cancelada rounded-pill px-3 py-2 fw-semibold">
+                                    <i class="bi bi-x-circle-fill me-1"></i> Inactivo
                                 </span>
                             {% endif %}
                         </td>
 
-                        <!-- Botones circulares de acción -->
                         <td class="text-center">
-                            <a href="{% url 'editar-servicios' servicio.pk %}" class="btn btn-sm btn-outline-warning rounded-circle p-0 me-1 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(229, 184, 105, 0.4); color: #e5b869;" title="Editar">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <button type="button"
-                               class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
-                               style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);"
-                               data-url="{% url 'eliminar-servicios' servicio.pk %}"
-                               data-nombre="{{ servicio.nombre }}"
-                               data-titulo="Eliminar Servicio"
-                               data-metodo="POST"
-                               onclick="abrirModalEliminar(this)"
-                               title="Eliminar">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{% url 'editar-servicios' servicio.pk %}"
+                                   class="btn btn-sm btn-dark text-white border border-secondary rounded-pill px-2 py-1 shadow-sm"
+                                   title="Editar">
+                                    <i class="bi bi-pencil text-warning"></i>
+                                </a>
+
+                                <button type="button"
+                                   class="btn btn-sm btn-dark text-white border border-secondary rounded-pill px-2 py-1 shadow-sm"
+                                   data-url="{% url 'eliminar-servicios' servicio.pk %}"
+                                   data-nombre="{{ servicio.nombre }}"
+                                   data-titulo="Eliminar Servicio"
+                                   onclick="abrirModalEliminar(this)"
+                                   title="Eliminar">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="4" class="text-center py-5">
+                            <div class="mb-2">
+                                <i class="bi bi-box-seam fs-1 text-white-50"></i>
+                            </div>
+                            <h6 class="text-white fw-semibold mb-1">No hay servicios registrados</h6>
+                            <p class="text-white-50 small mb-0">Aún no has añadido servicios al catálogo.</p>
                         </td>
                     </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No hay servicios registrados.</td>
-                    </tr>
+
                     {% endfor %}
-                </tbody>
-            </table>
+
+                    </tbody>
+
+                </table>
+
+            </div>
         </div>
+
     </div>
+
 </div>
 
+<!-- Modal de Confirmación de Eliminación -->
 <div class="modal fade" id="confirmarEliminacion" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-light border border-secondary admin-theme-modal">
@@ -140,8 +233,8 @@
 <script>
     document.getElementById('confirmarEliminacion').addEventListener('show.bs.modal', function (event) {
         const boton = event.relatedTarget;
-        document.getElementById('formEliminarElemento').action = boton.dataset.deleteUrl;
-        document.getElementById('nombreElementoEliminar').textContent = boton.dataset.itemName;
+        document.getElementById('formEliminarElemento').action = boton.dataset.url;
+        document.getElementById('nombreElementoEliminar').textContent = boton.dataset.nombre;
     });
 </script>
 {% endblock scripts %}
