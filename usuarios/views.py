@@ -23,6 +23,7 @@ from .forms import (
     EditarUsuarioForm,
     EditarPerfilForm,
     RecuperarPasswordForm,
+    MAX_PASSWORD,
 )
 
 from core.utils import enviar_correo_recuperacion
@@ -252,7 +253,12 @@ def crear_usuario_admin(request):
 
     if request.method == 'POST':
 
-        form = CrearUsuarioAdminForm(request.POST)
+        # CORREGIDO: se pasa request.FILES para recibir la foto de perfil.
+        # El <form> del HTML debe tener enctype="multipart/form-data".
+        form = CrearUsuarioAdminForm(
+            request.POST,
+            request.FILES
+        )
 
         if form.is_valid():
 
@@ -391,8 +397,25 @@ def editar_usuario(request, pk):
         context
     )
 
+
+# ==========================================================
+# ELIMINAR USUARIO
+# ==========================================================
+
 @login_required
 def eliminar_usuario(request, pk):
+
+    # CORREGIDO: solo un administrador puede eliminar usuarios.
+    if request.user.rol != RolUsuario.ADMIN:
+
+        messages.error(
+            request,
+            "❌ Acceso denegado. "
+            "Solo un administrador puede eliminar usuarios."
+        )
+
+        return redirect('lista_usuarios')
+
     usuario = get_object_or_404(Usuario, pk=pk)
 
     if request.method == 'POST':
@@ -403,7 +426,13 @@ def eliminar_usuario(request, pk):
             messages.success(request, "Usuario eliminado correctamente.")
         return redirect('lista_usuarios')
 
-    return render(request, 'usuarios/eliminar_usuario.html', {'usuario': usuario})
+    return render(
+        request,
+        'usuarios/eliminar_usuario.html',
+        {'usuario': usuario}
+    )
+
+
 # ==========================================================
 # RECUPERAR CONTRASEÑA
 # ==========================================================
@@ -590,6 +619,12 @@ def perfil(request):
             if not nueva:
                 errores_password['password_nueva'].append(
                     'Ingrese una contraseña nueva.'
+                )
+            elif len(nueva) > MAX_PASSWORD:
+                # CORREGIDO: límite de longitud también aquí.
+                errores_password['password_nueva'].append(
+                    f'La contraseña no puede superar '
+                    f'{MAX_PASSWORD} caracteres.'
                 )
             else:
                 try:
@@ -818,6 +853,7 @@ def detalle_notificacion(request, pk):
         'private/detalle_notificacion.html',
         context
     )
+
 
 def terminos(request):
     return render(request, 'usuarios/terminos.html')
