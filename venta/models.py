@@ -338,6 +338,22 @@ class DetallePagos(models.Model):
         """
         return cls.objects.first()
 
+    @classmethod
+    def get_or_create_para_venta(cls, venta, **defaults):
+        """
+        Cada venta tiene UN solo detalle de pago (OneToOne).
+        Lo crea con los datos dados o devuelve el existente.
+        """
+        detalle, creado = cls.objects.get_or_create(
+            codigo_venta=venta,
+            defaults=defaults,
+        )
+        if not creado:
+            for campo, valor in defaults.items():
+                setattr(detalle, campo, valor)
+            detalle.save()
+        return detalle
+
     def __str__(self):
         return (
             f"Pago de Venta #"
