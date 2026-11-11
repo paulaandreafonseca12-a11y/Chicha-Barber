@@ -3,124 +3,213 @@
 
 {% block content %}
 <!-- Contenedor principal -->
-<div class="container-fluid px-4 py-4 min-vh-100 theme-calificaciones-listado">
+<div class="container-fluid px-4 py-4 text-white">
 
-    
+    <!-- =====================================================
+         TARJETAS DE MÉTRICAS
+         ===================================================== -->
+    <div class="row g-4 mb-4">
 
-    <!-- TARJETAS DE MÉTRICAS -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4"><div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel"><div><span class="text-uppercase text-muted fw-bold small">Total Calificaciones</span><h2 class="fw-bold text-white mb-0 mt-1">{{ total_calificaciones|default:"0" }}</h2></div><i class="bi bi-star fs-4 text-primary"></i></div></div>
-        <div class="col-md-4"><div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel"><div><span class="text-uppercase text-muted fw-bold small">Calificaciones Positivas</span><h2 class="fw-bold text-success mb-0 mt-1">{{ positivas|default:"0" }}</h2></div><i class="bi bi-hand-thumbs-up-fill fs-4 text-success"></i></div></div>
-        <div class="col-md-4"><div class="p-3 rounded-3 d-flex align-items-center justify-content-between border border-secondary border-opacity-25 admin-theme-metric-panel"><div><span class="text-uppercase text-muted fw-bold small">Calificaciones Negativas</span><h2 class="fw-bold text-danger mb-0 mt-1">{{ negativas|default:"0" }}</h2></div><i class="bi bi-hand-thumbs-down-fill fs-4 text-danger"></i></div></div>
+        <!-- TOTAL CALIFICACIONES -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Total Calificaciones
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-white">
+                            {{ total_calificaciones|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(13, 110, 253, 0.15); border: 1px solid rgba(13, 110, 253, 0.3);">
+                        <i class="bi bi-star fs-2 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CALIFICACIONES POSITIVAS -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Calificaciones Positivas
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-success">
+                            {{ positivas|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(25, 135, 84, 0.15); border: 1px solid rgba(25, 135, 84, 0.3);">
+                        <i class="bi bi-hand-thumbs-up-fill fs-2 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CALIFICACIONES NEGATIVAS -->
+        <div class="col-md-4">
+            <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 h-100 shadow rounded-4 card-hover-effect overflow-hidden">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column">
+                        <span class="text-white-50 fs-7 fw-semibold text-uppercase tracking-wider mb-1">
+                            Calificaciones Negativas
+                        </span>
+                        <h2 class="display-6 fw-bold mb-0 text-danger">
+                            {{ negativas|default:"0" }}
+                        </h2>
+                    </div>
+                    <div class="rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 60px; height: 60px; background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3);">
+                        <i class="bi bi-hand-thumbs-down-fill fs-2 text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL / TABLA -->
-    <div class="p-4 rounded-3 border border-secondary border-opacity-25 admin-theme-table-panel">
+    <!-- =====================================================
+         TABLA DE CALIFICACIONES (Con tarjeta contenedora estilo productos)
+         ===================================================== -->
+    <div class="card bg-gradient-dark text-white border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
         
-        <!-- Título de Sección -->
-        <div class="mb-3">
-            <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
-                <i class="bi bi-list-task" style="color: #e5b869;"></i> Registro de Calificaciones
+        <div class="card-header bg-gradient-header border-bottom border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-white d-flex align-items-center gap-2">
+                <i class="bi bi-list-stars text-warning"></i>
+                Registro de Calificaciones
             </h5>
         </div>
 
-        <!-- Tabla de Datos -->
-        <div class="table-responsive">
-            <table id="tablaCalificaciones" class="table table-hover align-middle mb-0 w-100 admin-theme-table">
-                <thead>
-                    <tr class="border-bottom border-secondary border-opacity-25 text-muted small">
-                        <th scope="col" class="ps-3 py-3 fw-bold text-uppercase">Código</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase">Servicio</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase">Cliente</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase text-center">Puntuación</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase">Comentario</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase text-center">Respuesta</th>
-                        <th scope="col" class="py-3 fw-bold text-uppercase text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div class="card-body p-0">
+            <div class="table-responsive p-3">
+
+                <table id="tablaCalificaciones" class="table table-dark table-hover align-middle mb-0 bg-transparent w-100">
+
+                    <thead>
+                        <tr class="text-white-50 border-bottom border-secondary border-opacity-25 text-uppercase fs-8 tracking-wide bg-black bg-opacity-40">
+                            <th width="100" class="ps-3 py-3">Código</th>
+                            <th class="py-3">Servicio</th>
+                            <th class="py-3">Cliente</th>
+                            <th class="text-center py-3">Puntuación</th>
+                            <th class="py-3">Comentario</th>
+                            <th class="text-center py-3">Respuesta</th>
+                            <th class="text-center py-3" width="120">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
                     {% for calificacion in calificaciones %}
+
                     <tr class="border-bottom border-secondary border-opacity-10">
-                        <!-- Código Dorado -->
-                        <td class="ps-3 fw-bold" style="color: #e5b869;">
+
+                        <td class="fw-bold ps-3" style="color: #edb045;">
                             #CAL-{{ calificacion.id|stringformat:"05d" }}
                         </td>
 
-                        <!-- Servicio -->
                         <td>
-                            <h6 class="mb-0 fw-bold">{{ calificacion.servicio.nombre }}</h6>
+                            <h6 class="mb-0 fw-bold text-white">
+                                {{ calificacion.servicio.nombre }}
+                            </h6>
                         </td>
 
-                        <!-- Cliente -->
-                        <td class="opacity-75">
+                        <td class="text-white-50">
                             {{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre }}
                         </td>
 
-                        <!-- Puntuación (Estrellas) -->
                         <td class="text-center text-nowrap">
-                            {% for i in "123456" %}
-                                {% if forloop.counter == calificacion.puntuacion %}
-                                    <i class="bi bi-star-fill" style="color: #e5b869;"></i>
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= calificacion.puntuacion %}
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 {% else %}
                                     <i class="bi bi-star text-secondary opacity-50"></i>
                                 {% endif %}
                             {% endfor %}
                         </td>
 
-                        <!-- Comentario -->
-                        <td class="opacity-75 small">
+                        <td class="text-white-50 small">
                             {{ calificacion.comentario|truncatechars:50 }}
                         </td>
 
-                        <!-- Badge Pill de Estado Respuesta -->
                         <td class="text-center">
                             {% if calificacion.respuesta %}
-                                <span class="badge rounded-pill bg-success bg-opacity-25 text-success fw-semibold px-3 py-2">
-                                    <i class="bi bi-circle-fill me-1 small"></i> Respondida
+                                <span class="badge badge-status-confirmada rounded-pill px-3 py-2 fw-semibold">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Respondida
                                 </span>
                             {% else %}
-                                <span class="badge rounded-pill bg-warning bg-opacity-25 text-warning fw-semibold px-3 py-2">
-                                    <i class="bi bi-circle-fill me-1 small"></i> Pendiente
+                                <span class="badge badge-status-cancelada rounded-pill px-3 py-2 fw-semibold" style="background: rgba(255, 193, 7, 0.15) !important; color: #ffc107 !important; border: 1px solid rgba(255, 193, 7, 0.3);">
+                                    <i class="bi bi-clock-fill me-1"></i> Pendiente
                                 </span>
                             {% endif %}
                         </td>
 
-                        <!-- Botones de Acción Circulares -->
                         <td class="text-center">
-                            <a href="{% url 'responder-calificacion' calificacion.pk %}" class="btn btn-sm btn-outline-info rounded-circle p-0 me-1 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-color: rgba(13, 202, 240, 0.4);" title="Responder">
-                                <i class="bi bi-chat-right-text"></i>
-                            </a>
-                            <button type="button"
-                               class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
-                               style="width: 32px; height: 32px; border-color: rgba(220, 53, 69, 0.4);"
-                               data-url="{% url 'eliminar_calificacion' calificacion.pk %}"
-                               data-nombre="la calificación de {{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre|default:'Cliente' }}"
-                               data-titulo="Eliminar Calificación"
-                               data-metodo="POST"
-                               onclick="abrirModalEliminar(this)"
-                               title="Eliminar">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{% url 'responder-calificacion' calificacion.pk %}"
+                                   class="btn btn-sm btn-dark text-white border border-secondary rounded-pill px-2 py-1 shadow-sm"
+                                   title="Responder">
+                                    <i class="bi bi-chat-right-text text-info"></i>
+                                </a>
+
+                                <button type="button"
+                                   class="btn btn-sm btn-dark text-white border border-secondary rounded-pill px-2 py-1 shadow-sm"
+                                   data-url="{% url 'eliminar_calificacion' calificacion.pk %}"
+                                   data-nombre="la calificación de {{ calificacion.cliente.get_full_name|default:calificacion.cliente_nombre|default:'Cliente' }}"
+                                   data-titulo="Eliminar Calificación"
+                                   onclick="abrirModalEliminar(this)"
+                                   title="Eliminar">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="mb-2">
+                                <i class="bi bi-star fs-1 text-white-50"></i>
+                            </div>
+                            <h6 class="text-white fw-semibold mb-1">No hay calificaciones registradas</h6>
+                            <p class="text-white-50 small mb-0">Aún no se han recibido opiniones de los clientes.</p>
                         </td>
                     </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-4">No hay calificaciones registradas.</td>
-                    </tr>
+
                     {% endfor %}
-                </tbody>
-            </table>
+
+                    </tbody>
+
+                </table>
+
+            </div>
         </div>
 
     </div>
+
 </div>
 
+<!-- Modal de Confirmación de Eliminación -->
 <div class="modal fade" id="confirmarEliminacion" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-light border border-secondary admin-theme-modal">
-            <div class="modal-header border-secondary"><h5 class="modal-title" id="confirmarEliminacionLabel">Eliminar calificación</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="confirmarEliminacionLabel">Eliminar calificación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
             <div class="modal-body">¿Seguro que deseas eliminar <strong id="nombreElementoEliminar"></strong>?</div>
-            <div class="modal-footer border-secondary"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><form id="formEliminarElemento" method="post">{% csrf_token %}<button type="submit" class="btn btn-danger">Eliminar</button></form></div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formEliminarElemento" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -134,8 +223,8 @@
 <script>
     document.getElementById('confirmarEliminacion').addEventListener('show.bs.modal', function (event) {
         const boton = event.relatedTarget;
-        document.getElementById('formEliminarElemento').action = boton.dataset.deleteUrl;
-        document.getElementById('nombreElementoEliminar').textContent = boton.dataset.itemName;
+        document.getElementById('formEliminarElemento').action = boton.dataset.url;
+        document.getElementById('nombreElementoEliminar').textContent = boton.dataset.nombre;
     });
 </script>
 {% endblock scripts %}

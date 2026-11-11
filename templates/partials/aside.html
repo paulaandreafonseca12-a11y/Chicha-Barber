@@ -1,9 +1,9 @@
 {% load static %}
-<aside class="admin-aside d-flex flex-column flex-shrink-0 p-3 bg-black text-white shadow-lg partials-aside__aside-1 border-end border-gold-subtle">
+<aside id="adminSidebar" class="admin-aside d-flex flex-column flex-shrink-0 p-3 bg-black text-white shadow-lg partials-aside__aside-1 border-end border-gold-subtle" aria-label="Menú de administración">
 
   <!-- BOTÓN CERRAR (SOLO MÓVIL) -->
   <div class="d-lg-none text-end mb-2">
-    <button type="button" class="btn btn-sm text-warning" onclick="closeAside()" aria-label="Cerrar menú">
+    <button type="button" class="btn btn-sm text-warning admin-sidebar-close" onclick="closeAside()" aria-label="Cerrar menú">
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
@@ -24,7 +24,7 @@
   <div class="mb-3">
     <a href="{% url 'inicio_admin' %}" class="d-flex align-items-center px-3 py-2.5 rounded-3 text-decoration-none {% if request.resolver_match.url_name == 'inicio_admin' %}bg-warning bg-opacity-10 text-warning fw-bold border border-warning border-opacity-25{% else %}text-white-50 bg-dark bg-opacity-50{% endif %} partials-aside__a-2">
       <i class="bi bi-speedometer2 me-2 fs-5 {% if request.resolver_match.url_name == 'inicio_admin' %}text-warning{% else %}text-white-50{% endif %}"></i>
-      <span>Dashboard</span>
+      <span>Administración</span>
     </a>
   </div>
 

@@ -1,7 +1,7 @@
 {% extends 'base-admin.html' %}
 {% block title %}Reporte{% endblock %}
 {% block content %}
-<div class="container-fluid py-4">
+<div class="container-fluid py-4 report-page">
 
   <!-- Encabezado + filtros -->
   <div class="rep-header d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
@@ -107,12 +107,14 @@
 
 <style>
   /* ============ REPORTE — estilo moderno ============ */
-  .rep-header { background:#fff; border-radius:14px; padding:18px 22px; box-shadow:0 2px 14px rgba(0,0,0,.06); }
+  .rep-header { background:#fff; border-radius:14px; padding:18px 22px;
+                box-shadow:0 12px 30px rgba(15,23,42,.08), 0 3px 8px rgba(15,23,42,.05), inset 0 1px 0 rgba(255,255,255,.9); }
   .rep-header h2 { font-size:1.5rem; }
   .rep-filtros .form-control { border-radius:8px; }
 
   .kpi { display:flex; align-items:center; gap:14px; background:#fff; border-radius:14px;
-         padding:18px 20px; box-shadow:0 2px 14px rgba(0,0,0,.06); border-left:5px solid #ccc; }
+         padding:18px 20px; box-shadow:0 12px 28px rgba(15,23,42,.09), 0 3px 8px rgba(15,23,42,.05), inset 0 1px 0 rgba(255,255,255,.9);
+         border-left:5px solid #ccc; transition:transform .2s ease, box-shadow .2s ease; }
   .kpi-icono { width:48px; height:48px; border-radius:12px; display:grid; place-items:center;
                font-size:1.4rem; color:#fff; flex:none; }
   .kpi-label { font-size:.8rem; text-transform:uppercase; letter-spacing:.5px; color:#6c757d; font-weight:600; }
@@ -122,7 +124,10 @@
   .kpi-azul   { border-left-color:#0d6efd; } .kpi-azul   .kpi-icono { background:#0d6efd; }
   .kpi-oscuro { border-left-color:#212529; } .kpi-oscuro .kpi-icono { background:#212529; }
 
-  .rep-card { background:#fff; border-radius:14px; box-shadow:0 2px 14px rgba(0,0,0,.06); overflow:hidden; }
+  .rep-card { background:#fff; border-radius:14px;
+              box-shadow:0 12px 30px rgba(15,23,42,.09), 0 3px 8px rgba(15,23,42,.05), inset 0 1px 0 rgba(255,255,255,.9);
+              overflow:hidden; transition:transform .2s ease, box-shadow .2s ease; }
+  .kpi:hover, .rep-card:hover { transform:translateY(-3px); box-shadow:0 18px 36px rgba(15,23,42,.14), 0 6px 12px rgba(15,23,42,.07); }
   .rep-card-head { padding:14px 20px; font-weight:700; border-bottom:1px solid #eef0f2;
                    display:flex; align-items:center; gap:8px; }
   .rep-card-head i { color:#ffc107; font-size:1.15rem; }
@@ -139,6 +144,69 @@
   .badge-info  { background:#cff4fc; color:#055160; }
   .badge-muted { background:#e9ecef; color:#495057; }
   .rep-empty { text-align:center; color:#adb5bd; padding:22px; font-style:italic; }
+
+  body.theme-dark .report-page .rep-header,
+  body.theme-dark .report-page .kpi,
+  body.theme-dark .report-page .rep-card {
+    background: #171d27;
+    color: #e8edf5;
+    border: 1px solid rgba(255,255,255,.09);
+    box-shadow: 0 14px 34px rgba(0,0,0,.34), 0 4px 10px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  body.theme-dark .report-page .kpi:hover,
+  body.theme-dark .report-page .rep-card:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,.42), 0 6px 14px rgba(0,0,0,.28), 0 0 0 1px rgba(255,193,7,.12);
+  }
+  body.theme-dark .report-page .rep-header h2,
+  body.theme-dark .report-page .rep-card-head,
+  body.theme-dark .report-page .kpi-valor {
+    color: #f8fafc;
+  }
+  body.theme-dark .report-page .rep-header label,
+  body.theme-dark .report-page .rep-fecha {
+    color: #aab6c5 !important;
+  }
+  body.theme-dark .report-page .rep-filtros .form-control {
+    background-color: #0f141b;
+    color: #f8fafc;
+    border-color: #394454;
+    color-scheme: dark;
+  }
+  body.theme-dark .report-page .rep-filtros .form-control:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 .2rem rgba(255,193,7,.2);
+  }
+  body.theme-dark .report-page .rep-card-head {
+    border-bottom-color: #303846;
+  }
+  body.theme-dark .report-page .rep-count {
+    background: #303846;
+    color: #e8edf5;
+  }
+  body.theme-dark .report-page .rep-tabla {
+    --bs-table-bg: #171d27;
+    --bs-table-color: #e8edf5;
+    --bs-table-border-color: #303846;
+    --bs-table-hover-bg: #252d39;
+    --bs-table-hover-color: #fff;
+  }
+  body.theme-dark .report-page .rep-tabla thead th {
+    background: #202734;
+    color: #b8c2d0;
+  }
+  body.theme-dark .report-page .rep-tabla tbody tr:hover {
+    background: #252d39;
+    color: #fff;
+  }
+  body.theme-dark .report-page .kpi-oscuro {
+    border-left-color: #64748b;
+  }
+  body.theme-dark .report-page .kpi-oscuro .kpi-icono {
+    background: #475569;
+  }
+  body.theme-dark .report-page .rep-empty {
+    color: #aab6c5;
+  }
 </style>
 
 <script>
