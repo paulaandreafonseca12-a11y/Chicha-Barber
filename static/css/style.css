@@ -34,6 +34,11 @@
 .color-azul { background-color: #22aed1 !important; }
 .color-blanco { background-color: #ffffff !important; }
 
+.asw-btn {
+  background-color: #22aed1 !important;
+  border-color: #22aed1 !important;
+}
+
 /* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
 .theme-switch-item {
   cursor: pointer;
@@ -2178,19 +2183,20 @@ body.theme-light .private-perfil__div-1 {
 .partials-header__a-5 { color:rgba(var(--bs-info-rgb),1)!important; }
 .partials-header__a-6 { cursor: pointer; }
 .asw-container .asw-menu-btn {
-  --asw-btn-size: 48px;
-  --asw-icon-size: 28px;
-  --asw-btn-size-mobile: 38px;
-  --asw-icon-size-mobile: 22px;
+  --asw-btn-size: 60px;
+  --asw-icon-size: 24px;
+  --asw-btn-size-mobile: 60px;
+  --asw-icon-size-mobile: 24px;
 }
 .asw-container .asw-menu {
   top: auto;
   right: 20px;
   bottom: 20px;
   left: auto;
-  width: min(420px, calc(100vw - 40px));
-  height: min(82vh, 760px);
+  width: min(340px, calc(100vw - 40px));
+  height: min(65vh, 560px);
   max-height: calc(100vh - 40px);
+  background-color: #e8f7fb !important;
   border-radius: 16px;
 }
 @media (max-width: 560px) {
@@ -2198,7 +2204,7 @@ body.theme-light .private-perfil__div-1 {
     right: 12px;
     bottom: 12px;
     width: calc(100vw - 24px);
-    height: min(82vh, 680px);
+    height: min(68vh, 560px);
     max-height: calc(100vh - 24px);
   }
 }
@@ -6424,6 +6430,7 @@ body.theme-light .admin-panel-shell main .resumen-compra-card .resumen-ganancia-
   border-color: rgba(220, 38, 38, 0.25) !important;
 }
 
+
 body.theme-dark .admin-panel-shell main .btn-primary,
 body.theme-dark .admin-panel-shell main .btn-info,
 body.theme-dark .admin-panel-shell main .btn-warning,
@@ -7013,443 +7020,4 @@ body.client-site header .client-cart-button i {
   .admin-panel-shell .admin-header-actions {
     gap: 0.3rem !important;
   }
-}
-
-body.theme-dark .admin-panel-shell main .btn-crear-admin,
-body.theme-light .admin-panel-shell main .btn-crear-admin,
-body.theme-dark .admin-panel-shell main .btn-panel-gold,
-body.theme-light .admin-panel-shell main .btn-panel-gold {
-  background: #ffc107 !important;
-  background-image: none !important;
-  border-color: #ffc107 !important;
-  color: #171717 !important;
-  font-weight: 700 !important;
-}
-
-body.theme-dark .admin-panel-shell main .btn-crear-admin:hover,
-body.theme-dark .admin-panel-shell main .btn-crear-admin:focus-visible,
-body.theme-light .admin-panel-shell main .btn-crear-admin:hover,
-body.theme-light .admin-panel-shell main .btn-crear-admin:focus-visible,
-body.theme-dark .admin-panel-shell main .btn-panel-gold:hover,
-body.theme-dark .admin-panel-shell main .btn-panel-gold:focus-visible,
-body.theme-light .admin-panel-shell main .btn-panel-gold:hover,
-body.theme-light .admin-panel-shell main .btn-panel-gold:focus-visible {
-  background: #e0a800 !important;
-  background-image: none !important;
-  border-color: #e0a800 !important;
-  color: #171717 !important;
-}
-
-body.theme-dark .configuracion-admin .btn-outline-warning,
-body.theme-light .configuracion-admin .btn-outline-warning {
-  color: #d6a300 !important;
-  border-color: #d6a300 !important;
-}
-
-body.theme-dark .configuracion-admin .btn-outline-warning:hover,
-body.theme-dark .configuracion-admin .btn-outline-warning:focus-visible,
-body.theme-light .configuracion-admin .btn-outline-warning:hover,
-body.theme-light .configuracion-admin .btn-outline-warning:focus-visible {
-  background: #ffc107 !important;
-  color: #171717 !important;
-}
-
-/* Mantiene los encabezados de las tablas administrativas en el tono oscuro del panel. */
-body.theme-dark .admin-panel-shell main .table.dataTable thead > tr > th,
-body.theme-dark .admin-panel-shell main .table.dataTable thead > tr > td,
-body.theme-light .admin-panel-shell main .table.dataTable thead > tr > th,
-body.theme-light .admin-panel-shell main .table.dataTable thead > tr > td,
-body.theme-dark .admin-panel-shell main .table thead.table-light > tr > th,
-body.theme-dark .admin-panel-shell main .table thead.table-light > tr > td,
-body.theme-light .admin-panel-shell main .table thead.table-light > tr > th,
-body.theme-light .admin-panel-shell main .table thead.table-light > tr > td {
-  background: #101317 !important;
-  background-color: #101317 !important;
-  color: #d1d5db !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-}
-
-body.theme-dark .admin-panel-shell main .table.dataTable thead,
-body.theme-light .admin-panel-shell main .table.dataTable thead,
-body.theme-dark .admin-panel-shell main .table thead.table-light,
-body.theme-light .admin-panel-shell main .table thead.table-light {
-  --bs-table-bg: #101317;
-  --bs-table-color: #d1d5db;
-  --bs-table-border-color: rgba(255, 255, 255, 0.12);
-  background: #101317 !important;
-  color: #d1d5db !important;
-}
-
-/* Presentación uniforme para las tablas del panel administrativo. */
-.admin-panel-shell main .card:has(.table-responsive) {
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 1rem !important;
-  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
-  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.22) !important;
-}
-
-.admin-panel-shell main .card:has(.table-responsive) > .card-header {
-  padding: 1.25rem 1.5rem !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
-  background: linear-gradient(90deg, rgba(255, 193, 7, 0.08) 0%, rgba(20, 23, 26, 0.9) 100%) !important;
-  color: #f8fafc !important;
-}
-
-.admin-panel-shell main .card:has(.table-responsive) > .card-body {
-  background: transparent !important;
-}
-
-.admin-panel-shell main .card:has(.table-responsive) .table-responsive {
-  border-radius: 0.75rem;
-}
-
-.admin-panel-shell main .card:has(.table-responsive) .table {
-  --bs-table-bg: transparent;
-  --bs-table-color: #e5e7eb;
-  --bs-table-border-color: rgba(255, 255, 255, 0.1);
-  --bs-table-hover-bg: rgba(255, 193, 7, 0.06);
-  --bs-table-hover-color: #ffffff;
-  margin-bottom: 0;
-  color: #e5e7eb;
-}
-
-.admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > th,
-.admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > td {
-  padding: 0.9rem 1rem !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  background: #101317 !important;
-  color: #d1d5db !important;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.035em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.admin-panel-shell main .card:has(.table-responsive) .table > tbody > tr > * {
-  padding: 0.9rem 1rem;
-  border-color: rgba(255, 255, 255, 0.09);
-  background-color: transparent;
-}
-
-.admin-panel-shell main .card:has(.table-responsive) .table-hover > tbody > tr:hover > * {
-  --bs-table-bg-state: rgba(255, 193, 7, 0.06);
-  color: #ffffff;
-}
-
-.admin-users-page .admin-users-metric-card {
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 1rem !important;
-  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
-  color: #f8fafc;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.18) !important;
-}
-
-.admin-users-page .admin-users-metric-icon {
-  width: 48px;
-  height: 48px;
-  border: 1px solid rgba(var(--admin-users-accent-rgb), 0.3);
-  background: rgba(var(--admin-users-accent-rgb), 0.12);
-  color: var(--admin-users-accent);
-  flex: 0 0 48px;
-}
-
-.admin-users-page .admin-users-metric-label {
-  color: #aeb6c2 !important;
-}
-
-.admin-users-page .admin-users-metric-value {
-  color: var(--admin-users-accent) !important;
-}
-
-.admin-users-page .admin-users-filters .filtro-rol {
-  min-width: 88px;
-  padding: 0.45rem 1rem;
-  border-color: rgba(255, 193, 7, 0.34) !important;
-  border-radius: 999px;
-  background: #171b20;
-  color: #d1d5db !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.admin-users-page .admin-users-filters {
-  flex: 0 0 auto;
-}
-
-.admin-users-page .admin-users-table-card > .card-header {
-  min-height: 76px;
-}
-
-.admin-users-page .admin-users-filters .filtro-rol:hover,
-.admin-users-page .admin-users-filters .filtro-rol:focus-visible {
-  border-color: #ffc107 !important;
-  background: rgba(255, 193, 7, 0.1);
-  color: #ffc107 !important;
-}
-
-.admin-users-page .admin-users-filters .filtro-rol.border-info {
-  border-color: #ffc107 !important;
-  background: rgba(255, 193, 7, 0.14);
-  color: #ffc107 !important;
-}
-
-@media (max-width: 575.98px) {
-  .admin-users-page .admin-users-table-card > .card-header {
-    align-items: flex-start !important;
-    flex-direction: column;
-  }
-
-  .admin-users-page .admin-users-filters {
-    width: 100%;
-  }
-
-  .admin-users-page .admin-users-filters .filtro-rol {
-    flex: 1 1 auto;
-  }
-}
-
-.admin-panel-shell main .admin-users-page .admin-users-table-card {
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 1rem !important;
-  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-buttons {
-  width: fit-content;
-  max-width: 100%;
-  margin-inline: auto;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-buttons .dt-button {
-  width: auto !important;
-  flex: 0 0 auto;
-}
-
-.admin-panel-shell main .admin-users-page .usuarios-lista-usuarios__div-13 {
-  background-color: transparent !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search input,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_filter input,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper input.form-control,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-length select,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_length select,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper select.form-select {
-  border: 1px solid rgba(255, 193, 7, 0.24) !important;
-  border-radius: 0.5rem;
-  background-color: #11151a !important;
-  color: #f8fafc !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search input:focus,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_filter input:focus,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-length select:focus,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_length select:focus {
-  border-color: #ffc107 !important;
-  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.15) !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search input::placeholder {
-  color: #9ca3af !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-info,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_info,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search label,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_filter label,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-length label,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_length label {
-  color: #cbd5e1 !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-link,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-link {
-  border-color: rgba(255, 193, 7, 0.2) !important;
-  background: #171b20 !important;
-  color: #ffc107 !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-link:hover,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-link:hover,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-item.active .page-link,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-item.active .page-link {
-  border-color: #ffc107 !important;
-  background: #ffc107 !important;
-  color: #171717 !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-item.disabled .page-link,
-.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-item.disabled .page-link {
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  background: #11151a !important;
-  color: #6b7280 !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios > tbody > tr > * {
-  border-color: rgba(255, 255, 255, 0.09) !important;
-  background-color: transparent !important;
-  color: #e5e7eb !important;
-}
-
-.admin-panel-shell main .admin-users-page #tablaUsuarios > tbody > tr:hover > * {
-  background-color: rgba(255, 193, 7, 0.06) !important;
-}
-
-/* Colores de exportación iguales en todas las tablas del panel. */
-.admin-panel-shell main .dt-buttons .dt-button.dt-btn-excel,
-.admin-panel-shell main .dt-buttons button.dt-btn-excel {
-  background: #168a59 !important;
-  background-color: #168a59 !important;
-  border-color: #168a59 !important;
-  color: #ffffff !important;
-}
-
-.admin-panel-shell main .dt-buttons .dt-button.dt-btn-pdf,
-.admin-panel-shell main .dt-buttons button.dt-btn-pdf {
-  background: #e52f46 !important;
-  background-color: #e52f46 !important;
-  border-color: #e52f46 !important;
-  color: #ffffff !important;
-}
-
-.admin-panel-shell main .dt-buttons .dt-button.dt-btn-print,
-.admin-panel-shell main .dt-buttons button.dt-btn-print {
-  background: #0d728b !important;
-  background-color: #0d728b !important;
-  border-color: #0d728b !important;
-  color: #ffffff !important;
-}
-
-.admin-panel-shell main .dt-buttons .dt-button.dt-btn-excel:hover,
-.admin-panel-shell main .dt-buttons button.dt-btn-excel:hover {
-  background: #117247 !important;
-  background-color: #117247 !important;
-  border-color: #117247 !important;
-  color: #ffffff !important;
-}
-
-.admin-panel-shell main .dt-buttons .dt-button.dt-btn-pdf:hover,
-.admin-panel-shell main .dt-buttons button.dt-btn-pdf:hover {
-  background: #c9243a !important;
-  background-color: #c9243a !important;
-  border-color: #c9243a !important;
-  color: #ffffff !important;
-}
-
-.admin-panel-shell main .dt-buttons .dt-button.dt-btn-print:hover,
-.admin-panel-shell main .dt-buttons button.dt-btn-print:hover {
-  background: #095b70 !important;
-  background-color: #095b70 !important;
-  border-color: #095b70 !important;
-  color: #ffffff !important;
-}
-
-/* ==================================================
-   OVERRIDE FINAL - TABLAS EN MODO CLARO
-   Se coloca al final para vencer estilos administrativos
-   oscuros heredados por tarjetas y encabezados de tablas.
-   ================================================== */
-body.theme-light .admin-panel-shell main .card:has(.table-responsive),
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table,
-body.theme-light .admin-panel-shell main .admin-users-page .admin-users-table-card {
-  background: #fffefa !important;
-  background-color: #fffefa !important;
-  color: #30291f !important;
-  border-color: #e5ded1 !important;
-}
-
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header {
-  background: linear-gradient(105deg, #fbf7ed 0%, #eee7d9 58%, #e5ddce 100%) !important;
-  background-color: #eee7d9 !important;
-  color: #30291f !important;
-  border-bottom-color: #e5ded1 !important;
-}
-
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header h5,
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header .text-white,
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header .text-warning {
-  color: #30291f !important;
-}
-
-body.theme-light .admin-panel-shell main .table thead,
-body.theme-light .admin-panel-shell main .table thead tr,
-body.theme-light .admin-panel-shell main .table thead tr.bg-black,
-body.theme-light .admin-panel-shell main .table thead tr.bg-black.bg-opacity-40,
-body.theme-light .admin-panel-shell main .table.dataTable thead,
-body.theme-light .admin-panel-shell main .table thead.table-light {
-  background: #e9e2d6 !important;
-  background-color: #e9e2d6 !important;
-  --bs-table-bg: #e9e2d6;
-  --bs-table-color: #51452f;
-  color: #51452f !important;
-}
-
-body.theme-light .admin-panel-shell main .table thead > tr > th,
-body.theme-light .admin-panel-shell main .table thead > tr > td,
-body.theme-light .admin-panel-shell main .table.dataTable thead > tr > th,
-body.theme-light .admin-panel-shell main .table.dataTable thead > tr > td,
-body.theme-light .admin-panel-shell main .table thead.table-light > tr > th,
-body.theme-light .admin-panel-shell main .table thead.table-light > tr > td,
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > th,
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > td {
-  background: #e9e2d6 !important;
-  background-color: #e9e2d6 !important;
-  color: #51452f !important;
-  border-color: #e5ded1 !important;
-}
-
-body.theme-light .admin-panel-shell main .table,
-body.theme-light .admin-panel-shell main .table-dark,
-body.theme-light .admin-panel-shell main .table tbody,
-body.theme-light .admin-panel-shell main .table tbody tr,
-body.theme-light .admin-panel-shell main .table tbody td,
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table > tbody > tr > * {
-  --bs-table-bg: rgba(255, 254, 250, 0.72);
-  --bs-table-color: #30291f;
-  --bs-table-border-color: #e5ded1;
-  background-color: transparent !important;
-  color: #30291f !important;
-  border-color: #e5ded1 !important;
-}
-
-body.theme-light .admin-panel-shell main .table tbody td .text-white,
-body.theme-light .admin-panel-shell main .table tbody td .text-white-50,
-body.theme-light .admin-panel-shell main .table tbody td strong,
-body.theme-light .admin-panel-shell main .table tbody td .fw-bold {
-  color: #30291f !important;
-}
-
-body.theme-light .admin-panel-shell main .table-hover > tbody > tr:hover > *,
-body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table-hover > tbody > tr:hover > * {
-  --bs-table-bg-state: rgba(176, 141, 87, 0.1);
-  background-color: rgba(176, 141, 87, 0.1) !important;
-  color: #30291f !important;
-}
-
-/* ==================================================
-   OVERRIDE FINAL - BARRA DE NAVEGACION PUBLICA
-   El modo claro no debe convertir la barra negra en
-   un degradado claro. Se conserva el verde-negro original.
-   ================================================== */
-body.theme-light header.color-negro-bg,
-body.theme-light:not(.admin-panel-shell) header.color-negro-bg {
-  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #292d30 100%) !important;
-  background-color: #dedbd3 !important;
-  background-image: none !important;
-  border-bottom: 1px solid rgba(30, 35, 39, 0.25) !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16) !important;
-}
-
-body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link,
-body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
-body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
-  color: #30291f !important;
-}
-
-body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
-body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
-  background: rgba(176, 141, 87, 0.18) !important;
-  color: #745626 !important;
 }
