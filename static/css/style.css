@@ -7021,3 +7021,101 @@ body.client-site header .client-cart-button i {
     gap: 0.3rem !important;
   }
 }
+
+/* Barra administrativa clara siguiendo la referencia marfil, gris y dorado. */
+body.theme-light .admin-panel-shell header nav.admin-navbar.bg-black {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #737676 100%) !important;
+  background-color: #dedbd3 !important;
+  border-bottom: 1px solid rgba(30, 35, 39, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14) !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar .admin-header-title,
+body.theme-light .admin-panel-shell header nav.admin-navbar .admin-header-title--mobile strong,
+body.theme-light .admin-panel-shell header nav.admin-navbar .admin-header-title--mobile small {
+  color: #795923 !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar .partials-campanita__a-1 {
+  background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
+  border: 1px solid rgba(121, 89, 35, 0.38) !important;
+  color: #30291f !important;
+  box-shadow: 0 5px 14px rgba(93, 67, 25, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar .partials-campanita__a-1 i {
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown {
+  background: linear-gradient(135deg, #fffaf0 0%, #ead9b8 100%) !important;
+  border-color: #b08d57 !important;
+  color: #403729 !important;
+  box-shadow: 0 4px 12px rgba(55, 43, 25, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown .text-white,
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown > i {
+  color: #403729 !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown:hover,
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown:focus-visible,
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown[aria-expanded="true"] {
+  background: linear-gradient(135deg, #fffdf7 0%, #dfc99e 100%) !important;
+  border-color: #967342 !important;
+}
+
+/* La barra pública usa el mismo diseño de la referencia en ambos temas. */
+body.client-site > header.color-negro-bg {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #737676 100%) !important;
+  background-color: #dedbd3 !important;
+  background-image: none !important;
+  border-bottom: 1px solid rgba(30, 35, 39, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14) !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
+  color: #403729 !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
+  background: rgba(176, 141, 87, 0.18) !important;
+  color: #795923 !important;
+}
+
+body.client-site > header.color-negro-bg #navbarDropdown {
+  background: linear-gradient(135deg, #fffaf0 0%, #ead9b8 100%) !important;
+  border: 1px solid #b08d57 !important;
+  color: #403729 !important;
+  box-shadow: 0 4px 12px rgba(55, 43, 25, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
+}
+
+body.client-site > header.color-negro-bg #navbarDropdown span,
+body.client-site > header.color-negro-bg #navbarDropdown > i {
+  color: #403729 !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
+  background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
+  border: 1px solid rgba(121, 89, 35, 0.38) !important;
+  color: #30291f !important;
+  box-shadow: 0 5px 14px rgba(93, 67, 25, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1 i,
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button i {
+  color: #30291f !important;
+}
+
+@media (max-width: 767.98px) {
+  body.client-site > header.color-negro-bg > .container > .d-flex > .nav {
+    border: 1px solid rgba(121, 89, 35, 0.2);
+    background: rgba(251, 248, 241, 0.98) !important;
+  }
+}
