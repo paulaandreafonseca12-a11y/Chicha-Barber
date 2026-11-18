@@ -7162,8 +7162,8 @@ body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown[aria
   border-color: #967342 !important;
 }
 
-/* La barra pública usa el mismo diseño de la referencia en ambos temas. */
-body.client-site > header.color-negro-bg {
+/* La barra pública usa el diseño de referencia solo en modo claro. */
+body.client-site.theme-light > header.color-negro-bg {
   background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #737676 100%) !important;
   background-color: #dedbd3 !important;
   background-image: none !important;
@@ -7171,46 +7171,74 @@ body.client-site > header.color-negro-bg {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14) !important;
 }
 
+<<<<<<< HEAD
+body.client-site.theme-dark > header.color-negro-bg {
+  background: #000000 !important;
+}
+
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
+=======
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
+>>>>>>> 68828eb0a44c3d1886244b1d1378cb0d681d407a
   color: #403729 !important;
 }
 
-body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
-body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
-body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
   background: rgba(176, 141, 87, 0.18) !important;
   color: #795923 !important;
 }
 
-body.client-site > header.color-negro-bg #navbarDropdown {
+body.client-site.theme-light > header.color-negro-bg #navbarDropdown {
   background: linear-gradient(135deg, #fffaf0 0%, #ead9b8 100%) !important;
   border: 1px solid #b08d57 !important;
   color: #403729 !important;
   box-shadow: 0 4px 12px rgba(55, 43, 25, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
 }
 
-body.client-site > header.color-negro-bg #navbarDropdown span,
-body.client-site > header.color-negro-bg #navbarDropdown > i {
+body.client-site.theme-light > header.color-negro-bg #navbarDropdown span,
+body.client-site.theme-light > header.color-negro-bg #navbarDropdown > i {
   color: #403729 !important;
+}
+
+<<<<<<< HEAD
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold,
+body.client-site.theme-dark > header.color-negro-bg #navbarDropdown,
+body.client-site.theme-dark > header.color-negro-bg #navbarDropdown span,
+body.client-site.theme-dark > header.color-negro-bg #navbarDropdown > i {
+  color: #ffffff !important;
 }
 
 body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
 body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
+=======
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
+>>>>>>> 68828eb0a44c3d1886244b1d1378cb0d681d407a
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
   border: 1px solid rgba(121, 89, 35, 0.38) !important;
   color: #30291f !important;
   box-shadow: 0 5px 14px rgba(93, 67, 25, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
 }
 
-body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1 i,
-body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button i {
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1 i,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button i {
   color: #30291f !important;
 }
 
 @media (max-width: 767.98px) {
-  body.client-site > header.color-negro-bg > .container > .d-flex > .nav {
+  body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav {
     border: 1px solid rgba(121, 89, 35, 0.2);
     background: rgba(251, 248, 241, 0.98) !important;
   }
