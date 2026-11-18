@@ -1,3 +1,36 @@
+
+/* ==================================================================
+   PALETA DE COLORES - CHICHA BARBER
+   Variables globales de la identidad visual del proyecto
+   ================================================================== */
+:root {
+  /* Colores principales */
+  --chicha-cyan: #22aed1;
+  --chicha-cyan-dark: #126782;
+  --chicha-blue: #2563eb;
+  --chicha-blue-light: #3b82f6;
+  --chicha-blue-deep: #1e40af;
+  --chicha-blue-dark: #0b1f3a;
+
+  /* Dorados y bronces */
+  --chicha-gold: #d4af37;
+  --chicha-gold-dark: #8a6f23;
+  --chicha-bronze: #a9874f;
+  --chicha-bronze-light: #c4a66a;
+  --chicha-bronze-deep: #795923;
+
+  /* Neutros y superficies */
+  --chicha-black: #000c06;
+  --chicha-charcoal: #170212;
+  --chicha-surface: #0d1b2a;
+  --chicha-surface-2: #101f33;
+  --chicha-white: #ffffff;
+  --chicha-text: #f8fafc;
+  --chicha-muted: #94a3b8;
+  --chicha-text-light: #64748b;
+}
+
+/* Pale background for light mode */
 .color-azul { background-color: #22aed1 !important; }
 .color-blanco { background-color: #ffffff !important; }
 
@@ -1468,6 +1501,21 @@ body.theme-light .flatpickr-time .numInputWrapper span.arrowDown:after {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(34, 174, 209, 0.1) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     animation: chatSlideIn 0.3s ease-out;
+}
+
+@media (max-width: 575.98px) {
+    .chat-widget {
+        width: calc(100vw - 24px) !important;
+        height: min(500px, calc(100dvh - 112px)) !important;
+        right: 12px !important;
+        bottom: 88px !important;
+    }
+
+    .chat-widget .chat-body {
+        height: auto !important;
+        min-height: 0;
+        flex: 1 1 auto;
+    }
 }
 
 @keyframes chatSlideIn {
@@ -3786,25 +3834,6 @@ body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .dro
   background: rgba(176, 141, 87, 0.14) !important;
 }
 
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link {
-  color: #8a642c !important;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900 !important;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link i {
-  color: #9a6e28 !important;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-label {
-  background: linear-gradient(100deg, #795923 0%, #b08d57 48%, #765322 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent !important;
-}
-
 body.theme-light .admin-panel-shell header nav.navbar .partials-campanita__a-1 {
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
   border: 1px solid rgba(121, 89, 35, 0.38) !important;
@@ -3900,6 +3929,23 @@ body.theme-light .admin-panel-shell main .table thead:not(.thead-azul) tr {
 body.theme-light .admin-panel-shell main .table thead:not(.thead-azul) th,
 body.theme-light .admin-panel-shell main .table tbody td {
   color: #3d372d !important;
+  border-color: #e5ded1 !important;
+}
+
+body.theme-light .admin-panel-shell main .table thead .admin-table-head,
+body.theme-light .admin-panel-shell main .table thead .admin-table-head th {
+  background: #e9e2d6 !important;
+  color: #51452f !important;
+  border-color: #e5ded1 !important;
+}
+
+/* Encabezados claros para todas las tablas del panel en modo claro,
+   incluso las que aún usan las clases oscuras de Bootstrap. */
+body.theme-light .admin-panel-shell main .table thead tr.bg-black,
+body.theme-light .admin-panel-shell main .table thead tr.bg-black.bg-opacity-40,
+body.theme-light .admin-panel-shell main .table thead tr.bg-black th {
+  background: #e9e2d6 !important;
+  color: #51452f !important;
   border-color: #e5ded1 !important;
 }
 
@@ -4600,6 +4646,169 @@ body.theme-dark .admin-panel-shell main #tablaPromociones tbody .servicios-lista
   color: #ffffff !important;
 }
 
+@media (min-width: 992px) {
+  .admin-panel-shell .admin-aside {
+    transition: width 0.25s ease, flex-basis 0.25s ease, padding 0.25s ease;
+  }
+
+  .admin-panel-shell .admin-aside-brand {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    gap: 0.5rem;
+  }
+
+  .admin-panel-shell .admin-aside-brand img {
+    width: 44px;
+    height: 44px;
+    margin: 0 !important;
+    object-fit: contain;
+  }
+
+  .admin-panel-shell .admin-aside-brand > .admin-aside-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 1rem !important;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+  }
+
+  .admin-panel-shell .admin-aside-toggle {
+    display: inline-flex !important;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: auto;
+    padding: 0 !important;
+    border: 1px solid rgba(255, 193, 7, 0.42) !important;
+    border-radius: 50% !important;
+    color: #ffc107 !important;
+    background: transparent !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .admin-panel-shell .admin-aside-toggle:hover {
+    border-color: #ffc107 !important;
+    background: rgba(255, 193, 7, 0.12) !important;
+    transform: scale(1.05);
+  }
+
+  .admin-panel-shell .admin-aside-toggle i {
+    font-size: 0.95rem;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact {
+    width: 76px !important;
+    flex-basis: 76px !important;
+    align-items: center;
+    padding: 0.75rem !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand img {
+    width: 40px;
+    height: 40px;
+    margin: 0 !important;
+    object-fit: contain;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand {
+    gap: 0.35rem;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-label,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-collapse,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button::after {
+    display: none !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact #sidebarAccordion,
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand,
+  .admin-panel-shell .admin-aside.aside-compact > div.mb-3 {
+    width: 100%;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button {
+    box-sizing: border-box !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    min-height: 46px;
+    flex: 0 0 48px;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0 !important;
+    border: 1px solid transparent !important;
+    border-radius: 0.85rem !important;
+    background: transparent !important;
+    color: #ffc107 !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact > div.mb-3 {
+    display: flex;
+    justify-content: center;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2 {
+    align-items: center;
+    border-left-width: 1px !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2:hover,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button:hover {
+    border-color: rgba(255, 193, 7, 0.28) !important;
+    background: rgba(255, 193, 7, 0.1) !important;
+    color: #ffd54f !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2.fw-bold,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button:not(.collapsed) {
+    border-color: rgba(255, 193, 7, 0.4) !important;
+    background: rgba(255, 193, 7, 0.12) !important;
+    color: #ffc107 !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 193, 7, 0.06);
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .accordion-item {
+    width: 100%;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button i,
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2 i {
+    margin: 0 !important;
+    font-size: 1.25rem !important;
+    color: #ffc107 !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-toggle {
+    align-self: center;
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+    margin: 0 auto !important;
+    justify-content: center;
+    padding: 0;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: #171b20 !important;
+    color: #ffc107 !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-toggle:hover {
+    border-color: rgba(255, 193, 7, 0.35) !important;
+    background: #22272e !important;
+  }
+}
+
 /* Mensajes y errores de validación compartidos por todas las secciones */
 .app-feedback-stack {
   display: grid;
@@ -5170,25 +5379,6 @@ body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .tex
 
 body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .dropdown-item:hover {
   background: rgba(176, 141, 87, 0.14) !important;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link {
-  color: #8a642c !important;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900 !important;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link i {
-  color: #9a6e28 !important;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-label {
-  background: linear-gradient(100deg, #795923 0%, #b08d57 48%, #765322 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent !important;
 }
 
 body.theme-light .admin-panel-shell header nav.navbar .partials-campanita__a-1 {
@@ -6373,6 +6563,24 @@ body.theme-dark .admin-chat-fab:focus-visible {
   box-shadow: 0 12px 40px rgba(255, 193, 7, 0.45) !important;
 }
 
+body.client-site > header.color-negro-bg {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: rgba(0, 12, 6, 0.96) !important;
+  border-bottom: 1px solid rgba(255, 193, 7, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.admin-panel-shell main .admin-table-code,
+body.client-site main .admin-table-code {
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
 body.client-site.theme-dark {
   --bs-primary: #ffc107;
   --bs-primary-rgb: 255, 193, 7;
@@ -6805,4 +7013,443 @@ body.client-site header .client-cart-button i {
   .admin-panel-shell .admin-header-actions {
     gap: 0.3rem !important;
   }
+}
+
+body.theme-dark .admin-panel-shell main .btn-crear-admin,
+body.theme-light .admin-panel-shell main .btn-crear-admin,
+body.theme-dark .admin-panel-shell main .btn-panel-gold,
+body.theme-light .admin-panel-shell main .btn-panel-gold {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
+  font-weight: 700 !important;
+}
+
+body.theme-dark .admin-panel-shell main .btn-crear-admin:hover,
+body.theme-dark .admin-panel-shell main .btn-crear-admin:focus-visible,
+body.theme-light .admin-panel-shell main .btn-crear-admin:hover,
+body.theme-light .admin-panel-shell main .btn-crear-admin:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-panel-gold:hover,
+body.theme-dark .admin-panel-shell main .btn-panel-gold:focus-visible,
+body.theme-light .admin-panel-shell main .btn-panel-gold:hover,
+body.theme-light .admin-panel-shell main .btn-panel-gold:focus-visible {
+  background: #e0a800 !important;
+  background-image: none !important;
+  border-color: #e0a800 !important;
+  color: #171717 !important;
+}
+
+body.theme-dark .configuracion-admin .btn-outline-warning,
+body.theme-light .configuracion-admin .btn-outline-warning {
+  color: #d6a300 !important;
+  border-color: #d6a300 !important;
+}
+
+body.theme-dark .configuracion-admin .btn-outline-warning:hover,
+body.theme-dark .configuracion-admin .btn-outline-warning:focus-visible,
+body.theme-light .configuracion-admin .btn-outline-warning:hover,
+body.theme-light .configuracion-admin .btn-outline-warning:focus-visible {
+  background: #ffc107 !important;
+  color: #171717 !important;
+}
+
+/* Mantiene los encabezados de las tablas administrativas en el tono oscuro del panel. */
+body.theme-dark .admin-panel-shell main .table.dataTable thead > tr > th,
+body.theme-dark .admin-panel-shell main .table.dataTable thead > tr > td,
+body.theme-light .admin-panel-shell main .table.dataTable thead > tr > th,
+body.theme-light .admin-panel-shell main .table.dataTable thead > tr > td,
+body.theme-dark .admin-panel-shell main .table thead.table-light > tr > th,
+body.theme-dark .admin-panel-shell main .table thead.table-light > tr > td,
+body.theme-light .admin-panel-shell main .table thead.table-light > tr > th,
+body.theme-light .admin-panel-shell main .table thead.table-light > tr > td {
+  background: #101317 !important;
+  background-color: #101317 !important;
+  color: #d1d5db !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.theme-dark .admin-panel-shell main .table.dataTable thead,
+body.theme-light .admin-panel-shell main .table.dataTable thead,
+body.theme-dark .admin-panel-shell main .table thead.table-light,
+body.theme-light .admin-panel-shell main .table thead.table-light {
+  --bs-table-bg: #101317;
+  --bs-table-color: #d1d5db;
+  --bs-table-border-color: rgba(255, 255, 255, 0.12);
+  background: #101317 !important;
+  color: #d1d5db !important;
+}
+
+/* Presentación uniforme para las tablas del panel administrativo. */
+.admin-panel-shell main .card:has(.table-responsive) {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.22) !important;
+}
+
+.admin-panel-shell main .card:has(.table-responsive) > .card-header {
+  padding: 1.25rem 1.5rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.08) 0%, rgba(20, 23, 26, 0.9) 100%) !important;
+  color: #f8fafc !important;
+}
+
+.admin-panel-shell main .card:has(.table-responsive) > .card-body {
+  background: transparent !important;
+}
+
+.admin-panel-shell main .card:has(.table-responsive) .table-responsive {
+  border-radius: 0.75rem;
+}
+
+.admin-panel-shell main .card:has(.table-responsive) .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: #e5e7eb;
+  --bs-table-border-color: rgba(255, 255, 255, 0.1);
+  --bs-table-hover-bg: rgba(255, 193, 7, 0.06);
+  --bs-table-hover-color: #ffffff;
+  margin-bottom: 0;
+  color: #e5e7eb;
+}
+
+.admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > th,
+.admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > td {
+  padding: 0.9rem 1rem !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: #101317 !important;
+  color: #d1d5db !important;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-panel-shell main .card:has(.table-responsive) .table > tbody > tr > * {
+  padding: 0.9rem 1rem;
+  border-color: rgba(255, 255, 255, 0.09);
+  background-color: transparent;
+}
+
+.admin-panel-shell main .card:has(.table-responsive) .table-hover > tbody > tr:hover > * {
+  --bs-table-bg-state: rgba(255, 193, 7, 0.06);
+  color: #ffffff;
+}
+
+.admin-users-page .admin-users-metric-card {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
+  color: #f8fafc;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.18) !important;
+}
+
+.admin-users-page .admin-users-metric-icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(var(--admin-users-accent-rgb), 0.3);
+  background: rgba(var(--admin-users-accent-rgb), 0.12);
+  color: var(--admin-users-accent);
+  flex: 0 0 48px;
+}
+
+.admin-users-page .admin-users-metric-label {
+  color: #aeb6c2 !important;
+}
+
+.admin-users-page .admin-users-metric-value {
+  color: var(--admin-users-accent) !important;
+}
+
+.admin-users-page .admin-users-filters .filtro-rol {
+  min-width: 88px;
+  padding: 0.45rem 1rem;
+  border-color: rgba(255, 193, 7, 0.34) !important;
+  border-radius: 999px;
+  background: #171b20;
+  color: #d1d5db !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-users-page .admin-users-filters {
+  flex: 0 0 auto;
+}
+
+.admin-users-page .admin-users-table-card > .card-header {
+  min-height: 76px;
+}
+
+.admin-users-page .admin-users-filters .filtro-rol:hover,
+.admin-users-page .admin-users-filters .filtro-rol:focus-visible {
+  border-color: #ffc107 !important;
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107 !important;
+}
+
+.admin-users-page .admin-users-filters .filtro-rol.border-info {
+  border-color: #ffc107 !important;
+  background: rgba(255, 193, 7, 0.14);
+  color: #ffc107 !important;
+}
+
+@media (max-width: 575.98px) {
+  .admin-users-page .admin-users-table-card > .card-header {
+    align-items: flex-start !important;
+    flex-direction: column;
+  }
+
+  .admin-users-page .admin-users-filters {
+    width: 100%;
+  }
+
+  .admin-users-page .admin-users-filters .filtro-rol {
+    flex: 1 1 auto;
+  }
+}
+
+.admin-panel-shell main .admin-users-page .admin-users-table-card {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-buttons {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-buttons .dt-button {
+  width: auto !important;
+  flex: 0 0 auto;
+}
+
+.admin-panel-shell main .admin-users-page .usuarios-lista-usuarios__div-13 {
+  background-color: transparent !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search input,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_filter input,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper input.form-control,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-length select,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_length select,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper select.form-select {
+  border: 1px solid rgba(255, 193, 7, 0.24) !important;
+  border-radius: 0.5rem;
+  background-color: #11151a !important;
+  color: #f8fafc !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search input:focus,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_filter input:focus,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-length select:focus,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_length select:focus {
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.15) !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search input::placeholder {
+  color: #9ca3af !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-info,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_info,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-search label,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_filter label,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-length label,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_length label {
+  color: #cbd5e1 !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-link,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-link {
+  border-color: rgba(255, 193, 7, 0.2) !important;
+  background: #171b20 !important;
+  color: #ffc107 !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-link:hover,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-link:hover,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-item.active .page-link,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-item.active .page-link {
+  border-color: #ffc107 !important;
+  background: #ffc107 !important;
+  color: #171717 !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dt-paging .page-item.disabled .page-link,
+.admin-panel-shell main .admin-users-page #tablaUsuarios_wrapper .dataTables_paginate .page-item.disabled .page-link {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: #11151a !important;
+  color: #6b7280 !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios > tbody > tr > * {
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  background-color: transparent !important;
+  color: #e5e7eb !important;
+}
+
+.admin-panel-shell main .admin-users-page #tablaUsuarios > tbody > tr:hover > * {
+  background-color: rgba(255, 193, 7, 0.06) !important;
+}
+
+/* Colores de exportación iguales en todas las tablas del panel. */
+.admin-panel-shell main .dt-buttons .dt-button.dt-btn-excel,
+.admin-panel-shell main .dt-buttons button.dt-btn-excel {
+  background: #168a59 !important;
+  background-color: #168a59 !important;
+  border-color: #168a59 !important;
+  color: #ffffff !important;
+}
+
+.admin-panel-shell main .dt-buttons .dt-button.dt-btn-pdf,
+.admin-panel-shell main .dt-buttons button.dt-btn-pdf {
+  background: #e52f46 !important;
+  background-color: #e52f46 !important;
+  border-color: #e52f46 !important;
+  color: #ffffff !important;
+}
+
+.admin-panel-shell main .dt-buttons .dt-button.dt-btn-print,
+.admin-panel-shell main .dt-buttons button.dt-btn-print {
+  background: #0d728b !important;
+  background-color: #0d728b !important;
+  border-color: #0d728b !important;
+  color: #ffffff !important;
+}
+
+.admin-panel-shell main .dt-buttons .dt-button.dt-btn-excel:hover,
+.admin-panel-shell main .dt-buttons button.dt-btn-excel:hover {
+  background: #117247 !important;
+  background-color: #117247 !important;
+  border-color: #117247 !important;
+  color: #ffffff !important;
+}
+
+.admin-panel-shell main .dt-buttons .dt-button.dt-btn-pdf:hover,
+.admin-panel-shell main .dt-buttons button.dt-btn-pdf:hover {
+  background: #c9243a !important;
+  background-color: #c9243a !important;
+  border-color: #c9243a !important;
+  color: #ffffff !important;
+}
+
+.admin-panel-shell main .dt-buttons .dt-button.dt-btn-print:hover,
+.admin-panel-shell main .dt-buttons button.dt-btn-print:hover {
+  background: #095b70 !important;
+  background-color: #095b70 !important;
+  border-color: #095b70 !important;
+  color: #ffffff !important;
+}
+
+/* ==================================================
+   OVERRIDE FINAL - TABLAS EN MODO CLARO
+   Se coloca al final para vencer estilos administrativos
+   oscuros heredados por tarjetas y encabezados de tablas.
+   ================================================== */
+body.theme-light .admin-panel-shell main .card:has(.table-responsive),
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table,
+body.theme-light .admin-panel-shell main .admin-users-page .admin-users-table-card {
+  background: #fffefa !important;
+  background-color: #fffefa !important;
+  color: #30291f !important;
+  border-color: #e5ded1 !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header {
+  background: linear-gradient(105deg, #fbf7ed 0%, #eee7d9 58%, #e5ddce 100%) !important;
+  background-color: #eee7d9 !important;
+  color: #30291f !important;
+  border-bottom-color: #e5ded1 !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header h5,
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header .text-white,
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) > .card-header .text-warning {
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main .table thead,
+body.theme-light .admin-panel-shell main .table thead tr,
+body.theme-light .admin-panel-shell main .table thead tr.bg-black,
+body.theme-light .admin-panel-shell main .table thead tr.bg-black.bg-opacity-40,
+body.theme-light .admin-panel-shell main .table.dataTable thead,
+body.theme-light .admin-panel-shell main .table thead.table-light {
+  background: #e9e2d6 !important;
+  background-color: #e9e2d6 !important;
+  --bs-table-bg: #e9e2d6;
+  --bs-table-color: #51452f;
+  color: #51452f !important;
+}
+
+body.theme-light .admin-panel-shell main .table thead > tr > th,
+body.theme-light .admin-panel-shell main .table thead > tr > td,
+body.theme-light .admin-panel-shell main .table.dataTable thead > tr > th,
+body.theme-light .admin-panel-shell main .table.dataTable thead > tr > td,
+body.theme-light .admin-panel-shell main .table thead.table-light > tr > th,
+body.theme-light .admin-panel-shell main .table thead.table-light > tr > td,
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > th,
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table > thead > tr > td {
+  background: #e9e2d6 !important;
+  background-color: #e9e2d6 !important;
+  color: #51452f !important;
+  border-color: #e5ded1 !important;
+}
+
+body.theme-light .admin-panel-shell main .table,
+body.theme-light .admin-panel-shell main .table-dark,
+body.theme-light .admin-panel-shell main .table tbody,
+body.theme-light .admin-panel-shell main .table tbody tr,
+body.theme-light .admin-panel-shell main .table tbody td,
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table > tbody > tr > * {
+  --bs-table-bg: rgba(255, 254, 250, 0.72);
+  --bs-table-color: #30291f;
+  --bs-table-border-color: #e5ded1;
+  background-color: transparent !important;
+  color: #30291f !important;
+  border-color: #e5ded1 !important;
+}
+
+body.theme-light .admin-panel-shell main .table tbody td .text-white,
+body.theme-light .admin-panel-shell main .table tbody td .text-white-50,
+body.theme-light .admin-panel-shell main .table tbody td strong,
+body.theme-light .admin-panel-shell main .table tbody td .fw-bold {
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main .table-hover > tbody > tr:hover > *,
+body.theme-light .admin-panel-shell main .card:has(.table-responsive) .table-hover > tbody > tr:hover > * {
+  --bs-table-bg-state: rgba(176, 141, 87, 0.1);
+  background-color: rgba(176, 141, 87, 0.1) !important;
+  color: #30291f !important;
+}
+
+/* ==================================================
+   OVERRIDE FINAL - BARRA DE NAVEGACION PUBLICA
+   El modo claro no debe convertir la barra negra en
+   un degradado claro. Se conserva el verde-negro original.
+   ================================================== */
+body.theme-light header.color-negro-bg,
+body.theme-light:not(.admin-panel-shell) header.color-negro-bg {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #292d30 100%) !important;
+  background-color: #dedbd3 !important;
+  background-image: none !important;
+  border-bottom: 1px solid rgba(30, 35, 39, 0.25) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16) !important;
+}
+
+body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link,
+body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
+body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
+  color: #30291f !important;
+}
+
+body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+body.theme-light header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
+  background: rgba(176, 141, 87, 0.18) !important;
+  color: #745626 !important;
 }

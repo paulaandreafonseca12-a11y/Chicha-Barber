@@ -274,18 +274,38 @@ class ReservaModelTest(TestCase):
 
     def test_notificacion_usuario(self):
 
-        Reserva.objects.create(
+        reserva = Reserva.objects.create(
             agenda=self.agenda,
             usuario=self.usuario,
             servicio=self.servicio
         )
 
-        self.assertTrue(
-            Notificacion.objects.filter(
-                usuario=self.usuario,
-                tipo="reserva"
-            ).exists()
+        notificacion = Notificacion.objects.get(
+            usuario=self.usuario,
+            tipo="reserva",
         )
+        self.assertEqual(notificacion.reserva, reserva)
+
+    def test_notificacion_abre_el_detalle_de_la_reserva_seleccionada(self):
+        reserva = Reserva.objects.create(
+            agenda=self.agenda,
+            usuario=self.usuario,
+            servicio=self.servicio,
+        )
+        notificacion = Notificacion.objects.get(
+            usuario=self.admin,
+            reserva=reserva,
+        )
+        self.client.force_login(self.admin)
+
+        response = self.client.get(
+            reverse('detalle_notificacion', args=[notificacion.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['objeto_relacionado'], reserva)
+        self.assertEqual(response.context['plantilla_base'], 'base-admin.html')
+        self.assertContains(response, self.servicio.nombre)
 
     def test_notificacion_admin(self):
 

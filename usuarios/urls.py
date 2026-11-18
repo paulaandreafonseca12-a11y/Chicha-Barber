@@ -34,5 +34,6 @@ urlpatterns = [
     path('perfil/', views.perfil, name='perfil'),
     path('cambiar-tema/', views.cambiar_tema, name='cambiar_tema'),
     path('notificaciones/marcar-leidas/', views.marcar_notificaciones_leidas, name='marcar_notificaciones_leidas'),
+    path('notificaciones/historial/', views.historial_notificaciones, name='historial_notificaciones'),
     path('notificaciones/<int:pk>/', views.detalle_notificacion, name='detalle_notificacion'),  # 👈 NUEVA
 ]

@@ -10,7 +10,7 @@
 
     <div class="d-flex justify-content-end align-items-center mb-4">
         <a href="{% url 'crear_proveedor' %}"
-           class="btn color-azul text-white fw-bold">
+           class="btn color-azul text-white fw-bold btn-crear-admin">
 
 
             <i class="bi bi-plus-circle me-1"></i>
@@ -36,7 +36,7 @@
             <div class="table-responsive">
 
 
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle" data-admin-datatable data-admin-table-actions>
 
 
                     <thead class="thead-azul">
@@ -91,7 +91,7 @@
                     <tr>
 
 
-                        <td class="fw-bold">
+                        <td class="fw-bold admin-table-code">
 
                             {{ proveedor.codigo }}
 
@@ -214,3 +214,10 @@
 
 
 {% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static 'css/datatables.css' %}">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="{% static 'js/datatables.js' %}"></script>
+<script src="{% static 'js/tconf/tconf-tablasAdmin.js' %}"></script>
+{% endblock scripts %}

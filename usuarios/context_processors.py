@@ -12,13 +12,11 @@ def notificaciones(request):
     # Se cambió "-fecha_creacion" por "-fecha"
     notificaciones_qs = (
         Notificacion.objects
-        .filter(usuario=request.user)
+        .filter(usuario=request.user, leida=False)
         .order_by("-fecha")
     )
 
     return {
         "notificaciones_lista": notificaciones_qs[:8],
-        "notificaciones_no_leidas": notificaciones_qs.filter(
-            leida=False
-        ).count(),
+        "notificaciones_no_leidas": notificaciones_qs.count(),
     }

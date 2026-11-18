@@ -221,9 +221,11 @@ def crear_reserva(request, servicio_id=None, promocion_id=None):
                 observacion=observacion,
                 servicio=servicio,
                 precio_historico=precio,
+                medio_pago=medio_pago,
             )
             agenda_obj.estado = 'reservada'
             agenda_obj.save()
+            request.session.pop('reserva_pendiente', None)
 
             try:
                 enviar_correo_reserva(
