@@ -1,3 +1,36 @@
+
+/* ==================================================================
+   PALETA DE COLORES - CHICHA BARBER
+   Variables globales de la identidad visual del proyecto
+   ================================================================== */
+:root {
+  /* Colores principales */
+  --chicha-cyan: #22aed1;
+  --chicha-cyan-dark: #126782;
+  --chicha-blue: #2563eb;
+  --chicha-blue-light: #3b82f6;
+  --chicha-blue-deep: #1e40af;
+  --chicha-blue-dark: #0b1f3a;
+
+  /* Dorados y bronces */
+  --chicha-gold: #d4af37;
+  --chicha-gold-dark: #8a6f23;
+  --chicha-bronze: #a9874f;
+  --chicha-bronze-light: #c4a66a;
+  --chicha-bronze-deep: #795923;
+
+  /* Neutros y superficies */
+  --chicha-black: #000c06;
+  --chicha-charcoal: #170212;
+  --chicha-surface: #0d1b2a;
+  --chicha-surface-2: #101f33;
+  --chicha-white: #ffffff;
+  --chicha-text: #f8fafc;
+  --chicha-muted: #94a3b8;
+  --chicha-text-light: #64748b;
+}
+
+/* Pale background for light mode */
 .color-azul { background-color: #22aed1 !important; }
 .color-blanco { background-color: #ffffff !important; }
 
@@ -1473,6 +1506,21 @@ body.theme-light .flatpickr-time .numInputWrapper span.arrowDown:after {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(34, 174, 209, 0.1) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     animation: chatSlideIn 0.3s ease-out;
+}
+
+@media (max-width: 575.98px) {
+    .chat-widget {
+        width: calc(100vw - 24px) !important;
+        height: min(500px, calc(100dvh - 112px)) !important;
+        right: 12px !important;
+        bottom: 88px !important;
+    }
+
+    .chat-widget .chat-body {
+        height: auto !important;
+        min-height: 0;
+        flex: 1 1 auto;
+    }
 }
 
 @keyframes chatSlideIn {
@@ -3792,25 +3840,6 @@ body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .dro
   background: rgba(176, 141, 87, 0.14) !important;
 }
 
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link {
-  color: #8a642c !important;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900 !important;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link i {
-  color: #9a6e28 !important;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-label {
-  background: linear-gradient(100deg, #795923 0%, #b08d57 48%, #765322 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent !important;
-}
-
 body.theme-light .admin-panel-shell header nav.navbar .partials-campanita__a-1 {
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
   border: 1px solid rgba(121, 89, 35, 0.38) !important;
@@ -3906,6 +3935,23 @@ body.theme-light .admin-panel-shell main .table thead:not(.thead-azul) tr {
 body.theme-light .admin-panel-shell main .table thead:not(.thead-azul) th,
 body.theme-light .admin-panel-shell main .table tbody td {
   color: #3d372d !important;
+  border-color: #e5ded1 !important;
+}
+
+body.theme-light .admin-panel-shell main .table thead .admin-table-head,
+body.theme-light .admin-panel-shell main .table thead .admin-table-head th {
+  background: #e9e2d6 !important;
+  color: #51452f !important;
+  border-color: #e5ded1 !important;
+}
+
+/* Encabezados claros para todas las tablas del panel en modo claro,
+   incluso las que aún usan las clases oscuras de Bootstrap. */
+body.theme-light .admin-panel-shell main .table thead tr.bg-black,
+body.theme-light .admin-panel-shell main .table thead tr.bg-black.bg-opacity-40,
+body.theme-light .admin-panel-shell main .table thead tr.bg-black th {
+  background: #e9e2d6 !important;
+  color: #51452f !important;
   border-color: #e5ded1 !important;
 }
 
@@ -4606,6 +4652,169 @@ body.theme-dark .admin-panel-shell main #tablaPromociones tbody .servicios-lista
   color: #ffffff !important;
 }
 
+@media (min-width: 992px) {
+  .admin-panel-shell .admin-aside {
+    transition: width 0.25s ease, flex-basis 0.25s ease, padding 0.25s ease;
+  }
+
+  .admin-panel-shell .admin-aside-brand {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    gap: 0.5rem;
+  }
+
+  .admin-panel-shell .admin-aside-brand img {
+    width: 44px;
+    height: 44px;
+    margin: 0 !important;
+    object-fit: contain;
+  }
+
+  .admin-panel-shell .admin-aside-brand > .admin-aside-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 1rem !important;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+  }
+
+  .admin-panel-shell .admin-aside-toggle {
+    display: inline-flex !important;
+    flex: 0 0 32px;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: auto;
+    padding: 0 !important;
+    border: 1px solid rgba(255, 193, 7, 0.42) !important;
+    border-radius: 50% !important;
+    color: #ffc107 !important;
+    background: transparent !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .admin-panel-shell .admin-aside-toggle:hover {
+    border-color: #ffc107 !important;
+    background: rgba(255, 193, 7, 0.12) !important;
+    transform: scale(1.05);
+  }
+
+  .admin-panel-shell .admin-aside-toggle i {
+    font-size: 0.95rem;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact {
+    width: 76px !important;
+    flex-basis: 76px !important;
+    align-items: center;
+    padding: 0.75rem !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand img {
+    width: 40px;
+    height: 40px;
+    margin: 0 !important;
+    object-fit: contain;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand {
+    gap: 0.35rem;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-label,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-collapse,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button::after {
+    display: none !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact #sidebarAccordion,
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-brand,
+  .admin-panel-shell .admin-aside.aside-compact > div.mb-3 {
+    width: 100%;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button {
+    box-sizing: border-box !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    min-height: 46px;
+    flex: 0 0 48px;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0 !important;
+    border: 1px solid transparent !important;
+    border-radius: 0.85rem !important;
+    background: transparent !important;
+    color: #ffc107 !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact > div.mb-3 {
+    display: flex;
+    justify-content: center;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2 {
+    align-items: center;
+    border-left-width: 1px !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2:hover,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button:hover {
+    border-color: rgba(255, 193, 7, 0.28) !important;
+    background: rgba(255, 193, 7, 0.1) !important;
+    color: #ffd54f !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2.fw-bold,
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button:not(.collapsed) {
+    border-color: rgba(255, 193, 7, 0.4) !important;
+    background: rgba(255, 193, 7, 0.12) !important;
+    color: #ffc107 !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 193, 7, 0.06);
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .accordion-item {
+    width: 100%;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .accordion-button i,
+  .admin-panel-shell .admin-aside.aside-compact .partials-aside__a-2 i {
+    margin: 0 !important;
+    font-size: 1.25rem !important;
+    color: #ffc107 !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-toggle {
+    align-self: center;
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+    margin: 0 auto !important;
+    justify-content: center;
+    padding: 0;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: #171b20 !important;
+    color: #ffc107 !important;
+  }
+
+  .admin-panel-shell .admin-aside.aside-compact .admin-aside-toggle:hover {
+    border-color: rgba(255, 193, 7, 0.35) !important;
+    background: #22272e !important;
+  }
+}
+
 /* Mensajes y errores de validación compartidos por todas las secciones */
 .app-feedback-stack {
   display: grid;
@@ -5176,25 +5385,6 @@ body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .tex
 
 body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .dropdown-item:hover {
   background: rgba(176, 141, 87, 0.14) !important;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link {
-  color: #8a642c !important;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900 !important;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-link i {
-  color: #9a6e28 !important;
-}
-
-body.theme-light .admin-panel-shell header nav.navbar .custom-dropdown-menu .partials-header-admin__web-label {
-  background: linear-gradient(100deg, #795923 0%, #b08d57 48%, #765322 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent !important;
 }
 
 body.theme-light .admin-panel-shell header nav.navbar .partials-campanita__a-1 {
@@ -6239,8 +6429,7 @@ body.theme-light .admin-panel-shell main .resumen-compra-card .resumen-ganancia-
   background: rgba(220, 38, 38, 0.08) !important;
   border-color: rgba(220, 38, 38, 0.25) !important;
 }
-<<<<<<< HEAD
-=======
+
 
 /* Textos de la tabla en MODO OSCURO (no afecta modo claro) */
 body:not(.theme-light) .dataTables_wrapper .dataTables_length,
@@ -6475,6 +6664,24 @@ body.theme-dark .admin-chat-fab:focus-visible {
   background: #e0a800 !important;
   border-color: #e0a800 !important;
   box-shadow: 0 12px 40px rgba(255, 193, 7, 0.45) !important;
+}
+
+body.client-site > header.color-negro-bg {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: rgba(0, 12, 6, 0.96) !important;
+  border-bottom: 1px solid rgba(255, 193, 7, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.admin-panel-shell main .admin-table-code,
+body.client-site main .admin-table-code {
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 body.client-site.theme-dark {
@@ -6910,4 +7117,101 @@ body.client-site header .client-cart-button i {
     gap: 0.3rem !important;
   }
 }
->>>>>>> 9748d328559a070877f646c22933696112e31d71
+
+/* Barra administrativa clara siguiendo la referencia marfil, gris y dorado. */
+body.theme-light .admin-panel-shell header nav.admin-navbar.bg-black {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #737676 100%) !important;
+  background-color: #dedbd3 !important;
+  border-bottom: 1px solid rgba(30, 35, 39, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14) !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar .admin-header-title,
+body.theme-light .admin-panel-shell header nav.admin-navbar .admin-header-title--mobile strong,
+body.theme-light .admin-panel-shell header nav.admin-navbar .admin-header-title--mobile small {
+  color: #795923 !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar .partials-campanita__a-1 {
+  background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
+  border: 1px solid rgba(121, 89, 35, 0.38) !important;
+  color: #30291f !important;
+  box-shadow: 0 5px 14px rgba(93, 67, 25, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar .partials-campanita__a-1 i {
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown {
+  background: linear-gradient(135deg, #fffaf0 0%, #ead9b8 100%) !important;
+  border-color: #b08d57 !important;
+  color: #403729 !important;
+  box-shadow: 0 4px 12px rgba(55, 43, 25, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown .text-white,
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown > i {
+  color: #403729 !important;
+}
+
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown:hover,
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown:focus-visible,
+body.theme-light .admin-panel-shell header nav.admin-navbar #navbarDropdown[aria-expanded="true"] {
+  background: linear-gradient(135deg, #fffdf7 0%, #dfc99e 100%) !important;
+  border-color: #967342 !important;
+}
+
+/* La barra pública usa el mismo diseño de la referencia en ambos temas. */
+body.client-site > header.color-negro-bg {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 46%, #737676 100%) !important;
+  background-color: #dedbd3 !important;
+  background-image: none !important;
+  border-bottom: 1px solid rgba(30, 35, 39, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14) !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
+  color: #403729 !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold {
+  background: rgba(176, 141, 87, 0.18) !important;
+  color: #795923 !important;
+}
+
+body.client-site > header.color-negro-bg #navbarDropdown {
+  background: linear-gradient(135deg, #fffaf0 0%, #ead9b8 100%) !important;
+  border: 1px solid #b08d57 !important;
+  color: #403729 !important;
+  box-shadow: 0 4px 12px rgba(55, 43, 25, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
+}
+
+body.client-site > header.color-negro-bg #navbarDropdown span,
+body.client-site > header.color-negro-bg #navbarDropdown > i {
+  color: #403729 !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
+  background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
+  border: 1px solid rgba(121, 89, 35, 0.38) !important;
+  color: #30291f !important;
+  box-shadow: 0 5px 14px rgba(93, 67, 25, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1 i,
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button i {
+  color: #30291f !important;
+}
+
+@media (max-width: 767.98px) {
+  body.client-site > header.color-negro-bg > .container > .d-flex > .nav {
+    border: 1px solid rgba(121, 89, 35, 0.2);
+    background: rgba(251, 248, 241, 0.98) !important;
+  }
+}

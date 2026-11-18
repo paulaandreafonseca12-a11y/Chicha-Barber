@@ -365,6 +365,8 @@ def notificar_reserva(
 
         Notificacion.objects.create(
             usuario=instance.usuario,
+            reserva=instance,
+            servicio=instance.servicio,
             tipo="reserva",
             mensaje=(
                 f"Tu reserva de "

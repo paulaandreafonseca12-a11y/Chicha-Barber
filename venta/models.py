@@ -386,6 +386,7 @@ def notificar_venta(
 
         Notificacion.objects.create(
             usuario=instance.codigo_usuario,
+            venta=instance,
             tipo="venta",
             mensaje=(
                 f"Tu compra #{instance.codigo_venta} "
@@ -403,6 +404,7 @@ def notificar_venta(
 
         Notificacion.objects.create(
             usuario=admin,
+            venta=instance,
             tipo="venta",
             mensaje=(
                 f"Nueva venta a "

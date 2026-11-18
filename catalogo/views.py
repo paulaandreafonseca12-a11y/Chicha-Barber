@@ -3,14 +3,13 @@ import json
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-from usuarios.models import RolUsuario
+from core.decorators import admin_required
 
 from .models import (
     Producto,
@@ -102,7 +101,7 @@ def productos_galeria(request):
 # ADMIN - GESTIÓN DE PRODUCTOS
 # ==========================================================
 
-@login_required
+@admin_required
 def lista_productos_admin(request):
     productos = (
         Producto.objects
@@ -130,7 +129,7 @@ def lista_productos_admin(request):
     )
 
 
-@login_required
+@admin_required
 def crear_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
@@ -157,7 +156,7 @@ def crear_producto(request):
     )
 
 
-@login_required
+@admin_required
 def editar_producto(request, pk):
     producto = get_object_or_404(
         Producto,
@@ -194,7 +193,7 @@ def editar_producto(request, pk):
     )
 
 
-@login_required
+@admin_required
 @require_POST
 def eliminar_producto(request, pk):
     producto = get_object_or_404(
@@ -230,7 +229,7 @@ def eliminar_producto(request, pk):
 # CATEGORÍAS
 # ==========================================================
 
-@login_required
+@admin_required
 def lista_categorias(request):
     categorias = Categoria.objects.all().order_by('nombre')
 
@@ -244,7 +243,7 @@ def lista_categorias(request):
     )
 
 
-@login_required
+@admin_required
 def crear_categoria(request):
     is_json = (
         'application/json' in request.META.get('CONTENT_TYPE', '') or
@@ -337,7 +336,7 @@ def crear_categoria(request):
     )
 
 
-@login_required
+@admin_required
 def editar_categoria(request, id):
     categoria = get_object_or_404(Categoria, codigo=id)
 
@@ -367,7 +366,7 @@ def editar_categoria(request, id):
     )
 
 
-@login_required
+@admin_required
 @require_POST
 def eliminar_categoria(request, id):
     categoria = get_object_or_404(Categoria, codigo=id)
@@ -392,7 +391,7 @@ def eliminar_categoria(request, id):
 # PROVEEDORES
 # ==========================================================
 
-@login_required
+@admin_required
 def lista_proveedores(request):
     proveedores = Proveedor.objects.all().order_by('nombre')
 
@@ -406,7 +405,7 @@ def lista_proveedores(request):
     )
 
 
-@login_required
+@admin_required
 def crear_proveedor(request):
     if request.method == 'POST':
         form = ProveedorForm(request.POST)
@@ -433,7 +432,7 @@ def crear_proveedor(request):
     )
 
 
-@login_required
+@admin_required
 def editar_proveedor(request, id):
     proveedor = get_object_or_404(Proveedor, codigo=id)
 
@@ -463,7 +462,7 @@ def editar_proveedor(request, id):
     )
 
 
-@login_required
+@admin_required
 @require_POST
 def eliminar_proveedor(request, id):
     proveedor = get_object_or_404(Proveedor, codigo=id)
@@ -488,7 +487,7 @@ def eliminar_proveedor(request, id):
 # MARCAS
 # ==========================================================
 
-@login_required
+@admin_required
 def lista_marcas(request):
     marcas = (
         Marca.objects
@@ -509,7 +508,7 @@ def lista_marcas(request):
     )
 
 
-@login_required
+@admin_required
 def crear_marca(request):
     is_json = (
         'application/json' in request.META.get('CONTENT_TYPE', '') or
@@ -610,7 +609,7 @@ def crear_marca(request):
     )
 
 
-@login_required
+@admin_required
 def editar_marca(request, id):
     marca = get_object_or_404(Marca, codigo=id)
 
@@ -640,7 +639,7 @@ def editar_marca(request, id):
     )
 
 
-@login_required
+@admin_required
 def eliminar_marca(request, id):
     marca = get_object_or_404(Marca, codigo=id)
 
@@ -675,7 +674,7 @@ def eliminar_marca(request, id):
 # EXISTENCIAS / DETALLE DE PRODUCTOS
 # ==========================================================
 
-@login_required
+@admin_required
 def lista_existencias(request):
     existenciass = (
         DetalleProducto.objects
@@ -706,7 +705,7 @@ def lista_existencias(request):
     )
 
 
-@login_required
+@admin_required
 def editar_existencias(request, pk):
     detalle = get_object_or_404(DetalleProducto, pk=pk)
     producto = detalle.producto_principal.first()
@@ -765,7 +764,7 @@ def editar_existencias(request, pk):
 # MOVIMIENTOS DE EXISTENCIAS
 # ==========================================================
 
-@login_required
+@admin_required
 def lista_movimientos_existencias(request):
     movimientos = (
         MovimientoProducto.objects
@@ -789,7 +788,7 @@ def lista_movimientos_existencias(request):
     )
 
 
-@login_required
+@admin_required
 def registrar_movimiento_existencias(request):
     if request.method == 'POST':
         producto_id = request.POST.get('producto_id')
@@ -882,7 +881,7 @@ def registrar_movimiento_existencias(request):
     )
 
 
-@login_required
+@admin_required
 def eliminar_movimiento_existencias(request, pk):
     movimiento = get_object_or_404(MovimientoProducto, pk=pk)
     detalle = movimiento.codigo_detalle_producto
@@ -959,6 +958,7 @@ def promocion(request):
     )
 
 
+@admin_required
 def listado_promocion(request):
     promociones = Promocion.objects.all()
 
@@ -975,15 +975,8 @@ def listado_promocion(request):
     )
 
 
-@login_required
+@admin_required
 def crear_promocion(request):
-    if not (
-        request.user.is_staff or
-        getattr(request.user, 'rol', None) == RolUsuario.ADMIN
-    ):
-        messages.error(request, "Acceso denegado.")
-        return redirect('listado-promocion')
-
     if request.method == 'POST':
         form = PromocionForm(request.POST, request.FILES)
 
@@ -1009,15 +1002,8 @@ def crear_promocion(request):
     )
 
 
-@login_required
+@admin_required
 def editar_promocion(request, pk):
-    if not (
-        request.user.is_staff or
-        getattr(request.user, 'rol', None) == RolUsuario.ADMIN
-    ):
-        messages.error(request, "Acceso denegado.")
-        return redirect('listado-promocion')
-
     promocion_obj = get_object_or_404(Promocion, pk=pk)
 
     if request.method == 'POST':
@@ -1049,16 +1035,9 @@ def editar_promocion(request, pk):
     )
 
 
-@login_required
+@admin_required
 @require_POST
 def eliminar_promocion(request, pk):
-    if not (
-        request.user.is_staff or
-        getattr(request.user, 'rol', None) == RolUsuario.ADMIN
-    ):
-        messages.error(request, "Acceso denegado.")
-        return redirect('listado-promocion')
-
     promocion_obj = get_object_or_404(Promocion, pk=pk)
 
     if request.method == 'POST':

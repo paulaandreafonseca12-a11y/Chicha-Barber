@@ -222,10 +222,7 @@ def responder_calificacion(request, pk):
     return render(request, 'servicios/responder-calificacion.html', context)
 
 def guardar_calificacion_view(request):
-    form = CalificacionForm(
-        request.POST or None,
-        user=request.user,
-    )
+    form = CalificacionForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         calificacion = form.save(commit=False)
 
