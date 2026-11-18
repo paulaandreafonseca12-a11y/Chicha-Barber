@@ -45,7 +45,7 @@ def inicio(request):
         'usuario': request.user,
     }
 
-    return render(
+    returterminosder(
         request,
         'index.html',
         context
@@ -824,3 +824,15 @@ def detalle_notificacion(request, pk):
     }
 
     return render(request, 'private/detalle_notificacion.html', context)
+
+def terminos(request):
+    context = {
+        'titulo': 'Términos y Condiciones',
+        'usuario': request.user,
+    }
+
+    return render(
+        request,
+        'terminos.html',
+        context
+    )
