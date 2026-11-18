@@ -15,18 +15,21 @@ $(document).ready(function () {
                 extend: 'excel',
                 text: '<i class="bi bi-file-earmark-excel me-1"></i>Excel',
                 className: 'btn btn-sm dt-btn-excel me-2',
+                titleAttr: 'Exportar la tabla a Excel',
                 exportOptions: { columns: ':not(:last-child)' }
             },
             {
                 extend: 'pdf',
                 text: '<i class="bi bi-file-earmark-pdf me-1"></i>PDF',
                 className: 'btn btn-sm dt-btn-pdf me-2',
+                titleAttr: 'Exportar la tabla a PDF',
                 exportOptions: { columns: ':not(:last-child)' }
             },
             {
                 extend: 'print',
                 text: '<i class="bi bi-printer me-1"></i>Imprimir',
                 className: 'btn btn-sm dt-btn-print',
+                titleAttr: 'Imprimir la tabla',
                 exportOptions: { columns: ':not(:last-child)' }
             }
         ],

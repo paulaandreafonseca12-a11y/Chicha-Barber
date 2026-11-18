@@ -1,18 +1,12 @@
 {% load static %}
 <header class="sticky-top">
-  <!-- Estilos para mejorar el contraste en hover sin efectos neón -->
   <!-- Navegación con fondo negro y borde inferior sutil -->
   <nav class="navbar bg-black shadow-lg py-2 border-bottom border-gold-subtle admin-navbar">
     <div class="container-fluid admin-navbar__inner">
       
       <!-- Botón hamburguesa para móvil -->
-      <button class="btn btn-sm btn-outline-warning text-gold border-gold-subtle d-lg-none admin-menu-toggle"
-              type="button"
-              onclick="toggleAside()"
-              aria-label="Abrir menú de administración"
-              aria-controls="adminSidebar"
-              aria-expanded="false">
-        <i class="bi bi-list fs-4" aria-hidden="true"></i>
+      <button class="btn btn-sm btn-outline-warning text-gold border-gold-subtle d-lg-none me-2" type="button" onclick="toggleAside()" aria-label="Abrir menú" title="Abrir el menú lateral">
+        <i class="bi bi-list fs-4"></i>
       </button>
 
       <a class="navbar-brand m-0 admin-navbar__brand"
@@ -41,6 +35,7 @@
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
+              title="Mi cuenta"
             >
               {% if user.foto_perfil %}
                 <img
@@ -110,7 +105,7 @@
             </ul>
           </div>
         {% else %}
-          <a class="nav-link btn btn-dark text-white border-gold-subtle rounded-pill px-4 py-2 fw-bold shadow-sm" href="{% url 'login' %}">Acceder</a>
+          <a class="nav-link btn btn-dark text-white border-gold-subtle rounded-pill px-4 py-2 fw-bold shadow-sm" href="{% url 'login' %}" title="Iniciar sesión">Acceder</a>
         {% endif %}
       </div>
     </div>
