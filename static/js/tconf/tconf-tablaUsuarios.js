@@ -14,15 +14,13 @@ $(document).ready(function () {
             {
                 extend: 'excel',
                 text: '<i class="bi bi-file-earmark-excel me-1"></i>Excel',
-                className: 'btn btn-sm dt-btn-excel me-2',
-                titleAttr: 'Exportar la tabla a Excel',
+                className: 'btn btn-sm dt-btn-excel',
                 exportOptions: { columns: ':not(:last-child)' }
             },
             {
                 extend: 'pdf',
                 text: '<i class="bi bi-file-earmark-pdf me-1"></i>PDF',
-                className: 'btn btn-sm dt-btn-pdf me-2',
-                titleAttr: 'Exportar la tabla a PDF',
+                className: 'btn btn-sm dt-btn-pdf',
                 exportOptions: { columns: ':not(:last-child)' }
             },
             {
@@ -44,12 +42,14 @@ $(document).ready(function () {
         // Resetear todos al estilo inactivo
         $('.filtro-rol')
             .removeClass('border-info text-info')
-            .addClass('border-secondary text-secondary');
+            .addClass('border-secondary text-secondary')
+            .attr('aria-pressed', 'false');
 
         // Activar el presionado
         $(this)
             .removeClass('border-secondary text-secondary')
-            .addClass('border-info text-info');
+            .addClass('border-info text-info')
+            .attr('aria-pressed', 'true');
 
         // Filtrar tabla
         if (rol === '') {

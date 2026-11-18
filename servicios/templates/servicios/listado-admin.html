@@ -11,7 +11,7 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-end align-items-center">
             <a href="{% url 'crear_servicios' %}"
-               class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+               class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2 btn-crear-admin">
                 <i class="bi bi-plus-circle-fill fs-6"></i>
                 Nuevo Servicio
             </a>
@@ -117,7 +117,7 @@
 
                     <tr class="border-bottom border-secondary border-opacity-10">
 
-                        <td class="fw-bold ps-3" style="color: #edb045;">
+                        <td class="fw-bold ps-3 admin-table-code" style="color: #edb045;">
                             #SERV-{{ servicio.id|stringformat:"05d" }}
                         </td>
 

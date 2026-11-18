@@ -2,19 +2,19 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container-fluid px-4 py-4 configuracion-admin">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white color-azul">
-                    <h5 class="mb-0">Agregar Nueva Imagen al Carrusel</h5>
+        <div class="col-md-8 col-lg-7">
+            <div class="card border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
+                <div class="card-header px-4 py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-images text-warning me-2"></i>Agregar nueva imagen al carrusel</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         
                         <div class="mb-3">
-                            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label fw-semibold">Nombre</label>
                             {{ form.nombre }}
                             {% if form.nombre.errors %}
                                 <div class="text-danger small">{{ form.nombre.errors }}</div>
@@ -22,8 +22,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen</label>
-                            <input type="file" name="{{ form.imagen.name }}" class="form-control" accept="image/*" id="{{ form.imagen.id_for_label }}">
+                            <label for="{{ form.imagen.id_for_label }}" class="form-label fw-semibold">Imagen</label>
+                            {{ form.imagen }}
                             {% if form.imagen.help_text %}
                                 <div class="form-text">{{ form.imagen.help_text }}</div>
                             {% endif %}
@@ -33,16 +33,16 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="{{ form.texto.id_for_label }}" class="form-label">Texto alternativo (Alt) *</label>
+                            <label for="{{ form.texto.id_for_label }}" class="form-label fw-semibold">Texto alternativo (Alt) *</label>
                             {{ form.texto }}
                             {% if form.texto.errors %}
                                 <div class="text-danger small">{{ form.texto.errors }}</div>
                             {% endif %}
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'carrusel' %}" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn color-azul text-dark fw-bold">Guardar Imagen</button>
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                            <a href="{% url 'carrusel' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-warning text-dark fw-bold rounded-pill px-4 btn-panel-gold">Guardar imagen</button>
                         </div>
                     </form>
                 </div>
@@ -51,15 +51,4 @@
     </div>
 </div>
 
-<script>
-    // Agregamos clases de Bootstrap a los campos del formulario automáticamente
-    document.querySelectorAll('input, select, textarea').forEach(function(el) {
-        if (el.type !== 'checkbox') {
-            el.classList.add('form-control');
-        }
-    });
-    document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
-        el.classList.add('form-check-input');
-    });
-</script>
 {% endblock %}

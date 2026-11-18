@@ -1,10 +1,9 @@
 {% load static %}
 <!-- CAMPANITA DE NOTIFICACIONES -->
 <div class="dropdown">
-  <a href="#" class="btn position-relative rounded-circle d-flex align-items-center justify-content-center shadow {% if estilo_campanita == 'admin' %}color-azul{% else %}btn-warning color-champaña{% endif %} partials-campanita__a-1" id="campanitaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-     title="{% if notificaciones_no_leidas > 0 %}Tienes {{ notificaciones_no_leidas }} notificaciones sin leer{% else %}Ver notificaciones{% endif %}">
+  <a href="#" class="btn position-relative rounded-circle d-flex align-items-center justify-content-center shadow {% if estilo_campanita == 'admin' %}color-azul{% else %}btn-warning color-champaña{% endif %} partials-campanita__a-1" id="campanitaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir notificaciones">
 
-    <i class="bi bi-bell-fill fs-5 {% if estilo_campanita == 'admin' %}text-white{% else %}text-dark{% endif %}"></i>
+    <i class="bi bi-bell-fill fs-5 {% if estilo_campanita == 'admin' %}text-white{% else %}text-dark{% endif %}" aria-hidden="true"></i>
 
     {% if notificaciones_no_leidas > 0 %}
     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger partials-campanita__span-2">
@@ -33,9 +32,19 @@
          class="dropdown-item py-2 px-3 border-bottom {% if not n.leida %}fw-semibold{% endif %}">
         <div class="d-flex align-items-start gap-2">
           {% if n.tipo == 'venta' %}
-            <i class="bi bi-bag-check-fill text-success mt-1"></i>
+            <i class="bi bi-bag-check-fill text-success mt-1" aria-hidden="true"></i>
+          {% elif n.tipo == 'reserva' %}
+            <i class="bi bi-calendar-check-fill text-info mt-1" aria-hidden="true"></i>
+          {% elif n.tipo == 'producto' %}
+            <i class="bi bi-box-seam text-primary mt-1" aria-hidden="true"></i>
+          {% elif n.tipo == 'servicio' %}
+            <i class="bi bi-scissors text-info mt-1" aria-hidden="true"></i>
+          {% elif n.tipo == 'usuario' %}
+            <i class="bi bi-person-fill text-secondary mt-1" aria-hidden="true"></i>
+          {% elif n.tipo == 'promocion' %}
+            <i class="bi bi-tag-fill text-warning mt-1" aria-hidden="true"></i>
           {% else %}
-            <i class="bi bi-calendar-check-fill text-info mt-1"></i>
+            <i class="bi bi-info-circle-fill text-info mt-1" aria-hidden="true"></i>
           {% endif %}
           <div>
             <div class="small">{{ n.mensaje }}</div>
@@ -49,8 +58,14 @@
     {% empty %}
     <li class="px-3 py-4 text-center text-muted small">
       <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
-      No tienes notificaciones aún.
+      No tienes notificaciones pendientes.
     </li>
     {% endfor %}
+
+    <li class="border-top">
+      <a href="{% url 'historial_notificaciones' %}" class="dropdown-item text-center small py-2">
+        Ver historial de notificaciones leídas
+      </a>
+    </li>
   </ul>
 </div>

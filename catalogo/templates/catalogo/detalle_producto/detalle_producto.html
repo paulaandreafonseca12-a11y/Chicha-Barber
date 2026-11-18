@@ -5,15 +5,6 @@
 
 <div class="container-fluid px-4 py-4 text-white">
 
-    <!-- ENCABEZADO -->
-    <div class="d-flex justify-content-end align-items-center flex-wrap gap-3 mb-4">
-        <a href="{% url 'lista_movimientos_existencias' %}" class="btn color-azul text-white fw-bold shadow-sm">
-            <i class="bi bi-arrow-left-right me-2"></i>
-            Movimiento de productos
-        </a>
-    </div>
-
-
     <!-- RESUMEN -->
     <div class="row g-3 mb-4">
 
@@ -145,7 +136,7 @@
                             </th>
 
                             <th>
-                                Stock
+                                Cantidad
                             </th>
 
                             <th>
@@ -160,10 +151,6 @@
                                 Estado
                             </th>
 
-                            <th class="text-center">
-                                Acción
-                            </th>
-
                         </tr>
 
                     </thead>
@@ -176,7 +163,7 @@
                     <tr>
 
                         <!-- CÓDIGO -->
-                        <td class="fw-bold">
+                        <td class="fw-bold admin-table-code">
                             #{{ existencias.codigo_producto.codigo_producto }}
                         </td>
 
@@ -229,41 +216,31 @@
                         </td>
 
 
-                        <!-- STOCK -->
+                        <!-- CANTIDAD -->
                         <td>
-
-                            {% if existencias.cantidad_actual <= 5 %}
-
-                                <span class="badge bg-danger">
-
-                                    <i class="bi bi-x-circle"></i>
-
-                                    {{ existencias.cantidad_actual }}
-
-                                </span>
-
-                            {% elif existencias.cantidad_actual <= 10 %}
-
-                                <span class="badge bg-warning text-dark">
-
-                                    <i class="bi bi-exclamation-circle"></i>
-
-                                    {{ existencias.cantidad_actual }}
-
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge bg-success">
-
-                                    <i class="bi bi-check-circle"></i>
-
-                                    {{ existencias.cantidad_actual }}
-
-                                </span>
-
-                            {% endif %}
-
+                            <form method="post"
+                                  action="{% url 'editar_existencias' existencias.pk %}"
+                                  class="input-group input-group-sm">
+                                {% csrf_token %}
+                                <input
+                                    type="number"
+                                    name="cantidad_actual"
+                                    class="form-control"
+                                    value="{{ existencias.cantidad_actual }}"
+                                    min="0"
+                                    step="1"
+                                    required
+                                    aria-label="Cantidad de {{ existencias.codigo_producto.nombre }}"
+                                >
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-primary"
+                                    aria-label="Guardar cantidad de {{ existencias.codigo_producto.nombre }}"
+                                    title="Guardar cantidad"
+                                >
+                                    <i class="bi bi-check-lg"></i>
+                                </button>
+                            </form>
                         </td>
 
 
@@ -309,19 +286,6 @@
                         </td>
 
 
-                        <!-- ACCIÓN -->
-                        <td class="text-center">
-
-                            <a href="{% url 'editar_existencias' existencias.pk %}"
-                               class="btn btn-sm btn-outline-primary">
-
-                                <i class="bi bi-pencil"></i>
-                                Editar
-
-                            </a>
-
-                        </td>
-
                     </tr>
 
 
@@ -329,7 +293,7 @@
 
                     <tr>
 
-                        <td colspan="8"
+                        <td colspan="7"
                             class="text-center py-5 text-muted">
 
                             <i class="bi bi-box-seam fs-1"></i>

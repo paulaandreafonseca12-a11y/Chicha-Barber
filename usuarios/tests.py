@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.db import IntegrityError, transaction
-from .models import Usuario
+from .models import Notificacion, Usuario
 
 
 class UsuarioModelTest(TestCase):
@@ -167,3 +167,77 @@ class PerfilFormularioTests(TestCase):
         self.assertTrue(errores['password_confirmar'])
         self.assertContains(response, errores['password_actual'][0])
         self.assertContains(response, 'offcanvasPassword')
+
+
+class HistorialNotificacionesTests(TestCase):
+    def setUp(self):
+        self.usuario = Usuario.objects.create_user(
+            email='notificaciones@correo.com',
+            password='ClaveSegura123*',
+            numero_documento='333444555',
+            primer_nombre='Ana',
+            primer_apellido='Prueba',
+            telefono='3005556677',
+            rol='cliente',
+        )
+        self.client.force_login(self.usuario)
+
+    def test_al_visualizar_notificacion_se_archiva_y_aparece_en_historial(self):
+        notificacion = Notificacion.objects.create(
+            usuario=self.usuario,
+            tipo='sistema',
+            mensaje='Se completó una acción.',
+        )
+
+        response = self.client.get(
+            reverse('detalle_notificacion', args=[notificacion.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        notificacion.refresh_from_db()
+        self.assertTrue(notificacion.leida)
+        self.assertNotIn(notificacion, response.context['notificaciones_lista'])
+
+        response = self.client.get(reverse('historial_notificaciones'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Se completó una acción.')
+        self.assertEqual(list(response.context['pagina']), [notificacion])
+
+    def test_historial_solo_muestra_notificaciones_leidas_del_usuario(self):
+        leida = Notificacion.objects.create(
+            usuario=self.usuario,
+            tipo='sistema',
+            mensaje='Notificación leída.',
+            leida=True,
+        )
+        Notificacion.objects.create(
+            usuario=self.usuario,
+            tipo='sistema',
+            mensaje='Notificación pendiente.',
+        )
+        otro_usuario = Usuario.objects.create_user(
+            email='otro@correo.com',
+            password='ClaveSegura123*',
+            numero_documento='777888999',
+            primer_nombre='Otro',
+            primer_apellido='Usuario',
+            telefono='3005556688',
+            rol='cliente',
+        )
+        Notificacion.objects.create(
+            usuario=otro_usuario,
+            tipo='sistema',
+            mensaje='Notificación ajena.',
+            leida=True,
+        )
+
+        response = self.client.get(reverse('historial_notificaciones'))
+
+        self.assertEqual(list(response.context['pagina']), [leida])
+        self.assertContains(response, 'Notificación leída.')
+        self.assertEqual(
+            [notificacion.mensaje for notificacion in response.context['notificaciones_lista']],
+            ['Notificación pendiente.'],
+        )
+        self.assertNotContains(response, 'Notificación ajena.')
