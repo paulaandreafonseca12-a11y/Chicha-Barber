@@ -56,9 +56,6 @@ $(document).ready(function () {
         filename: nombreTabla + " - " + fechaHoy,
         title: nombreTabla,
         messageTop: "Exportado el: " + fechaConHora,
-        exportOptions: {
-          columns: ":not(:last-child)",
-        },
       },
       {
         extend: "pdfHtml5",
@@ -67,9 +64,6 @@ $(document).ready(function () {
         filename: nombreTabla + " - " + fechaHoy,
         title: nombreTabla,
         messageTop: "Exportado el: " + fechaConHora,
-        exportOptions: {
-          columns: ":not(:last-child)",
-        },
       },
       {
         extend: "print",
@@ -77,13 +71,7 @@ $(document).ready(function () {
         className: "btn btn-sm dt-btn-print",
         title: nombreTabla,
         messageTop: "Exportado el: " + fechaConHora,
-        exportOptions: {
-          columns: ":not(:last-child)",
-        },
       },
-    ],
-    columnDefs: [
-      { orderable: false, targets: [-1] }, // Desactiva el ordenamiento únicamente en la columna de Acciones (la última)
     ],
   });
 });

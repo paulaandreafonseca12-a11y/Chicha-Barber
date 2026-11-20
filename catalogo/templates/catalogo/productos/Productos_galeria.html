@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function agregarCarrito(event, id, nombre, precio) {
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = JSON.parse(localStorage.getItem(window.CARRITO_STORAGE_KEY)) || [];
     let productoExistente = carrito.find(p => p.id === id);
 
     if (productoExistente) {
@@ -372,7 +372,7 @@ function agregarCarrito(event, id, nombre, precio) {
         });
     }
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    localStorage.setItem(window.CARRITO_STORAGE_KEY, JSON.stringify(carrito));
     actualizarContador();
 
     const btn = event.target.closest("button");
@@ -391,7 +391,7 @@ function agregarCarrito(event, id, nombre, precio) {
 }
 
 function actualizarContador() {
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = JSON.parse(localStorage.getItem(window.CARRITO_STORAGE_KEY)) || [];
     let total = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
     const contador = document.getElementById("contador");
 

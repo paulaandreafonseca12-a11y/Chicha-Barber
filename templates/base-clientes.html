@@ -9,9 +9,12 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261118-public-navbar-design">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261119-floating-controls">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" data-position="bottom-right" data-offset="90,20" async></script>
+    <script>
+        window.CARRITO_STORAGE_KEY = {% if user.is_authenticated %}"carrito_usuario_{{ user.pk }}"{% else %}"carrito_invitado"{% endif %};
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" data-position="bottom-right" data-offset="20,90" async></script>
 </head>
 
 <body class="back client-site {% if user.is_authenticated and user.tema == 'light' %}theme-light{% else %}theme-dark{% endif %} d-flex flex-column min-vh-100">
@@ -331,7 +334,7 @@
 
             function actualizarContadorCarrito(){
 
-                var carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+                var carrito = JSON.parse(localStorage.getItem(window.CARRITO_STORAGE_KEY)) || [];
 
                 var contador = document.getElementById("contador");
 
@@ -362,7 +365,7 @@
 
             window.addEventListener("storage", function(e){
 
-                if(e.key === "carrito"){
+                if(e.key === window.CARRITO_STORAGE_KEY){
 
                     actualizarContadorCarrito();
 
