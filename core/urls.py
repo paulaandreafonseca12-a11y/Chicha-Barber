@@ -24,6 +24,7 @@ urlpatterns = [
     path('ventas/', include('venta.urls')),
     path('historial/', include('historial.urls')),
     path('configuracion/', include('configuraciones.urls')),
+    path('backup/', include('backup.urls')),
     path('', include('venta.urls')),  # Carrito, pago y checkout directo
 
     path('panel/', inicio_admin, name='inicio_admin'),
