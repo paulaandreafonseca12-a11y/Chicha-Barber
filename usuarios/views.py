@@ -34,6 +34,10 @@ from reservas.models import Reserva
 from venta.models import Venta
 
 
+def terminos(request):
+    return render(request, 'usuarios/terminos.html')
+
+
 # ==========================================================
 # INICIO
 # ==========================================================

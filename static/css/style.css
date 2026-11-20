@@ -7215,3 +7215,69 @@ body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .m
     background: rgba(251, 248, 241, 0.98) !important;
   }
 }
+
+/* Keep the accessibility and chat launchers aligned and visually consistent. */
+html body .asw-menu-btn,
+html body #openChatBtn {
+  width: 60px !important;
+  height: 60px !important;
+  background: #ffc107 !important;
+  background-image: none !important;
+  border: 0 !important;
+  outline: none !important;
+  color: #171717 !important;
+  box-shadow: 0 8px 30px rgba(255, 193, 7, 0.35) !important;
+}
+
+html body .asw-menu-btn {
+  --asw-primary: #ffc107 !important;
+  --asw-btn-size: 60px !important;
+  --asw-btn-size-mobile: 60px !important;
+  --asw-icon-size: 24px !important;
+  --asw-icon-size-mobile: 24px !important;
+}
+
+html body .asw-menu-btn svg {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+}
+
+html body .asw-menu-btn svg {
+  display: none !important;
+}
+
+html body .asw-menu-btn::before {
+  content: "\f826";
+  display: inline-block;
+  font-family: "bootstrap-icons";
+  font-size: 26px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+html body .asw-menu-btn svg *,
+html body #openChatBtn i {
+  fill: #171717 !important;
+  color: #171717 !important;
+}
+
+html body .asw-menu-btn:hover,
+html body .asw-menu-btn:focus-visible,
+html body #openChatBtn:hover,
+html body #openChatBtn:focus-visible {
+  background: #e0a800 !important;
+  background-image: none !important;
+  border-color: #e0a800 !important;
+  color: #171717 !important;
+  box-shadow: 0 12px 40px rgba(255, 193, 7, 0.45) !important;
+}
+
+html body .asw-menu-btn:focus-visible,
+html body #openChatBtn:focus-visible {
+  outline: 3px solid #171717 !important;
+  outline-offset: 3px !important;
+}
