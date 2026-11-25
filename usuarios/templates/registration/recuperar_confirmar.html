@@ -27,15 +27,20 @@
 
         {% if form.errors %}
         <div class="alert auth-alert mb-3">
-            Por favor verifica los datos ingresados.
+            <ul class="mb-0 ps-3 small">
+                {% for campo in form %}
+                    {% for error in campo.errors %}<li>{{ error }}</li>{% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
         </div>
         {% endif %}
 
-        <form method="post">
+        <form method="post" id="form-password" novalidate>
             {% csrf_token %}
 
             <!-- NUEVA CONTRASEÑA -->
-            <label class="form-label cb-label">Nueva contraseña</label>
+            <label class="form-label cb-label" for="id_new_password1">Nueva contraseña</label>
             <div class="position-relative mb-3">
                 <span class="input-icon">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -45,7 +50,7 @@
                 </span>
                 {{ form.new_password1 }}
                 <button type="button" class="input-eye btn p-0 border-0 bg-transparent position-absolute top-50 end-0 translate-middle-y me-2"
-                        onclick="togglePwd('id_new_password1', this)">
+                        onclick="togglePwd('id_new_password1', this)" aria-label="Mostrar u ocultar contraseña">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
                         <circle cx="12" cy="12" r="3"/>
@@ -54,7 +59,7 @@
             </div>
 
             <!-- CONFIRMAR CONTRASEÑA -->
-            <label class="form-label cb-label">Confirmar contraseña</label>
+            <label class="form-label cb-label" for="id_new_password2">Confirmar contraseña</label>
             <div class="position-relative mb-3">
                 <span class="input-icon">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -64,7 +69,7 @@
                 </span>
                 {{ form.new_password2 }}
                 <button type="button" class="input-eye btn p-0 border-0 bg-transparent position-absolute top-50 end-0 translate-middle-y me-2"
-                        onclick="togglePwd('id_new_password2', this)">
+                        onclick="togglePwd('id_new_password2', this)" aria-label="Mostrar u ocultar contraseña">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
                         <circle cx="12" cy="12" r="3"/>
@@ -72,7 +77,18 @@
                 </button>
             </div>
 
-            <button type="submit" class="btn btn-auth w-100 mt-2">
+            <!-- REGLAS EN VIVO -->
+            <ul id="reglas" class="reglas small mb-3">
+                <li data-r="len">Entre 8 y 64 caracteres</li>
+                <li data-r="may">Una letra mayúscula</li>
+                <li data-r="min">Una letra minúscula</li>
+                <li data-r="num">Un número</li>
+                <li data-r="sim">Un símbolo (!@#$%&*...)</li>
+                <li data-r="esp">Sin espacios</li>
+                <li data-r="match">Las contraseñas coinciden</li>
+            </ul>
+
+            <button type="submit" id="btn-guardar" class="btn btn-auth w-100 mt-2" disabled>
                 GUARDAR CONTRASEÑA
             </button>
         </form>
@@ -84,10 +100,22 @@
     </main>
 </div>
 
+<style>
+    .reglas { list-style: none; padding: 0; margin: 0; }
+    .reglas li { color: #e57373; transition: color .2s; }
+    .reglas li.ok { color: #4caf50; }
+    .reglas li::before { content: "✗ "; font-weight: bold; }
+    .reglas li.ok::before { content: "✓ "; }
+    #btn-guardar:disabled { opacity: .5; cursor: not-allowed; }
+</style>
+
 {% endblock content %}
 
 {% block scripts %}
 <script>
+    const MIN_PASS = 8;
+    const MAX_PASS = 64;
+
     function togglePwd(id, btn) {
         const input = document.getElementById(id);
         const isText = input.type === 'text';
@@ -99,6 +127,37 @@
         document.querySelectorAll('input[type="password"]').forEach(el => {
             el.classList.add('cb-input');
         });
+
+        const p1 = document.getElementById('id_new_password1');
+        const p2 = document.getElementById('id_new_password2');
+        const btn = document.getElementById('btn-guardar');
+
+        p1.setAttribute('maxlength', MAX_PASS);
+        p2.setAttribute('maxlength', MAX_PASS);
+
+        function revisar() {
+            const v = p1.value;
+            const reglas = {
+                len: v.length >= MIN_PASS && v.length <= MAX_PASS,
+                may: /\p{Lu}/u.test(v),
+                min: /\p{Ll}/u.test(v),
+                num: /\d/.test(v),
+                sim: /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(v),
+                esp: v !== '' && !/\s/.test(v),
+                match: v !== '' && v === p2.value,
+            };
+
+            for (const k in reglas) {
+                document.querySelector(`[data-r="${k}"]`)
+                        .classList.toggle('ok', reglas[k]);
+            }
+
+            btn.disabled = !Object.values(reglas).every(Boolean);
+        }
+
+        p1.addEventListener('input', revisar);
+        p2.addEventListener('input', revisar);
+        revisar();
     });
 </script>
 {% endblock %}

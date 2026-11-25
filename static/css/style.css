@@ -488,13 +488,11 @@ select.cb-input {
     color: #22AED1;
 }
 
-/* =========================
-   BOTÓN
-========================= */
 .btn-auth {
-    background: #22AED1;
+    background: #ffc107;
     border: none;
     border-radius: 8px;
+    color: #171717;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.3rem;
     letter-spacing: 0.1em;
@@ -502,10 +500,16 @@ select.cb-input {
 }
 
 .btn-auth:hover {
-    background: #39C5E6;
+    background: #e0a800;
+    color: #171717;
     transform: translateY(-2px);
 }
 
+.btn-auth:disabled {
+    background: #ffc107;
+    color: #171717;
+    opacity: 0.5;
+}
 .no-link-style {
     color: #000 !important;
     text-decoration: none !important;
@@ -533,17 +537,15 @@ select.cb-input {
     color: #ff6b6b;
 }
 
-/* =========================
-   LINKS AUXILIARES
-========================= */
 .aux-link,
 .forgot-link {
-    color: #22AED1;
+    color: #ffc107;
     text-decoration: none;
 }
 
+.aux-link:hover,
 .forgot-link:hover {
-    color: #39C5E6;
+    color: #e0a800;
 }
 /* =========================
    Botones lista de usuarios
@@ -6239,8 +6241,6 @@ body.theme-light .admin-panel-shell main .resumen-compra-card .resumen-ganancia-
   background: rgba(220, 38, 38, 0.08) !important;
   border-color: rgba(220, 38, 38, 0.25) !important;
 }
-<<<<<<< HEAD
-=======
 
 /* Textos de la tabla en MODO OSCURO (no afecta modo claro) */
 body:not(.theme-light) .dataTables_wrapper .dataTables_length,
@@ -6910,4 +6910,3 @@ body.client-site header .client-cart-button i {
     gap: 0.3rem !important;
   }
 }
->>>>>>> 9748d328559a070877f646c22933696112e31d71
