@@ -3,6 +3,8 @@ from django.urls import include, path
 from django.contrib.auth import views as auth_views
 from core.views import inicio, inicio_admin, CustomLoginView
 from usuarios import views as views_usuarios
+from usuarios.forms import NuevaPasswordForm
+
 
 # 🔥 IMPORTANTE para imágenes
 from django.conf import settings
@@ -37,17 +39,19 @@ urlpatterns = [
     path('recuperar-password/', views_usuarios.recuperar_password_view, name='password_reset'),
 
     path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='registration/recuperar_enviado.html'), name='password_reset_done'),
-    path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/recuperar_confirmar.html'), name='password_reset_confirm'),
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/recuperar_completo.html'), name='password_reset_complete'),
     
     #ia - chat
    path('chat/', include('chat_ia.urls')),
 
-   
-   
-   
- 
-    # ... tus otras urls
+path(
+    'recuperar/<uidb64>/<token>/',
+    auth_views.PasswordResetConfirmView.as_view(
+        template_name='registration/recuperar_confirmar.html',
+        form_class=NuevaPasswordForm,
+    ),
+    name='password_reset_confirm',
+),
     
 ]
 
