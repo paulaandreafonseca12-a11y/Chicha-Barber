@@ -1,8 +1,8 @@
-﻿from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from core.decorators import admin_required
 
 from catalogo.models import Proveedor, Producto, DetalleProducto
 from .models import Compra, DetalleCompra
@@ -12,7 +12,7 @@ from .models import Compra, DetalleCompra
 # 📥 LISTA DE ADQUISICIONES / COMPRAS
 # ==========================================================
 
-@login_required
+@admin_required
 def lista_adquisiciones(request):
     adquisiciones = DetalleCompra.objects.select_related(
         'codigo_compra__codigo_proveedor',
@@ -42,11 +42,15 @@ def lista_adquisiciones(request):
 # ➕ REGISTRAR Compras
 # ==========================================================
 
-@login_required
+@admin_required
 def registrar_adquisicion(request):
     if request.method == 'POST':
         proveedor_id = request.POST.get('proveedor_id')
         producto_id = request.POST.get('producto_id')
+
+        if not proveedor_id or not producto_id:
+            messages.error(request, 'Debes seleccionar un proveedor y un producto válidos.')
+            return redirect('registrar_adquisicion')
 
         try:
             cantidad = int(request.POST.get('cantidad', '1'))
@@ -107,13 +111,17 @@ def registrar_adquisicion(request):
 # ✏️ EDITAR Compras
 # ==========================================================
 
-@login_required
+@admin_required
 def editar_adquisicion(request, pk):
     detalle = get_object_or_404(DetalleCompra, pk=pk)
 
     if request.method == 'POST':
         proveedor_id = request.POST.get('proveedor_id')
         producto_id = request.POST.get('producto_id')
+
+        if not proveedor_id or not producto_id:
+            messages.error(request, 'Debes seleccionar un proveedor y un producto válidos.')
+            return redirect('editar_adquisicion', pk=pk)
 
         try:
             nueva_cantidad = int(request.POST.get('cantidad', '1'))
@@ -183,7 +191,7 @@ def editar_adquisicion(request, pk):
 # 🗑️ ELIMINAR Compras
 # ==========================================================
 
-@login_required
+@admin_required
 def eliminar_adquisicion(request, pk):
     detalle = get_object_or_404(DetalleCompra, pk=pk)
     compra = detalle.codigo_compra

@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/registro.css' %}">
 
 <div class="main-wrapper mx-auto">
 
@@ -32,7 +33,7 @@
 
         <form method="post" id="form-registro">
             {% csrf_token %}
-            
+
             <input type="hidden" name="next" value="{{ next }}">
 
             <div class="row g-3">
@@ -136,11 +137,21 @@
                 </div>
             </div>
 
+            <!-- TÉRMINOS Y CONDICIONES -->
+            <div class="form-check mt-3">
+                <input type="checkbox" name="acepta_terminos" id="id_acepta_terminos"
+                       class="form-check-input" required>
+                <label class="form-check-label terminos-label" for="id_acepta_terminos">
+                    Acepto los
+                    <a href="{% url 'terminos' %}" target="_blank" class="terminos-link">términos y condiciones</a>
+                </label>
+            </div>
+
             <button type="submit" class="btn btn-auth w-100 mt-3">
                 REGISTRARSE
             </button>
             <p class="text-center text-white opacity-75 mt-3 small">
-                ¿Ya tienes una cuenta? 
+                ¿Ya tienes una cuenta?
                 <a href="{% url 'login' %}" class="text-white fw-bold">Inicia sesión</a>
             </p>
 
@@ -149,66 +160,11 @@
 
 </div>
 
-<style>
-    /* Tarjeta del formulario: menos negra, más "vidrio esmerilado" */
-    .form-box {
-        background: rgba(35, 40, 50, 0.72) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    /* Inputs y selects: fondo más claro y con mejor contraste */
-    .cb-input {
-        background-color: rgba(255, 255, 255, 0.10) !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        color: #ffffff !important;
-    }
-    .cb-input::placeholder {
-        color: rgba(255, 255, 255, 0.55) !important;
-    }
-    .cb-input:focus {
-        background-color: rgba(255, 255, 255, 0.16) !important;
-        border-color: #29b6d8 !important;
-        box-shadow: 0 0 0 0.2rem rgba(41, 182, 216, 0.25) !important;
-    }
-
-    /* Textos de ayuda más legibles */
-    .form-hint {
-        opacity: 0.7 !important;
-    }
-
-    /* Oculta el ojito nativo de Edge para que no se duplique con el nuestro */
-    input[type="password"]::-ms-reveal,
-    input[type="password"]::-ms-clear {
-        display: none;
-    }
-
-    /* Ojito para mostrar/ocultar contraseña */
-    .pwd-toggle-btn {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.6);
-        padding: 0;
-        line-height: 1;
-        cursor: pointer;
-    }
-    .pwd-toggle-btn:hover {
-        color: #ffffff;
-    }
-    .col-6 .position-relative .cb-input {
-        padding-right: 2.5rem;
-    }
-</style>
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Aplicación automática de clases estéticas CSS
+    // Aplicación automática de clases estéticas CSS (no aplica a checkbox ni hidden)
     document.querySelectorAll("input").forEach(el => {
+        if (el.type === "checkbox" || el.type === "hidden") return;
         if (el.type !== "text" || el.readOnly === false) {
             el.classList.add("cb-input");
         }
@@ -220,15 +176,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
     // CONTROL TOTAL DE ESPACIOS Y CARACTERES
     // ==========================================
-
-    // 1. Identificar los inputs renderizados por Django usando sus atributos "name"
     const inputDocumento = document.querySelector('input[name="numero_documento"]');
     const inputTelefono = document.querySelector('input[name="telefono"]');
     const inputEmail = document.querySelector('input[name="email"]');
     const inputPassword1 = document.querySelector('input[name="password1"]');
     const inputPassword2 = document.querySelector('input[name="password2"]');
 
-    // Restricción para Documento y Teléfono: SOLO números (elimina letras, espacios y símbolos)
+    // Documento y Teléfono: SOLO números
     if (inputDocumento) {
         inputDocumento.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '');
@@ -240,14 +194,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Restricción para Correo: Todo a minúsculas y elimina cualquier espacio en blanco
+    // Correo: minúsculas y sin espacios
     if (inputEmail) {
         inputEmail.addEventListener('input', function() {
             this.value = this.value.toLowerCase().replace(/\s/g, '');
         });
     }
 
-    // Validación de dominio completo (evita correo@dominio.c, exige mínimo 2 letras tras el punto)
+    // Validación de dominio completo
     const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
     const errEmail = document.getElementById('err-email');
 
@@ -280,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Restricción para Contraseñas: Sin espacios en blanco
+    // Contraseñas: sin espacios
     const removerEspacios = function() {
         this.value = this.value.replace(/\s/g, '');
     };

@@ -1,0 +1,50 @@
+{% extends "base-login.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/registro.css' %}">
+
+<div class="main-wrapper mx-auto">
+
+    <header class="text-center mb-4">
+        <div class="logo-wrap rounded-circle overflow-hidden mx-auto mb-2">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-100 h-100 object-fit-cover">
+        </div>
+        <h1 class="brand-name text-white">CHICHA BARBER</h1>
+        <span class="brand-sub small text-uppercase">Studio · Nobsa</span>
+    </header>
+
+    <main class="form-box p-4 rounded-3 text-white">
+
+        <h2 class="form-heading text-white mb-1">Términos y Condiciones</h2>
+        <p class="small text-white opacity-50 mb-3">Última actualización: noviembre de 2026</p>
+        <hr class="border-secondary">
+
+        <h5 class="mt-4">1. Aceptación</h5>
+        <p>Al crear una cuenta en Chicha Barber Studio aceptas estos términos y condiciones. Si no estás de acuerdo, no uses la plataforma.</p>
+
+        <h5 class="mt-4">2. Uso de la cuenta</h5>
+        <p>Debes proporcionar datos verdaderos y mantener la confidencialidad de tu contraseña. Eres responsable de la actividad realizada desde tu cuenta.</p>
+
+        <h5 class="mt-4">3. Reservas y cancelaciones</h5>
+        <p>Las reservas están sujetas a disponibilidad. Puedes cancelar o reprogramar tu cita con la anticipación que indique el establecimiento.</p>
+
+        <h5 class="mt-4">4. Tratamiento de datos personales</h5>
+        <p>Tus datos (nombre, documento, correo y teléfono) se usan solo para gestionar tu cuenta, tus reservas y la comunicación con el establecimiento, conforme a la Ley 1581 de 2012. Puedes solicitar su consulta, actualización o eliminación escribiendo al correo de contacto.</p>
+
+        <h5 class="mt-4">5. Responsabilidades</h5>
+        <p>El establecimiento no se hace responsable por información incorrecta suministrada por el usuario ni por interrupciones del servicio ajenas a su control.</p>
+
+        <h5 class="mt-4">6. Modificaciones</h5>
+        <p>Estos términos pueden actualizarse. El uso continuo de la plataforma implica la aceptación de los cambios.</p>
+
+        <h5 class="mt-4">7. Contacto</h5>
+        <p>Para dudas o solicitudes: <strong>tu-correo@ejemplo.com</strong> · Nobsa, Boyacá.</p>
+
+        <a href="javascript:window.close()" class="btn btn-auth w-100 mt-3">
+            CERRAR Y VOLVER AL REGISTRO
+        </a>
+
+    </main>
+</div>
+{% endblock %}

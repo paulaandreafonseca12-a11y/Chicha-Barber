@@ -8,7 +8,7 @@
     <!-- ENCABEZADO -->
     <div class="d-flex justify-content-end align-items-center flex-wrap gap-3 mb-4">
         <a href="{% url 'registrar_movimiento_existencias' %}"
-           class="btn color-azul text-white fw-bold shadow-sm">
+           class="btn color-azul text-white fw-bold shadow-sm btn-crear-admin">
 
             <i class="bi bi-plus-circle-fill me-1"></i>
             Nuevo Movimiento
@@ -201,7 +201,7 @@
                                         {{ movimiento.producto.nombre }}
                                     </h6>
 
-                                    <small class="text-muted">
+                                    <small class="text-muted admin-table-code">
                                         #{{ movimiento.producto.codigo_producto }}
                                     </small>
 
@@ -285,13 +285,16 @@
                         <!-- ACCIÓN -->
                         <td class="text-center">
 
-                            <a href="{% url 'eliminar_movimiento_existencias' movimiento.pk %}"
+                            <button type="button"
                                class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('¿Seguro que deseas eliminar este movimiento?');">
-
+                               data-url="{% url 'eliminar_movimiento_existencias' movimiento.pk %}"
+                               data-nombre="el movimiento #{{ movimiento.pk }} ({{ movimiento.tipo }} de {{ movimiento.cantidad }} uds)"
+                               data-titulo="Eliminar Movimiento"
+                               data-metodo="POST"
+                               onclick="abrirModalEliminar(this)"
+                               title="Eliminar">
                                 <i class="bi bi-trash"></i>
-
-                            </a>
+                            </button>
 
                         </td>
 

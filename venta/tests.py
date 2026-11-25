@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.test import TestCase
+from django.urls import reverse
 from usuarios.models import Usuario, Notificacion
 from catalogo.models import Categoria, Marca, Producto, DetalleProducto, MovimientoProducto
 from venta.models import Venta, DetalleVenta, DetallePagos
@@ -87,6 +88,21 @@ class VentaModelTestCase(TestCase):
         # Notificación generada para cliente
         notif_cliente = Notificacion.objects.filter(usuario=self.cliente, tipo="venta").first()
         self.assertIsNotNone(notif_cliente)
+        self.assertEqual(notif_cliente.venta, venta)
+
+        notif_admin = Notificacion.objects.get(
+            usuario=self.admin,
+            venta=venta,
+        )
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse('detalle_notificacion', args=[notif_admin.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['objeto_relacionado'], venta)
+        self.assertContains(response, 'Cliente Venta')
+        self.assertContains(response, 'Detalle de notificación')
 
     def test_venta_falla_por_stock_insuficiente(self):
         """Rechaza venta cuando la cantidad solicitada supera las existencias."""

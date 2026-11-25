@@ -4,6 +4,7 @@ from django.contrib.auth import login, update_session_auth_hash
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
+from django.core.paginator import Paginator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
@@ -23,6 +24,7 @@ from .forms import (
     EditarUsuarioForm,
     EditarPerfilForm,
     RecuperarPasswordForm,
+    MAX_PASSWORD,
 )
 
 from core.utils import enviar_correo_recuperacion
@@ -30,6 +32,10 @@ from core.validators import validar_password_fuerte
 
 from reservas.models import Reserva
 from venta.models import Venta
+
+
+def terminos(request):
+    return render(request, 'usuarios/terminos.html')
 
 
 # ==========================================================
@@ -43,7 +49,7 @@ def inicio(request):
         'usuario': request.user,
     }
 
-    return render(
+    returterminosder(
         request,
         'index.html',
         context
@@ -252,7 +258,12 @@ def crear_usuario_admin(request):
 
     if request.method == 'POST':
 
-        form = CrearUsuarioAdminForm(request.POST)
+        # CORREGIDO: se pasa request.FILES para recibir la foto de perfil.
+        # El <form> del HTML debe tener enctype="multipart/form-data".
+        form = CrearUsuarioAdminForm(
+            request.POST,
+            request.FILES
+        )
 
         if form.is_valid():
 
@@ -393,6 +404,41 @@ def editar_usuario(request, pk):
 
 
 # ==========================================================
+# ELIMINAR USUARIO
+# ==========================================================
+
+@login_required
+def eliminar_usuario(request, pk):
+
+    # CORREGIDO: solo un administrador puede eliminar usuarios.
+    if request.user.rol != RolUsuario.ADMIN:
+
+        messages.error(
+            request,
+            "❌ Acceso denegado. "
+            "Solo un administrador puede eliminar usuarios."
+        )
+
+        return redirect('lista_usuarios')
+
+    usuario = get_object_or_404(Usuario, pk=pk)
+
+    if request.method == 'POST':
+        if usuario == request.user:
+            messages.error(request, "No puedes eliminar tu propia cuenta.")
+        else:
+            usuario.delete()
+            messages.success(request, "Usuario eliminado correctamente.")
+        return redirect('lista_usuarios')
+
+    return render(
+        request,
+        'usuarios/eliminar_usuario.html',
+        {'usuario': usuario}
+    )
+
+
+# ==========================================================
 # RECUPERAR CONTRASEÑA
 # ==========================================================
 
@@ -503,6 +549,13 @@ def perfil(request):
     form = EditarPerfilForm(
         instance=request.user
     )
+    abrir_offcanvas = None
+    errores_password = {
+        'password_actual': [],
+        'password_nueva': [],
+        'password_confirmar': [],
+        'general': [],
+    }
 
     # ------------------------------------------------------
     # EDITAR PERFIL
@@ -536,12 +589,7 @@ def perfil(request):
                 return redirect('perfil')
 
             else:
-
-                messages.error(
-                    request,
-                    "❌ Revisa los datos del formulario, "
-                    "hay errores."
-                )
+                abrir_offcanvas = 'offcanvasEditar'
 
         # --------------------------------------------------
         # CAMBIAR CONTRASEÑA
@@ -564,60 +612,63 @@ def perfil(request):
                 ''
             )
 
-            if not request.user.check_password(actual):
-
-                messages.error(
-                    request,
-                    "❌ La contraseña actual es incorrecta."
+            if not actual:
+                errores_password['password_actual'].append(
+                    'Ingrese su contraseña actual.'
+                )
+            elif not request.user.check_password(actual):
+                errores_password['password_actual'].append(
+                    'La contraseña actual es incorrecta.'
                 )
 
-            elif nueva != confirmar:
-
-                messages.error(
-                    request,
-                    "❌ Las contraseñas nuevas no coinciden."
+            if not nueva:
+                errores_password['password_nueva'].append(
+                    'Ingrese una contraseña nueva.'
                 )
-
+            elif len(nueva) > MAX_PASSWORD:
+                # CORREGIDO: límite de longitud también aquí.
+                errores_password['password_nueva'].append(
+                    f'La contraseña no puede superar '
+                    f'{MAX_PASSWORD} caracteres.'
+                )
             else:
-
                 try:
+                    validar_password_fuerte(nueva)
+                except ValidationError as error:
+                    errores_password['password_nueva'].extend(error.messages)
 
-                    validar_password_fuerte(
-                        nueva
-                    )
+            if not confirmar:
+                errores_password['password_confirmar'].append(
+                    'Confirme la contraseña nueva.'
+                )
+            elif nueva and nueva != confirmar:
+                errores_password['password_confirmar'].append(
+                    'Las contraseñas nuevas no coinciden.'
+                )
 
-                    request.user.set_password(
-                        nueva
-                    )
+            if not any(errores_password.values()):
+                request.user.set_password(nueva)
+                request.user.save()
 
-                    request.user.save()
+                update_session_auth_hash(
+                    request,
+                    request.user
+                )
 
-                    update_session_auth_hash(
-                        request,
-                        request.user
-                    )
+                HistorialAccion.objects.create(
+                    usuario=request.user,
+                    tipo='sesion',
+                    descripcion='Cambió su contraseña'
+                )
 
-                    HistorialAccion.objects.create(
-                        usuario=request.user,
-                        tipo='sesion',
-                        descripcion='Cambió su contraseña'
-                    )
+                messages.success(
+                    request,
+                    "✅ Contraseña actualizada."
+                )
 
-                    messages.success(
-                        request,
-                        "✅ Contraseña actualizada."
-                    )
+                return redirect('perfil')
 
-                    return redirect('perfil')
-
-                except ValidationError as e:
-
-                    for error in e.messages:
-
-                        messages.error(
-                            request,
-                            f"❌ {error}"
-                        )
+            abrir_offcanvas = 'offcanvasPassword'
 
     actividades = HistorialAccion.objects.all().order_by(
         '-fecha'
@@ -658,6 +709,10 @@ def perfil(request):
         # Historial de acciones
         'actividades': actividades,
 
+        'abrir_offcanvas': abrir_offcanvas,
+
+        'errores_password': errores_password,
+
     }
 
     return render(
@@ -694,112 +749,94 @@ def marcar_notificaciones_leidas(request):
 # ==========================================================
 
 @login_required
-def detalle_notificacion(request, pk):
+def historial_notificaciones(request):
+    historial = Notificacion.objects.filter(
+        usuario=request.user,
+        leida=True,
+    ).order_by('-fecha')
+    pagina = Paginator(historial, 20).get_page(request.GET.get('page'))
 
+    return render(request, 'private/historial_notificaciones.html', {
+        'pagina': pagina,
+        'titulo': 'Historial de notificaciones',
+        'plantilla_base': (
+            'base-admin.html'
+            if request.user.rol in (RolUsuario.ADMIN, RolUsuario.BARBERO)
+            else 'base-clientes.html'
+        ),
+    })
+
+
+@login_required
+def detalle_notificacion(request, pk):
     notificacion = get_object_or_404(
-        Notificacion,
+        Notificacion.objects.select_related(
+            'venta',
+            'reserva__servicio',
+            'producto',
+            'servicio',
+            'usuario_afectado',
+        ),
         pk=pk,
         usuario=request.user
     )
 
     if not notificacion.leida:
-
         notificacion.leida = True
+        notificacion.save(update_fields=['leida'])
 
-        notificacion.save()
+    relaciones = {
+        'venta': notificacion.venta,
+        'reserva': notificacion.reserva,
+        'producto': notificacion.producto,
+        'servicio': notificacion.servicio,
+        'usuario': notificacion.usuario_afectado,
+    }
+    objeto_relacionado = relaciones.get(notificacion.tipo)
 
-    match = re.search(
-        r'#(\d+)',
-        notificacion.mensaje
-    )
-
-    rel_id = (
-        match.group(1)
-        if match
-        else None
-    )
-
-    # ------------------------------------------------------
-    # ADMIN / BARBERO
-    # ------------------------------------------------------
-
-    if request.user.rol in (
-        RolUsuario.ADMIN,
-        RolUsuario.BARBERO
-    ):
-
-        if notificacion.tipo == 'reserva':
-
-            return redirect(
-                'ver_agenda'
-            )
-
-        elif notificacion.tipo == 'venta':
-
-            if rel_id:
-
-                try:
-
-                    Venta.objects.get(
-                        pk=rel_id
-                    )
-
-                    return redirect(
-                        'detalle_venta',
-                        pk=rel_id
-                    )
-
-                except Venta.DoesNotExist:
-
-                    pass
-
-            return redirect(
-                'historial_ventas'
-            )
-
-    # ------------------------------------------------------
-    # CLIENTE
-    # ------------------------------------------------------
-
-    objeto_relacionado = None
-
-    if rel_id:
-
-        try:
-
-            if notificacion.tipo == 'venta':
-
-                objeto_relacionado = Venta.objects.get(
-                    pk=rel_id,
-                    correo=request.user.email
-                )
-
-            elif notificacion.tipo == 'reserva':
-
-                objeto_relacionado = Reserva.objects.get(
-                    pk=rel_id,
-                    usuario=request.user
-                )
-
-        except (
-            Venta.DoesNotExist,
-            Reserva.DoesNotExist
-        ):
-
+    es_personal = request.user.rol == RolUsuario.CLIENTE
+    if es_personal and notificacion.tipo == 'venta' and objeto_relacionado:
+        if objeto_relacionado.codigo_usuario_id != request.user.pk:
+            objeto_relacionado = None
+    elif es_personal and notificacion.tipo == 'reserva' and objeto_relacionado:
+        if objeto_relacionado.usuario_id != request.user.pk:
             objeto_relacionado = None
 
+    # Las notificaciones antiguas de clientes pueden no tener la FK asociada.
+    if objeto_relacionado is None and notificacion.tipo in ('venta', 'reserva'):
+        match = re.search(r'#(\d+)', notificacion.mensaje)
+        if match:
+            filtros = {'pk': match.group(1)}
+            if notificacion.tipo == 'venta':
+                if es_personal:
+                    filtros['codigo_usuario'] = request.user
+                objeto_relacionado = Venta.objects.filter(**filtros).first()
+            else:
+                if es_personal:
+                    filtros['usuario'] = request.user
+                objeto_relacionado = Reserva.objects.filter(**filtros).first()
+
     context = {
-
         'notificacion': notificacion,
-
         'objeto_relacionado': objeto_relacionado,
-
         'titulo': 'Detalle de Notificación',
+        'plantilla_base': (
+            'base-admin.html'
+            if request.user.rol in (RolUsuario.ADMIN, RolUsuario.BARBERO)
+            else 'base-clientes.html'
+        ),
+    }
 
+    return render(request, 'private/detalle_notificacion.html', context)
+
+def terminos(request):
+    context = {
+        'titulo': 'Términos y Condiciones',
+        'usuario': request.user,
     }
 
     return render(
         request,
-        'private/detalle_notificacion.html',
+        'terminos.html',
         context
     )

@@ -1,10 +1,45 @@
-﻿from django import forms
+﻿import re
+
+from django import forms
 
 from .models import (
     Venta,
     DetalleVenta,
     DetallePagos,
 )
+
+
+# ==========================================================
+# VALIDACIÓN GENERAL: SOLO LETRAS Y ESPACIOS
+# ==========================================================
+
+def validar_solo_letras(valor, campo):
+    """
+    Permite letras, tildes, ñ, ü y espacios.
+    No permite números ni símbolos.
+    """
+
+    if not valor or not valor.strip():
+        raise forms.ValidationError(
+            f'El campo {campo} es obligatorio.'
+        )
+
+    valor = valor.strip()
+
+    if len(valor) < 2:
+        raise forms.ValidationError(
+            f'El campo {campo} debe tener al menos 2 caracteres.'
+        )
+
+    if not re.fullmatch(
+        r'[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+',
+        valor
+    ):
+        raise forms.ValidationError(
+            f'El campo {campo} solo puede contener letras y espacios.'
+        )
+
+    return valor
 
 
 # ==========================================================
@@ -26,12 +61,13 @@ class VentaForm(forms.ModelForm):
         ]
 
         widgets = {
-
             'nombre_cliente': forms.TextInput(
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre completo',
                     'required': True,
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'Ingrese únicamente letras y espacios.',
                 }
             ),
 
@@ -46,7 +82,11 @@ class VentaForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'placeholder': '3001234567',
+                    'pattern': r'^[0-9]+$',
                     'inputmode': 'numeric',
+                    'minlength': '7',
+                    'maxlength': '15',
+                    'title': 'Ingrese entre 7 y 15 números.',
                 }
             ),
 
@@ -71,53 +111,28 @@ class VentaForm(forms.ModelForm):
         }
 
         labels = {
-
             'nombre_cliente': 'Nombre del Cliente',
-
             'correo': 'Correo Electrónico',
-
             'telefono': 'Teléfono',
-
             'direccion': 'Dirección',
-
             'metodo_pago': 'Método de Pago',
-
             'estado_pago': 'Estado del Pago',
         }
 
-    # ======================================================
-    # VALIDAR NOMBRE
-    # ======================================================
+    # VALIDAR NOMBRE DEL CLIENTE
 
     def clean_nombre_cliente(self):
+        nombre = self.cleaned_data.get('nombre_cliente')
 
-        nombre = self.cleaned_data.get(
-            'nombre_cliente'
+        return validar_solo_letras(
+            nombre,
+            'nombre del cliente'
         )
 
-        if not nombre:
-            raise forms.ValidationError(
-                'El nombre del cliente es obligatorio.'
-            )
-
-        nombre = nombre.strip()
-
-        if len(nombre) < 2:
-            raise forms.ValidationError(
-                'El nombre debe tener al menos 2 caracteres.'
-            )
-
-        return nombre
-
-    # ======================================================
     # VALIDAR TELÉFONO
-    # ======================================================
 
     def clean_telefono(self):
-
-        telefono = self.cleaned_data.get(
-            'telefono'
-        )
+        telefono = self.cleaned_data.get('telefono')
 
         if not telefono:
             return telefono
@@ -136,20 +151,25 @@ class VentaForm(forms.ModelForm):
 
         return telefono
 
-    # ======================================================
     # VALIDAR DIRECCIÓN
-    # ======================================================
 
     def clean_direccion(self):
-
-        direccion = self.cleaned_data.get(
-            'direccion'
-        )
+        direccion = self.cleaned_data.get('direccion')
 
         if not direccion:
             return direccion
 
-        return direccion.strip()
+        direccion = direccion.strip()
+
+        if not re.fullmatch(
+            r'[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s.,#°/\-]+',
+            direccion
+        ):
+            raise forms.ValidationError(
+                'La dirección contiene caracteres no permitidos.'
+            )
+
+        return direccion
 
 
 # ==========================================================
@@ -168,7 +188,6 @@ class DetalleVentaForm(forms.ModelForm):
         ]
 
         widgets = {
-
             'codigo_producto': forms.Select(
                 attrs={
                     'class': 'form-select',
@@ -190,51 +209,42 @@ class DetalleVentaForm(forms.ModelForm):
                     'class': 'form-control',
                     'min': '0',
                     'step': '0.01',
-                    'value': '0',
                 }
             ),
         }
 
         labels = {
-
             'codigo_producto': 'Producto',
-
             'cantidad': 'Cantidad',
-
             'valor_descuento': 'Descuento',
         }
 
-    # ======================================================
     # VALIDAR CANTIDAD
-    # ======================================================
 
     def clean_cantidad(self):
-
-        cantidad = self.cleaned_data.get(
-            'cantidad'
-        )
+        cantidad = self.cleaned_data.get('cantidad')
 
         if cantidad is None:
             raise forms.ValidationError(
                 'La cantidad es obligatoria.'
             )
 
-        if cantidad <= 0:
+        if cantidad < 1:
             raise forms.ValidationError(
-                'La cantidad debe ser mayor que 0.'
+                'La cantidad debe ser mayor o igual a 1.'
+            )
+
+        if cantidad != int(cantidad):
+            raise forms.ValidationError(
+                'La cantidad debe ser un número entero.'
             )
 
         return cantidad
 
-    # ======================================================
     # VALIDAR DESCUENTO
-    # ======================================================
 
     def clean_valor_descuento(self):
-
-        descuento = self.cleaned_data.get(
-            'valor_descuento'
-        )
+        descuento = self.cleaned_data.get('valor_descuento')
 
         if descuento is None:
             return 0
@@ -246,41 +256,28 @@ class DetalleVentaForm(forms.ModelForm):
 
         return descuento
 
-    # ======================================================
-    # VALIDAR STOCK
-    # ======================================================
+    # VALIDAR STOCK DISPONIBLE
 
     def clean(self):
-
         cleaned_data = super().clean()
 
-        producto = cleaned_data.get(
-            'codigo_producto'
-        )
+        producto = cleaned_data.get('codigo_producto')
+        cantidad = cleaned_data.get('cantidad')
 
-        cantidad = cleaned_data.get(
-            'cantidad'
-        )
-
-        if producto and cantidad:
-
+        if producto is not None and cantidad is not None:
             try:
-
                 stock = producto.detalle_producto.cantidad_actual
 
-                if cantidad > stock:
-
-                    raise forms.ValidationError(
-                        f'Stock insuficiente para '
-                        f'"{producto.nombre}". '
-                        f'Disponible: {stock}.'
-                    )
-
             except AttributeError:
-
                 raise forms.ValidationError(
                     f'El producto "{producto.nombre}" '
-                    f'no tiene un registro de stock.'
+                    'no tiene un registro de stock.'
+                )
+
+            if cantidad > stock:
+                raise forms.ValidationError(
+                    f'Stock insuficiente para "{producto.nombre}". '
+                    f'Disponible: {stock}.'
                 )
 
         return cleaned_data
@@ -289,21 +286,10 @@ class DetalleVentaForm(forms.ModelForm):
 # ==========================================================
 # 3. FORMULARIO DATOS DE TRANSFERENCIA
 # ==========================================================
-#
-# Este formulario corresponde a DetallePagos.
-#
-# IMPORTANTE:
-# DetallePagos contiene los datos bancarios generales
-# de la barbería.
-#
-# No está relacionado directamente con una Venta.
-#
-# ==========================================================
 
 class DetallePagosForm(forms.ModelForm):
 
     class Meta:
-
         model = DetallePagos
 
         fields = [
@@ -315,7 +301,6 @@ class DetallePagosForm(forms.ModelForm):
         ]
 
         widgets = {
-
             'banco': forms.TextInput(
                 attrs={
                     'class': 'form-control',
@@ -336,6 +321,8 @@ class DetallePagosForm(forms.ModelForm):
                     'class': 'form-control',
                     'placeholder': 'Número de cuenta',
                     'inputmode': 'numeric',
+                    'pattern': r'^[0-9]+$',
+                    'title': 'El número de cuenta solo puede contener números.',
                 }
             ),
 
@@ -343,6 +330,8 @@ class DetallePagosForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre del titular',
+                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'Ingrese únicamente letras y espacios.',
                 }
             ),
 
@@ -351,37 +340,26 @@ class DetallePagosForm(forms.ModelForm):
                     'class': 'form-control',
                     'rows': 3,
                     'placeholder': (
-                        'Instrucciones para realizar '
-                        'la transferencia'
+                        'Instrucciones para realizar la transferencia'
                     ),
                 }
             ),
         }
 
         labels = {
-
             'banco': 'Banco',
-
             'tipo_cuenta': 'Tipo de Cuenta',
-
             'numero_cuenta': 'Número de Cuenta',
-
             'titular': 'Titular',
-
             'instrucciones': 'Instrucciones',
         }
 
-    # ======================================================
     # VALIDAR BANCO
-    # ======================================================
 
     def clean_banco(self):
+        banco = self.cleaned_data.get('banco')
 
-        banco = self.cleaned_data.get(
-            'banco'
-        )
-
-        if not banco:
+        if not banco or not banco.strip():
             raise forms.ValidationError(
                 'El banco es obligatorio.'
             )
@@ -390,35 +368,25 @@ class DetallePagosForm(forms.ModelForm):
 
         if len(banco) < 2:
             raise forms.ValidationError(
-                'El nombre del banco no es válido.'
+                'El nombre del banco debe tener al menos 2 caracteres.'
             )
 
         return banco
 
-    # ======================================================
     # VALIDAR TIPO DE CUENTA
-    # ======================================================
 
     def clean_tipo_cuenta(self):
-
-        tipo = self.cleaned_data.get(
-            'tipo_cuenta'
-        )
+        tipo = self.cleaned_data.get('tipo_cuenta')
 
         if not tipo:
             return tipo
 
         return tipo.strip()
 
-    # ======================================================
     # VALIDAR NÚMERO DE CUENTA
-    # ======================================================
 
     def clean_numero_cuenta(self):
-
-        numero = self.cleaned_data.get(
-            'numero_cuenta'
-        )
+        numero = self.cleaned_data.get('numero_cuenta')
 
         if not numero:
             return numero
@@ -427,43 +395,28 @@ class DetallePagosForm(forms.ModelForm):
 
         if not numero.isdigit():
             raise forms.ValidationError(
-                'El número de cuenta solo puede '
-                'contener números.'
+                'El número de cuenta solo puede contener números.'
             )
 
         return numero
 
-    # ======================================================
     # VALIDAR TITULAR
-    # ======================================================
 
     def clean_titular(self):
-
-        titular = self.cleaned_data.get(
-            'titular'
-        )
+        titular = self.cleaned_data.get('titular')
 
         if not titular:
             return titular
 
-        titular = titular.strip()
+        return validar_solo_letras(
+            titular,
+            'nombre del titular'
+        )
 
-        if len(titular) < 2:
-            raise forms.ValidationError(
-                'El nombre del titular no es válido.'
-            )
-
-        return titular
-
-    # ======================================================
     # VALIDAR INSTRUCCIONES
-    # ======================================================
 
     def clean_instrucciones(self):
-
-        instrucciones = self.cleaned_data.get(
-            'instrucciones'
-        )
+        instrucciones = self.cleaned_data.get('instrucciones')
 
         if not instrucciones:
             return instrucciones

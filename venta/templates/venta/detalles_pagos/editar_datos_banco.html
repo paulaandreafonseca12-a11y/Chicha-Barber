@@ -1,34 +1,32 @@
-{% extends "base-admin.html" %} {% load static %} {% block content %}
-<div class="container mt-4 mb-5">
+{% extends "base-admin.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4 configuracion-admin">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <div
-        class="card border-0 shadow rounded-4 overflow-hidden"
-      >
-        <div class="card-header color-champaña text-dark py-3">
-          <h5 class="mb-0 fw-bold text-dark">
-            <i class="bi bi-bank me-2"></i>Configurar Datos de Transferencia
+      <div class="card border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
+        <div class="card-header py-3 px-4">
+          <h5 class="mb-0 fw-bold">
+            <i class="bi bi-bank me-2 text-warning"></i>Configurar datos de transferencia
           </h5>
         </div>
 
-        <div class="card-body p-4 bg-white">
-          <p class="text-dark mb-4">
-            <i class="bi bi-info-circle me-1"></i>
-            Esta información se mostrará a los clientes cuando elijan pagar
-            mediante transferencia bancaria.
+        <div class="card-body p-4">
+          <p class="text-white-50 mb-4">
+            <i class="bi bi-info-circle me-1 text-warning"></i>
+            Esta información se mostrará a los clientes cuando paguen mediante transferencia bancaria.
           </p>
 
           <form method="POST">
             {% csrf_token %}
 
-            <div class="row">
+            <div class="row g-3">
               <div class="col-md-6 mb-3">
-                <label for="banco" class="form-label text-dark fw-bold"
-                  >Nombre del Banco</label
-                >
+                <label for="banco" class="form-label fw-bold">Nombre del Banco</label>
                 <input
                   type="text"
-                  class="form-control bg-white text-dark border-secondary shadow-none"
+                  class="form-control"
                   id="banco"
                   name="banco"
                   value="{{ datos.banco }}"
@@ -37,12 +35,10 @@
                 />
               </div>
               <div class="col-md-6 mb-3">
-                <label for="tipo_cuenta" class="form-label text-dark fw-bold"
-                  >Tipo de Cuenta</label
-                >
+                <label for="tipo_cuenta" class="form-label fw-bold">Tipo de Cuenta</label>
                 <input
                   type="text"
-                  class="form-control bg-white text-dark border-secondary shadow-none"
+                  class="form-control"
                   id="tipo_cuenta"
                   name="tipo_cuenta"
                   value="{{ datos.tipo_cuenta }}"
@@ -52,14 +48,12 @@
               </div>
             </div>
 
-            <div class="row">
+            <div class="row g-3">
               <div class="col-md-6 mb-3">
-                <label for="numero_cuenta" class="form-label text-dark fw-bold"
-                  >Número de Cuenta</label
-                >
+                <label for="numero_cuenta" class="form-label fw-bold">Número de Cuenta</label>
                 <input
                   type="text"
-                  class="form-control bg-white text-dark border-secondary shadow-none"
+                  class="form-control"
                   id="numero_cuenta"
                   name="numero_cuenta"
                   value="{{ datos.numero_cuenta }}"
@@ -68,12 +62,10 @@
                 />
               </div>
               <div class="col-md-6 mb-3">
-                <label for="titular" class="form-label text-dark fw-bold"
-                  >Nombre del Titular</label
-                >
+                <label for="titular" class="form-label fw-bold">Nombre del Titular</label>
                 <input
                   type="text"
-                  class="form-control bg-white text-dark border-secondary shadow-none"
+                  class="form-control"
                   id="titular"
                   name="titular"
                   value="{{ datos.titular }}"
@@ -84,22 +76,17 @@
             </div>
 
             <div class="mb-4">
-              <label for="instrucciones" class="form-label text-dark fw-bold"
-                >Instrucciones o Notas</label
-              >
+              <label for="instrucciones" class="form-label fw-bold">Instrucciones o Notas</label>
               <textarea
-                class="form-control bg-white text-dark border-secondary shadow-none"
+                class="form-control"
                 id="instrucciones"
                 name="instrucciones"
                 rows="3"
                 required
                 placeholder="Ej: Envía el comprobante por WhatsApp"
-              >
-{{ datos.instrucciones }}</textarea
-              >
-              <div class="form-text text-dark small">
-                Aparecerá resaltado como una nota de advertencia para el
-                cliente.
+              >{{ datos.instrucciones }}</textarea>
+              <div class="form-text small">
+                Aparecerá resaltado como una nota para el cliente.
               </div>
             </div>
 
@@ -111,7 +98,7 @@
               >
               <button
                 type="submit"
-                class="btn color-azul text-white fw-bold rounded-pill px-4"
+                class="btn btn-warning text-dark fw-bold rounded-pill px-4 btn-panel-gold"
               >
                 <i class="bi bi-save me-2"></i>Guardar Cambios
               </button>

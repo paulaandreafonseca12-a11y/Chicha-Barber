@@ -1,7 +1,16 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.db import IntegrityError, transaction
-from .models import Usuario
+from .models import Notificacion, Usuario
+
+
+class TerminosTests(TestCase):
+    def test_pagina_terminos_disponible_sin_iniciar_sesion(self):
+        response = self.client.get(reverse('terminos'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'usuarios/terminos.html')
+        self.assertContains(response, 'Términos y Condiciones')
 
 
 class UsuarioModelTest(TestCase):
@@ -116,3 +125,128 @@ class UsuarioModelTest(TestCase):
             'password': 'Test1234*'
         })
         self.assertEqual(response.status_code, 200)
+
+
+class PerfilFormularioTests(TestCase):
+    def setUp(self):
+        self.usuario = Usuario.objects.create_user(
+            email='perfil@correo.com',
+            password='ClaveSegura123*',
+            numero_documento='456789123',
+            primer_nombre='Paula',
+            primer_apellido='Pérez',
+            telefono='3001234567',
+            rol='cliente',
+        )
+        self.client.force_login(self.usuario)
+
+    def test_perfil_invalido_mantiene_errores_y_reabre_edicion(self):
+        response = self.client.post(reverse('perfil'), {
+            'editar_perfil': '1',
+            'tipo_documento': 'CC',
+            'numero_documento': self.usuario.numero_documento,
+            'primer_nombre': 'Paula',
+            'segundo_nombre': '',
+            'primer_apellido': 'Pérez',
+            'segundo_apellido': '',
+            'telefono': 'telefono-invalido',
+            'email': 'correo-invalido',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['abrir_offcanvas'], 'offcanvasEditar')
+        self.assertIn('telefono', response.context['form'].errors)
+        self.assertIn('email', response.context['form'].errors)
+        self.assertContains(response, 'offcanvasEditar')
+        self.assertContains(response, response.context['form'].errors['email'][0])
+
+    def test_password_invalida_mantiene_errores_y_reabre_panel(self):
+        response = self.client.post(reverse('perfil'), {
+            'cambiar_password': '1',
+            'password_actual': 'incorrecta',
+            'password_nueva': 'debil',
+            'password_confirmar': 'diferente',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['abrir_offcanvas'], 'offcanvasPassword')
+        errores = response.context['errores_password']
+        self.assertTrue(errores['password_actual'])
+        self.assertTrue(errores['password_nueva'])
+        self.assertTrue(errores['password_confirmar'])
+        self.assertContains(response, errores['password_actual'][0])
+        self.assertContains(response, 'offcanvasPassword')
+
+
+class HistorialNotificacionesTests(TestCase):
+    def setUp(self):
+        self.usuario = Usuario.objects.create_user(
+            email='notificaciones@correo.com',
+            password='ClaveSegura123*',
+            numero_documento='333444555',
+            primer_nombre='Ana',
+            primer_apellido='Prueba',
+            telefono='3005556677',
+            rol='cliente',
+        )
+        self.client.force_login(self.usuario)
+
+    def test_al_visualizar_notificacion_se_archiva_y_aparece_en_historial(self):
+        notificacion = Notificacion.objects.create(
+            usuario=self.usuario,
+            tipo='sistema',
+            mensaje='Se completó una acción.',
+        )
+
+        response = self.client.get(
+            reverse('detalle_notificacion', args=[notificacion.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        notificacion.refresh_from_db()
+        self.assertTrue(notificacion.leida)
+        self.assertNotIn(notificacion, response.context['notificaciones_lista'])
+
+        response = self.client.get(reverse('historial_notificaciones'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Se completó una acción.')
+        self.assertEqual(list(response.context['pagina']), [notificacion])
+
+    def test_historial_solo_muestra_notificaciones_leidas_del_usuario(self):
+        leida = Notificacion.objects.create(
+            usuario=self.usuario,
+            tipo='sistema',
+            mensaje='Notificación leída.',
+            leida=True,
+        )
+        Notificacion.objects.create(
+            usuario=self.usuario,
+            tipo='sistema',
+            mensaje='Notificación pendiente.',
+        )
+        otro_usuario = Usuario.objects.create_user(
+            email='otro@correo.com',
+            password='ClaveSegura123*',
+            numero_documento='777888999',
+            primer_nombre='Otro',
+            primer_apellido='Usuario',
+            telefono='3005556688',
+            rol='cliente',
+        )
+        Notificacion.objects.create(
+            usuario=otro_usuario,
+            tipo='sistema',
+            mensaje='Notificación ajena.',
+            leida=True,
+        )
+
+        response = self.client.get(reverse('historial_notificaciones'))
+
+        self.assertEqual(list(response.context['pagina']), [leida])
+        self.assertContains(response, 'Notificación leída.')
+        self.assertEqual(
+            [notificacion.mensaje for notificacion in response.context['notificaciones_lista']],
+            ['Notificación pendiente.'],
+        )
+        self.assertNotContains(response, 'Notificación ajena.')

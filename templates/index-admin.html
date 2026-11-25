@@ -148,9 +148,9 @@
         <!-- TABLA -->
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0 bg-transparent">
+            <table class="table table-hover align-middle mb-0 bg-transparent">
               <thead>
-                <tr class="text-white-50 border-bottom border-secondary border-opacity-25 text-uppercase fs-8 tracking-wide bg-black bg-opacity-40">
+                <tr class="admin-table-head text-uppercase fs-8 tracking-wide">
                   <th class="ps-4 py-3">Cliente</th>
                   <th class="py-3">Servicio</th>
                   <th class="py-3">Fecha y Hora</th>
@@ -159,7 +159,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% if reservas_recientes %}
+                {% if reserva_recientes %}
                   {% for reserva in reservas_recientes %}
                   <tr class="border-bottom border-secondary border-opacity-10">
 

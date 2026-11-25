@@ -20,10 +20,10 @@
         </div>
 
         <h1 class="font-heading fw-black lh-1 mb-3 text-uppercase text-center">
-          <span class="d-block neon-text-gold fw-black mb-1 text-nowrap" style="font-size: calc(1.5rem + 1.8vw);">
+          <span class="d-block  fw-black mb-1 text-warning" style="font-size: calc(1.5rem + 1.8vw);">
             POTENCIA &amp; ESTILO PARA
           </span>
-          <span class="d-block neon-text-white fw-black mb-1 text-nowrap" style="font-size: calc(1.5rem + 1.8vw);">
+          <span class="d-block  fw-black mb-1 text-white" style="font-size: calc(1.5rem + 1.8vw);">
             NUESTROS CLIENTES
           </span>
         </h1>
@@ -420,10 +420,11 @@
 
 <script>
   function verificarExpiracionCarrito() {
-    let expiracion = localStorage.getItem("carrito_expiracion");
+    const expiracionKey = window.CARRITO_STORAGE_KEY + "_expiracion";
+    let expiracion = localStorage.getItem(expiracionKey);
     if (expiracion && Date.now() > expiracion) {
-      localStorage.removeItem("carrito");
-      localStorage.removeItem("carrito_expiracion");
+      localStorage.removeItem(window.CARRITO_STORAGE_KEY);
+      localStorage.removeItem(expiracionKey);
       let contador = document.getElementById("contador");
       if (contador) contador.textContent = "0";
       console.log("Carrito expirado.");

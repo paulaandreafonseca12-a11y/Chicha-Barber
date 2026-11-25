@@ -7,6 +7,7 @@ class CarruselForm(forms.ModelForm):
         fields = ['nombre', 'imagen', 'texto']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'texto': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'required': True}),
         }
         help_texts = {

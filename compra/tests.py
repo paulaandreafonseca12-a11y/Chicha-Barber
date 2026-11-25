@@ -1,7 +1,9 @@
 from decimal import Decimal
 from django.test import TestCase
+from django.urls import reverse
 from catalogo.models import Proveedor, Categoria, Marca, Producto, DetalleProducto, MovimientoProducto
 from compra.models import Compra, DetalleCompra
+from usuarios.models import RolUsuario, Usuario
 
 
 class CompraModelTestCase(TestCase):
@@ -70,4 +72,38 @@ class CompraModelTestCase(TestCase):
         self.assertIsNotNone(movimiento)
         self.assertEqual(movimiento.tipo, "entrada")
         self.assertEqual(movimiento.cantidad, 20)
+
+
+class CompraAdminAccessTests(TestCase):
+    def test_cliente_no_puede_abrir_gestion_de_compras(self):
+        cliente = Usuario.objects.create_user(
+            email='cliente-compras@example.com',
+            password='test-password',
+            primer_nombre='Cliente',
+            primer_apellido='Prueba',
+            telefono='3000000002',
+            numero_documento='990000002',
+            rol=RolUsuario.CLIENTE,
+        )
+        self.client.force_login(cliente)
+
+        response = self.client.get(reverse('lista_adquisiciones'))
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_administrador_puede_abrir_gestion_de_compras(self):
+        administrador = Usuario.objects.create_user(
+            email='admin-compras@example.com',
+            password='test-password',
+            primer_nombre='Admin',
+            primer_apellido='Prueba',
+            telefono='3000000004',
+            numero_documento='990000004',
+            rol=RolUsuario.ADMIN,
+        )
+        self.client.force_login(administrador)
+
+        response = self.client.get(reverse('lista_adquisiciones'))
+
+        self.assertEqual(response.status_code, 200)
 

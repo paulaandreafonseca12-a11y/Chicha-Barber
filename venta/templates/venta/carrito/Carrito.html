@@ -7,11 +7,11 @@
 
   <!-- TÍTULO -->
   <div class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-uppercase neon-text-gold  mb-3 titulo-animado">
+    <h1 class="display-4 fw-bold text-uppercase text-warning mb-2 font-heading">
       <i></i>
       Carrito de ventas
     </h1>
-    <p class="neon-text-white fs-5 mb-3">
+    <p class="text-white fs-5 mb-3">
       Revisa tus productos y servicios antes de finalizar.
     </p>
   </div>
@@ -57,7 +57,9 @@
 </section>
 
 <script>
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+const carritoStorageKey = window.CARRITO_STORAGE_KEY;
+const facturaStorageKey = `${carritoStorageKey}_factura_id`;
+let carrito = JSON.parse(localStorage.getItem(carritoStorageKey)) || [];
 
 function formatoCOP(valor){
     return new Intl.NumberFormat('es-CO').format(valor);
@@ -65,9 +67,9 @@ function formatoCOP(valor){
 
 function guardarCarrito(){
     if(carrito.length === 0){
-        localStorage.removeItem("carrito");
+        localStorage.removeItem(carritoStorageKey);
     }else{
-        localStorage.setItem("carrito", JSON.stringify(carrito));
+        localStorage.setItem(carritoStorageKey, JSON.stringify(carrito));
     }
 }
 
@@ -123,7 +125,37 @@ function mostrarCarrito(){
 }
 
 function eliminarItem(index){
-    if(confirm("¿Eliminar este elemento del carrito?")){
+    const item = carrito[index];
+    const nombre = item ? item.nombre : 'este producto';
+    const modalEl = document.getElementById('modalEliminarUniversal');
+    
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        const tituloEl = document.getElementById('modalEliminarUniversalTitulo');
+        const preguntaEl = document.getElementById('modalEliminarUniversalPregunta');
+        const subtituloEl = document.getElementById('modalEliminarUniversalSubtitulo');
+        const formEl = document.getElementById('formEliminarUniversal');
+        const linkEl = document.getElementById('linkConfirmarEliminarUniversal');
+        const textoLink = document.getElementById('textoLinkConfirmar');
+
+        if (tituloEl) tituloEl.textContent = 'Eliminar del Carrito';
+        if (preguntaEl) preguntaEl.innerHTML = `¿Seguro que deseas eliminar <strong class="text-white">${nombre}</strong> del carrito?`;
+        if (subtituloEl) subtituloEl.textContent = 'Se removerá de tu pedido actual.';
+        if (textoLink) textoLink.textContent = 'Sí, eliminar';
+
+        if (formEl) formEl.classList.add('d-none');
+        if (linkEl) {
+            linkEl.classList.remove('d-none');
+            linkEl.href = '#';
+            linkEl.onclick = function(e) {
+                e.preventDefault();
+                carrito.splice(index, 1);
+                mostrarCarrito();
+                const inst = bootstrap.Modal.getInstance(modalEl);
+                if (inst) inst.hide();
+            };
+        }
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    } else {
         carrito.splice(index, 1);
         mostrarCarrito();
     }
@@ -170,12 +202,12 @@ if (reservaId && reservaServicio && reservaPrecio) {
 }
 
 if (facturaId) {
-    localStorage.setItem("current_factura_id", facturaId);
+    localStorage.setItem(facturaStorageKey, facturaId);
 }
 
 const linkPago = document.querySelector("a[href=\"{% url 'pago' %}\"]");
 if (linkPago) {
-    let savedFacturaId = localStorage.getItem("current_factura_id");
+    let savedFacturaId = localStorage.getItem(facturaStorageKey);
     if (savedFacturaId) {
         linkPago.href = "{% url 'pago' %}?factura_id=" + savedFacturaId;
     }

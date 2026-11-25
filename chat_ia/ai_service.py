@@ -8,7 +8,12 @@ load_dotenv()
 SYSTEM_PROMPT = CONTEXTO
 DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
 
-def obtener_respuesta_ia(prompt, historial=None, system_prompt_extra=None):
+def obtener_respuesta_ia(
+    prompt,
+    historial=None,
+    system_prompt_extra=None,
+    system_prompt_base=None,
+):
 
     api_key = os.environ.get("GROQ_API_KEY")
 
@@ -18,7 +23,7 @@ def obtener_respuesta_ia(prompt, historial=None, system_prompt_extra=None):
     client = Groq(api_key=api_key)
 
     # Construir system prompt: base + extra dinámico si existe
-    system_content = SYSTEM_PROMPT
+    system_content = system_prompt_base or SYSTEM_PROMPT
     if system_prompt_extra:
         system_content += "\n\n" + system_prompt_extra
 

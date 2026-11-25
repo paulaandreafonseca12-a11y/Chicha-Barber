@@ -1,30 +1,38 @@
 {% load static %}
-<aside class="admin-aside d-flex flex-column flex-shrink-0 p-3 bg-black text-white shadow-lg partials-aside__aside-1 border-end border-gold-subtle">
+<aside id="adminSidebar" class="admin-aside d-flex flex-column flex-shrink-0 p-3 bg-black text-white shadow-lg partials-aside__aside-1 border-end border-gold-subtle" aria-label="Menú de administración">
 
   <!-- BOTÓN CERRAR (SOLO MÓVIL) -->
   <div class="d-lg-none text-end mb-2">
-    <button type="button" class="btn btn-sm text-warning" onclick="closeAside()" aria-label="Cerrar menú">
+    <button type="button" class="btn btn-sm text-warning admin-sidebar-close" onclick="closeAside()" aria-label="Cerrar menú">
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
 
   <!-- LOGO Y NOMBRE -->
-  <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-  <img src="{% static 'img/logo.png' %}"
-       alt="Chicha Barber"
-       height="50"
-       class="me-2 flex-shrink-0"
-       style="filter: drop-shadow(0px 0px 8px rgba(255, 193, 7, 0.6));">
-  <span class="fs-4 fw-bold text-uppercase  tracking-wide text-nowrap">Chicha Barber</span>
-</div>
+  <div class="admin-aside-brand d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none">
+    <img src="{% static 'img/logo.png' %}"
+         alt="Chicha Barber"
+         height="50"
+         class="me-2 flex-shrink-0"
+         style="filter: drop-shadow(0px 0px 8px rgba(255, 193, 7, 0.6));">
+    <span class="admin-aside-label fs-4 fw-bold text-uppercase tracking-wide text-nowrap">Chicha Barber</span>
+    <button type="button"
+            class="btn btn-sm btn-outline-warning admin-aside-toggle d-none d-lg-inline-flex"
+            onclick="toggleAsideCompact()"
+            aria-label="Contraer menú"
+            aria-expanded="true"
+            title="Contraer menú">
+      <i class="bi bi-layout-sidebar-inset"></i>
+    </button>
+  </div>
 
   <hr class="border-secondary opacity-25 my-3" />
 
   <!-- DASHBOARD -->
   <div class="mb-3">
     <a href="{% url 'inicio_admin' %}" class="d-flex align-items-center px-3 py-2.5 rounded-3 text-decoration-none {% if request.resolver_match.url_name == 'inicio_admin' %}bg-warning bg-opacity-10 text-warning fw-bold border border-warning border-opacity-25{% else %}text-white-50 bg-dark bg-opacity-50{% endif %} partials-aside__a-2">
-      <i class="bi bi-speedometer2 me-2 fs-5 {% if request.resolver_match.url_name == 'inicio_admin' %}text-warning{% else %}text-white-50{% endif %}"></i>
-      <span>Dashboard</span>
+      <i class="bi bi-speedometer2 me-2 fs-5 {% if request.resolver_match.url_name == 'inicio_admin' %}text-warning{% else %}text-white-50{% endif %}" title="Administración"></i>
+      <span class="admin-aside-label">Administración</span>
     </a>
   </div>
 
@@ -34,7 +42,7 @@
     <div class="accordion-item bg-transparent border-0">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}{% else %}collapsed{% endif %} bg-transparent {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseServicios">
-          <i class="bi bi-gear-wide-connected me-2 text-warning"></i> Gestión de Servicios
+          <i class="bi bi-gear-wide-connected me-2 text-warning" title="Gestión de Servicios"></i><span class="admin-aside-label">Gestión de Servicios</span>
         </button>
       </h2>
       <div id="collapseServicios" class="accordion-collapse collapse {% if 'servicios' in request.path and 'promocion' not in request.path and 'calificacion' not in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
@@ -52,7 +60,7 @@
     <div class="accordion-item bg-transparent border-0">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'promocion' in request.path %}{% else %}collapsed{% endif %} bg-transparent {% if 'promocion' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePromos">
-          <i class="bi bi-megaphone me-2 text-warning"></i> Ofertas y Promos
+          <i class="bi bi-megaphone me-2 text-warning" title="Ofertas y Promos"></i><span class="admin-aside-label">Ofertas y Promos</span>
         </button>
       </h2>
       <div id="collapsePromos" class="accordion-collapse collapse {% if 'promocion' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
@@ -70,7 +78,7 @@
     <div class="accordion-item bg-transparent border-0">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'calificacion' in request.path %}{% else %}collapsed{% endif %} bg-transparent {% if 'calificacion' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCalificaciones">
-          <i class="bi bi-star me-2 text-warning"></i> Calificaciones
+          <i class="bi bi-star me-2 text-warning" title="Calificaciones"></i><span class="admin-aside-label">Calificaciones</span>
         </button>
       </h2>
       <div id="collapseCalificaciones" class="accordion-collapse collapse {% if 'calificacion' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
@@ -88,7 +96,7 @@
     <div class="accordion-item bg-transparent border-0">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'reservas' in request.path or 'agenda' in request.path %}{% else %}collapsed{% endif %} bg-transparent {% if 'reservas' in request.path or 'agenda' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-9" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReservas">
-          <i class="bi bi-calendar-event me-2 text-warning"></i> Reservas
+          <i class="bi bi-calendar-event me-2 text-warning" title="Reservas"></i><span class="admin-aside-label">Reservas</span>
         </button>
       </h2>
       <div id="collapseReservas" class="accordion-collapse collapse {% if 'reservas' in request.path or 'agenda' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
@@ -109,7 +117,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseCatalogo">
-          <i class="bi bi-box-seam me-2 text-warning"></i> Catálogo de Productos
+          <i class="bi bi-box-seam me-2 text-warning" title="Catálogo de Productos"></i><span class="admin-aside-label">Catálogo de Productos</span>
         </button>
       </h2>
       <div id="collapseCatalogo"
@@ -141,7 +149,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseInventario">
-          <i class="bi bi-boxes me-2 text-warning"></i> Inventario de Productos
+          <i class="bi bi-boxes me-2 text-warning" title="Inventario de Productos"></i><span class="admin-aside-label">Inventario de Productos</span>
         </button>
       </h2>
       <div id="collapseInventario"
@@ -173,7 +181,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseComprasVentas">
-          <i class="bi bi-cart-check me-2 text-warning"></i> Compras & Ventas
+          <i class="bi bi-cart-check me-2 text-warning" title="Compras y Ventas"></i><span class="admin-aside-label">Compras &amp; Ventas</span>
         </button>
       </h2>
       <div id="collapseComprasVentas"
@@ -202,7 +210,7 @@
     <div class="accordion-item bg-transparent border-0">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'usuarios' in request.path %}{% else %}collapsed{% endif %} bg-transparent {% if 'usuarios' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-15" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios">
-          <i class="bi bi-people me-2 text-warning"></i> Usuarios
+          <i class="bi bi-people me-2 text-warning" title="Usuarios"></i><span class="admin-aside-label">Usuarios</span>
         </button>
       </h2>
       <div id="collapseUsuarios" class="accordion-collapse collapse {% if 'usuarios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">
@@ -220,7 +228,7 @@
     <div class="accordion-item bg-transparent border-0">
       <h2 class="accordion-header">
         <button class="accordion-button {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}{% else %}collapsed{% endif %} bg-transparent {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}text-warning fw-bold{% else %}text-white{% endif %} shadow-none border-0 partials-aside__button-17" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConfiguracion">
-          <i class="bi bi-gear me-2 text-warning"></i> Configuración
+          <i class="bi bi-gear me-2 text-warning" title="Configuración"></i><span class="admin-aside-label">Configuración</span>
         </button>
       </h2>
       <div id="collapseConfiguracion" class="accordion-collapse collapse {% if 'configuraciones' in request.path or 'carrusel' in request.path or 'datos-banco' in request.path or 'testimonios' in request.path %}show{% endif %}" data-bs-parent="#sidebarAccordion">

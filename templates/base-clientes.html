@@ -9,11 +9,15 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261119-floating-controls">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+    <script>
+        window.CARRITO_STORAGE_KEY = {% if user.is_authenticated %}"carrito_usuario_{{ user.pk }}"{% else %}"carrito_invitado"{% endif %};
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" data-position="bottom-right" data-offset="20,90" async></script>
 </head>
 
-<body class="back {% if user.is_authenticated and user.tema == 'light' %}theme-light{% else %}theme-dark{% endif %} d-flex flex-column min-vh-100">
+<body class="back client-site {% if user.is_authenticated and user.tema == 'light' %}theme-light{% else %}theme-dark{% endif %} d-flex flex-column min-vh-100">
 
     {% include 'partials/header.html' %}
 
@@ -54,15 +58,17 @@
                         id="btnMinimizar"
                         onclick="toggleMinimizar()"
                         class="btn btn-sm text-white-50 p-1 chat-btn"
-                        title="Minimizar">
-                    <i class="bi bi-dash-lg" id="iconMinimizar"></i>
+                        title="Minimizar o expandir chat"
+                        aria-label="Minimizar o expandir chat">
+                    <i class="bi bi-dash-lg" id="iconMinimizar" aria-hidden="true"></i>
                 </button>
 
                 <button type="button"
                         onclick="cerrarChat()"
                         class="btn btn-sm text-white-50 p-1 chat-btn"
-                        title="Cerrar chat">
-                    <i class="bi bi-x-lg"></i>
+                        title="Cerrar chat"
+                        aria-label="Cerrar chat">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
                 </button>
 
             </div>
@@ -72,7 +78,10 @@
         <!-- Mensajes -->
         <div id="chatMessages"
              class="card-body p-3 d-flex flex-column chat-body"
-             style="height:360px;overflow-y:auto;">
+             style="height:360px;overflow-y:auto;"
+             role="log"
+             aria-label="Mensajes del chat"
+             aria-live="polite">
             <!-- Los mensajes se cargarán dinámicamente -->
             <div class="text-center py-5" id="chatLoading">
                 <div class="spinner-border text-primary" role="status">
@@ -89,6 +98,7 @@
             {% csrf_token %}
 
             <div class="input-group">
+                <label for="pregunta" class="visually-hidden">Mensaje para ChichaBot</label>
                 <input
                     type="text"
                     id="pregunta"
@@ -99,8 +109,9 @@
                     autocomplete="off">
 
                 <button type="submit"
-                        class="btn chat-send-btn">
-                    <i class="bi bi-send-fill"></i>
+                        class="btn chat-send-btn"
+                        aria-label="Enviar mensaje">
+                    <i class="bi bi-send-fill" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -112,9 +123,11 @@
     <button id="openChatBtn"
             onclick="abrirChat()"
             class="btn shadow chat-fab position-fixed d-flex align-items-center justify-content-center"
-            style="border-radius:50%;width:60px;height:60px;bottom:20px;right:20px;z-index:9998;display:flex;">
+            style="border-radius:50%;width:60px;height:60px;bottom:20px;right:20px;z-index:9998;display:flex;"
+            title="Abrir chat de ayuda"
+            aria-label="Abrir chat de ayuda">
 
-        <i class="bi bi-chat-dots-fill fs-4"></i>
+        <i class="bi bi-chat-dots-fill fs-4" aria-hidden="true"></i>
 
     </button>
 
@@ -126,31 +139,52 @@
                         .replace(/\n/g, '<br>');
         }
 
+        // Quita cualquier tooltip que haya quedado visible en pantalla
+        function limpiarTooltips() {
+            document.querySelectorAll('.tooltip').forEach(function (t) { t.remove(); });
+        }
+
         function cerrarChat() {
+            limpiarTooltips();
             document.getElementById("chatWidget").style.display = "none";
             document.getElementById("openChatBtn").style.display = "flex";
         }
 
         function abrirChat() {
+            limpiarTooltips();
             document.getElementById("chatWidget").style.display = "block";
             document.getElementById("openChatBtn").style.display = "none";
             // Cargar mensajes al abrir el chat
             cargarMensajes();
         }
 
-function toggleMinimizar() {
+        function toggleMinimizar() {
             const widget = document.getElementById("chatWidget");
             const btn = document.getElementById("btnMinimizar");
             const icon = document.getElementById("iconMinimizar");
 
             widget.classList.toggle("minimized");
+            limpiarTooltips();
+
+            const texto = widget.classList.contains("minimized") ? "Expandir" : "Minimizar";
 
             if (widget.classList.contains("minimized")) {
                 if (icon) icon.className = "bi bi-plus-lg";
-                if (btn) btn.title = "Expandir";
             } else {
                 if (icon) icon.className = "bi bi-dash-lg";
-                if (btn) btn.title = "Minimizar";
+            }
+
+            if (btn) {
+                // El tooltip de Bootstrap se recrea con el texto nuevo en el siguiente hover
+                if (typeof bootstrap !== 'undefined') {
+                    const t = bootstrap.Tooltip.getInstance(btn);
+                    if (t) t.dispose();
+                }
+                if (btn.hasAttribute('data-bs-title')) {
+                    btn.setAttribute('data-bs-title', texto);
+                } else {
+                    btn.title = texto;
+                }
             }
         }
 
@@ -288,6 +322,7 @@ function toggleMinimizar() {
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% include "partials/modal-eliminar.html" %}
 
     <!-- ========================= -->
     <!-- CONTADOR CARRITO -->
@@ -299,7 +334,7 @@ function toggleMinimizar() {
 
             function actualizarContadorCarrito(){
 
-                var carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+                var carrito = JSON.parse(localStorage.getItem(window.CARRITO_STORAGE_KEY)) || [];
 
                 var contador = document.getElementById("contador");
 
@@ -330,7 +365,7 @@ function toggleMinimizar() {
 
             window.addEventListener("storage", function(e){
 
-                if(e.key === "carrito"){
+                if(e.key === window.CARRITO_STORAGE_KEY){
 
                     actualizarContadorCarrito();
 
@@ -340,6 +375,63 @@ function toggleMinimizar() {
 
         })();
 
+    </script>
+
+    <!-- ✅ Tooltips globales: convierte title="..." de botones y enlaces en tooltips de Bootstrap -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof bootstrap === 'undefined') return;
+
+            // Tooltips por delegación: funcionan también con elementos creados después
+            new bootstrap.Tooltip(document.body, {
+                selector: '[data-bs-toggle="tooltip"]',
+                trigger: 'hover',
+                container: 'body'
+            });
+
+            var SELECTOR = 'button[title], a[title], .btn[title], .dropdown-toggle[title]';
+
+            function prepararTooltips(root) {
+                if (!root || !root.querySelectorAll) return;
+                root.querySelectorAll(SELECTOR).forEach(function (el) {
+                    var texto = el.getAttribute('title');
+                    if (!texto) return;
+
+                    var toggle = el.getAttribute('data-bs-toggle');
+
+                    if (!toggle) {
+                        // Botón normal: lo maneja la delegación
+                        el.setAttribute('data-bs-toggle', 'tooltip');
+                        el.setAttribute('data-bs-title', texto);
+                        el.removeAttribute('title');
+                    } else if (toggle !== 'tooltip') {
+                        // Dropdown / offcanvas / modal (campana, menú de usuario):
+                        // se crea el tooltip directo para no pisar su data-bs-toggle
+                        el.removeAttribute('title');
+                        var tip = new bootstrap.Tooltip(el, {
+                            title: texto,
+                            trigger: 'hover',
+                            container: 'body'
+                        });
+                        el.addEventListener('click', function () { tip.hide(); });
+                    }
+                });
+            }
+
+            prepararTooltips(document);
+
+            // Observa elementos nuevos que se agreguen al DOM
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (m) {
+                    m.addedNodes.forEach(function (n) {
+                        if (n.nodeType === 1) {
+                            prepararTooltips(n.parentNode || n);
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
     </script>
 
 </body>

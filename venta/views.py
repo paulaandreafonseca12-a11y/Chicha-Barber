@@ -10,6 +10,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db import transaction
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 from catalogo.models import Producto
 
@@ -200,6 +202,45 @@ def procesar_pago_cliente(request):
         'telefono',
         ''
     ).strip()
+
+    # ======================================================
+    # VALIDAR DATOS DEL CLIENTE
+    # ======================================================
+
+    if not nombre or len(nombre) < 2:
+        messages.error(
+            request,
+            'Por favor ingresa un nombre válido (mínimo 2 caracteres).'
+        )
+        return redirect('pago')
+
+    if not correo:
+        messages.error(
+            request,
+            'El correo electrónico es obligatorio.'
+        )
+        return redirect('pago')
+
+    try:
+        validate_email(correo)
+    except ValidationError:
+        messages.error(
+            request,
+            'El correo electrónico no tiene un formato válido.'
+        )
+        return redirect('pago')
+
+    if (
+        not telefono
+        or not telefono.isdigit()
+        or len(telefono) < 7
+        or len(telefono) > 15
+    ):
+        messages.error(
+            request,
+            'El teléfono debe contener entre 7 y 15 dígitos numéricos.'
+        )
+        return redirect('pago')
 
     metodo_pago_raw = request.POST.get(
         'pago',

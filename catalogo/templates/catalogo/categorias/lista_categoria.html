@@ -7,7 +7,7 @@
 
     <!-- ENCABEZADO -->
     <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'crear_categoria' %}" class="btn btn-primary color-azul text-white fw-bold">
+        <a href="{% url 'crear_categoria' %}" class="btn btn-primary color-amarillo text-white fw-bold btn-crear-admin">
             <i class="bi bi-plus-circle me-1"></i> Nueva Categoría
         </a>
 
@@ -17,7 +17,7 @@
     <div class="card shadow border-0">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0" data-admin-datatable data-admin-table-actions>
 
                     <thead class="thead-azul">
                         <tr>
@@ -31,7 +31,7 @@
                     <tbody>
                     {% for categoria in categorias %}
                         <tr>
-                            <td class="fw-bold">
+                            <td class="fw-bold admin-table-code">
                                 {{ categoria.codigo }}
                             </td>
 
@@ -60,12 +60,15 @@
                                     </a>
 
                                     <!-- ELIMINAR -->
-                                    <a href="{% url 'eliminar_categoria' categoria.codigo %}"
+                                    <button type="button"
                                        class="btn btn-sm btn-outline-danger"
                                        title="Eliminar"
-                                       onclick="return confirm('¿Deseas eliminar esta categoría?');">
+                                       data-url="{% url 'eliminar_categoria' categoria.codigo %}"
+                                       data-nombre="{{ categoria.nombre }}"
+                                       data-titulo="Eliminar Categoría"
+                                       onclick="abrirModalEliminar(this)">
                                         <i class="bi bi-trash"></i>
-                                    </a>
+                                    </button>
 
                                 </div>
                             </td>
@@ -91,3 +94,10 @@
 </div>
 
 {% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static 'css/datatables.css' %}">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="{% static 'js/datatables.js' %}"></script>
+<script src="{% static 'js/tconf/tconf-tablasAdmin.js' %}"></script>
+{% endblock scripts %}

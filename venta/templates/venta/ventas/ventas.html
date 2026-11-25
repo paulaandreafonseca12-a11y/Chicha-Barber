@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container mt-4 mb-5">
     <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{% url 'registrar_venta' %}" class="btn color-azul text-white fw-bold shadow-sm">
+        <a href="{% url 'registrar_venta' %}" class="btn color-azul text-white fw-bold shadow-sm btn-crear-admin">
             <i class="bi bi-plus-circle me-1"></i> Registrar venta
         </a>
     </div>
@@ -39,7 +39,7 @@
                     <tbody>
                         {% for venta in ventas %}
                         <tr class="border-dark border-opacity-10">
-                            <td class="ps-4 fw-bold text-dark">#{{ venta.codigo_venta }}</td>
+                            <td class="ps-4 fw-bold text-dark admin-table-code">#{{ venta.codigo_venta }}</td>
                             <td class="fw-semibold text-dark">
                                 <i class="bi bi-calendar-event me-2 text-primary"></i>
                                 {{ venta.fecha|date:"d/m/Y" }}
@@ -49,9 +49,11 @@
                                     <a href="{% url 'detalle_venta' venta.codigo_venta %}" class="btn btn-sm btn-outline-info" title="Seleccionar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar"
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar"
                                         data-url="{% url 'eliminar_venta' venta.codigo_venta %}"
-                                        data-id="{{ venta.codigo_venta }}"
+                                        data-nombre="la venta #{{ venta.codigo_venta }}"
+                                        data-titulo="Eliminar Venta"
+                                        data-metodo="POST"
                                         onclick="abrirModalEliminar(this)">
                                         <i class="bi bi-trash"></i>
                                     </button>
