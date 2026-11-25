@@ -161,6 +161,20 @@ class CalificacionForm(ModelForm):
             'comentario': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['servicio'].queryset = Servicios.objects.filter(estado=True)
+
+    def clean_cliente_nombre(self):
+        nombre = self.cleaned_data.get('cliente_nombre', '').strip()
+        if len(nombre) < 2:
+            raise forms.ValidationError('El nombre debe tener al menos 2 caracteres.')
+        if not re.fullmatch(r"[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s'-]+", nombre):
+            raise forms.ValidationError(
+                'Use solo letras, espacios, guiones o apóstrofos.'
+            )
+        return nombre
+
     def clean_puntuacion(self):
         puntuacion = self.cleaned_data.get('puntuacion')
         if puntuacion is None or puntuacion < 1 or puntuacion > 5:
@@ -169,8 +183,11 @@ class CalificacionForm(ModelForm):
 
     def clean_comentario(self):
         comentario = self.cleaned_data.get('comentario', '')
-        if comentario:
-            comentario = comentario.strip()
+        comentario = comentario.strip()
+        if len(comentario) < 10:
+            raise forms.ValidationError(
+                'El comentario debe tener al menos 10 caracteres.'
+            )
         return comentario
 
         

@@ -1,4 +1,5 @@
 {% extends "base-admin.html" %}
+{% load static %}
 
 {% block content %}
 <!-- Contenedor principal con espaciado lateral para separarlo del panel izquierdo -->
@@ -25,7 +26,7 @@
         </div>
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table align-middle mb-0 w-100 reservas-gestion-turno__table-2">
+                <table class="table align-middle mb-0 w-100 reservas-gestion-turno__table-2" data-admin-datatable data-admin-table-actions>
                     <thead class="table-light reservas-gestion-turno__thead-3">
                         <tr>
                             <th class="ps-4 py-3 text-secondary fw-bold small text-uppercase">Día / Fecha</th>
@@ -193,3 +194,10 @@ function confirmarDesactivar(fechaIso, fechaLegible, reservas) {
     }
 </style>
 {% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static 'css/datatables.css' %}">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="{% static 'js/datatables.js' %}"></script>
+<script src="{% static 'js/tconf/tconf-tablasAdmin.js' %}"></script>
+{% endblock scripts %}

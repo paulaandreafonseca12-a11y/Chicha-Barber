@@ -174,8 +174,8 @@ class ProductoForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'Nombre del producto',
-                    'pattern': r'^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$',
-                    'title': 'El nombre solo puede contener letras y espacios.',
+                    'pattern': r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    'title': 'El nombre solo puede contener letras, números y espacios.',
                 }
             ),
 
@@ -265,7 +265,7 @@ class ProductoForm(forms.ModelForm):
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
 
-        return validar_solo_letras(
+        return validar_texto(
             nombre,
             'nombre del producto'
         )
@@ -865,7 +865,8 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
 
         if fecha_inicio and fecha_fin:
             if fecha_fin < fecha_inicio:
-                raise forms.ValidationError(
+                self.add_error(
+                    'fecha_fin',
                     'La fecha de finalización no puede '
                     'ser anterior a la fecha de inicio.'
                 )
@@ -873,10 +874,10 @@ class PromocionForm(ValidacionPromocionMixin, forms.ModelForm):
         codigo_producto = cleaned_data.get('codigo_producto')
         codigo_servicio = cleaned_data.get('codigo_servicio')
 
-        if not codigo_producto and not codigo_servicio:
+        if bool(codigo_producto) == bool(codigo_servicio):
             raise forms.ValidationError(
-                'La promoción debe estar asociada '
-                'a un producto o a un servicio.'
+                'La promoción debe estar asociada a un solo producto '
+                'o a un solo servicio, no a ambos.'
             )
 
         return cleaned_data
@@ -1059,7 +1060,8 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
 
         if fecha_inicio and fecha_fin:
             if fecha_fin < fecha_inicio:
-                raise forms.ValidationError(
+                self.add_error(
+                    'fecha_fin',
                     'La fecha de finalización no puede '
                     'ser anterior a la fecha de inicio.'
                 )
@@ -1067,10 +1069,10 @@ class PromocionEditarForm(ValidacionPromocionMixin, forms.ModelForm):
         codigo_producto = cleaned_data.get('codigo_producto')
         codigo_servicio = cleaned_data.get('codigo_servicio')
 
-        if not codigo_producto and not codigo_servicio:
+        if bool(codigo_producto) == bool(codigo_servicio):
             raise forms.ValidationError(
-                'La promoción debe estar asociada '
-                'a un producto o a un servicio.'
+                'La promoción debe estar asociada a un solo producto '
+                'o a un solo servicio, no a ambos.'
             )
 
         return cleaned_data

@@ -1,0 +1,58 @@
+{% extends plantilla_base %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Historial de notificaciones</h1>
+      <p class="text-muted mb-0">Notificaciones que ya fueron visualizadas y marcadas como leídas.</p>
+    </div>
+    <a href="{% if plantilla_base == 'base-admin.html' %}{% url 'inicio_admin' %}{% else %}{% url 'perfil' %}{% endif %}"
+       class="btn btn-outline-secondary rounded-pill">
+      Volver
+    </a>
+  </div>
+
+  <div class="card border-0 rounded-4 shadow-sm">
+    <div class="list-group list-group-flush">
+      {% for notificacion in pagina %}
+      <a href="{% url 'detalle_notificacion' notificacion.pk %}"
+         class="list-group-item list-group-item-action p-3">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+          <div>
+            <span class="badge bg-secondary mb-2">{{ notificacion.get_tipo_display }}</span>
+            <p class="mb-1">{{ notificacion.mensaje }}</p>
+            <small class="text-muted">{{ notificacion.fecha|date:"d/m/Y H:i" }}</small>
+          </div>
+          <span class="badge bg-success-subtle text-success">Leída</span>
+        </div>
+      </a>
+      {% empty %}
+      <div class="p-4 text-center text-muted">
+        Aún no tienes notificaciones leídas.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if pagina.has_other_pages %}
+  <nav class="mt-4" aria-label="Paginación del historial de notificaciones">
+    <ul class="pagination justify-content-center">
+      {% if pagina.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ pagina.previous_page_number }}">Anterior</a>
+      </li>
+      {% endif %}
+      <li class="page-item disabled">
+        <span class="page-link">Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+      </li>
+      {% if pagina.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ pagina.next_page_number }}">Siguiente</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

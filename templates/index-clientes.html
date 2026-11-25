@@ -420,10 +420,11 @@
 
 <script>
   function verificarExpiracionCarrito() {
-    let expiracion = localStorage.getItem("carrito_expiracion");
+    const expiracionKey = window.CARRITO_STORAGE_KEY + "_expiracion";
+    let expiracion = localStorage.getItem(expiracionKey);
     if (expiracion && Date.now() > expiracion) {
-      localStorage.removeItem("carrito");
-      localStorage.removeItem("carrito_expiracion");
+      localStorage.removeItem(window.CARRITO_STORAGE_KEY);
+      localStorage.removeItem(expiracionKey);
       let contador = document.getElementById("contador");
       if (contador) contador.textContent = "0";
       console.log("Carrito expirado.");

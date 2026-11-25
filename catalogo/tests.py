@@ -1,6 +1,7 @@
 from decimal import Decimal
 from datetime import date
 from django.test import TestCase
+from django.urls import reverse
 from catalogo.models import Categoria, Marca, Producto, DetalleProducto, Promocion
 from catalogo.forms import (
     ProductoForm,
@@ -8,6 +9,7 @@ from catalogo.forms import (
     PromocionForm,
 )
 from servicios.models import Servicios
+from usuarios.models import RolUsuario, Usuario
 
 
 class ProductoSanitizacionXSSValidationTestCase(TestCase):
@@ -255,4 +257,41 @@ class PromocionFormValidationTests(TestCase):
                 )
                 self.assertFalse(form.is_valid())
                 self.assertTrue(form.non_field_errors())
+
+
+class CatalogoAdminAccessTests(TestCase):
+    def setUp(self):
+        self.cliente = Usuario.objects.create_user(
+            email='cliente-catalogo@example.com',
+            password='test-password',
+            primer_nombre='Cliente',
+            primer_apellido='Prueba',
+            telefono='3000000001',
+            numero_documento='990000001',
+            rol=RolUsuario.CLIENTE,
+        )
+
+    def test_cliente_no_puede_abrir_gestion_de_catalogo(self):
+        self.client.force_login(self.cliente)
+
+        for ruta in ('lista_productos_admin', 'listado-promocion'):
+            with self.subTest(ruta=ruta):
+                response = self.client.get(reverse(ruta))
+                self.assertEqual(response.status_code, 403)
+
+    def test_administrador_puede_abrir_gestion_de_catalogo(self):
+        administrador = Usuario.objects.create_user(
+            email='admin-catalogo@example.com',
+            password='test-password',
+            primer_nombre='Admin',
+            primer_apellido='Prueba',
+            telefono='3000000003',
+            numero_documento='990000003',
+            rol=RolUsuario.ADMIN,
+        )
+        self.client.force_login(administrador)
+
+        response = self.client.get(reverse('lista_productos_admin'))
+
+        self.assertEqual(response.status_code, 200)
 

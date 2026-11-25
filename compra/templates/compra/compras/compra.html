@@ -11,7 +11,7 @@
 
     <div class="d-flex justify-content-end align-items-center mb-4">
         <a href="{% url 'registrar_adquisicion' %}"
-           class="btn color-azul text-white fw-bold shadow-sm">
+           class="btn color-azul text-white fw-bold shadow-sm btn-crear-admin">
             <i class="bi bi-plus-circle-fill me-1"></i>
             Nueva Compra
         </a>
@@ -253,7 +253,7 @@
                              CÓDIGO
                         ================================================== -->
 
-                        <td class="fw-bold">
+                        <td class="fw-bold admin-table-code">
 
                             #{{ adquisicion.codigo }}
 
@@ -471,7 +471,7 @@
 
 
                             <a href="{% url 'registrar_adquisicion' %}"
-                               class="btn btn-sm color-azul text-white mt-3">
+                               class="btn btn-sm color-azul text-white mt-3 btn-crear-admin">
 
                                 <i class="bi bi-plus-circle me-1"></i>
 

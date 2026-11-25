@@ -4,6 +4,7 @@ from django.contrib.auth import login, update_session_auth_hash
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
+from django.core.paginator import Paginator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
@@ -33,6 +34,10 @@ from reservas.models import Reserva
 from venta.models import Venta
 
 
+def terminos(request):
+    return render(request, 'usuarios/terminos.html')
+
+
 # ==========================================================
 # INICIO
 # ==========================================================
@@ -44,7 +49,7 @@ def inicio(request):
         'usuario': request.user,
     }
 
-    return render(
+    returterminosder(
         request,
         'index.html',
         context
@@ -744,116 +749,94 @@ def marcar_notificaciones_leidas(request):
 # ==========================================================
 
 @login_required
-def detalle_notificacion(request, pk):
+def historial_notificaciones(request):
+    historial = Notificacion.objects.filter(
+        usuario=request.user,
+        leida=True,
+    ).order_by('-fecha')
+    pagina = Paginator(historial, 20).get_page(request.GET.get('page'))
 
+    return render(request, 'private/historial_notificaciones.html', {
+        'pagina': pagina,
+        'titulo': 'Historial de notificaciones',
+        'plantilla_base': (
+            'base-admin.html'
+            if request.user.rol in (RolUsuario.ADMIN, RolUsuario.BARBERO)
+            else 'base-clientes.html'
+        ),
+    })
+
+
+@login_required
+def detalle_notificacion(request, pk):
     notificacion = get_object_or_404(
-        Notificacion,
+        Notificacion.objects.select_related(
+            'venta',
+            'reserva__servicio',
+            'producto',
+            'servicio',
+            'usuario_afectado',
+        ),
         pk=pk,
         usuario=request.user
     )
 
     if not notificacion.leida:
-
         notificacion.leida = True
+        notificacion.save(update_fields=['leida'])
 
-        notificacion.save()
+    relaciones = {
+        'venta': notificacion.venta,
+        'reserva': notificacion.reserva,
+        'producto': notificacion.producto,
+        'servicio': notificacion.servicio,
+        'usuario': notificacion.usuario_afectado,
+    }
+    objeto_relacionado = relaciones.get(notificacion.tipo)
 
-    match = re.search(
-        r'#(\d+)',
-        notificacion.mensaje
-    )
-
-    rel_id = (
-        match.group(1)
-        if match
-        else None
-    )
-
-    # ------------------------------------------------------
-    # ADMIN / BARBERO
-    # ------------------------------------------------------
-
-    if request.user.rol in (
-        RolUsuario.ADMIN,
-        RolUsuario.BARBERO
-    ):
-
-        if notificacion.tipo == 'reserva':
-
-            return redirect(
-                'ver_agenda'
-            )
-
-        elif notificacion.tipo == 'venta':
-
-            if rel_id:
-
-                try:
-
-                    Venta.objects.get(
-                        pk=rel_id
-                    )
-
-                    return redirect(
-                        'detalle_venta',
-                        pk=rel_id
-                    )
-
-                except Venta.DoesNotExist:
-
-                    pass
-
-            return redirect(
-                'historial_ventas'
-            )
-
-    # ------------------------------------------------------
-    # CLIENTE
-    # ------------------------------------------------------
-
-    objeto_relacionado = None
-
-    if rel_id:
-
-        try:
-
-            if notificacion.tipo == 'venta':
-
-                objeto_relacionado = Venta.objects.get(
-                    pk=rel_id,
-                    correo=request.user.email
-                )
-
-            elif notificacion.tipo == 'reserva':
-
-                objeto_relacionado = Reserva.objects.get(
-                    pk=rel_id,
-                    usuario=request.user
-                )
-
-        except (
-            Venta.DoesNotExist,
-            Reserva.DoesNotExist
-        ):
-
+    es_personal = request.user.rol == RolUsuario.CLIENTE
+    if es_personal and notificacion.tipo == 'venta' and objeto_relacionado:
+        if objeto_relacionado.codigo_usuario_id != request.user.pk:
+            objeto_relacionado = None
+    elif es_personal and notificacion.tipo == 'reserva' and objeto_relacionado:
+        if objeto_relacionado.usuario_id != request.user.pk:
             objeto_relacionado = None
 
+    # Las notificaciones antiguas de clientes pueden no tener la FK asociada.
+    if objeto_relacionado is None and notificacion.tipo in ('venta', 'reserva'):
+        match = re.search(r'#(\d+)', notificacion.mensaje)
+        if match:
+            filtros = {'pk': match.group(1)}
+            if notificacion.tipo == 'venta':
+                if es_personal:
+                    filtros['codigo_usuario'] = request.user
+                objeto_relacionado = Venta.objects.filter(**filtros).first()
+            else:
+                if es_personal:
+                    filtros['usuario'] = request.user
+                objeto_relacionado = Reserva.objects.filter(**filtros).first()
+
     context = {
-
         'notificacion': notificacion,
-
         'objeto_relacionado': objeto_relacionado,
-
         'titulo': 'Detalle de Notificación',
+        'plantilla_base': (
+            'base-admin.html'
+            if request.user.rol in (RolUsuario.ADMIN, RolUsuario.BARBERO)
+            else 'base-clientes.html'
+        ),
+    }
 
+    return render(request, 'private/detalle_notificacion.html', context)
+
+def terminos(request):
+    context = {
+        'titulo': 'Términos y Condiciones',
+        'usuario': request.user,
     }
 
     return render(
         request,
-        'private/detalle_notificacion.html',
+        'terminos.html',
         context
     )
-
-
-def terminos(request):
-    return render(request, 'usuarios/terminos.html')
