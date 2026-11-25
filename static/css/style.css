@@ -7179,7 +7179,10 @@ body.client-site.theme-dark > header.color-negro-bg {
 
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
-body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
+body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
   color: #403729 !important;
 }
 
@@ -7202,6 +7205,22 @@ body.client-site.theme-light > header.color-negro-bg #navbarDropdown > i {
   color: #403729 !important;
 }
 
+
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link:hover,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link:focus-visible,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link.fw-bold,
+body.client-site.theme-dark > header.color-negro-bg #navbarDropdown,
+body.client-site.theme-dark > header.color-negro-bg #navbarDropdown span,
+body.client-site.theme-dark > header.color-negro-bg #navbarDropdown > i {
+  color: #ffffff !important;
+}
+
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button 
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
