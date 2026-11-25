@@ -11,7 +11,7 @@
       <i></i>
       Finalizar Pedido
     </h1>
-    <p class="neon-text-white fs-5 mb-3">
+    <p class="text-white fs-5 mb-3">
       Revisa tus datos y selecciona tu método de pago para completar la compra.
     </p>
   </div>
@@ -175,7 +175,7 @@
 </section>
 
 <script>
-let carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
+let carrito = JSON.parse(localStorage.getItem(window.CARRITO_STORAGE_KEY) || "[]");
 
 function syncCarrito() {
   document.getElementById("carritoInput").value = JSON.stringify(carrito);

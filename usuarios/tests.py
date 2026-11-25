@@ -4,6 +4,15 @@ from django.db import IntegrityError, transaction
 from .models import Notificacion, Usuario
 
 
+class TerminosTests(TestCase):
+    def test_pagina_terminos_disponible_sin_iniciar_sesion(self):
+        response = self.client.get(reverse('terminos'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'usuarios/terminos.html')
+        self.assertContains(response, 'Términos y Condiciones')
+
+
 class UsuarioModelTest(TestCase):
     """Pruebas para el modelo Usuario"""
 
