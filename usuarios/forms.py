@@ -1,12 +1,11 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.files.uploadedfile import UploadedFile
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
 from .models import Usuario, RolUsuario, TipoDocumento
 from core.validators import validar_password_fuerte
-
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, SetPasswordForm
 
 # ==========================================================
 # LÍMITES (se validan SIEMPRE en el servidor)
@@ -15,8 +14,8 @@ from core.validators import validar_password_fuerte
 MAX_EMAIL = 30
 MAX_NOMBRE = 30
 MIN_NOMBRE = 2
-MAX_PASSWORD = 15
-MAX_PASSWORD_LOGIN = 15
+MAX_PASSWORD = 100
+MAX_PASSWORD_LOGIN = 100
 MIN_DOCUMENTO = 6
 MAX_DOCUMENTO = 10
 MIN_TELEFONO = 7
@@ -442,3 +441,29 @@ class RecuperarPasswordForm(forms.Form):
             )
 
         return email
+
+# ==========================================================
+# NUEVA CONTRASEÑA (recuperación)
+# ==========================================================
+
+class NuevaPasswordForm(SetPasswordForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for nombre in ('new_password1', 'new_password2'):
+            self.fields[nombre].widget.attrs.update({
+                'maxlength': MAX_PASSWORD,
+                'autocomplete': 'new-password',
+            })
+
+    def clean_new_password1(self):
+        password = self.cleaned_data.get('new_password1')
+
+        if password:
+            if len(password) > MAX_PASSWORD:
+                raise ValidationError(
+                    f'La contraseña no puede superar {MAX_PASSWORD} caracteres.'
+                )
+            validar_password_fuerte(password)
+
+        return password

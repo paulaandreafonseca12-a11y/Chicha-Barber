@@ -525,13 +525,11 @@ select.cb-input {
     color: #22AED1;
 }
 
-/* =========================
-   BOTÓN
-========================= */
 .btn-auth {
-    background: #22AED1;
+    background: #ffc107;
     border: none;
     border-radius: 8px;
+    color: #171717;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.3rem;
     letter-spacing: 0.1em;
@@ -539,10 +537,16 @@ select.cb-input {
 }
 
 .btn-auth:hover {
-    background: #39C5E6;
+    background: #e0a800;
+    color: #171717;
     transform: translateY(-2px);
 }
 
+.btn-auth:disabled {
+    background: #ffc107;
+    color: #171717;
+    opacity: 0.5;
+}
 .no-link-style {
     color: #000 !important;
     text-decoration: none !important;
@@ -570,17 +574,15 @@ select.cb-input {
     color: #ff6b6b;
 }
 
-/* =========================
-   LINKS AUXILIARES
-========================= */
 .aux-link,
 .forgot-link {
-    color: #22AED1;
+    color: #ffc107;
     text-decoration: none;
 }
 
+.aux-link:hover,
 .forgot-link:hover {
-    color: #39C5E6;
+    color: #e0a800;
 }
 /* =========================
    Botones lista de usuarios
@@ -7175,19 +7177,17 @@ body.client-site.theme-light > header.color-negro-bg {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14) !important;
 }
 
-<<<<<<< HEAD
+
 body.client-site.theme-dark > header.color-negro-bg {
   background: #000000 !important;
 }
 
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
-body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
-=======
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
->>>>>>> 68828eb0a44c3d1886244b1d1378cb0d681d407a
   color: #403729 !important;
 }
 
@@ -7210,7 +7210,7 @@ body.client-site.theme-light > header.color-negro-bg #navbarDropdown > i {
   color: #403729 !important;
 }
 
-<<<<<<< HEAD
+
 body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .nav .nav-link {
   color: rgba(255, 255, 255, 0.72) !important;
 }
@@ -7225,11 +7225,9 @@ body.client-site.theme-dark > header.color-negro-bg #navbarDropdown > i {
 }
 
 body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
-body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
-=======
+body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button 
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
->>>>>>> 68828eb0a44c3d1886244b1d1378cb0d681d407a
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
   border: 1px solid rgba(121, 89, 35, 0.38) !important;
   color: #30291f !important;
