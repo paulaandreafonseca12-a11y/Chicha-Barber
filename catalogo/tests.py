@@ -1,7 +1,8 @@
 from decimal import Decimal
 from datetime import date
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
+from core.currency import format_cop
 from catalogo.models import Categoria, Marca, Producto, DetalleProducto, Promocion
 from catalogo.forms import (
     ProductoForm,
@@ -10,6 +11,17 @@ from catalogo.forms import (
 )
 from servicios.models import Servicios
 from usuarios.models import RolUsuario, Usuario
+
+
+class FormatoMonedaCOPTests(SimpleTestCase):
+    def test_format_cop_uses_colombian_thousands_separator(self):
+        self.assertEqual(format_cop(Decimal("20000")), "$ 20.000")
+
+    def test_format_cop_keeps_nonzero_cents_with_comma_separator(self):
+        self.assertEqual(format_cop(Decimal("1000500.5")), "$ 1.000.500,50")
+
+    def test_format_cop_formats_negative_amounts(self):
+        self.assertEqual(format_cop(Decimal("-20000")), "-$ 20.000")
 
 
 class ProductoSanitizacionXSSValidationTestCase(TestCase):

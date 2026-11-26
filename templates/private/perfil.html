@@ -1048,7 +1048,7 @@
 
                       <span class="fs-5 fw-bold text-dark">
 
-                        ${{ reserva.precio_historico|floatformat:0 }}
+                        {{ reserva.precio_historico|cop }}
 
                       </span>
 
@@ -1186,7 +1186,7 @@
 
                       <span class="fw-bold text-dark">
 
-                        ${{ detalle.subtotal|floatformat:0 }}
+                        {{ detalle.subtotal|cop }}
 
                       </span>
 
@@ -1221,7 +1221,7 @@
                   <strong class="fs-5 text-dark">
 
                     Total:
-                    ${{ venta.total_compra|floatformat:0 }}
+                    {{ venta.total_compra|cop }}
 
                   </strong>
 

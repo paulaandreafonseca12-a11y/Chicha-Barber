@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     
 ]
 
+if DEBUG and config("DJANGO_HTTPS_DEV_SERVER", default=False, cast=bool):
+    INSTALLED_APPS.append("django_extensions")
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
@@ -75,6 +78,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
+            'builtins': ['catalogo.templatetags.moneda'],
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -95,8 +99,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # DATABASE (CORREGIDO A SQLITE)
 # ======================================================
 
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 DATABASES = {
-    'default': {
+   'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bdchichabarber',
         'USER': 'root',
@@ -104,10 +114,19 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    }
+        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+       }
+   }
 }
+       
+#DATABASES = {
+    #'default' :{
+       # 'ENGINE': 'django.db.backends.sqlite3',
+       # 'NAME': BASE_DIR / 'db.sqlite3',
+    #} 
+#}  
+
+
 
 # ======================================================
 # PASSWORD VALIDATION
@@ -166,6 +185,7 @@ EMAIL_TIMEOUT = 30
 # ======================================================
 # SESSIONS & AUTO FIELD
 # ======================================================
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SAMESITE = "Lax"

@@ -17,7 +17,7 @@
   </div>
 
   <!-- TABLA CARRITO -->
-  <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+  <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white tabla-animada">
     <div class="card-header bg-white text-dark fw-bold py-3 border-bottom">
       <i class="bi bi-bag-check-fill me-2"></i>
       Elementos seleccionados
@@ -36,22 +36,24 @@
         <tbody id="tabla-carrito"></tbody>
       </table>
     </div>
+  </div>
 
   <!-- TOTAL -->
   <div class="card mt-4 border-0 shadow-lg rounded-4 bg-white">
     <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
       <h3 class="fw-bold mb-0 text-dark">
         Total:
-        <span id="total" class="text-success">$0</span>
+        <span id="total" class="text-success">$ 0</span>
       </h3>
-      <div class="mt-3 mt-md-0">
-        <a href="{% url 'productos_galeria' %}" class="btn btn-outline-dark me-2">
-          <i class="bi bi-bag-plus me-1"></i> Agregar productos
+      <div class="carrito-acciones d-flex flex-row align-items-center gap-2 mt-3 mt-md-0">
+        <a href="{% url 'productos_galeria' %}" class="btn btn-outline-dark flex-fill d-flex align-items-center justify-content-center gap-1 px-2 small">
+          <i class="bi bi-bag-plus d-none d-sm-inline"></i> Agregar productos
         </a>
-        <a href="{% url 'pago' %}" class="btn btn-dark px-4">
-          <i class="bi bi-credit-card-fill me-1"></i> Continuar pago
+        <a href="{% url 'pago' %}" class="btn btn-warning text-dark fw-bold rounded-pill flex-fill px-2 py-2 shadow-sm d-flex align-items-center justify-content-center gap-1 small btn-crear-admin">
+          <i class="bi bi-credit-card-fill d-none d-sm-inline"></i> Continuar pago
         </a>
       </div>
+    </div>
   </div>
 
 </section>
@@ -59,10 +61,21 @@
 <script>
 const carritoStorageKey = window.CARRITO_STORAGE_KEY;
 const facturaStorageKey = `${carritoStorageKey}_factura_id`;
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get("compra") === "exitosa") {
+    localStorage.removeItem(carritoStorageKey);
+    urlParams.delete("compra");
+    const queryRestante = urlParams.toString();
+    window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}${queryRestante ? `?${queryRestante}` : ""}${window.location.hash}`
+    );
+}
 let carrito = JSON.parse(localStorage.getItem(carritoStorageKey)) || [];
 
 function formatoCOP(valor){
-    return new Intl.NumberFormat('es-CO').format(valor);
+    return window.formatearMonedaCOP(valor);
 }
 
 function guardarCarrito(){
@@ -88,7 +101,7 @@ function mostrarCarrito(){
             <p class="text-muted">Agrega productos o agenda servicios.</p>
           </td>
         </tr>`;
-        totalLabel.textContent = "$0";
+        totalLabel.textContent = "$ 0";
         guardarCarrito();
         actualizarContadorGlobal();
         return;
@@ -108,9 +121,9 @@ function mostrarCarrito(){
         tabla.innerHTML += `
         <tr>
           <td>${detalle}</td>
-          <td>$${formatoCOP(item.precio)}</td>
+          <td>${formatoCOP(item.precio)}</td>
           <td>${item.tipo === "producto" ? item.cantidad : "1"}</td>
-          <td class="text-success fw-bold">$${formatoCOP(subtotal)}</td>
+          <td class="text-success fw-bold">${formatoCOP(subtotal)}</td>
           <td>
             <button class="btn btn-sm btn-outline-danger" onclick="eliminarItem(${index})">
               <i class="bi bi-trash-fill"></i>
@@ -119,7 +132,7 @@ function mostrarCarrito(){
         </tr>`;
     });
 
-    totalLabel.textContent = "$" + formatoCOP(total);
+    totalLabel.textContent = formatoCOP(total);
     guardarCarrito();
     actualizarContadorGlobal();
 }
@@ -168,14 +181,13 @@ function actualizarContadorGlobal(){
     carrito.forEach(item => { cantidad += item.cantidad; });
     if(cantidad > 0){
         contador.textContent = cantidad;
-        contador.style.display = "inline-block";
+        contador.classList.remove("d-none");
     } else {
-        contador.style.display = "none";
+        contador.classList.add("d-none");
     }
 }
 
 // Detectar si venimos de una reserva (query params en la URL)
-const urlParams = new URLSearchParams(window.location.search);
 const reservaId = urlParams.get('reserva_id');
 const reservaServicio = urlParams.get('reserva_servicio');
 const reservaFecha = urlParams.get('reserva_fecha');
@@ -212,6 +224,19 @@ if (linkPago) {
         linkPago.href = "{% url 'pago' %}?factura_id=" + savedFacturaId;
     }
 }
+
+function sincronizarCarritoDesdeAlmacenamiento() {
+    const contenido = localStorage.getItem(carritoStorageKey);
+    carrito = contenido ? JSON.parse(contenido) : [];
+    mostrarCarrito();
+}
+
+window.addEventListener("storage", function(event) {
+    if (event.key === carritoStorageKey) {
+        sincronizarCarritoDesdeAlmacenamiento();
+    }
+});
+window.addEventListener("pageshow", sincronizarCarritoDesdeAlmacenamiento);
 
 mostrarCarrito();
 </script>

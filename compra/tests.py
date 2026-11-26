@@ -73,6 +73,39 @@ class CompraModelTestCase(TestCase):
         self.assertEqual(movimiento.tipo, "entrada")
         self.assertEqual(movimiento.cantidad, 20)
 
+    def test_compra_sin_precio_venta_conserva_precio_actual_del_producto(self):
+        self.producto.precio = Decimal('20000.00')
+        self.producto.save(update_fields=['precio'])
+
+        administrador = Usuario.objects.create_user(
+            email='admin-compra-precio@example.com',
+            password='test-password',
+            primer_nombre='Admin',
+            primer_apellido='Prueba',
+            telefono='3000000010',
+            numero_documento='990000010',
+            rol=RolUsuario.ADMIN,
+        )
+        self.client.force_login(administrador)
+
+        response = self.client.post(
+            reverse('registrar_adquisicion'),
+            {
+                'proveedor_id': self.proveedor.pk,
+                'producto_id': self.producto.codigo_producto,
+                'cantidad': '2',
+                'precio_compra': '10000',
+                'precio_venta': '',
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        detalle = DetalleCompra.objects.get(codigo_producto=self.producto)
+        self.assertEqual(detalle.precio_venta, Decimal('20000.00'))
+
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.precio, Decimal('20000.00'))
+        self.assertEqual(self.producto.precio_venta_actual, Decimal('20000.00'))
 
 class CompraAdminAccessTests(TestCase):
     def test_cliente_no_puede_abrir_gestion_de_compras(self):

@@ -18,7 +18,7 @@
 
   <!-- TARJETA PRINCIPAL -->
   <div class="row justify-content-center">
-    <div class="col-12 col-xl-10">
+    <div class="col-12">
       
       <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
         
@@ -37,7 +37,34 @@
             <!-- Estructura en 2 Columnas Horizontales -->
             <div class="row g-4 g-lg-5">
               
-              <!-- COLUMNA IZQUIERDA: Datos + Resumen -->
+              <!-- Resumen del pedido a todo el ancho de la tarjeta -->
+              <div class="col-12">
+                <h6 class="fw-bold text-uppercase text-secondary small mb-3">
+                  <i class="bi bi-bag-check me-1"></i> Resumen de la Compra
+                </h6>
+
+                <div class="bg-light rounded-4 p-3 border tabla-animada pago-resumen-card">
+                  <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
+                    <table class="table table-borderless align-middle mb-0">
+                      <thead>
+                        <tr class="text-uppercase text-muted small border-bottom">
+                          <th>Producto</th>
+                          <th class="text-center">Cant.</th>
+                          <th class="text-end">Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody id="resumenProductos"></tbody>
+                    </table>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
+                    <span class="fw-bold text-uppercase text-secondary small">Total</span>
+                    <span class="h4 fw-bold text-success mb-0" id="montoTotalDisplay">$ 0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- COLUMNA IZQUIERDA: Datos del cliente -->
               <div class="col-12 col-lg-6 border-end-lg pe-lg-4">
                 
                 <!-- Sección 1: Datos Personales -->
@@ -68,32 +95,6 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- Sección 2: Resumen del Pedido -->
-                <h6 class="fw-bold text-uppercase text-secondary small mb-3">
-                  <i class="bi bi-bag-check me-1"></i> Resumen de la Compra
-                </h6>
-
-                <div class="bg-light rounded-4 p-3 border">
-                  <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
-                    <table class="table table-borderless align-middle mb-0">
-                      <thead>
-                        <tr class="text-uppercase text-muted small border-bottom">
-                          <th>Producto</th>
-                          <th class="text-center">Cant.</th>
-                          <th class="text-end">Subtotal</th>
-                        </tr>
-                      </thead>
-                      <tbody id="resumenProductos"></tbody>
-                    </table>
-                  </div>
-
-                  <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
-                    <span class="fw-bold text-uppercase text-secondary small">Total</span>
-                    <span class="h4 fw-bold text-success mb-0" id="montoTotalDisplay">$0</span>
-                  </div>
-                </div>
-
               </div>
 
               <!-- COLUMNA DERECHA: Métodos de Pago + Confirmar -->
@@ -139,7 +140,7 @@
                   </div>
 
                   <div id="contenedorComprobante" class="mb-3 d-none">
-                    <label for="comprobanteInput" class="form-label fw-semibold text-secondary small">Comprobante de Pago</label>
+                    <label for="comprobanteInput" class="form-label fw-semibold text-secondary small">Comprobante de Pago *</label>
                     <input type="file" name="comprobante" id="comprobanteInput"
                       class="form-control border-2 shadow-none"
                       accept="image/*, application/pdf">
@@ -153,11 +154,11 @@
                   <input type="hidden" name="carrito" id="carritoInput">
                   <input type="hidden" name="factura_id" value="{{ factura_id|default:'' }}">
 
-                  <button type="submit" class="btn btn-dark w-100 rounded-3 py-3 fw-bold shadow-sm text-uppercase mb-2">
-                    <i class="bi bi-check-circle-fill me-1"></i> Confirmar Compra
+                  <button type="submit" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2 btn-crear-admin w-100 text-uppercase mb-2">
+                    <i class="bi bi-check-circle-fill"></i> Confirmar Compra
                   </button>
                   <a href="{% url 'carrito' %}" class="btn btn-outline-dark w-100 rounded-3 py-2 small">
-                    <i class="bi bi-arrow-left me-1"></i> Volver al carrito
+                    <i class="bi bi-arrow-left"></i> Volver al carrito
                   </a>
                 </div>
 
@@ -198,14 +199,14 @@ function calcularYMostrarTotal() {
         <tr class="border-bottom">
           <td class="py-2 text-dark fw-semibold small">${nombreItem}</td>
           <td class="text-center"><span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">${item.cantidad}</span></td>
-          <td class="text-end fw-bold text-dark small">$${subtotal.toLocaleString("es-CO")}</td>
+          <td class="text-end fw-bold text-dark small">${window.formatearMonedaCOP(subtotal)}</td>
         </tr>
       `;
     });
   }
 
   document.getElementById("montoTotalDisplay").innerText =
-    "$" + total.toLocaleString("es-CO");
+    window.formatearMonedaCOP(total);
 
   syncCarrito();
 }
@@ -215,6 +216,7 @@ calcularYMostrarTotal();
 function mostrarInfoPago(tipo) {
   let info = document.getElementById("infoPago");
   let comp = document.getElementById("contenedorComprobante");
+  let comprobanteInput = document.getElementById("comprobanteInput");
   let tipoDiv = document.getElementById("contenedorTipoTransferencia");
 
   info.classList.remove("d-none");
@@ -223,6 +225,7 @@ function mostrarInfoPago(tipo) {
     info.className = "alert alert-info border-0 rounded-3 mb-3 small";
     info.innerHTML = "<i class='bi bi-info-circle-fill me-2'></i><strong>Pago en local:</strong> Pagas directamente al recoger tu pedido.";
     comp.classList.add("d-none");
+    comprobanteInput.required = false;
     tipoDiv.classList.add("d-none");
   } else {
     info.className = "alert alert-warning border-0 rounded-3 mb-3 small";
@@ -232,8 +235,10 @@ function mostrarInfoPago(tipo) {
         <strong>Datos bancarios:</strong>
       </div>
       <span class="d-block small ms-4">{{ datos_banco.banco }} — N°: <strong>{{ datos_banco.numero_cuenta }}</strong></span>
+      <span class="d-block mt-2">Adjunta el comprobante para poder finalizar la compra.</span>
     `;
     comp.classList.remove("d-none");
+    comprobanteInput.required = true;
     tipoDiv.classList.remove("d-none");
   }
 }

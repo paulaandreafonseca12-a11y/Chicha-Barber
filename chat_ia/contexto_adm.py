@@ -5,6 +5,7 @@ from django.utils import timezone
 from catalogo.models import Categoria, Marca, Producto, Promocion
 from compra.models import DetalleCompra
 from servicios.models import Servicios
+from core.currency import format_cop
 
 
 CONTEXTO_ADMIN_BASE = """
@@ -81,7 +82,7 @@ def obtener_contexto_admin():
 
             contexto += (
                 f"- {producto.nombre} | Precio de venta: "
-                f"${producto.precio_venta_contexto:.0f} | "
+                f"{format_cop(producto.precio_venta_contexto)} | "
                 f"Categoría: {categoria.nombre if categoria else 'Sin categoría'} | "
                 f"Marca: {marca.nombre if marca else 'Sin marca'} | "
                 f"Existencias: {existencias} | "
@@ -112,7 +113,7 @@ def obtener_contexto_admin():
     if servicios:
         for servicio in servicios:
             contexto += (
-                f"- {servicio.nombre}: ${servicio.precio:.0f} | "
+                f"- {servicio.nombre}: {format_cop(servicio.precio)} | "
                 f"Duración: {servicio.duracion} min | "
                 f"Estado: {'Activo' if servicio.estado else 'Inactivo'}\n"
             )

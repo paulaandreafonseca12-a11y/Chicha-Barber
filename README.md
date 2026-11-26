@@ -2,6 +2,23 @@
 
 Este proyecto está desarrollado en **Django** y sigue una arquitectura modular orientada a dominios de negocio. Esta estructura garantiza escalabilidad, fácil mantenimiento y una separación clara de responsabilidades.
 
+## Servidor HTTPS local (sin Docker)
+
+Instala las dependencias opcionales de desarrollo:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-https.txt
+```
+
+Inicia el servidor HTTPS desde PowerShell:
+
+```powershell
+$env:DJANGO_HTTPS_DEV_SERVER = "1"
+.\.venv\Scripts\python.exe manage.py runserver_plus 127.0.0.1:8000 --cert-file localhost.crt --exclude-pattern "*desktop.ini"
+```
+
+Abre `https://localhost:8000/`. El certificado autofirmado puede generar una advertencia del navegador; es normal para desarrollo local. La clave y el certificado generados se excluyen de Git.
+
 ## Modelo Entidad Relación (MER)
 
 A continuación se detalla la estructura de la base de datos, optimizada para el flujo de reservas por turnos y facturación unificada:
