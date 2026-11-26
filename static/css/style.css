@@ -7265,8 +7265,24 @@ body.client-site.theme-dark > header.color-negro-bg #navbarDropdown > i {
   color: #ffffff !important;
 }
 
-body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
-body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button 
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1:hover,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1:focus-visible,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button:hover,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button:focus-visible {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border: 1px solid #ffc107 !important;
+  color: #171717 !important;
+  box-shadow: 0 5px 14px rgba(255, 193, 7, 0.28) !important;
+}
+
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1 i,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button i {
+  color: #171717 !important;
+}
+
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
