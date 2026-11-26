@@ -88,6 +88,7 @@
                                 <th class="py-3">Barbero</th>
                                 <th class="py-3">Servicio</th>
                                 <th class="py-3">Fecha y Hora</th>
+                                <th class="py-3">Creada</th>
                                 <th class="py-3">Estado</th>
                                 <th class="py-3">Acción</th>
                             </tr>
@@ -103,6 +104,9 @@
                                 </td>
                                 <td>{{ cita.servicio.nombre }}</td>
                                 <td>{{ cita.fecha_reserva|date:"j \d\e F \d\e Y \a \l\a\s H:i" }}</td>
+                                <td class="text-nowrap" title="Día y hora en que se registró la reserva">
+                                    {{ cita.fecha_creacion|date:"d/m/Y H:i" }}
+                                </td>
                                 <td>
                                     <span class="badge {% if cita.estado == 'reservada' %}bg-warning text-dark{% elif cita.estado == 'confirmada' %}bg-success text-white{% else %}bg-danger text-white{% endif %}">
                                         {{ cita.get_estado_display }}
@@ -137,7 +141,7 @@
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
+                                <td colspan="7" class="text-center py-5 text-muted">
                                     <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
                                     No hay citas registradas.
                                 </td>

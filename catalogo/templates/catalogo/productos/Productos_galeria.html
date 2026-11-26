@@ -4,21 +4,6 @@
 {% block content %}
 
 <!-- ==========================================================
-     MENSAJES
-========================================================== -->
-{% if messages %}
-    <div class="container mt-3">
-        {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
-
-<!-- ==========================================================
      CONTENEDOR PRINCIPAL
 ========================================================== -->
 <div class="container py-5 productos-galeria">
@@ -404,6 +389,7 @@ function actualizarContador() {
         contador.classList.add("d-none");
     }
 }
+
 </script>
 
 {% endblock content %}
