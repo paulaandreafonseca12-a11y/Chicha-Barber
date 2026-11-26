@@ -49,11 +49,11 @@ def inicio(request):
         'usuario': request.user,
     }
 
-    returterminosder(
-        request,
-        'index.html',
-        context
-    )
+    return render(
+    request,
+    'index.html',
+    context
+)
 
 
 # ==========================================================
