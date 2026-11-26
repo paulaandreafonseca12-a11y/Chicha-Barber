@@ -226,9 +226,15 @@ class ProductoForm(forms.ModelForm):
             'descripcion': 'Descripción',
             'codigo_categoria': 'Categoría',
             'codigo_marca': 'Marca',
-            'precio': 'Precio',
+            'precio': 'Precio de venta actual',
             'imagen': 'Imagen',
             'estado': 'Activo',
+        }
+
+        help_texts = {
+            'precio': (
+                'Este es el precio vigente en el catálogo.'
+            ),
         }
 
     # FILTRAR MARCAS ACTIVAS

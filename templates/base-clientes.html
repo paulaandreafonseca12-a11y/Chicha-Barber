@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261119-floating-controls">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+    <script src="{% static 'js/formato-cop.js' %}?v=20261125-cop-format"></script>
     <script>
         window.CARRITO_STORAGE_KEY = {% if user.is_authenticated %}"carrito_usuario_{{ user.pk }}"{% else %}"carrito_invitado"{% endif %};
     </script>

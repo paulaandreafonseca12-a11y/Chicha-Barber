@@ -4,6 +4,7 @@ from chat_ia.contexto_adm import obtener_contexto_admin
 from servicios.models import Servicios
 from catalogo.models import Producto, Categoria, Promocion
 from usuarios.models import RolUsuario
+from core.currency import format_cop
 
 MENSAJE_BIENVENIDA = "¡Hola! 👋 Soy **ChichaBot**, tu asistente virtual de **Chicha Barber Studio**.\n\nEstoy aquí para ayudarte con:\n• 📅 Agendar citas\n• 🛒 ventar productos\n• 💇 Servicios disponibles\n• ❓ Cualquier duda sobre la barbería\n\n¿En qué puedo ayudarte hoy?"
 
@@ -20,7 +21,7 @@ def construir_contexto_dinamico():
     contexto_extra += "--- SERVICIOS DISPONIBLES ---\n"
     if servicios.exists():
         for s in servicios:
-            contexto_extra += f"- {s.nombre}: ${s.precio:.0f} | Duración: {s.duracion} min | {s.descripcion}\n"
+            contexto_extra += f"- {s.nombre}: {format_cop(s.precio)} | Duración: {s.duracion} min | {s.descripcion}\n"
     else:
         contexto_extra += "- No hay servicios registrados actualmente.\n"
 
@@ -50,7 +51,7 @@ def construir_contexto_dinamico():
         for p in productos:
             categoria = getattr(p, 'codigo_categoria', None)
             contexto_extra += (
-                f"- {p.nombre} | Precio: ${p.precio:.0f} | "
+                f"- {p.nombre} | Precio: {format_cop(p.precio)} | "
                 f"Categoría: {categoria.nombre if categoria else 'Sin categoría'} | "
                 f"Estado: {'Activo' if p.estado else 'Inactivo'}\n"
             )

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 import pytz #es la calculadora que hace el cambio de moneda exacto entre la hora global del servidor y la hora de tu barbería.
 import locale
+from core.currency import format_cop
 
 try:
     locale.setlocale(locale.LC_TIME, 'es_CO.UTF-8') # Para Linux/macOS
@@ -61,13 +62,12 @@ def enviar_correo_cancelacion_admin(correo_cliente, nombre, servicio, fecha):
 def enviar_correo_venta(correo_cliente, nombre, carrito, total):
 
     asunto = 'Confirmación de venta 💈'
-    # Formatear total con puntos de miles
-    total_formateado = "{:,.0f}".format(total).replace(",", ".")
+    total_formateado = format_cop(total)
 
     productos_html = ""
 
     for item in carrito:
-        precio_item = "{:,.0f}".format(float(item['precio'])).replace(",", ".")
+        precio_item = format_cop(item['precio'])
         productos_html += f"""
         <tr>
             <td style="padding:12px; border-bottom:1px solid #ddd;">
@@ -79,7 +79,7 @@ def enviar_correo_venta(correo_cliente, nombre, carrito, total):
             </td>
 
             <td style="padding:12px; border-bottom:1px solid #ddd; text-align:right;">
-                ${precio_item}
+                {precio_item}
             </td>
         </tr>
         """
@@ -168,7 +168,7 @@ def enviar_correo_venta(correo_cliente, nombre, carrito, total):
                     text-align:right;
                     color:#28a745;
                 ">
-                    Total: ${total_formateado}
+                    Total: {total_formateado}
                 </h2>
 
                 <p style="margin-top:40px;">
@@ -217,7 +217,7 @@ def enviar_correo_reserva(correo_cliente, nombre, servicio, fecha):
     
     fecha_formateada = fecha_local.strftime('%A %d de %B a las %I:%M %p')
     # Formatear precio
-    precio_formateado = "{:,.0f}".format(servicio.precio).replace(",", ".")
+    precio_formateado = format_cop(servicio.precio)
 
     html_content = f"""
     <div style="
@@ -270,7 +270,7 @@ def enviar_correo_reserva(correo_cliente, nombre, servicio, fecha):
 
                 <p><strong>Fecha:</strong> {fecha_formateada}</p>
                 
-                <p><strong>Precio:</strong> ${precio_formateado}</p>
+                <p><strong>Precio:</strong> {precio_formateado}</p>
                 
                 <p style="margin-top:30px;">
                     Te esperamos en nuestra barbería ✂️
