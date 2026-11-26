@@ -66,12 +66,14 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-2 py-2 py-md-0">
+                    {% if user.rol == 'admin' %}
                     <a href="{% url 'gestionar_dias' %}" class="btn btn-sm btn-outline-secondary fw-bold px-3 text-dark">
                         <i class="bi bi-calendar-range me-2 text-warning"></i>Configurar Disponibilidad
                     </a>
                     <a href="{% url 'crear_reserva_admin' %}" class="btn btn-sm btn-outline-secondary fw-bold px-3 text-dark btn-crear-admin">
                         <i class="bi bi-calendar-plus me-2 text-info"></i>Registrar Cita
                     </a>
+                    {% endif %}
                 </div>
 
             </div>
@@ -214,13 +216,6 @@ function abrirModalCancelar(btn) {
 }
 </script>
 
-<style>
-    /* Línea azul debajo de la pestaña activa */
-    .nav-tabs .nav-link.active {
-        border-bottom: 3px solid #0d6efd !important;
-        color: #0d6efd !important;
-    }
-</style>
 {% endblock %}
 
 {% block scripts %}
