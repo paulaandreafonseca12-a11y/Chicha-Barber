@@ -554,7 +554,10 @@ def ver_agenda(request):
 
     turnos_disponibles_hoy = agendas_base.filter(
         fecha=hoy_fecha,
-        estado='disponible'
+        hora_inicio__gt=ahora.time(),
+        estado='disponible',
+        profesional__rol='barbero',
+        profesional__estado=True,
     ).count()
 
     citas_canceladas_mes = reservas_base.filter(
