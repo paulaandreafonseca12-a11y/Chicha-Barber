@@ -180,6 +180,8 @@
           Tus datos de contacto
         </label>
 
+        <!-- Los campos se autocompletan con los datos de la cuenta del cliente (request.user).
+             Si el formulario se reenvía con error, se conservan los valores que el cliente escribió. -->
         <div class="row g-4">
           <div class="col-md-6">
             <label class="form-label fw-bold text-white mb-2"><i class="bi bi-person me-2 text-accent"></i>Nombre
@@ -188,7 +190,7 @@
               placeholder="Ej: Juan Pérez" required
               pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'\-\s]{3,100}"
               title="Ingresa un nombre válido: solo letras y espacios, mínimo 3 caracteres."
-              value="{{ nombre_usuario_val|default_if_none:'' }}" />
+              value="{% firstof nombre_usuario_val request.user.get_full_name '' %}" />
             <small class="text-custom-muted mt-1 d-block reservas-reservas__small-27">Ingresa tu nombre para
               identificarte al llegar. Verifica bien los datos ingresados porque estos serán usados para enviarte
               recordatorios y contactarte.</small>
@@ -199,7 +201,7 @@
               electrónico</label>
             <input name="correo_usuario" type="email" class="form-control form-control-lg form-control-barber"
               placeholder="Ej: tu-correo@email.com" required
-              value="{{ correo_usuario_val|default_if_none:'' }}" />
+              value="{% firstof correo_usuario_val request.user.email '' %}" />
             <small class="text-custom-muted mt-1 d-block reservas-reservas__small-28">Te enviaremos los detalles de tu
               cita por este medio. Verifica bien los datos ingresados porque estos serán usados para enviarte
               recordatorios y contactarte.</small>
@@ -212,7 +214,7 @@
               placeholder="Ej: 300 123 4567" pattern="3[0-9]{9}" maxlength="10"
               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
               title="Ingresa un celular colombiano válido: 10 dígitos, debe empezar por 3" required
-              value="{{ telefono_usuario_val|default_if_none:'' }}" />
+              value="{% firstof telefono_usuario_val request.user.telefono '' %}" />
             <small class="text-custom-muted mt-1 d-block reservas-reservas__small-29">Un número válido por si
               necesitamos contactarte sobre tu turno. Verifica bien los datos ingresados porque estos serán usados
               para enviarte recordatorios y contactarte.</small>

@@ -29,6 +29,9 @@ __pycache__/
 *.pyd
 .Python
 
+.dockerignore
+dockerfile
+docker-compose.yml
 #docker
 docker-compose.yml
 .dockerignore

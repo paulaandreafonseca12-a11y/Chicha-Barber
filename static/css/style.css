@@ -39,6 +39,10 @@
   border-color: #22aed1 !important;
 }
 
+.asw-widget .asw-menu-btn {
+  --asw-primary: var(--chicha-cyan) !important;
+}
+
 /* ── BOTÓN CONMUTADOR DE TEMA (Panel Admin) ── */
 .theme-switch-item {
   cursor: pointer;
@@ -3089,6 +3093,7 @@ main {
 .text-truncate-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
