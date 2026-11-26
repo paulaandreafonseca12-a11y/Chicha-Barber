@@ -60,7 +60,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.PermisosPorRolMiddleware',
 ]
+
 
 # ======================================================
 # URLS
@@ -108,7 +110,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bdchichabarber',
         'USER': 'root',
-        'PASSWORD': '12345678',
+        'PASSWORD': '1234567',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {

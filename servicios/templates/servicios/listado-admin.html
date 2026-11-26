@@ -179,18 +179,6 @@
 
                     </tr>
 
-                    {% empty %}
-
-                    <tr>
-                        <td colspan="4" class="text-center py-5">
-                            <div class="mb-2">
-                                <i class="bi bi-box-seam fs-1 text-white-50"></i>
-                            </div>
-                            <h6 class="text-white fw-semibold mb-1">No hay servicios registrados</h6>
-                            <p class="text-white-50 small mb-0">Aún no has añadido servicios al catálogo.</p>
-                        </td>
-                    </tr>
-
                     {% endfor %}
 
                     </tbody>
@@ -229,10 +217,27 @@
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="{% static 'js/datatables.js' %}"></script>
+
+<!-- Mensaje de tabla vacía (va ANTES del tconf para que lo tome) -->
+<script>
+    if (window.jQuery && $.fn.dataTable) {
+        $.extend(true, $.fn.dataTable.defaults, {
+            language: {
+                emptyTable: '<div class="text-center py-5">' +
+                    '<div class="mb-2"><i class="bi bi-box-seam fs-1 text-white-50"></i></div>' +
+                    '<h6 class="text-white fw-semibold mb-1">No hay servicios registrados</h6>' +
+                    '<p class="text-white-50 small mb-0">Aún no has añadido servicios al catálogo.</p>' +
+                    '</div>'
+            }
+        });
+    }
+</script>
+
 <script src="{% static 'js/tconf/tconf-tablaServicios.js' %}"></script>
 <script>
     document.getElementById('confirmarEliminacion').addEventListener('show.bs.modal', function (event) {
         const boton = event.relatedTarget;
+        if (!boton) return;
         document.getElementById('formEliminarElemento').action = boton.dataset.url;
         document.getElementById('nombreElementoEliminar').textContent = boton.dataset.nombre;
     });

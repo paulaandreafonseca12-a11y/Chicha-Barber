@@ -19,7 +19,8 @@ from reservas.models import Reserva, Agenda
 from reservas.forms import ReservaEditarForm
 from servicios.models import Servicios
 from catalogo.models import Promocion
-from usuarios.models import Usuario, Notificacion, HistorialAccion
+from usuarios.models import Usuario, Notificacion, HistorialAccion,RolUsuario
+from core.permisos import solo_admin, admin_o_barbero
 from core.utils import enviar_correo_reserva, enviar_correo_cancelacion_admin
 
 
@@ -35,6 +36,18 @@ DOMINIOS_CONOCIDOS = {
     'icloud.com', 'live.com', 'sena.edu.co',
 }
 
+def _obtener_reserva_permitida(user, pk):
+    """
+    Admin: cualquier reserva.
+    Barbero: solo las de su propia agenda.
+    Cliente: solo las suyas (por si cancela desde su perfil).
+    """
+    reservas = Reserva.objects.all()
+    if user.rol == RolUsuario.BARBERO:
+        reservas = reservas.filter(agenda__profesional=user)
+    elif user.rol == RolUsuario.CLIENTE:
+        reservas = reservas.filter(usuario=user)
+    return get_object_or_404(reservas, pk=pk)
 
 def _dominio_correo_existe(correo):
     """
@@ -447,8 +460,7 @@ def reserva_confirmada(request, pk):
 
 @login_required
 def cancelar_cita(request, pk):
-    cita = get_object_or_404(Reserva, pk=pk)
-
+    cita = _obtener_reserva_permitida(request.user, pk)
     cita.estado = "cancelada"
     cita.save()
 
@@ -483,9 +495,7 @@ def cancelar_cita(request, pk):
     )
 
     # Notificar Administradores
-    admins = Usuario.objects.filter(
-        Q(rol="admin") | Q(is_superuser=True)
-    ).distinct()
+    admins = Usuario.objects.filter(rol="admin").distinct()
 
     for admin in admins:
         Notificacion.objects.create(
@@ -503,7 +513,7 @@ def cancelar_cita(request, pk):
     return redirect('ver_agenda')
 
 
-@login_required
+@solo_admin
 def editar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
     form = ReservaEditarForm(request.POST or None, instance=reserva)
@@ -526,30 +536,41 @@ def ver_agenda(request):
         messages.error(request, "No tienes permiso para ver la agenda.")
         return redirect('inicio')
 
+    # Admin ve todo. Barbero solo lo suyo.
+    reservas_base = Reserva.objects.all()
+    agendas_base = Agenda.objects.all()
+    if request.user.rol == RolUsuario.BARBERO:
+        reservas_base = reservas_base.filter(agenda__profesional=request.user)
+        agendas_base = agendas_base.filter(profesional=request.user)
+
     hoy_fecha = date.today()
     mes_actual = hoy_fecha.month
     anio_actual = hoy_fecha.year
 
-    total_citas_mes = Reserva.objects.filter(
-        agenda__fecha__month=mes_actual,  # <-- Actualizado a agenda
+    total_citas_mes = reservas_base.filter(
+        agenda__fecha__month=mes_actual,
         agenda__fecha__year=anio_actual
     ).exclude(estado='cancelada').count()
 
-    turnos_disponibles_hoy = Agenda.objects.filter(
+    turnos_disponibles_hoy = agendas_base.filter(
         fecha=hoy_fecha,
         estado='disponible'
     ).count()
 
-    citas_canceladas_mes = Reserva.objects.filter(
+    citas_canceladas_mes = reservas_base.filter(
         agenda__fecha__month=mes_actual,
         agenda__fecha__year=anio_actual,
         estado='cancelada'
     ).count()
 
-    lista_reservas = Reserva.objects.select_related('agenda__profesional', 'servicio', 'usuario').all().order_by('-agenda__fecha', '-agenda__hora_inicio')
-    turnos_disponibles = Agenda.objects.select_related('profesional').filter(
+    lista_reservas = reservas_base.select_related(
+        'agenda__profesional', 'servicio', 'usuario'
+    ).order_by('-agenda__fecha', '-agenda__hora_inicio')
+
+    turnos_disponibles = agendas_base.select_related('profesional').filter(
         estado='disponible'
     ).order_by('fecha', 'hora_inicio')
+
     servicios = Servicios.objects.all()
 
     context = {
@@ -563,11 +584,16 @@ def ver_agenda(request):
     }
     return render(request, 'reservas/ver_agenda.html', context)
 
-
-@login_required
+@admin_o_barbero
 def cambiar_estado_reserva(request, pk, nuevo_estado):
-    reserva = get_object_or_404(Reserva, pk=pk)
-    if nuevo_estado in ['reservada', 'confirmada', 'cancelada']:
+    reserva = _obtener_reserva_permitida(request.user, pk)
+
+    if request.user.rol == RolUsuario.ADMIN:
+        estados_permitidos = ['reservada', 'confirmada', 'cancelada']
+    else:
+        estados_permitidos = ['confirmada', 'cancelada']
+
+    if nuevo_estado in estados_permitidos:
         reserva.estado = nuevo_estado
         reserva.save()
 
@@ -581,9 +607,9 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
     return redirect('ver_agenda')
 
 
-@login_required
+@admin_o_barbero
 def reprogramar_cita(request, pk):
-    cita = get_object_or_404(Reserva, pk=pk)
+    cita = _obtener_reserva_permitida(request.user, pk)
     form = ReservaEditarForm(request.POST or None, instance=cita)
 
     if request.method == 'POST' and form.is_valid():
