@@ -106,6 +106,26 @@ class UsuarioModelTest(TestCase):
         })
         self.assertIn(response.status_code, [200, 302])
 
+    def test_login_con_email_mayor_a_30_caracteres(self):
+        """Los correos largos pueden iniciar sesión"""
+        usuario = Usuario.objects.create_user(
+            email='valentinaperezpedraza24@gmail.com',
+            password='Test1234*',
+            numero_documento='987654321',
+            primer_nombre='Valentina',
+            primer_apellido='Perez',
+            telefono='3001234567',
+            rol='admin'
+        )
+
+        cliente = Client()
+        response = cliente.post(reverse('login'), {
+            'username': usuario.email,
+            'password': 'Test1234*'
+        })
+
+        self.assertRedirects(response, '/panel/')
+
     def test_login_con_contraseña_incorrecta(self):
         """Login falla con contraseña incorrecta"""
         cliente = Client()

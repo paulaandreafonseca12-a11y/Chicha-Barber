@@ -55,8 +55,11 @@ def registrar_adquisicion(request):
         try:
             cantidad = int(request.POST.get('cantidad', '1'))
             precio_compra = Decimal(str(request.POST.get('precio_compra', '0')).replace(',', '.'))
-            precio_venta_input = request.POST.get('precio_venta')
-            precio_venta = Decimal(str(precio_venta_input).replace(',', '.')) if precio_venta_input else Decimal('0')
+            precio_venta_input = request.POST.get('precio_venta', '').strip()
+            precio_venta = (
+                Decimal(precio_venta_input.replace(',', '.'))
+                if precio_venta_input else None
+            )
         except (ValueError, TypeError, InvalidOperation):
             messages.error(request, 'Los datos numéricos ingresados no son válidos.')
             return redirect('registrar_adquisicion')
@@ -65,7 +68,7 @@ def registrar_adquisicion(request):
             messages.error(request, 'La cantidad debe ser mayor que cero.')
             return redirect('registrar_adquisicion')
 
-        if precio_compra < 0 or precio_venta < 0:
+        if precio_compra < 0 or (precio_venta is not None and precio_venta < 0):
             messages.error(request, 'Los precios no pueden ser negativos.')
             return redirect('registrar_adquisicion')
 
@@ -78,7 +81,13 @@ def registrar_adquisicion(request):
                 observaciones=f"Compras para {producto.nombre}"
             )
 
-            if precio_venta > 0:
+            precio_venta_registrado = (
+                precio_venta
+                if precio_venta is not None and precio_venta > 0
+                else producto.precio
+            )
+
+            if precio_venta is not None and precio_venta > 0:
                 producto.precio = precio_venta
                 producto.save(update_fields=['precio'])
 
@@ -87,7 +96,7 @@ def registrar_adquisicion(request):
                 codigo_producto=producto,
                 cantidad=cantidad,
                 precio_compra=precio_compra,
-                precio_venta=precio_venta if precio_venta > 0 else precio_compra
+                precio_venta=precio_venta_registrado
             )
 
         messages.success(request, f"Compras #{compra_obj.codigo} registrada con éxito.")
@@ -127,12 +136,16 @@ def editar_adquisicion(request, pk):
             nueva_cantidad = int(request.POST.get('cantidad', '1'))
             nuevo_precio_compra = Decimal(str(request.POST.get('precio_compra', '0')).replace(',', '.'))
             nuevo_precio_venta_input = request.POST.get('precio_venta')
-            nuevo_precio_venta = Decimal(str(nuevo_precio_venta_input).replace(',', '.')) if nuevo_precio_venta_input else Decimal('0')
+            nuevo_precio_venta = Decimal(str(nuevo_precio_venta_input or '0').replace(',', '.'))
         except (ValueError, TypeError, InvalidOperation):
             messages.error(request, 'Los datos numéricos ingresados no son válidos.')
             return redirect('editar_adquisicion', pk=pk)
 
-        if nueva_cantidad <= 0 or nuevo_precio_compra < 0 or nuevo_precio_venta < 0:
+        if (
+            nueva_cantidad <= 0
+            or nuevo_precio_compra < 0
+            or nuevo_precio_venta < 0
+        ):
             messages.error(request, 'Los valores ingresados no son válidos.')
             return redirect('editar_adquisicion', pk=pk)
 
@@ -141,7 +154,6 @@ def editar_adquisicion(request, pk):
 
         diferencia = nueva_cantidad - detalle.cantidad
         detalle_prod, _ = DetalleProducto.objects.get_or_create(codigo_producto=producto)
-
         with transaction.atomic():
             if diferencia < 0 and detalle_prod.cantidad_actual < abs(diferencia):
                 messages.error(

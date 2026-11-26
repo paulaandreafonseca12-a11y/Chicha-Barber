@@ -168,9 +168,9 @@
 
                         <td class="fw-bold text-white fs-6">
                             {% if producto.precio_venta_actual %}
-                                ${{ producto.precio_venta_actual|floatformat:0 }}
+                                {{ producto.precio_venta_actual|cop }}
                             {% else %}
-                                ${{ producto.precio|floatformat:0 }}
+                                {{ producto.precio|cop }}
                             {% endif %}
                         </td>
 
