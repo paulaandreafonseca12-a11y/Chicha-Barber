@@ -1,139 +1,61 @@
 {% extends 'base-admin.html' %}
 {% load static %}
 
-
 {% block content %}
-
-
 <div class="container py-4">
-
-
     <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
 
-
-        <div class="col-lg-7">
-
-
-            <div class="card shadow border-0">
-
-
-
-                <div class="card-header color-champaña text-dark py-3">
-
-
-                    <h4 class="mb-0 fw-bold text-dark">
-
-
-                        <i class="bi bi-pencil me-2"></i>
-
-
+                <div class="card-header border-bottom border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <i class="bi bi-pencil-square text-warning fs-5"></i>
                         Editar Proveedor
+                    </h5>
 
-
-                    </h4>
-
-
+                    <a href="{% url 'lista_proveedores' %}"
+                       class="btn btn-sm btn-outline-light fw-bold rounded-pill px-3 py-2 d-flex align-items-center gap-1">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+                    </a>
                 </div>
 
-
-
-
-                <div class="card-body">
-
-
+                <div class="card-body p-4 p-md-5">
                     <form method="POST">
-
-
                         {% csrf_token %}
 
-
-
                         {% for field in form %}
-
-
                         <div class="mb-3">
-
-
                             <label class="form-label fw-semibold">
-
                                 {{ field.label }}
-
                             </label>
-
-
                             {{ field }}
-
-
-
                             {% if field.errors %}
-
-                            <div class="text-danger small">
-
+                            <div class="text-danger small mt-1">
                                 {{ field.errors|striptags }}
-
                             </div>
-
                             {% endif %}
-
-
-
                         </div>
-
-
                         {% endfor %}
 
-
-
-
-
-                        <div class="d-flex justify-content-end gap-2">
-
-
+                        <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top border-secondary border-opacity-25">
                             <a href="{% url 'lista_proveedores' %}"
-                               class="btn btn-outline-secondary">
-
-
+                               class="btn btn-outline-secondary px-4 fw-semibold rounded-pill">
+                                <i class="bi bi-x-circle me-1"></i>
                                 Cancelar
-
-
                             </a>
 
-
-
                             <button type="submit"
-                                    class="btn color-azul text-white fw-bold">
-
-
-                                <i class="bi bi-save"></i>
-
-
+                                    class="btn btn-warning text-dark fw-bold px-4 rounded-pill shadow-sm d-flex align-items-center gap-2">
+                                <i class="bi bi-save-fill"></i>
                                 Actualizar
-
-
                             </button>
-
-
-
                         </div>
-
-
-
                     </form>
-
-
                 </div>
 
-
             </div>
-
-
         </div>
-
-
     </div>
-
-
 </div>
-
-
 {% endblock %}

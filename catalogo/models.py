@@ -261,31 +261,6 @@ class Producto(models.Model):
     # ======================================================
     @property
     def precio_venta_actual(self):
-        """
-        Obtiene el precio de venta de la adquisición más reciente.
-
-        DetalleCompra pertenece a la app 'compra', pero está
-        relacionada mediante related_name='adquisiciones'.
-
-        La fecha pertenece a Compra, no a DetalleCompra.
-        Por eso se utiliza:
-
-            codigo_compra__fecha
-        """
-
-        adquisicion = (
-            self.adquisiciones
-            .select_related("codigo_compra")
-            .order_by(
-                "-codigo_compra__fecha",
-                "-codigo"
-            )
-            .first()
-        )
-
-        if adquisicion:
-            return adquisicion.precio_venta
-
         return self.precio
 
     # ======================================================

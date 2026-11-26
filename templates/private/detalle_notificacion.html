@@ -60,7 +60,7 @@
             </li>
             <li class="list-group-item d-flex justify-content-between px-0">
               <span class="text-muted">Total</span>
-              <span class="fw-semibold">${{ objeto_relacionado.total_venta|floatformat:2 }}</span>
+              <span class="fw-semibold">{{ objeto_relacionado.total_venta|cop }}</span>
             </li>
             <li class="list-group-item d-flex justify-content-between px-0">
               <span class="text-muted">Estado</span>
@@ -102,7 +102,7 @@
             </li>
             <li class="list-group-item d-flex justify-content-between px-0">
               <span class="text-muted">Precio</span>
-              <span class="fw-semibold">${{ objeto_relacionado.precio|floatformat:2 }}</span>
+              <span class="fw-semibold">{{ objeto_relacionado.precio|cop }}</span>
             </li>
           </ul>
         {% elif notificacion.tipo == 'servicio' %}
@@ -113,7 +113,7 @@
             </li>
             <li class="list-group-item d-flex justify-content-between px-0">
               <span class="text-muted">Precio</span>
-              <span class="fw-semibold">${{ objeto_relacionado.precio|floatformat:2 }}</span>
+              <span class="fw-semibold">{{ objeto_relacionado.precio|cop }}</span>
             </li>
           </ul>
         {% elif notificacion.tipo == 'usuario' %}

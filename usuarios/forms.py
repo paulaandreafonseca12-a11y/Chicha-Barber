@@ -11,7 +11,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, SetP
 # LÍMITES (se validan SIEMPRE en el servidor)
 # ==========================================================
 
-MAX_EMAIL = 30
+MAX_EMAIL = 254
 MAX_NOMBRE = 30
 MIN_NOMBRE = 2
 MAX_PASSWORD = 100

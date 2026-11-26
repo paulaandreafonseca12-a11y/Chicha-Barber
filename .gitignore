@@ -28,3 +28,11 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+
+#docker
+docker-compose.yml
+.dockerignore
+dockerfile
+Caddyfile
+/localhost.crt
+/localhost.key

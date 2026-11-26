@@ -4,6 +4,7 @@ from django.dispatch import receiver
 
 from usuarios.models import Usuario, Notificacion
 from catalogo.models import Producto, MovimientoProducto
+from core.currency import format_cop
 
 
 # ==========================================================
@@ -409,7 +410,7 @@ def notificar_venta(
             mensaje=(
                 f"Nueva venta a "
                 f"{instance.nombre_cliente} "
-                f"por ${instance.total_venta:.2f}."
+                f"por {format_cop(instance.total_venta)}."
             ),
             url="/ventas/historial/"
         )

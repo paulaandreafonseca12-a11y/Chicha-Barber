@@ -188,7 +188,7 @@
                                     <p class="d-none producto-descripcion">{{ producto.descripcion }}</p>
 
                                     <!-- Precio -->
-                                    <h3 class="fw-bold mb-3 text-warning fs-5 producto-precio">${{ producto.precio_venta_actual|floatformat:0 }}</h3>
+                                    <h3 class="fw-bold mb-3 text-warning fs-5 producto-precio">{{ producto.precio_venta_actual|cop }}</h3>
 
                                     <!-- Botón Agregar al Carrito -->
                                     <div class="mt-auto pt-3 border-top border-secondary border-opacity-25">
@@ -291,7 +291,7 @@ function filtrarProductos() {
                     <img src="${imagen}" alt="${nombre}" class="rounded" width="40" height="40" style="object-fit: cover;">
                     <div class="flex-grow-1 text-start overflow-hidden">
                         <div class="fw-bold text-truncate small">${nombre}</div>
-                        <div class="small text-warning fw-bold">${precio}</div>
+                        <div class="small text-warning fw-bold">${window.formatearMonedaCOP(precio)}</div>
                     </div>
                 </div>
             `;

@@ -5,33 +5,25 @@
 
 <div class="container py-4">
 
-    <!-- =====================================================
-         ENCABEZADO
-    ====================================================== -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <div>
-            <h4 class="fw-bold mb-1 d-flex align-items-center gap-2">
-                <i class="bi bi-cart-plus text-info"></i>
-                Registrar Compra
-            </h4>
-            <p class="text-muted small mb-0">Registra una nueva adquisición de productos y actualiza sus valores</p>
-        </div>
-        <a href="{% url 'lista_adquisiciones' %}"
-           class="btn color-azul text-white fw-semibold d-inline-flex align-items-center gap-2">
-            <i class="bi bi-arrow-left"></i>
-            Volver
-        </a>
-    </div>
+            <div class="card border border-secondary border-opacity-25 rounded-4 shadow-lg overflow-hidden">
 
+                <div class="card-header border-bottom border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <i class="bi bi-bag-plus text-warning fs-5"></i>
+                        Registrar Compra
+                    </h5>
 
-    <!-- =====================================================
-         FORMULARIO
-    ====================================================== -->
+                    <a href="{% url 'lista_adquisiciones' %}"
+                       class="btn btn-sm btn-outline-light fw-bold rounded-pill px-3 py-2 d-flex align-items-center gap-1">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+                    </a>
+                </div>
 
-    <div class="card shadow border-0">
-
-        <div class="card-body p-4">
+                <div class="card-body p-4 p-md-5">
 
             <form method="POST">
 
@@ -101,7 +93,8 @@
 
                             {% for producto in productos %}
 
-                                <option value="{{ producto.codigo_producto }}">
+                                <option value="{{ producto.codigo_producto }}"
+                                        data-precio="{{ producto.precio }}">
 
                                     {{ producto.nombre }}
 
@@ -200,7 +193,7 @@
                         </div>
 
                         <div class="form-text">
-                            Valor pagado por cada unidad.
+                            Costo pagado por unidad; queda registrado en esta compra.
                         </div>
 
                     </div>
@@ -215,7 +208,7 @@
                         <label for="precio_venta"
                                class="form-label fw-bold">
 
-                            Precio de venta
+                            Nuevo precio de venta
 
                         </label>
 
@@ -231,13 +224,12 @@
                                    class="form-control"
                                    min="0"
                                    step="0.01"
-                                   placeholder="0.00"
-                                   required>
+                                   placeholder="Precio actual del catálogo (opcional)">
 
                         </div>
 
                         <div class="form-text">
-                            Precio al que se venderá cada unidad.
+                            Si lo dejas vacío, se conserva el precio actual del producto. Si ingresas uno nuevo, se actualizará el catálogo.
                         </div>
 
                     </div>
@@ -303,7 +295,7 @@
                                         <span id="total"
                                               class="fs-4 fw-bold">
 
-                                            $0
+                                            $ 0
 
                                         </span>
 
@@ -336,7 +328,7 @@
                                         <span id="totalVenta"
                                               class="fs-4 fw-bold">
 
-                                            $0
+                                            $ 0
 
                                         </span>
 
@@ -371,7 +363,7 @@
                                         <span id="ganancia"
                                               class="fs-4 fw-bold text-success">
 
-                                            $0
+                                            $ 0
 
                                         </span>
 
@@ -393,10 +385,10 @@
                      BOTONES
                 ====================================================== -->
 
-                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top border-secondary border-opacity-25">
 
                     <a href="{% url 'lista_adquisiciones' %}"
-                       class="btn btn-outline-secondary">
+                       class="btn btn-outline-secondary px-4 fw-semibold rounded-pill">
 
                         <i class="bi bi-x-circle me-1"></i>
 
@@ -406,9 +398,9 @@
 
 
                     <button type="submit"
-                            class="btn color-azul text-white fw-bold">
+                            class="btn btn-warning text-dark fw-bold px-4 rounded-pill shadow-sm d-flex align-items-center gap-2">
 
-                        <i class="bi bi-plus-circle me-1"></i>
+                        <i class="bi bi-save-fill"></i>
 
                         Registrar Compra
 
@@ -420,6 +412,9 @@
 
         </div>
 
+    </div>
+
+        </div>
     </div>
 
 </div>
@@ -439,6 +434,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const cantidad = document.getElementById('cantidad');
 
+    const producto = document.getElementById('producto_id');
+
     const cantidadVenta = document.getElementById('cantidad_venta');
 
     const precioCompra = document.getElementById('precio_compra');
@@ -457,11 +454,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================================================== */
 
     function formatoMoneda(valor) {
-
-        return '$' + Number(valor).toLocaleString('es-CO', {
-            maximumFractionDigits: 0
-        });
-
+        return window.formatearMonedaCOP(valor);
     }
 
 
@@ -480,8 +473,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const precioCompraValor =
             parseFloat(precioCompra.value) || 0;
 
+        const precioVentaIngresado = parseFloat(precioVenta.value) || 0;
+        const precioVentaCatalogo =
+            parseFloat(producto.options[producto.selectedIndex].dataset.precio) || 0;
         const precioVentaValor =
-            parseFloat(precioVenta.value) || 0;
+        precioVentaIngresado > 0 ? precioVentaIngresado : precioVentaCatalogo;
 
 
         /* -----------------------------------------------
@@ -576,6 +572,12 @@ document.addEventListener('DOMContentLoaded', function () {
         'input',
         calcularValores
     );
+
+    producto.addEventListener('change', function () {
+        const precioActual = producto.options[producto.selectedIndex].dataset.precio;
+        precioVenta.value = precioActual || '';
+        calcularValores();
+    });
 
 
     /* =========================================================
