@@ -32,3 +32,10 @@ __pycache__/
 .dockerignore
 dockerfile
 docker-compose.yml
+#docker
+docker-compose.yml
+.dockerignore
+dockerfile
+Caddyfile
+/localhost.crt
+/localhost.key

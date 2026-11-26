@@ -253,7 +253,7 @@
 
       <div class="reserva-confirmada__total">
         <span class="reserva-confirmada__total-label">Total a pagar en el local</span>
-        <span class="reserva-confirmada__total-value">${{ reserva.precio_historico|floatformat:0 }}</span>
+        <span class="reserva-confirmada__total-value">{{ reserva.precio_historico|cop }}</span>
       </div>
 
       <div class="reserva-confirmada__foot">

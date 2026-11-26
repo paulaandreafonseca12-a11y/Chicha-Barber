@@ -2242,14 +2242,14 @@ body.theme-light .private-perfil__div-1 {
 .reservas-ver-agenda__div-10 { width: 35px; height: 35px; flex-shrink: 0; }
 .reservas-ver-agenda__span-11 { letter-spacing: 0.5px; }
 .reservas-ver-agenda__h2-12 { font-size: 1.8rem; }
-.reservas-ver-agenda__div-13 { border-bottom: 1px solid rgba(0,0,0,0.08); }
-.reservas-ver-agenda__table-14 { color: #212529; }
-.reservas-ver-agenda__thead-15 { border-bottom: 2px solid rgba(0,0,0,0.05); }
-.reservas-ver-agenda__tr-16 { border-bottom: 1px solid rgba(0,0,0,0.05); }
+.reservas-ver-agenda__div-13 { border-bottom: 1px solid rgba(255,255,255,0.12); }
+.reservas-ver-agenda__table-14 { color: #f8fafc; }
+.reservas-ver-agenda__thead-15 { border-bottom: 2px solid rgba(255,255,255,0.12); }
+.reservas-ver-agenda__tr-16 { border-bottom: 1px solid rgba(255,255,255,0.08); }
 .reservas-ver-agenda__a-17 { background-color: #25d366; border: none; }
-.reservas-ver-agenda__table-18 { color: #212529; }
-.reservas-ver-agenda__thead-19 { border-bottom: 2px solid rgba(0,0,0,0.05); }
-.reservas-ver-agenda__tr-20 { border-bottom: 1px solid rgba(0,0,0,0.05); }
+.reservas-ver-agenda__table-18 { color: #f8fafc; }
+.reservas-ver-agenda__thead-19 { border-bottom: 2px solid rgba(255,255,255,0.12); }
+.reservas-ver-agenda__tr-20 { border-bottom: 1px solid rgba(255,255,255,0.08); }
 .reservas-ver-agenda__i-21 { font-size: 3rem; }
 
 .reservas-reservas__div-2 { max-width: 800px; }
@@ -3320,9 +3320,9 @@ body.admin-panel-cyan .btn-primary,
 body.admin-panel-cyan .btn.color-azul:not(.partials-campanita__a-1),
 body.admin-panel-cyan .btn.custom-btn,
 body.admin-panel-cyan .btn-warning {
-  background: #94d6ea !important;
-  border-color: #94d6ea !important;
-  color: #10232a !important;
+  background: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: #171717 !important;
   font-weight: 700;
 }
 
@@ -3330,23 +3330,23 @@ body.admin-panel-cyan .btn-primary:hover,
 body.admin-panel-cyan .btn.color-azul:hover:not(.partials-campanita__a-1),
 body.admin-panel-cyan .btn.custom-btn:hover,
 body.admin-panel-cyan .btn-warning:hover {
-  background: #7ec8df !important;
-  border-color: #7ec8df !important;
-  color: #10232a !important;
+  background: #e0a800 !important;
+  border-color: #e0a800 !important;
+  color: #171717 !important;
 }
 
 body.admin-panel-cyan .btn-outline-primary,
 body.admin-panel-cyan .btn-outline-info,
 body.admin-panel-cyan .btn-outline-warning {
-  color: #94d6ea !important;
-  border-color: #94d6ea !important;
+  color: #ffc107 !important;
+  border-color: #ffc107 !important;
 }
 
 body.admin-panel-cyan .btn-outline-primary:hover,
 body.admin-panel-cyan .btn-outline-info:hover,
 body.admin-panel-cyan .btn-outline-warning:hover {
-  background: #94d6ea !important;
-  color: #10232a !important;
+  background: #ffc107 !important;
+  color: #171717 !important;
 }
 
 /* Barra superior clara con el degradado marfil-carbón de la referencia. */
@@ -3986,9 +3986,13 @@ body.theme-light .admin-panel-shell main textarea {
 }
 
 body.theme-light .admin-panel-shell main .btn-primary,
+body.theme-light .admin-panel-shell main .btn-info,
 body.theme-light .admin-panel-shell main .btn-warning,
+body.theme-light .admin-panel-shell main .btn-admin-cyan,
 body.theme-light .admin-panel-shell main .btn.custom-btn,
-body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1) {
+body.theme-light .admin-panel-shell main .btn.color-amarillo,
+body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1),
+body.theme-light .admin-panel-shell main .btn-guardar-cambios {
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
   border-color: #a9874f !important;
   color: #30291f !important;
@@ -3996,9 +4000,13 @@ body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita
 }
 
 body.theme-light .admin-panel-shell main .btn-primary:hover,
+body.theme-light .admin-panel-shell main .btn-info:hover,
 body.theme-light .admin-panel-shell main .btn-warning:hover,
+body.theme-light .admin-panel-shell main .btn-admin-cyan:hover,
 body.theme-light .admin-panel-shell main .btn.custom-btn:hover,
-body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1):hover {
+body.theme-light .admin-panel-shell main .btn.color-amarillo:hover,
+body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1):hover,
+body.theme-light .admin-panel-shell main .btn-guardar-cambios:hover {
   background: linear-gradient(135deg, #d2b77f 0%, #b39255 100%) !important;
   border-color: #b39255 !important;
   color: #30291f !important;
@@ -4006,14 +4014,17 @@ body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita
 
 body.theme-light .admin-panel-shell main .btn-outline-primary,
 body.theme-light .admin-panel-shell main .btn-outline-info,
-body.theme-light .admin-panel-shell main .btn-outline-warning {
+body.theme-light .admin-panel-shell main .btn-outline-warning,
+body.theme-light .admin-panel-shell main .btn-admin-cyan-outline {
   color: #795923 !important;
   border-color: #b39255 !important;
+  background: transparent !important;
 }
 
 body.theme-light .admin-panel-shell main .btn-outline-primary:hover,
 body.theme-light .admin-panel-shell main .btn-outline-info:hover,
-body.theme-light .admin-panel-shell main .btn-outline-warning:hover {
+body.theme-light .admin-panel-shell main .btn-outline-warning:hover,
+body.theme-light .admin-panel-shell main .btn-admin-cyan-outline:hover {
   background: rgba(176, 141, 87, 0.16) !important;
   color: #674b20 !important;
 }
@@ -4398,14 +4409,14 @@ body.theme-dark .admin-panel-shell main .dt-search input:focus,
 body.theme-dark .admin-panel-shell main .dataTables_filter input:focus,
 body.theme-dark .admin-panel-shell main .dt-length select:focus,
 body.theme-dark .admin-panel-shell main .dataTables_length select:focus {
-  border-color: #22aed1 !important;
-  box-shadow: 0 0 0 0.2rem rgba(34, 174, 209, 0.2) !important;
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.2) !important;
 }
 
 body.theme-dark .admin-panel-shell main input,
 body.theme-dark .admin-panel-shell main select,
 body.theme-dark .admin-panel-shell main textarea {
-  accent-color: #22aed1;
+  accent-color: #ffc107;
 }
 
 body.theme-dark .admin-panel-shell main .btn-outline-secondary,
@@ -5516,9 +5527,13 @@ body.theme-light .admin-panel-shell main textarea {
 }
 
 body.theme-light .admin-panel-shell main .btn-primary,
+body.theme-light .admin-panel-shell main .btn-info,
 body.theme-light .admin-panel-shell main .btn-warning,
+body.theme-light .admin-panel-shell main .btn-admin-cyan,
 body.theme-light .admin-panel-shell main .btn.custom-btn,
-body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1) {
+body.theme-light .admin-panel-shell main .btn.color-amarillo,
+body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1),
+body.theme-light .admin-panel-shell main .btn-guardar-cambios {
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
   border-color: #a9874f !important;
   color: #30291f !important;
@@ -5526,9 +5541,13 @@ body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita
 }
 
 body.theme-light .admin-panel-shell main .btn-primary:hover,
+body.theme-light .admin-panel-shell main .btn-info:hover,
 body.theme-light .admin-panel-shell main .btn-warning:hover,
+body.theme-light .admin-panel-shell main .btn-admin-cyan:hover,
 body.theme-light .admin-panel-shell main .btn.custom-btn:hover,
-body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1):hover {
+body.theme-light .admin-panel-shell main .btn.color-amarillo:hover,
+body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita__a-1):hover,
+body.theme-light .admin-panel-shell main .btn-guardar-cambios:hover {
   background: linear-gradient(135deg, #d2b77f 0%, #b39255 100%) !important;
   border-color: #b39255 !important;
   color: #30291f !important;
@@ -5536,14 +5555,17 @@ body.theme-light .admin-panel-shell main .btn.color-azul:not(.partials-campanita
 
 body.theme-light .admin-panel-shell main .btn-outline-primary,
 body.theme-light .admin-panel-shell main .btn-outline-info,
-body.theme-light .admin-panel-shell main .btn-outline-warning {
+body.theme-light .admin-panel-shell main .btn-outline-warning,
+body.theme-light .admin-panel-shell main .btn-admin-cyan-outline {
   color: #795923 !important;
   border-color: #b39255 !important;
+  background: transparent !important;
 }
 
 body.theme-light .admin-panel-shell main .btn-outline-primary:hover,
 body.theme-light .admin-panel-shell main .btn-outline-info:hover,
-body.theme-light .admin-panel-shell main .btn-outline-warning:hover {
+body.theme-light .admin-panel-shell main .btn-outline-warning:hover,
+body.theme-light .admin-panel-shell main .btn-admin-cyan-outline:hover {
   background: rgba(176, 141, 87, 0.16) !important;
   color: #674b20 !important;
 }
@@ -5928,14 +5950,14 @@ body.theme-dark .admin-panel-shell main .dt-search input:focus,
 body.theme-dark .admin-panel-shell main .dataTables_filter input:focus,
 body.theme-dark .admin-panel-shell main .dt-length select:focus,
 body.theme-dark .admin-panel-shell main .dataTables_length select:focus {
-  border-color: #22aed1 !important;
-  box-shadow: 0 0 0 0.2rem rgba(34, 174, 209, 0.2) !important;
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.2) !important;
 }
 
 body.theme-dark .admin-panel-shell main input,
 body.theme-dark .admin-panel-shell main select,
 body.theme-dark .admin-panel-shell main textarea {
-  accent-color: #22aed1;
+  accent-color: #ffc107;
 }
 
 body.theme-dark .admin-panel-shell main .btn-outline-secondary,
@@ -6436,6 +6458,19 @@ body.theme-light .admin-panel-shell main .resumen-compra-card .resumen-ganancia-
   border-color: rgba(220, 38, 38, 0.25) !important;
 }
 
+@media (max-width: 1199.98px) {
+  .compra-resumen-card .card-body {
+    align-items: flex-start !important;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .compra-resumen-card__value {
+    align-self: flex-end;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+  }
+}
+
 
 /* Textos de la tabla en MODO OSCURO (no afecta modo claro) */
 body:not(.theme-light) .dataTables_wrapper .dataTables_length,
@@ -6539,7 +6574,8 @@ body.theme-dark .admin-panel-shell main .btn-warning,
 body.theme-dark .admin-panel-shell main .btn-admin-cyan,
 body.theme-dark .admin-panel-shell main .btn.custom-btn,
 body.theme-dark .admin-panel-shell main .btn.color-azul,
-body.theme-dark .admin-panel-shell main .btn.color-amarillo {
+body.theme-dark .admin-panel-shell main .btn.color-amarillo,
+body.theme-dark .admin-panel-shell main .btn-guardar-cambios {
   background: #ffc107 !important;
   background-image: none !important;
   border-color: #ffc107 !important;
@@ -6559,7 +6595,9 @@ body.theme-dark .admin-panel-shell main .btn.custom-btn:focus-visible,
 body.theme-dark .admin-panel-shell main .btn.color-azul:hover,
 body.theme-dark .admin-panel-shell main .btn.color-azul:focus-visible,
 body.theme-dark .admin-panel-shell main .btn.color-amarillo:hover,
-body.theme-dark .admin-panel-shell main .btn.color-amarillo:focus-visible {
+body.theme-dark .admin-panel-shell main .btn.color-amarillo:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-guardar-cambios:hover,
+body.theme-dark .admin-panel-shell main .btn-guardar-cambios:focus-visible {
   background: #e0a800 !important;
   background-image: none !important;
   border-color: #e0a800 !important;
@@ -6568,7 +6606,8 @@ body.theme-dark .admin-panel-shell main .btn.color-amarillo:focus-visible {
 
 body.theme-dark .admin-panel-shell main .btn-outline-primary,
 body.theme-dark .admin-panel-shell main .btn-outline-info,
-body.theme-dark .admin-panel-shell main .btn-outline-warning {
+body.theme-dark .admin-panel-shell main .btn-outline-warning,
+body.theme-dark .admin-panel-shell main .btn-admin-cyan-outline {
   background: transparent !important;
   border-color: #ffc107 !important;
   color: #ffc107 !important;
@@ -6579,7 +6618,9 @@ body.theme-dark .admin-panel-shell main .btn-outline-primary:focus-visible,
 body.theme-dark .admin-panel-shell main .btn-outline-info:hover,
 body.theme-dark .admin-panel-shell main .btn-outline-info:focus-visible,
 body.theme-dark .admin-panel-shell main .btn-outline-warning:hover,
-body.theme-dark .admin-panel-shell main .btn-outline-warning:focus-visible {
+body.theme-dark .admin-panel-shell main .btn-outline-warning:focus-visible,
+body.theme-dark .admin-panel-shell main .btn-admin-cyan-outline:hover,
+body.theme-dark .admin-panel-shell main .btn-admin-cyan-outline:focus-visible {
   background: #ffc107 !important;
   border-color: #ffc107 !important;
   color: #171717 !important;
@@ -6976,6 +7017,10 @@ body.client-site header .client-cart-button i {
 }
 
 /* Admin header: preserve the title and controls across tablet and mobile widths. */
+.admin-panel-shell main {
+  overflow: visible !important;
+}
+
 .admin-panel-shell .admin-navbar__inner {
   min-width: 0;
   flex-wrap: nowrap;
@@ -7224,8 +7269,24 @@ body.client-site.theme-dark > header.color-negro-bg #navbarDropdown > i {
   color: #ffffff !important;
 }
 
-body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
-body.client-site > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button 
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1:hover,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1:focus-visible,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button:hover,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button:focus-visible {
+  background: #ffc107 !important;
+  background-image: none !important;
+  border: 1px solid #ffc107 !important;
+  color: #171717 !important;
+  box-shadow: 0 5px 14px rgba(255, 193, 7, 0.28) !important;
+}
+
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1 i,
+body.client-site.theme-dark > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button i {
+  color: #171717 !important;
+}
+
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto .partials-campanita__a-1,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .ms-auto > .client-cart-button {
   background: linear-gradient(135deg, #c4a66a 0%, #a9874f 100%) !important;
@@ -7310,4 +7371,407 @@ html body .asw-menu-btn:focus-visible,
 html body #openChatBtn:focus-visible {
   outline: 3px solid #171717 !important;
   outline-offset: 3px !important;
+}
+
+/* =====================================================
+   UNIFICACIÓN VISUAL DE FORMULARIOS DEL PANEL ADMIN
+   Aplica el mismo lenguaje visual de /productos/producto/crear/
+   y coordina modo claro (marfil/bronce) y oscuro (carbón/amarillo).
+   ===================================================== */
+body.admin-panel-shell main form:not(.d-inline):not(#chatForm),
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) {
+  --admin-form-accent: #ffc107;
+  --admin-form-accent-dark: #e0a800;
+}
+
+.admin-panel-shell main .card:has(> .card-body > form),
+.admin-panel-shell main .card:has(> form),
+.admin-panel-shell main .card:has(.card-body form) {
+  border-radius: 16px !important;
+  overflow: hidden;
+  border-width: 1px !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14) !important;
+}
+
+.admin-panel-shell main .card:has(form) > .card-header,
+.admin-panel-shell main .card:has(form) > .card-header.color-champaña,
+.admin-panel-shell main .card:has(form) > .card-header.thead-azul {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-label,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) label:not(.form-check-label) {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  margin-bottom: 0.45rem;
+  text-transform: uppercase;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-select,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) select,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) textarea {
+  min-height: 44px;
+  border-radius: 10px !important;
+  padding: 0.68rem 0.85rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .input-group > .form-control:first-child,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .input-group > .form-select:first-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .input-group > .btn:last-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) hr {
+  border-color: rgba(148, 163, 184, 0.24);
+  opacity: 1;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn[type="submit"]:not(.rounded-pill),
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) button[type="submit"]:not(.rounded-pill) {
+  min-height: 44px;
+  border-radius: 10px;
+  padding-inline: 1.25rem;
+  font-weight: 700;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn[type="submit"].rounded-pill,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) button[type="submit"].rounded-pill,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-outline-secondary.rounded-pill,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-secondary.rounded-pill {
+  min-height: 44px;
+  padding-inline: 1.5rem;
+  font-weight: 700;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-outline-secondary:not(.rounded-pill),
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-secondary:not(.rounded-pill) {
+  min-height: 44px;
+  border-radius: 10px;
+  padding-inline: 1.25rem;
+  font-weight: 700;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .alert {
+  border-radius: 10px;
+}
+
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .is-invalid,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control.is-invalid,
+.admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-select.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12) !important;
+}
+
+/* Offcanvas de menú en modo claro / oscuro */
+body.theme-light .admin-offcanvas-header {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 60%, #c9c5bd 100%) !important;
+  color: #30291f !important;
+  border-bottom: 1px solid rgba(121, 89, 35, 0.18) !important;
+}
+
+body.theme-dark .admin-offcanvas-header {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.12), #14171a) !important;
+  color: #f8fafc !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.theme-dark .admin-offcanvas-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Modo claro del panel (marfil / bronce, igual que /panel/) */
+body.theme-light .admin-panel-shell main .card:has(form) {
+  background: linear-gradient(145deg, #fffefa 0%, #f3efe7 100%) !important;
+  color: #30291f !important;
+  border-color: #ded5c5 !important;
+  box-shadow: 0 14px 34px rgba(44, 36, 25, 0.12) !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(form) .card-body,
+body.theme-light .admin-panel-shell main .card:has(form) .card-body.bg-white,
+body.theme-light .admin-panel-shell main .card:has(form) .card-body.bg-dark,
+body.theme-light .admin-panel-shell main .modal-content .modal-body,
+body.theme-light .admin-panel-shell main .modal-content .modal-footer {
+  background: transparent !important;
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header,
+body.theme-light .admin-panel-shell main .modal-content .modal-header {
+  background: linear-gradient(105deg, #f4efe3 0%, #dedbd3 60%, #c9c5bd 100%) !important;
+  color: #30291f !important;
+  border-bottom: 1px solid rgba(121, 89, 35, 0.18) !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header h1,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header h2,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header h3,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header h4,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header h5,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header h6,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header span,
+body.theme-light .admin-panel-shell main .modal-content .modal-header .modal-title {
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header i:not(.text-warning),
+body.theme-light .admin-panel-shell main .modal-content .modal-header i:not(.text-warning) {
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header .text-warning,
+body.theme-light .admin-panel-shell main .modal-content .modal-header .text-warning {
+  color: #896729 !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header .btn-outline-light,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header .btn-dark,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header .btn-outline-secondary {
+  background: rgba(255, 250, 240, 0.78) !important;
+  border-color: rgba(121, 89, 35, 0.4) !important;
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header .btn-outline-light:hover,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header .btn-dark:hover,
+body.theme-light .admin-panel-shell main .card:has(form) > .card-header .btn-outline-secondary:hover {
+  background: #ead9b8 !important;
+  border-color: #967342 !important;
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main .modal-header .btn-close-white {
+  filter: none !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-outline-secondary,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-secondary,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-outline-light,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-dark,
+body.theme-light .admin-panel-shell main .modal-footer .btn-outline-secondary,
+body.theme-light .admin-panel-shell main .modal-footer .btn-secondary {
+  background: rgba(255, 250, 240, 0.78) !important;
+  border-color: #c9b58f !important;
+  color: #403729 !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-outline-secondary:hover,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-secondary:hover,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-outline-light:hover,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .btn-dark:hover,
+body.theme-light .admin-panel-shell main .modal-footer .btn-outline-secondary:hover,
+body.theme-light .admin-panel-shell main .modal-footer .btn-secondary:hover {
+  background: #ead9b8 !important;
+  border-color: #a9874f !important;
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-check-label {
+  color: #30291f !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-text {
+  color: #6c6253 !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control.bg-dark,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control.bg-light,
+body.theme-light .admin-panel-shell main .modal-body .form-control.bg-dark {
+  background-color: #fffefa !important;
+  color: #30291f !important;
+  border-color: #d5c8ae !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .list-group-item {
+  background-color: #fffefa !important;
+  color: #30291f !important;
+  border-color: #ded5c5 !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .list-group-item:hover {
+  background-color: #f4efe3 !important;
+}
+
+body.theme-light .admin-panel-shell main .usuarios-editar-usuario__div-2 {
+  background: rgba(169, 135, 79, 0.08) !important;
+  border-color: rgba(169, 135, 79, 0.28) !important;
+}
+
+body.theme-light .admin-panel-shell main .pwd-toggle-btn {
+  color: #6c6253 !important;
+}
+
+body.theme-light .admin-panel-shell main .pwd-toggle-btn:hover {
+  color: #795923 !important;
+}
+
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control:focus,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-select:focus,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) input:focus,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) select:focus,
+body.theme-light .admin-panel-shell main form:not(.d-inline):not(#chatForm) textarea:focus {
+  border-color: #a9874f !important;
+  box-shadow: 0 0 0 0.2rem rgba(169, 135, 79, 0.2) !important;
+  outline: none;
+}
+
+/* Modo oscuro del panel (carbón / amarillo, igual que /panel/ y /productos/producto/crear/) */
+body.theme-dark .admin-panel-shell main .card:has(form) {
+  background: linear-gradient(145deg, #1e2227 0%, #14171a 100%) !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34) !important;
+}
+
+body.theme-dark .admin-panel-shell main .card:has(form) .card-body,
+body.theme-dark .admin-panel-shell main .card:has(form) .card-body.bg-white,
+body.theme-dark .admin-panel-shell main .card:has(form) .card-body.bg-light,
+body.theme-dark .admin-panel-shell main .card:has(form) .bg-white:not(.btn):not(.badge),
+body.theme-dark .admin-panel-shell main .card:has(form) .bg-light:not(.btn):not(.badge),
+body.theme-dark .admin-panel-shell main .modal-content .modal-body,
+body.theme-dark .admin-panel-shell main .modal-content .modal-footer,
+body.theme-dark .admin-panel-shell main .modal-content .bg-light-subtle {
+  background: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header,
+body.theme-dark .admin-panel-shell main .modal-content .modal-header {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.08), rgba(20, 23, 26, 0.96)) !important;
+  color: #f8fafc !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header h1,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header h2,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header h3,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header h4,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header h5,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header h6,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header span:not(.text-warning),
+body.theme-dark .admin-panel-shell main .modal-content .modal-header .modal-title {
+  color: #f8fafc !important;
+}
+
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header i:not(.text-warning),
+body.theme-dark .admin-panel-shell main .modal-content .modal-header i:not(.text-warning) {
+  color: #f8fafc !important;
+}
+
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header .text-warning,
+body.theme-dark .admin-panel-shell main .modal-content .modal-header .text-warning {
+  color: #ffc107 !important;
+}
+
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header .btn-outline-light,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header .btn-dark,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header .btn-outline-secondary {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  color: #f8fafc !important;
+}
+
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header .btn-outline-light:hover,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header .btn-dark:hover,
+body.theme-dark .admin-panel-shell main .card:has(form) > .card-header .btn-outline-secondary:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 193, 7, 0.55) !important;
+  color: #ffffff !important;
+}
+
+body.theme-dark .admin-panel-shell main .modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-check-label {
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-text {
+  color: #aeb8c4 !important;
+}
+
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control.bg-light,
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control[readonly],
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control.custom-white-input,
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-select.custom-white-input {
+  background-color: #11161c !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .table-light,
+body.theme-dark .admin-panel-shell main .card:has(form) .table-light,
+body.theme-dark .admin-panel-shell main .card:has(form) thead.table-light th {
+  background-color: #11161c !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .list-group-item {
+  background-color: #15191e !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .list-group-item:hover {
+  background-color: rgba(255, 193, 7, 0.14) !important;
+}
+
+body.theme-dark .admin-panel-shell main .usuarios-editar-usuario__div-2 {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.theme-dark .admin-panel-shell main .pwd-toggle-btn {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .admin-panel-shell main .pwd-toggle-btn:hover {
+  color: #ffc107 !important;
+}
+
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-control:focus,
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) .form-select:focus,
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) input:focus,
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) select:focus,
+body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) textarea:focus {
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.22) !important;
+  outline: none;
+}
+
+@media (max-width: 575.98px) {
+  .admin-panel-shell main .card:has(form) > .card-header {
+    min-height: 56px;
+  }
+
+  .admin-panel-shell main form:not(.d-inline):not(#chatForm) .d-flex.justify-content-end {
+    flex-direction: column-reverse;
+  }
+
+  .admin-panel-shell main form:not(.d-inline):not(#chatForm) .d-flex.justify-content-end > .btn,
+  .admin-panel-shell main form:not(.d-inline):not(#chatForm) .d-flex.justify-content-end > a {
+    width: 100%;
+    justify-content: center;
+  }
 }
