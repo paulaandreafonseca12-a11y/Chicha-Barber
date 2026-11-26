@@ -72,6 +72,7 @@
                     <a href="{% url 'crear_reserva_admin' %}" class="btn btn-sm btn-outline-light fw-bold px-3 btn-crear-admin">
                         <i class="bi bi-calendar-plus me-2 text-info"></i>Registrar Cita
                     </a>
+                    {% endif %}
                 </div>
 
             </div>
@@ -222,13 +223,6 @@ function abrirModalCancelar(btn) {
 }
 </script>
 
-<style>
-    /* Línea azul debajo de la pestaña activa */
-    .nav-tabs .nav-link.active {
-        border-bottom: 3px solid #0d6efd !important;
-        color: #0d6efd !important;
-    }
-</style>
 {% endblock %}
 
 {% block scripts %}

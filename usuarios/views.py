@@ -32,7 +32,7 @@ from core.validators import validar_password_fuerte
 
 from reservas.models import Reserva
 from venta.models import Venta
-
+from core.permisos import solo_admin
 
 def terminos(request):
     return render(request, 'usuarios/terminos.html')
@@ -186,6 +186,7 @@ def registro_view(request):
 # ==========================================================
 
 @login_required
+@solo_admin
 def lista_usuarios(request):
 
     rol_filtro = request.GET.get('rol')
@@ -830,6 +831,4 @@ def detalle_notificacion(request, pk):
     return render(request, 'private/detalle_notificacion.html', context)
 
 def terminos(request):
-    return render(request, 'usuarios/terminos.html')
-
-
+    return render(request, "usuarios/terminos.html") 
