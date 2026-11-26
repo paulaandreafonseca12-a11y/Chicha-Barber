@@ -1,0 +1,93 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <p class="text-white-50 mb-0">Descarga una copia o restaura la base de datos MySQL.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card bg-dark border border-secondary shadow-sm h-100">
+        <div class="card-body">
+          <h3 class="h5 text-warning"><i class="bi bi-download me-2"></i>Crear respaldo</h3>
+          <p class="text-white-50">Genera un archivo <strong>.sql</strong> con la estructura y los datos actuales.</p>
+
+          {% if mysql_conectado %}
+            <span class="badge bg-success mb-3"><i class="bi bi-check-circle me-1"></i>Conexión disponible</span>
+          {% else %}
+            <span class="badge bg-danger mb-3"><i class="bi bi-x-circle me-1"></i>Sin conexión a MySQL</span>
+          {% endif %}
+
+          <form method="post" action="{% url 'backup' %}">
+            {% csrf_token %}
+            <input type="hidden" name="accion" value="backup_completo">
+            <button type="submit" class="btn btn-warning fw-bold" {% if not mysql_conectado %}disabled{% endif %}>
+              <i class="bi bi-file-earmark-arrow-down me-1"></i> Descargar respaldo completo
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card bg-dark border border-secondary shadow-sm h-100">
+        <div class="card-body">
+          <h3 class="h5 text-warning"><i class="bi bi-upload me-2"></i>Restaurar respaldo</h3>
+          <p class="text-white-50">Selecciona un archivo SQL generado por el sistema.</p>
+
+          <div id="restoreAlert" class="alert d-none" role="alert"></div>
+
+          <form id="restoreForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="archivoSql" class="form-label text-white">Archivo .sql</label>
+              <input class="form-control" type="file" id="archivoSql" name="archivo" accept=".sql" required>
+            </div>
+            <button type="submit" class="btn btn-outline-warning fw-bold">
+              <i class="bi bi-arrow-repeat me-1"></i> Restaurar base de datos
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.getElementById('restoreForm').addEventListener('submit', async function (event) {
+  event.preventDefault();
+
+  const alertBox = document.getElementById('restoreAlert');
+  const formData = new FormData(event.target);
+
+  if (!confirm('¿Deseas reemplazar los datos actuales con este respaldo?')) return;
+
+  alertBox.className = 'alert alert-info';
+  alertBox.textContent = 'Restaurando base de datos...';
+
+  try {
+    const response = await fetch("{% url 'restaurar_datos' %}", {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
+    });
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error || 'No fue posible restaurar el respaldo');
+
+    alertBox.className = 'alert alert-success';
+    alertBox.textContent = data.mensaje;
+  } catch (error) {
+    alertBox.className = 'alert alert-danger';
+    alertBox.textContent = error.message;
+  }
+});
+</script>
+{% endblock %}

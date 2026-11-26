@@ -243,6 +243,11 @@
             <a href="{% url 'testimonios_admin' %}" class="list-group-item list-group-item-action bg-transparent {% if request.resolver_match.url_name == 'testimonios_admin' %}text-warning fw-bold{% else %}text-white-50{% endif %} border-0 ps-4">
               <i class="bi bi-chat-quote me-2"></i> Testimonios
             </a>
+            {% if user.is_staff or user.rol == 'admin' %}
+            <a href="{% url 'backup' %}" class="list-group-item list-group-item-action bg-transparent {% if request.resolver_match.url_name == 'backup' %}text-warning fw-bold{% else %}text-white-50{% endif %} border-0 ps-4">
+              <i class="bi bi-database me-2"></i> Respaldo de datos
+            </a>
+            {% endif %}
           </div>
         </div>
       </div>
