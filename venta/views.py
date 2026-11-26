@@ -6,6 +6,7 @@ from django.shortcuts import (
     redirect,
     get_object_or_404
 )
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -312,6 +313,23 @@ def procesar_pago_cliente(request):
             'carrito'
         )
 
+    if (
+        metodo_pago_raw in [
+            'transferencia',
+            'daviplata',
+            'nequi'
+        ]
+        and (
+            comprobante_archivo is None
+            or comprobante_archivo.size == 0
+        )
+    ):
+        messages.error(
+            request,
+            'Debes adjuntar el comprobante de pago para finalizar una compra por transferencia.'
+        )
+        return redirect('pago')
+
     # ======================================================
     # DETERMINAR MÉTODO DE PAGO
     # ======================================================
@@ -600,7 +618,7 @@ def procesar_pago_cliente(request):
         )
 
     return redirect(
-        'productos_galeria'
+        f"{reverse('carrito')}?compra=exitosa"
     )
 
 
