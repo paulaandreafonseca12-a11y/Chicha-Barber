@@ -526,7 +526,8 @@ def ver_agenda(request):
         messages.error(request, "No tienes permiso para ver la agenda.")
         return redirect('inicio')
 
-    hoy_fecha = date.today()
+    ahora = timezone.localtime()
+    hoy_fecha = timezone.localdate()
     mes_actual = hoy_fecha.month
     anio_actual = hoy_fecha.year
 
@@ -535,9 +536,13 @@ def ver_agenda(request):
         agenda__fecha__year=anio_actual
     ).exclude(estado='cancelada').count()
 
+    # Solo cuenta los turnos de hoy que todavía no han empezado
     turnos_disponibles_hoy = Agenda.objects.filter(
         fecha=hoy_fecha,
-        estado='disponible'
+        hora_inicio__gt=ahora.time(),
+        estado='disponible',
+        profesional__rol='barbero',
+        profesional__estado=True,
     ).count()
 
     citas_canceladas_mes = Reserva.objects.filter(
@@ -547,8 +552,12 @@ def ver_agenda(request):
     ).count()
 
     lista_reservas = Reserva.objects.select_related('agenda__profesional', 'servicio', 'usuario').all().order_by('-agenda__fecha', '-agenda__hora_inicio')
+    # Solo turnos libres que aún no han pasado: días futuros + lo que queda de hoy
     turnos_disponibles = Agenda.objects.select_related('profesional').filter(
-        estado='disponible'
+        Q(fecha__gt=hoy_fecha) | Q(fecha=hoy_fecha, hora_inicio__gt=ahora.time()),
+        estado='disponible',
+        profesional__rol='barbero',
+        profesional__estado=True,
     ).order_by('fecha', 'hora_inicio')
     servicios = Servicios.objects.all()
 

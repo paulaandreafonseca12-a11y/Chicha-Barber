@@ -27,7 +27,7 @@
         <div class="card-body p-4">
             <div class="table-responsive">
                 <table class="table align-middle mb-0 w-100 reservas-gestion-turno__table-2" data-admin-datatable data-admin-table-actions data-order='[[0, "asc"]]'>
-                    <thead class="table-light reservas-gestion-turno__thead-3">
+                    <thead class="reservas-gestion-turno__thead-3 thead-negro">
                         <tr>
                             <th class="ps-4 py-3 text-secondary fw-bold small text-uppercase">Día / Fecha</th>
                             <th class="text-secondary fw-bold small text-uppercase">Estado</th>
@@ -188,6 +188,12 @@ function confirmarDesactivar(fechaIso, fechaLegible, reservas) {
         background-color: #ffffff !important;
         border: 1px solid #dee2e6 !important;
         color: #212529 !important;
+    }
+    /* Encabezado de la tabla en negro (antes blanco por .table-light) */
+    .thead-negro th {
+        background-color: #000000 !important;
+        color: rgba(255, 255, 255, 0.65) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
     }
     .custom-white-input:focus {
         border-color: #0d6efd !important;
