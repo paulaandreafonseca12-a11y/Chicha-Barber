@@ -830,13 +830,6 @@ def detalle_notificacion(request, pk):
     return render(request, 'private/detalle_notificacion.html', context)
 
 def terminos(request):
-    context = {
-        'titulo': 'Términos y Condiciones',
-        'usuario': request.user,
-    }
+    return render(request, 'usuarios/terminos.html')
 
-    return render(
-        request,
-        'terminos.html',
-        context
-    )
+
