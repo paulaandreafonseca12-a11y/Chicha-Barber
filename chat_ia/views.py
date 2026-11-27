@@ -6,8 +6,10 @@ from servicios.models import Servicios
 from catalogo.models import Producto, Categoria, Promocion
 from usuarios.models import RolUsuario
 from core.currency import format_cop
+from chat_ia.manual_cliente import MANUAL_USUARIO_CLIENTE
+from chat_ia.manual_administrador import MANUAL_USUARIO_ADMINISTRADOR
 
-MENSAJE_BIENVENIDA = "¡Hola! 👋 Soy **ChichaBot**, tu asistente virtual de **Chicha Barber Studio**.\n\nEstoy aquí para ayudarte con:\n• 📅 Agendar citas\n• 🛒 ventar productos\n• 💇 Servicios disponibles\n• ❓ Cualquier duda sobre la barbería\n\n¿En qué puedo ayudarte hoy?"
+MENSAJE_BIENVENIDA = "¡Hola! 👋 Soy **ChichaBot**, tu asistente y manual de ayuda de **Chicha Barber Studio**.\n\nPuedo explicarte cómo:\n• 📅 Crear una reserva\n• 🛒 Comprar y usar el carrito\n• 💳 Finalizar un pago\n• ❓ Resolver dudas frecuentes\n\n¿En qué puedo ayudarte hoy?"
 
 
 def construir_contexto_dinamico():
@@ -59,7 +61,7 @@ def construir_contexto_dinamico():
     else:
         contexto_extra += "- No hay productos disponibles actualmente.\n"
 
-    return contexto_extra
+    return contexto_extra + "\n\n" + MANUAL_USUARIO_CLIENTE
 
 
 MENSAJE_BIENVENIDA_ADMIN = (
@@ -93,14 +95,23 @@ def _procesar_chat(
             chat.append({"rol": "user", "texto": user_input})
             
             contexto = constructor_contexto()
-            if usar_contexto_base:
+            historial = [
+                {
+                    "role": "assistant" if mensaje["rol"] == "ia" else "user",
+                    "content": mensaje["texto"],
+                }
+                for mensaje in chat[:-1]
+            ]
+            if es_admin:
                 respuesta = obtener_respuesta_ia(
                     user_input,
+                    historial=historial,
                     system_prompt_base=contexto,
                 )
             else:
                 respuesta = obtener_respuesta_ia(
                     user_input,
+                    historial=historial,
                     system_prompt_extra=contexto,
                 )
             

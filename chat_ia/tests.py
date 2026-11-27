@@ -10,6 +10,8 @@ from chat_ia.ai_service import DEFAULT_GROQ_MODEL, obtener_respuesta_ia
 from chat_ia.contexto_adm import obtener_contexto_admin
 from chat_ia.contexto_barbero import obtener_contexto_barbero
 from chat_ia.views import construir_contexto_dinamico, vista_chat_admin
+from chat_ia.manual_cliente import MANUAL_USUARIO_CLIENTE
+from chat_ia.manual_administrador import MANUAL_USUARIO_ADMINISTRADOR
 
 
 class QuerySetFalso(list):
@@ -104,6 +106,10 @@ class VistaChatAdminTests(SimpleTestCase):
 		self.assertEqual(respuesta.status_code, 200)
 		respuesta_mock.assert_called_once_with(
 			"¿Cómo reviso el inventario?",
+			historial=[{
+				"role": "assistant",
+				"content": "¡Hola! Soy ChichaBot, tu asistente para la gestión del panel administrativo. Puedo orientarte sobre inventario, productos, servicios, ventas y reservas.",
+			}],
 			system_prompt_base="Solo contexto administrativo",
 		)
 		self.assertIn("chat_admin", request.session)
@@ -185,7 +191,8 @@ class ObtenerContextoAdminTests(SimpleTestCase):
 		):
 			contexto = obtener_contexto_admin()
 
-		self.assertIn("Precio de venta: $35000", contexto)
+		self.assertIn("Cera", contexto)
+		self.assertIn("Precio de venta: $ 35.000", contexto)
 		self.assertIn("Categoría: Cuidado personal", contexto)
 		self.assertIn("Marca: Marca Uno", contexto)
 		self.assertIn("Existencias: 12 unidades (mínimo: 5, máximo: 40)", contexto)
@@ -193,9 +200,10 @@ class ObtenerContextoAdminTests(SimpleTestCase):
 		self.assertIn("Marca: Sin marca", contexto)
 		self.assertIn("Existencias: sin registro de existencias", contexto)
 		self.assertIn("Producto sin relaciones", contexto)
-		self.assertIn("Corte: $20000 | Duración: 30 min | Estado: Activo", contexto)
+		self.assertIn("Corte: $ 20.000 | Duración: 30 min | Estado: Activo", contexto)
 		self.assertIn("en servicio Corte, producto Cera", contexto)
 		self.assertIn("fuera del rango de fechas", contexto)
+		self.assertIn(MANUAL_USUARIO_ADMINISTRADOR, contexto)
 
 
 class ContextoBarberoTests(SimpleTestCase):
@@ -295,3 +303,4 @@ class ConstruirContextoDinamicoTests(SimpleTestCase):
 		contexto = self.construir_contexto_con_promocion(promocion)
 
 		self.assertIn("descuento en servicios o productos", contexto)
+		self.assertIn(MANUAL_USUARIO_CLIENTE, contexto)
