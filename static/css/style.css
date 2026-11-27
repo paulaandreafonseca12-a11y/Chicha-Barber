@@ -3158,6 +3158,7 @@ main {
 .text-truncate-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -7464,6 +7465,9 @@ html body #openChatBtn:focus-visible {
   outline-offset: 3px !important;
 }
 
+.nav-tabs .nav-link.active {
+    border-bottom: 3px solid #0d6efd !important;
+    color: #0d6efd !important;
 /* =====================================================
    UNIFICACIÓN VISUAL DE FORMULARIOS DEL PANEL ADMIN
    Aplica el mismo lenguaje visual de /productos/producto/crear/
@@ -7864,5 +7868,70 @@ body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) texta
   .admin-panel-shell main form:not(.d-inline):not(#chatForm) .d-flex.justify-content-end > a {
     width: 100%;
     justify-content: center;
+  }
+}
+
+.tabla-animada {
+  animation: tabla-aterriza 0.55s cubic-bezier(0.2, 0.75, 0.3, 1) backwards;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tabla-animada:hover {
+  transform: translateY(-5px);
+}
+
+.carrito-page > .card.tabla-animada,
+.pago-page .pago-resumen-card {
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.08),
+    0 8px 20px rgba(15, 23, 42, 0.06) !important;
+}
+
+.carrito-page > .card.tabla-animada:hover,
+.pago-page .pago-resumen-card:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16) !important;
+}
+
+.pago-resumen-card {
+  margin-inline: -1.5rem;
+}
+
+@keyframes tabla-aterriza {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .pago-resumen-card {
+    margin-inline: -3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabla-animada {
+    animation: none;
+    transition: none;
+  }
+
+  .tabla-animada:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .carrito-page .carrito-acciones {
+    width: 100%;
+  }
+
+  .carrito-page .carrito-acciones .btn {
+    font-size: 0.875rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
   }
 }

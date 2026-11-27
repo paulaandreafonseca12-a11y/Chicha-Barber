@@ -4,41 +4,41 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
 
-<div class="container py-4">
+<div class="container py-5 px-md-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="mb-4">
         <h2 class="fw-bold text-white mb-0">
-            <i class="bi bi-calendar2-event-fill me-2"></i>
-            Reprogramar Cita
+          
         </h2>
-
-        <a href="{% url 'ver_agenda' %}" class="btn btn-light fw-bold px-4 reservas-reprogramar__a-1">
-            <i class="bi bi-arrow-left me-2"></i>
-            Volver
-        </a>
     </div>
 
-    <div class="card border-0 shadow-lg mx-auto rounded-4 overflow-hidden reservas-reprogramar__div-2">
+    <div class="card text-dark border border-secondary border-opacity-10 shadow bg-white mx-auto reservas-reprogramar__div-2">
 
-        <div class="card-header text-white py-3 border-0 reservas-reprogramar__div-3">
-            <h4 class="mb-1 fw-bold">
+        <div class="card-header fw-bold text-primary py-3 bg-light">
+            <h5 class="mb-1 fw-bold">
                 <i class="bi bi-pencil-square me-2"></i>
                 Editar Reserva
-            </h4>
-            <small class="opacity-75">
+            </h5>
+            <small class="text-secondary">
                 Cliente: {{ cita.nombre_cliente }}
             </small>
         </div>
 
-        <div class="card-body bg-white p-4">
+        <div class="card-body p-4">
 
-            <form method="POST">
+            <form method="POST" id="form-reprogramar-cita">
                 {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
 
                 <div class="row">
                     {% for field in form %}
                     <div class="col-md-12 mb-4">
-                        <label class="form-label fw-bold text-dark">
+                        <label for="{% if field.name == 'fecha_reserva' %}fecha_picker{% else %}{{ field.id_for_label }}{% endif %}" class="form-label fw-bold text-secondary small text-uppercase">
                             {{ field.label }}
                         </label>
 
@@ -48,19 +48,17 @@
                                 id="fecha_picker"
                                 name="{{ field.html_name }}"
                                 value="{{ field.value|default:'' }}"
-                                class="form-control form-control-lg rounded-3"
+                                class="form-control custom-white-input"
                                 placeholder="Selecciona fecha y hora"
                                 autocomplete="off"
                                 required
                             >
                         {% else %}
-                            <div class="django-custom-field">
-                                {{ field }}
-                            </div>
+                            {{ field }}
                         {% endif %}
 
                         {% if field.errors %}
-                            <div class="text-danger small mt-2">
+                            <div class="text-danger small mt-2" role="alert">
                                 {{ field.errors }}
                             </div>
                         {% endif %}
@@ -68,17 +66,15 @@
                     {% endfor %}
                 </div>
 
-                <div class="d-flex gap-3 mt-4">
-                    <button type="submit" class="btn btn-lg text-white fw-bold px-4 border-0 btn-guardar-cambios reservas-reprogramar__button-4">
+                <div class="d-flex justify-content-end gap-2 border-top border-light-subtle pt-3 mt-4">
+                    <a href="{% url 'ver_agenda' %}" class="btn btn-secondary bg-opacity-75 px-4">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Volver a la Agenda
+                    </a>
+                    <button type="submit" class="btn btn-primary fw-bold px-4 shadow-sm">
                         <i class="bi bi-check-circle-fill me-2"></i>
                         Guardar Cambios
                     </button>
-
-                    <a href="{% url 'ver_agenda' %}"
-                       class="btn btn-outline-secondary btn-lg fw-bold px-4 rounded-3">
-                        <i class="bi bi-x-circle me-2"></i>
-                        Cancelar
-                    </a>
                 </div>
 
             </form>
@@ -86,54 +82,22 @@
     </div>
 </div>
 
-<style>
-    /* Aplica los estilos de Bootstrap automáticamente a lo que sea que renderice Django */
-    .django-custom-field input, 
-    .django-custom-field select, 
-    .django-custom-field textarea {
-        display: block;
-        width: 100%;
-        padding: .375rem .75rem;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #212529;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        border-radius: .375rem; /* rounded estándar de Bootstrap 5 */
-        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-    }
-
-    /* Manejo del enfoque (focus) global usando el color de tu marca */
-    .django-custom-field input:focus, 
-    .django-custom-field select:focus, 
-    .django-custom-field textarea:focus,
-    #fecha_picker:focus {
-        border-color: #07d2ff !important;
-        box-shadow: 0 0 0 0.25rem rgba(7, 210, 255, 0.25) !important;
-        outline: 0;
-    }
-
-    /* Animación sutil de hover para el botón guardar */
-    .btn-guardar-cambios:hover {
-        filter: brightness(0.9);
-    }
-</style>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/es.min.js"></script>
 
 <script>
-    flatpickr("#fecha_picker", {
-        enableTime: true,
-        dateFormat: "d/m/Y H:i",
-        time_24hr: true,
-        locale: "es",
-        minDate: "today",
-        defaultHour: 9,
-        minuteIncrement: 15,
-    });
+    const fechaPicker = document.querySelector("#fecha_picker");
+    if (fechaPicker) {
+        flatpickr(fechaPicker, {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            time_24hr: true,
+            locale: "es",
+            minDate: "today",
+            defaultHour: 9,
+            minuteIncrement: 15,
+        });
+    }
 </script>
 
 {% endblock %}

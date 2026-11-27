@@ -84,8 +84,6 @@
         </div>
 
     </div>
-        
-       
 
     <div class="p-4 rounded-3 border border-secondary border-opacity-25 mb-4 admin-theme-table-panel">
         <!-- Tabla de Datos -->
@@ -154,10 +152,6 @@
                             </button>
                         </td>
                     </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No hay promociones registradas.</td>
-                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -181,12 +175,25 @@
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="{% static 'js/datatables.js' %}"></script>
+
+<!-- Mensaje de tabla vacía (va ANTES del tconf para que lo tome) -->
+<script>
+    if (window.jQuery && $.fn.dataTable) {
+        $.extend(true, $.fn.dataTable.defaults, {
+            language: {
+                emptyTable: '<div class="text-center text-muted py-4">No hay promociones registradas.</div>'
+            }
+        });
+    }
+</script>
+
 <script src="{% static 'js/tconf/tconf-tablaPromociones.js' %}"></script>
 <script>
     document.getElementById('confirmarEliminacion').addEventListener('show.bs.modal', function (event) {
         const boton = event.relatedTarget;
-        document.getElementById('formEliminarElemento').action = boton.dataset.deleteUrl;
-        document.getElementById('nombreElementoEliminar').textContent = boton.dataset.itemName;
+        if (!boton) return;
+        document.getElementById('formEliminarElemento').action = boton.dataset.url;
+        document.getElementById('nombreElementoEliminar').textContent = boton.dataset.nombre;
     });
 </script>
 {% endblock scripts %}

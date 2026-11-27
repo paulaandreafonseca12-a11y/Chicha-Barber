@@ -1,4 +1,6 @@
+import json
 from decimal import Decimal
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from usuarios.models import Usuario, Notificacion
@@ -133,4 +135,77 @@ class VentaModelTestCase(TestCase):
         )
         self.assertIn("Bancolombia", str(pago))
         self.assertEqual(venta.detalle_pago.banco, "Bancolombia")
+
+
+class ProcesarPagoClienteTestCase(TestCase):
+    def test_compra_exitosa_muestra_un_mensaje_y_limpia_carrito_de_sesion(self):
+        datos_compra = {
+            "nombre": "Cliente Compra",
+            "correo": "cliente_compra@test.com",
+            "telefono": "3001234567",
+            "pago": "persona",
+            "carrito": json.dumps([
+                {
+                    "tipo": "reserva",
+                    "precio": "25000",
+                    "cantidad": 1,
+                }
+            ]),
+        }
+        session = self.client.session
+        session["carrito"] = {"producto": 1}
+        session.save()
+
+        response = self.client.post(
+            reverse("procesar_venta"),
+            datos_compra,
+            follow=True,
+        )
+
+        venta = Venta.objects.get()
+        mensaje = f"¡Venta #{venta.codigo_venta} completada con éxito!"
+        self.assertEqual(
+            response.redirect_chain[0][0],
+            f"{reverse('carrito')}?compra=exitosa",
+        )
+        self.assertEqual(response.content.decode().count(mensaje), 1)
+        self.assertEqual(self.client.session.get("carrito"), {})
+
+    def test_transferencia_rechaza_comprobante_ausente_o_vacio(self):
+        datos_compra = {
+            "nombre": "Cliente Transferencia",
+            "correo": "cliente_transferencia@test.com",
+            "telefono": "3001234567",
+            "pago": "transferencia",
+            "carrito": json.dumps([
+                {
+                    "tipo": "reserva",
+                    "precio": "25000",
+                    "cantidad": 1,
+                }
+            ]),
+        }
+        comprobante_vacio = SimpleUploadedFile(
+            "comprobante.pdf",
+            b"",
+            content_type="application/pdf",
+        )
+
+        for archivo in (None, comprobante_vacio):
+            with self.subTest(archivo=archivo):
+                datos = datos_compra.copy()
+                if archivo is not None:
+                    datos["comprobante"] = archivo
+
+                response = self.client.post(
+                    reverse("procesar_venta"),
+                    datos,
+                    follow=True,
+                )
+
+                self.assertContains(
+                    response,
+                    "Debes adjuntar el comprobante de pago",
+                )
+                self.assertEqual(Venta.objects.count(), 0)
 

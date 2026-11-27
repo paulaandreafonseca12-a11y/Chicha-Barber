@@ -17,7 +17,7 @@
           {{ titulo|default:"Administración de Chicha Barber Studio" }}
         </span>
         <span class="admin-header-title--mobile" aria-hidden="true">
-          <strong>Panel Admin</strong>
+          <strong>{% if user.rol == 'barbero' %}Mi Agenda{% else %}Panel Admin{% endif %}</strong>
           <small>Chicha Barber</small>
         </span>
       </a>
@@ -68,7 +68,7 @@
                 </a>
               </li>
               
-              {% if user.rol == 'admin' or user.rol == 'barbero' %}
+              {% if user.rol == 'admin' %}
               <li>
                 <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center" href="{% url 'inicio' %}">
                   <i class="bi bi-grid-1x2-fill me-2 text-warning fs-6"></i>Ver página web
