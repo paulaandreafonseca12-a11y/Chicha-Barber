@@ -7321,7 +7321,7 @@ body.client-site.theme-dark > header.color-negro-bg {
 
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
 body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
-body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 
+body.client-site > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50, 
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white,
 body.client-site.theme-light > header.color-negro-bg > .container > .d-flex > .nav .nav-link.text-white-50 {
@@ -7468,6 +7468,7 @@ html body #openChatBtn:focus-visible {
 .nav-tabs .nav-link.active {
     border-bottom: 3px solid #0d6efd !important;
     color: #0d6efd !important;
+}
 /* =====================================================
    UNIFICACIÓN VISUAL DE FORMULARIOS DEL PANEL ADMIN
    Aplica el mismo lenguaje visual de /productos/producto/crear/
@@ -7934,4 +7935,12 @@ body.theme-dark .admin-panel-shell main form:not(.d-inline):not(#chatForm) texta
     padding-left: 0.25rem;
     padding-right: 0.25rem;
   }
+}
+.col-6 .position-relative .cb-input {
+    padding-right: 2.5rem;
+}
+
+/* Login: espacio para el ojito de la contraseña */
+#id_password.cb-input {
+    padding-right: 2.5rem;
 }
