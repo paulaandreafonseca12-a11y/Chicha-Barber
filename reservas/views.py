@@ -543,7 +543,8 @@ def ver_agenda(request):
         reservas_base = reservas_base.filter(agenda__profesional=request.user)
         agendas_base = agendas_base.filter(profesional=request.user)
 
-    hoy_fecha = date.today()
+    ahora = timezone.localtime()
+    hoy_fecha = ahora.date()
     mes_actual = hoy_fecha.month
     anio_actual = hoy_fecha.year
 
