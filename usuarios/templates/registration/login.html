@@ -74,60 +74,22 @@
                 INGRESAR
             </button>
         </form>
+
+        <!-- CREAR CUENTA -->
+        <p class="text-center small text-white opacity-75 mt-3 mb-0">
+            ¿No tienes una cuenta?
+            <a href="{% url 'registro' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="forgot-link">
+                Crea una
+            </a>
+        </p>
+
+        <!-- VOLVER AL INICIO -->
+        <a href="{% url 'inicio' %}" class="btn btn-outline-light w-100 mt-3">
+            <i class="bi bi-arrow-left me-1"></i>Volver al inicio
+        </a>
     </main>
 
 </div>
-
-<style>
-    /* Tarjeta del formulario: menos negra, más "vidrio esmerilado" */
-    .form-box {
-        background: rgba(35, 40, 50, 0.72) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    /* Inputs: fondo más claro y con mejor contraste */
-    .cb-input {
-        background-color: rgba(255, 255, 255, 0.10) !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        color: #ffffff !important;
-    }
-    .cb-input::placeholder {
-        color: rgba(255, 255, 255, 0.55) !important;
-    }
-    .cb-input:focus {
-        background-color: rgba(255, 255, 255, 0.16) !important;
-        border-color: #29b6d8 !important;
-        box-shadow: 0 0 0 0.2rem rgba(41, 182, 216, 0.25) !important;
-    }
-
-    /* Oculta el ojito nativo de Edge para que no se duplique con el nuestro */
-    input[type="password"]::-ms-reveal,
-    input[type="password"]::-ms-clear {
-        display: none;
-    }
-
-    /* Ojito para mostrar/ocultar contraseña */
-    .pwd-toggle-btn {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.6);
-        padding: 0;
-        line-height: 1;
-        cursor: pointer;
-    }
-    .pwd-toggle-btn:hover {
-        color: #ffffff;
-    }
-    #id_password.cb-input {
-        padding-right: 2.5rem;
-    }
-</style>
 
 <!-- 🔥 NUEVO: Script para evitar espacios o mayúsculas incorrectas en tiempo real -->
 <script>
