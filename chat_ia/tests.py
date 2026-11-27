@@ -3,13 +3,14 @@ from decimal import Decimal
 from types import SimpleNamespace
 from unittest.mock import patch
 import os
+import json
 
 from django.test import RequestFactory, SimpleTestCase
 
 from chat_ia.ai_service import DEFAULT_GROQ_MODEL, obtener_respuesta_ia
 from chat_ia.contexto_adm import obtener_contexto_admin
 from chat_ia.contexto_barbero import obtener_contexto_barbero
-from chat_ia.views import construir_contexto_dinamico, vista_chat_admin
+from chat_ia.views import construir_contexto_dinamico, vista_chat_admin, vista_chat_ia
 from chat_ia.manual_cliente import MANUAL_USUARIO_CLIENTE
 from chat_ia.manual_administrador import MANUAL_USUARIO_ADMINISTRADOR
 
@@ -99,17 +100,24 @@ class VistaChatAdminTests(SimpleTestCase):
 			{"pregunta": "¿Cómo reviso el inventario?"},
 		)
 		request.user = SimpleNamespace(is_authenticated=True, rol="admin")
-		request.session = SessionFalsa()
+		request.session = SessionFalsa({
+			"chat_admin": [
+				{"rol": "ia", "texto": "Hola"},
+				{"rol": "user", "texto": "¿Cómo entro?"},
+				{"rol": "ia", "texto": "Desde el menú"},
+			],
+		})
 
 		respuesta = vista_chat_admin(request)
 
 		self.assertEqual(respuesta.status_code, 200)
 		respuesta_mock.assert_called_once_with(
 			"¿Cómo reviso el inventario?",
-			historial=[{
-				"role": "assistant",
-				"content": "¡Hola! Soy ChichaBot, tu asistente para la gestión del panel administrativo. Puedo orientarte sobre inventario, productos, servicios, ventas y reservas.",
-			}],
+			historial=[
+				{"role": "assistant", "content": "Hola"},
+				{"role": "user", "content": "¿Cómo entro?"},
+				{"role": "assistant", "content": "Desde el menú"},
+			],
 			system_prompt_base="Solo contexto administrativo",
 		)
 		self.assertIn("chat_admin", request.session)
@@ -136,11 +144,41 @@ class VistaChatAdminTests(SimpleTestCase):
 		contexto_mock.assert_called_once_with(request.user)
 		respuesta_mock.assert_called_once_with(
 			"¿Qué citas tengo?",
+			historial=[{
+				"role": "assistant",
+				"content": "¡Hola! Soy ChichaBot, tu asistente para tu agenda de barbero. Puedo ayudarte a consultar tus citas, tus turnos disponibles y las opciones de tu agenda.",
+			}],
 			system_prompt_base="Solo agenda propia",
 		)
 		self.assertIn("chat_barbero", request.session)
 		self.assertNotIn("chat_admin", request.session)
 		self.assertIn("agenda de barbero", request.session["chat_barbero"][0]["texto"])
+
+
+class VistaChatClienteTests(SimpleTestCase):
+	@patch("chat_ia.views.obtener_respuesta_ia", return_value="Respuesta al cliente")
+	@patch("chat_ia.views.construir_contexto_dinamico", return_value="Manual de cliente")
+	def test_procesa_pregunta_y_retorna_respuesta(self, contexto_mock, respuesta_mock):
+		request = RequestFactory().post("/chat/", {"pregunta": "¿Cómo reservo?"})
+		request.session = SessionFalsa()
+
+		respuesta = vista_chat_ia(request)
+
+		self.assertEqual(respuesta.status_code, 200)
+		self.assertEqual(
+			json.loads(respuesta.content)["nuevo_mensaje"],
+			"Respuesta al cliente",
+		)
+		respuesta_mock.assert_called_once_with(
+			"¿Cómo reservo?",
+			historial=[{
+				"role": "assistant",
+				"content": "¡Hola! 👋 Soy **ChichaBot**, tu asistente y manual de ayuda de **Chicha Barber Studio**.\n\nPuedo explicarte cómo:\n• 📅 Crear una reserva\n• 🛒 Comprar y usar el carrito\n• 💳 Finalizar un pago\n• ❓ Resolver dudas frecuentes\n\n¿En qué puedo ayudarte hoy?",
+			}],
+			system_prompt_extra="Manual de cliente",
+		)
+		self.assertEqual(request.session["chat"][-1], {"rol": "ia", "texto": "Respuesta al cliente"})
+		contexto_mock.assert_called_once_with()
 
 
 class ObtenerContextoAdminTests(SimpleTestCase):

@@ -93,6 +93,14 @@ def _procesar_chat(
             chat = request.session[clave_sesion]
             # Agregar mensaje usuario
             chat.append({"rol": "user", "texto": user_input})
+            historial = [
+                {
+                    "role": "assistant" if mensaje["rol"] == "ia" else "user",
+                    "content": mensaje["texto"],
+                }
+                for mensaje in chat[:-1]
+                if mensaje.get("rol") in ("ia", "user")
+            ]
             
             contexto = constructor_contexto()
             if usar_contexto_base:

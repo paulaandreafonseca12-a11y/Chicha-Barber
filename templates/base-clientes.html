@@ -156,6 +156,21 @@
             form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
         }
 
+        function mostrarErrorChat(mensaje) {
+            const chatMessagesEl = document.getElementById("chatMessages");
+            chatMessagesEl.innerHTML += `
+                <div class="msg-ia align-self-start mb-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <div class="msg-ia-avatar flex-shrink-0">
+                            <i class="bi bi-robot-fill"></i>
+                        </div>
+                        <div class="msg-ia-text">${formatearMensaje(mensaje)}</div>
+                    </div>
+                </div>
+            `;
+            chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+        }
+
         // Quita cualquier tooltip que haya quedado visible en pantalla
         function limpiarTooltips() {
             document.querySelectorAll('.tooltip').forEach(function (t) { t.remove(); });
@@ -297,7 +312,12 @@
                         method: "POST",
                         body: formData
                     })
-                    .then(response => response.json())
+                    .then(response => response.json().then(data => {
+                        if (!response.ok) {
+                            throw new Error(data.error || "No se pudo procesar el mensaje.");
+                        }
+                        return data;
+                    }))
                     .then(data => {
                         // Remover indicador de escritura
                         const typingEl = document.getElementById("typingIndicator");
@@ -321,6 +341,7 @@
                         const typingEl = document.getElementById("typingIndicator");
                         if (typingEl) typingEl.remove();
                         console.error(error);
+                        mostrarErrorChat("No pude obtener una respuesta. Intenta de nuevo; si el problema continúa, comunícate con soporte.");
                     });
                 });
             }
