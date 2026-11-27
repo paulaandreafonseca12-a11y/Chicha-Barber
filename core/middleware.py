@@ -11,19 +11,51 @@ from usuarios.models import RolUsuario
 
 MENSAJE = 'No tienes permiso para acceder a esta sección.'
 
-# Rutas (por prefijo) que el barbero NO puede abrir.
-# OJO: '/panel/' NO va aquí, es la entrada del barbero a su panel.
+# Rutas administrativas que el barbero no necesita para gestionar su agenda.
 PREFIJOS_BLOQUEADOS_BARBERO = (
+    '/admin/',
+    '/api/',
+    '/backup/',
     '/compras/',
     '/historial/',
+    '/ventas/',
     '/configuracion/',
+    '/catalogo/gestion/',
+    '/catalogo/producto/',
+    '/catalogo/categorias/',
+    '/catalogo/categoria/',
+    '/catalogo/proveedores/',
+    '/catalogo/proveedor/',
+    '/catalogo/marcas/',
+    '/catalogo/marca/',
+    '/catalogo/existencias/',
+    '/catalogo/movimientos-existencias/',
+    '/catalogo/promocion/',
+    '/productos/gestion/',
+    '/productos/producto/',
+    '/productos/categorias/',
+    '/productos/categoria/',
+    '/productos/proveedores/',
+    '/productos/proveedor/',
+    '/productos/marcas/',
+    '/productos/marca/',
+    '/productos/existencias/',
+    '/productos/movimientos-existencias/',
+    '/productos/promocion/',
     '/usuarios/lista/',
     '/usuarios/crear/',
     '/usuarios/editar/',
     '/usuarios/eliminar/',
     '/reservas/agenda/crear/',
     '/reservas/gestion-dias/',
+    '/reservas/confirmacion/',
     '/servicios/listado/',
+    '/servicios/crear/',
+    '/servicios/editar/',
+    '/servicios/eliminar/',
+    '/servicios/calificacion/listado/',
+    '/servicios/calificacion/responder/',
+    '/servicios/calificacion/eliminar/',
 )
 
 # Rutas (por nombre, el name= del urls.py) que el barbero NO puede abrir.
@@ -40,8 +72,6 @@ NOMBRES_BLOQUEADOS_BARBERO = {
     # Calificaciones
     'responder-calificacion',
     'eliminar_calificacion',
-    # TODO: agregar aquí el name del listado de promociones
-    # y el del listado de calificaciones.
 }
 
 # Páginas que nunca se usan como "volver a la página anterior".

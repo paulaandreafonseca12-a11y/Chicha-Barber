@@ -2,10 +2,11 @@ from datetime import date, time, timedelta
 from decimal import Decimal
 from unittest.mock import patch
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from core.views import CustomLoginView
 from usuarios.models import Usuario, Notificacion
 from servicios.models import Servicios
 from reservas.models import Agenda, Reserva
@@ -79,6 +80,150 @@ class ReservaBookingFlowTest(TestCase):
             response.url,
             reverse("reserva_confirmada", args=[reserva.pk]),
         )
+
+    def test_admin_puede_ver_agenda(self):
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get(reverse("ver_agenda"))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_barbero_ve_solo_sus_citas_y_turnos(self):
+        otro_barbero = Usuario.objects.create(
+            email="barbero-otro@example.com",
+            numero_documento="980000104",
+            telefono="3000000104",
+            primer_nombre="Otro",
+            primer_apellido="Barbero",
+            rol="barbero",
+        )
+        self.agenda.estado = "reservada"
+        self.agenda.save(update_fields=["estado"])
+        reserva_propia = Reserva.objects.create(
+            agenda=self.agenda,
+            servicio=self.servicio,
+            nombre_usuario="Cliente propio",
+        )
+        agenda_disponible_propia = Agenda.objects.create(
+            profesional=self.barbero,
+            fecha=timezone.localdate() + timedelta(days=3),
+            hora_inicio=time(11, 0),
+            hora_fin=time(11, 30),
+        )
+        agenda_disponible_ajena = Agenda.objects.create(
+            profesional=otro_barbero,
+            fecha=timezone.localdate() + timedelta(days=3),
+            hora_inicio=time(12, 0),
+            hora_fin=time(12, 30),
+        )
+        agenda_reservada_ajena = Agenda.objects.create(
+            profesional=otro_barbero,
+            fecha=timezone.localdate() + timedelta(days=4),
+            hora_inicio=time(13, 0),
+            hora_fin=time(13, 30),
+            estado="reservada",
+        )
+        Reserva.objects.create(
+            agenda=agenda_reservada_ajena,
+            servicio=self.servicio,
+            nombre_usuario="Cliente ajeno",
+        )
+
+        self.client.force_login(self.barbero)
+        response = self.client.get(reverse("ver_agenda"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            [cita.pk for cita in response.context["reservas"]],
+            [reserva_propia.pk],
+        )
+        self.assertCountEqual(
+            [turno.pk for turno in response.context["turnos_disponibles"]],
+            [agenda_disponible_propia.pk],
+        )
+        self.assertContains(response, "Mi agenda")
+        self.assertContains(response, "openChatBtn")
+        self.assertNotContains(response, "Gestión de Servicios")
+        self.assertNotContains(response, "Cliente ajeno")
+
+    def test_login_de_barbero_lo_lleva_directo_a_su_agenda(self):
+        vista = CustomLoginView()
+        vista.request = RequestFactory().get(reverse("login"))
+        vista.request.user = self.barbero
+
+        self.assertEqual(str(vista.get_success_url()), reverse("ver_agenda"))
+
+    def test_barbero_es_llevado_a_su_agenda_y_no_accede_a_catalogo_admin(self):
+        self.client.force_login(self.barbero)
+
+        panel_response = self.client.get(reverse("inicio_admin"))
+        catalogo_response = self.client.get(reverse("lista_categorias"))
+
+        self.assertRedirects(panel_response, reverse("ver_agenda"))
+        self.assertRedirects(catalogo_response, reverse("ver_agenda"))
+
+    def test_barbero_al_reprogramar_solo_puede_elegir_turnos_propios(self):
+        otro_barbero = Usuario.objects.create(
+            email="barbero-reprogramar@example.com",
+            numero_documento="980000105",
+            telefono="3000000105",
+            primer_nombre="Otro",
+            primer_apellido="Barbero",
+            rol="barbero",
+        )
+        self.agenda.estado = "reservada"
+        self.agenda.save(update_fields=["estado"])
+        reserva = Reserva.objects.create(
+            agenda=self.agenda,
+            servicio=self.servicio,
+            nombre_usuario="Cliente propio",
+        )
+        turno_propio = Agenda.objects.create(
+            profesional=self.barbero,
+            fecha=timezone.localdate() + timedelta(days=4),
+            hora_inicio=time(11, 0),
+            hora_fin=time(11, 30),
+        )
+        Agenda.objects.create(
+            profesional=otro_barbero,
+            fecha=timezone.localdate() + timedelta(days=4),
+            hora_inicio=time(12, 0),
+            hora_fin=time(12, 30),
+        )
+
+        self.client.force_login(self.barbero)
+        response = self.client.get(reverse("reprogramar_cita", args=[reserva.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "form-select custom-white-input")
+        self.assertContains(response, "text-secondary small text-uppercase")
+        html = response.content.decode()
+        inicio_formulario = html.index('<form method="POST" id="form-reprogramar-cita">')
+        fin_formulario = html.index("</form>", inicio_formulario)
+        boton_volver = html.index("Volver a la Agenda")
+        self.assertGreater(boton_volver, inicio_formulario)
+        self.assertLess(boton_volver, fin_formulario)
+        self.assertEqual(
+            list(response.context["form"].fields["agenda"].queryset),
+            [turno_propio],
+        )
+
+    def test_admin_reprogramar_muestra_campos_con_estilo_estandar(self):
+        self.agenda.estado = "reservada"
+        self.agenda.save(update_fields=["estado"])
+        reserva = Reserva.objects.create(
+            agenda=self.agenda,
+            servicio=self.servicio,
+            nombre_usuario="Cliente propio",
+        )
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get(reverse("reprogramar_cita", args=[reserva.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "id=\"fecha_picker\"")
+        self.assertContains(response, "form-control custom-white-input")
+        self.assertContains(response, "form-select custom-white-input")
 
     def test_cliente_no_puede_reservar_turno_pasado(self):
         self.agenda.fecha = timezone.localdate() - timedelta(days=1)
