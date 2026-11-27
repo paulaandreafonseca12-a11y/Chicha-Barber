@@ -6,6 +6,7 @@ from catalogo.models import Categoria, Marca, Producto, Promocion
 from compra.models import DetalleCompra
 from servicios.models import Servicios
 from core.currency import format_cop
+from chat_ia.manual_administrador import MANUAL_USUARIO_ADMINISTRADOR
 
 
 CONTEXTO_ADMIN_BASE = """
@@ -145,4 +146,4 @@ def obtener_contexto_admin():
     else:
         contexto += "- No hay promociones registradas.\n"
 
-    return contexto
+    return contexto + "\n\n" + MANUAL_USUARIO_ADMINISTRADOR

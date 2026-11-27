@@ -8,7 +8,7 @@
     <title>Chicha Barber Studio</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261125-admin-sticky">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261126-chat-layout">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
     <script src="{% static 'js/formato-cop.js' %}?v=20261125-cop-format"></script>
     <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" data-position="bottom-right" data-offset="20,90" async></script>
@@ -89,6 +89,12 @@
                 </div>
                 <p class="text-muted small mt-2">Conectando con ChichaBot...</p>
             </div>
+        </div>
+
+        <div class="chat-suggestions px-3 pb-2" aria-label="Preguntas frecuentes">
+            <button type="button" class="chat-suggestion" onclick="enviarPreguntaRapida('¿Cómo activo una agenda?')">Activar agenda</button>
+            <button type="button" class="chat-suggestion" onclick="enviarPreguntaRapida('¿Cómo registro una compra?')">Registrar compra</button>
+            <button type="button" class="chat-suggestion" onclick="enviarPreguntaRapida('¿Cómo genero un respaldo?')">Respaldos</button>
         </div>
 
         <!-- Formulario -->
@@ -199,8 +205,19 @@
     <!-- ========================= -->
     <script>
         function formatearMensaje(texto) {
+            texto = String(texto).replace(/[&<>"']/g, function(caracter) {
+                return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"}[caracter];
+            });
             return texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                         .replace(/\n/g, '<br>');
+        }
+
+        function enviarPreguntaRapida(pregunta) {
+            const input = document.getElementById("pregunta");
+            const form = document.getElementById("chatForm");
+            if (!input || !form) return;
+            input.value = pregunta;
+            form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
         }
 
         function cerrarChat() {
@@ -209,7 +226,7 @@
         }
 
         function abrirChat() {
-            document.getElementById("chatWidget").style.display = "block";
+            document.getElementById("chatWidget").style.display = "flex";
             document.getElementById("openChatBtn").style.display = "none";
             cargarMensajes();
         }

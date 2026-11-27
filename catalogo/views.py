@@ -4,7 +4,8 @@ import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Sum, Value, IntegerField
+from django.db.models.functions import Coalesce
 from django.db.models.deletion import ProtectedError
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -41,6 +42,7 @@ def productos_galeria(request):
     buscar = request.GET.get('buscar', '').strip()
     categoria_id = request.GET.get('categoria', '').strip()
     marca_id = request.GET.get('marca', '').strip()
+    orden = request.GET.get('orden', 'mas-vendidos').strip()
 
     productos = (
         Producto.objects
@@ -49,6 +51,13 @@ def productos_galeria(request):
             'codigo_categoria',
             'codigo_marca',
             'codigo_detalle_producto'
+        )
+        .annotate(
+            total_vendido=Coalesce(
+                Sum('detalles_venta__cantidad'),
+                Value(0),
+                output_field=IntegerField()
+            )
         )
     )
 
@@ -70,6 +79,14 @@ def productos_galeria(request):
             codigo_marca_id=int(marca_id)
         )
 
+    if orden == 'menor-precio':
+        productos = productos.order_by('precio', '-total_vendido', 'nombre')
+    elif orden == 'mayor-precio':
+        productos = productos.order_by('-precio', '-total_vendido', 'nombre')
+    else:
+        orden = 'mas-vendidos'
+        productos = productos.order_by('-total_vendido', 'nombre')
+
     context = {
         'titulo': 'Galería de Productos',
         'productos': productos,
@@ -88,6 +105,7 @@ def productos_galeria(request):
             else None
         ),
         'buscar': buscar,
+        'orden': orden,
     }
 
     return render(
