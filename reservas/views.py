@@ -16,7 +16,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
 from reservas.models import Reserva, Agenda
-from reservas.forms import ReservaEditarForm
+from reservas.forms import ReprogramarReservaBarberoForm, ReservaEditarForm
 from servicios.models import Servicios
 from catalogo.models import Promocion
 from usuarios.models import Usuario, Notificacion, HistorialAccion,RolUsuario
@@ -543,7 +543,8 @@ def ver_agenda(request):
         reservas_base = reservas_base.filter(agenda__profesional=request.user)
         agendas_base = agendas_base.filter(profesional=request.user)
 
-    hoy_fecha = date.today()
+    ahora = timezone.localtime()
+    hoy_fecha = ahora.date()
     mes_actual = hoy_fecha.month
     anio_actual = hoy_fecha.year
 
@@ -610,7 +611,13 @@ def cambiar_estado_reserva(request, pk, nuevo_estado):
 @admin_o_barbero
 def reprogramar_cita(request, pk):
     cita = _obtener_reserva_permitida(request.user, pk)
-    form = ReservaEditarForm(request.POST or None, instance=cita)
+    if request.user.rol == RolUsuario.BARBERO:
+        form = ReprogramarReservaBarberoForm(
+            request.POST or None,
+            reserva=cita,
+        )
+    else:
+        form = ReservaEditarForm(request.POST or None, instance=cita)
 
     if request.method == 'POST' and form.is_valid():
         form.save()
