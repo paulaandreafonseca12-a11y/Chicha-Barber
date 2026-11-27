@@ -40,6 +40,8 @@ class CustomLoginView(LoginView):
             return url
         if self.request.user.rol == RolUsuario.ADMIN:
             return reverse_lazy('inicio_admin')
+        if self.request.user.rol == RolUsuario.BARBERO:
+            return reverse_lazy('ver_agenda')
         return reverse_lazy('inicio')
 
 def inicio(request):
@@ -58,7 +60,8 @@ def inicio(request):
 def inicio_admin(request):
     if not request.user.is_authenticated or request.user.rol not in (RolUsuario.ADMIN, RolUsuario.BARBERO):
         return redirect('login')
-        
+    if request.user.rol == RolUsuario.BARBERO:
+        return redirect('ver_agenda')
 
 
     # Estadísticas

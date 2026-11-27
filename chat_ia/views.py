@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from chat_ia.ai_service import obtener_respuesta_ia
 from chat_ia.contexto_adm import obtener_contexto_admin
+from chat_ia.contexto_barbero import obtener_contexto_barbero
 from servicios.models import Servicios
 from catalogo.models import Producto, Categoria, Promocion
 from usuarios.models import RolUsuario
@@ -66,8 +67,19 @@ MENSAJE_BIENVENIDA_ADMIN = (
     "Puedo orientarte sobre inventario, productos, servicios, ventas y reservas."
 )
 
+MENSAJE_BIENVENIDA_BARBERO = (
+    "¡Hola! Soy ChichaBot, tu asistente para tu agenda de barbero. "
+    "Puedo ayudarte a consultar tus citas, tus turnos disponibles y las opciones de tu agenda."
+)
 
-def _procesar_chat(request, clave_sesion, mensaje_bienvenida, constructor_contexto, es_admin=False):
+
+def _procesar_chat(
+    request,
+    clave_sesion,
+    mensaje_bienvenida,
+    constructor_contexto,
+    usar_contexto_base=False,
+):
     if clave_sesion not in request.session:
         request.session[clave_sesion] = []
         request.session[clave_sesion].append({"rol": "ia", "texto": mensaje_bienvenida})
@@ -81,7 +93,7 @@ def _procesar_chat(request, clave_sesion, mensaje_bienvenida, constructor_contex
             chat.append({"rol": "user", "texto": user_input})
             
             contexto = constructor_contexto()
-            if es_admin:
+            if usar_contexto_base:
                 respuesta = obtener_respuesta_ia(
                     user_input,
                     system_prompt_base=contexto,
@@ -122,10 +134,19 @@ def vista_chat_admin(request):
             status=403,
         )
 
+    if request.user.rol == RolUsuario.BARBERO:
+        return _procesar_chat(
+            request,
+            clave_sesion="chat_barbero",
+            mensaje_bienvenida=MENSAJE_BIENVENIDA_BARBERO,
+            constructor_contexto=lambda: obtener_contexto_barbero(request.user),
+            usar_contexto_base=True,
+        )
+
     return _procesar_chat(
         request,
         clave_sesion="chat_admin",
         mensaje_bienvenida=MENSAJE_BIENVENIDA_ADMIN,
         constructor_contexto=obtener_contexto_admin,
-        es_admin=True,
+        usar_contexto_base=True,
     )

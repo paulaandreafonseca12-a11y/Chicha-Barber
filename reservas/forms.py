@@ -55,6 +55,18 @@ class ReservaEditarForm(ValidacionTelefonoReservaMixin, forms.ModelForm):
     class Meta:
         model = Reserva
         fields = ['telefono_usuario', 'observacion', 'fecha_reserva', 'estado']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for campo in self.fields.values():
+            clase = (
+                'form-select custom-white-input'
+                if isinstance(campo.widget, forms.Select)
+                else 'form-control custom-white-input'
+            )
+            campo.widget.attrs['class'] = (
+                f"{campo.widget.attrs.get('class', '')} {clase}".strip()
+            )
         
 class ReprogramarReservaBarberoForm(forms.Form):
     """
@@ -65,7 +77,7 @@ class ReprogramarReservaBarberoForm(forms.Form):
         queryset=Agenda.objects.none(),
         label='Nuevo turno',
         empty_label='Selecciona un turno disponible',
-        widget=forms.Select(attrs={'class': 'form-select'}),
+        widget=forms.Select(attrs={'class': 'form-select custom-white-input'}),
     )
 
     def __init__(self, *args, reserva, **kwargs):

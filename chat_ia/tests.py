@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -8,6 +8,7 @@ from django.test import RequestFactory, SimpleTestCase
 
 from chat_ia.ai_service import DEFAULT_GROQ_MODEL, obtener_respuesta_ia
 from chat_ia.contexto_adm import obtener_contexto_admin
+from chat_ia.contexto_barbero import obtener_contexto_barbero
 from chat_ia.views import construir_contexto_dinamico, vista_chat_admin
 
 
@@ -15,7 +16,13 @@ class QuerySetFalso(list):
 	def exists(self):
 		return bool(self)
 
+	def filter(self, *args, **kwargs):
+		return self
+
 	def select_related(self, *fields):
+		return self
+
+	def order_by(self, *fields):
 		return self
 
 
@@ -103,6 +110,32 @@ class VistaChatAdminTests(SimpleTestCase):
 		self.assertNotIn("chat", request.session)
 		contexto_mock.assert_called_once_with()
 
+	@patch("chat_ia.views.obtener_respuesta_ia", return_value="Respuesta para barbero")
+	@patch("chat_ia.views.obtener_contexto_barbero", return_value="Solo agenda propia")
+	def test_barbero_usa_contexto_y_conversacion_separados(
+		self,
+		contexto_mock,
+		respuesta_mock,
+	):
+		request = self.factory.post(
+			"/chat/administracion/",
+			{"pregunta": "¿Qué citas tengo?"},
+		)
+		request.user = SimpleNamespace(is_authenticated=True, rol="barbero")
+		request.session = SessionFalsa()
+
+		respuesta = vista_chat_admin(request)
+
+		self.assertEqual(respuesta.status_code, 200)
+		contexto_mock.assert_called_once_with(request.user)
+		respuesta_mock.assert_called_once_with(
+			"¿Qué citas tengo?",
+			system_prompt_base="Solo agenda propia",
+		)
+		self.assertIn("chat_barbero", request.session)
+		self.assertNotIn("chat_admin", request.session)
+		self.assertIn("agenda de barbero", request.session["chat_barbero"][0]["texto"])
+
 
 class ObtenerContextoAdminTests(SimpleTestCase):
 	def test_usa_campos_y_relaciones_reales_de_los_modelos_admin(self):
@@ -163,6 +196,55 @@ class ObtenerContextoAdminTests(SimpleTestCase):
 		self.assertIn("Corte: $20000 | Duración: 30 min | Estado: Activo", contexto)
 		self.assertIn("en servicio Corte, producto Cera", contexto)
 		self.assertIn("fuera del rango de fechas", contexto)
+
+
+class ContextoBarberoTests(SimpleTestCase):
+	def test_solo_consulta_y_entrega_las_citas_y_turnos_del_barbero(self):
+		barbero = SimpleNamespace(rol="barbero")
+		agenda = SimpleNamespace(
+			fecha=date(2026, 1, 1),
+			hora_inicio=time(11, 0),
+			hora_fin=time(11, 30),
+		)
+		cita = SimpleNamespace(
+			agenda=agenda,
+			nombre_usuario="Cliente asignado",
+			usuario=None,
+			servicio=SimpleNamespace(nombre="Corte"),
+			get_estado_display=lambda: "Confirmada",
+		)
+		hoy = date(2026, 1, 1)
+		ahora = datetime(2026, 1, 1, 9, 0)
+
+		with (
+			patch("chat_ia.contexto_barbero.timezone.localdate", return_value=hoy),
+			patch("chat_ia.contexto_barbero.timezone.localtime", return_value=ahora),
+			patch(
+				"chat_ia.contexto_barbero.Reserva.objects.filter",
+				return_value=QuerySetFalso([cita]),
+			) as reservas_mock,
+			patch(
+				"chat_ia.contexto_barbero.Agenda.objects.filter",
+				return_value=QuerySetFalso([agenda]),
+			) as agendas_mock,
+		):
+			contexto = obtener_contexto_barbero(barbero)
+
+		self.assertIn("Cliente asignado", contexto)
+		self.assertIn("Corte", contexto)
+		self.assertIn("11:00-11:30", contexto)
+		self.assertNotIn("DATOS DEL SISTEMA PARA ADMINISTRACIÓN", contexto)
+		self.assertNotIn("Cera", contexto)
+		reservas_mock.assert_called_once_with(
+			agenda__profesional=barbero,
+			agenda__fecha__range=(hoy, hoy + timedelta(days=30)),
+			estado__in=("reservada", "confirmada"),
+		)
+		agendas_mock.assert_called_once_with(
+			profesional=barbero,
+			fecha__range=(hoy, hoy + timedelta(days=30)),
+			estado="disponible",
+		)
 
 
 class ConstruirContextoDinamicoTests(SimpleTestCase):
